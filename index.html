@@ -3,17 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SecurePass - Manajemen Password Multi-Device</title>
+    <title>Login - Lentera Karya Situbondo</title>
     <style>
-        :root {
-            --primary-color: #2c3e50;
-            --secondary-color: #3498db;
-            --accent-color: #e74c3c;
-            --light-color: #ecf0f1;
-            --dark-color: #34495e;
-            --success-color: #2ecc71;
-        }
-        
         * {
             box-sizing: border-box;
             margin: 0;
@@ -32,7 +23,7 @@
         
         .container {
             width: 100%;
-            max-width: 500px;
+            max-width: 450px;
             background-color: white;
             border-radius: 10px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
@@ -40,40 +31,50 @@
         }
         
         header {
-            background-color: var(--primary-color);
+            background-color: #2c3e50;
             color: white;
-            padding: 20px;
+            padding: 25px;
             text-align: center;
         }
         
         header h1 {
-            font-size: 24px;
+            font-size: 22px;
             margin-bottom: 5px;
         }
         
         header p {
             font-size: 14px;
-            opacity: 0.8;
+            opacity: 0.9;
         }
         
-        .app-content {
-            padding: 20px;
+        .login-content {
+            padding: 25px;
         }
         
         .form-group {
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
         
         .form-group label {
             display: block;
-            margin-bottom: 5px;
+            margin-bottom: 8px;
             font-weight: 600;
-            color: var(--dark-color);
+            color: #2c3e50;
+        }
+        
+        .username-display {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            font-weight: 600;
+            color: #2c3e50;
+            text-align: center;
         }
         
         .form-group input {
             width: 100%;
-            padding: 12px;
+            padding: 15px;
             border: 1px solid #ddd;
             border-radius: 5px;
             font-size: 16px;
@@ -81,14 +82,14 @@
         }
         
         .form-group input:focus {
-            border-color: var(--secondary-color);
+            border-color: #3498db;
             outline: none;
         }
         
         button {
             width: 100%;
-            padding: 12px;
-            background-color: var(--secondary-color);
+            padding: 15px;
+            background-color: #3498db;
             color: white;
             border: none;
             border-radius: 5px;
@@ -99,99 +100,63 @@
         }
         
         button:hover {
-            background-color: var(--primary-color);
+            background-color: #2c3e50;
         }
         
-        .device-id {
-            background-color: var(--light-color);
-            padding: 10px;
+        .notification {
+            margin-top: 20px;
+            padding: 15px;
             border-radius: 5px;
-            margin-top: 15px;
-            font-size: 14px;
-            word-break: break-all;
+            text-align: center;
+            display: none;
+        }
+        
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
         }
         
         .password-list {
-            margin-top: 20px;
-            max-height: 300px;
-            overflow-y: auto;
-            border: 1px solid #ddd;
+            margin-top: 25px;
+            background-color: #f8f9fa;
+            padding: 15px;
             border-radius: 5px;
-            padding: 10px;
+            border: 1px solid #ddd;
+        }
+        
+        .password-list h3 {
+            margin-bottom: 10px;
+            color: #2c3e50;
+            text-align: center;
         }
         
         .password-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px;
+            padding: 8px 0;
             border-bottom: 1px solid #eee;
+            font-family: monospace;
+            text-align: center;
         }
         
         .password-item:last-child {
             border-bottom: none;
         }
         
-        .password-text {
-            font-family: monospace;
-            font-size: 16px;
-        }
-        
-        .copy-btn {
-            background-color: var(--dark-color);
-            padding: 5px 10px;
+        footer {
+            text-align: center;
+            padding: 15px;
             font-size: 12px;
-            width: auto;
+            color: #6c757d;
+            border-top: 1px solid #eee;
         }
         
-        .tabs {
-            display: flex;
-            margin-bottom: 20px;
-            border-bottom: 1px solid #ddd;
-        }
-        
-        .tab {
-            padding: 10px 20px;
-            cursor: pointer;
-            background: none;
-            border: none;
-            color: var(--dark-color);
-            font-weight: 600;
-            width: auto;
-        }
-        
-        .tab.active {
-            border-bottom: 3px solid var(--secondary-color);
-            color: var(--secondary-color);
-        }
-        
-        .tab-content {
-            display: none;
-        }
-        
-        .tab-content.active {
-            display: block;
-        }
-        
-        .notification {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 15px 20px;
-            background-color: var(--success-color);
-            color: white;
-            border-radius: 5px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-            transform: translateX(100%);
-            transition: transform 0.3s;
-            z-index: 1000;
-        }
-        
-        .notification.show {
-            transform: translateX(0);
-        }
-        
-        @media (max-width: 600px) {
+        @media (max-width: 500px) {
             .container {
                 border-radius: 0;
             }
@@ -205,354 +170,147 @@
 <body>
     <div class="container">
         <header>
-            <h1>SecurePass</h1>
-            <p>Manajemen Password Multi-Device</p>
+            <h1>Lentera Karya Situbondo</h1>
+            <p>Sistem Login Multi-Password</p>
         </header>
         
-        <div class="app-content">
-            <div class="tabs">
-                <button class="tab active" data-tab="login">Login</button>
-                <button class="tab" data-tab="register">Daftar Device Baru</button>
-            </div>
-            
-            <div class="tab-content active" id="login">
-                <div class="form-group">
-                    <label for="username">Username</label>
-                    <input type="text" id="username" placeholder="Masukkan username">
-                </div>
-                
-                <div class="form-group">
-                    <label for="device-id-login">Device ID</label>
-                    <input type="text" id="device-id-login" placeholder="Masukkan Device ID">
-                </div>
-                
-                <div class="form-group">
-                    <label for="password-login">Password</label>
-                    <input type="password" id="password-login" placeholder="Masukkan password">
-                </div>
-                
-                <button id="login-btn">Login</button>
-                
-                <div class="device-id">
-                    <strong>Device ID Anda:</strong>
-                    <span id="display-device-id">-</span>
+        <div class="login-content">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <div class="username-display" id="username-display">
+                    Lentera Karya Situbondo
                 </div>
             </div>
             
-            <div class="tab-content" id="register">
-                <div class="form-group">
-                    <label for="new-username">Username</label>
-                    <input type="text" id="new-username" placeholder="Buat username">
-                </div>
-                
-                <div class="form-group">
-                    <label for="new-password">Password</label>
-                    <input type="password" id="new-password" placeholder="Buat password">
-                </div>
-                
-                <button id="register-btn">Daftarkan Device</button>
-                
-                <div class="device-id">
-                    <strong>Device ID Anda:</strong>
-                    <span id="new-device-id">-</span>
-                </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" placeholder="Masukkan password yang valid">
             </div>
             
-            <div class="tab-content" id="passwords">
-                <h3>Password untuk Device Ini</h3>
-                <div class="password-list" id="password-list">
-                    <!-- Daftar password akan ditampilkan di sini -->
-                </div>
-                <button id="generate-btn" style="margin-top: 15px;">Generate Password Baru</button>
-                <button id="logout-btn" style="margin-top: 10px; background-color: var(--accent-color);">Logout</button>
+            <button id="login-btn">Login</button>
+            
+            <div id="notification" class="notification"></div>
+            
+            <div class="password-list">
+                <h3>Password yang Valid</h3>
+                <div class="password-item">01111111</div>
+                <div class="password-item">02222222</div>
+                <div class="password-item">03333333</div>
+                <div class="password-item">04444444</div>
+                <div class="password-item">05555555</div>
+                <div class="password-item">06666666</div>
+                <div class="password-item">07777777</div>
+                <div class="password-item">08888888</div>
+                <div class="password-item">09999999</div>
+                <div class="password-item">01010101</div>
+                <div class="password-item">02020202</div>
+                <div class="password-item">03030303</div>
+                <!-- Password lainnya akan divalidasi dengan pola -->
             </div>
         </div>
+        
+        <footer>
+            &copy; 2023 Lentera Karya Situbondo. Hak Cipta Dilindungi.
+        </footer>
     </div>
-    
-    <div class="notification" id="notification">Password berhasil disalin!</div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Elemen UI
-            const tabs = document.querySelectorAll('.tab');
-            const tabContents = document.querySelectorAll('.tab-content');
-            const loginTab = document.querySelector('[data-tab="login"]');
-            const registerTab = document.querySelector('[data-tab="register"]');
-            const loginForm = document.getElementById('login');
-            const registerForm = document.getElementById('register');
-            const passwordsForm = document.getElementById('passwords');
+            const passwordInput = document.getElementById('password');
             const loginBtn = document.getElementById('login-btn');
-            const registerBtn = document.getElementById('register-btn');
-            const generateBtn = document.getElementById('generate-btn');
-            const logoutBtn = document.getElementById('logout-btn');
-            const usernameInput = document.getElementById('username');
-            const deviceIdLoginInput = document.getElementById('device-id-login');
-            const passwordLoginInput = document.getElementById('password-login');
-            const newUsernameInput = document.getElementById('new-username');
-            const newPasswordInput = document.getElementById('new-password');
-            const displayDeviceId = document.getElementById('display-device-id');
-            const newDeviceId = document.getElementById('new-device-id');
-            const passwordList = document.getElementById('password-list');
             const notification = document.getElementById('notification');
             
-            // Tab functionality
-            tabs.forEach(tab => {
-                tab.addEventListener('click', () => {
-                    const tabId = tab.getAttribute('data-tab');
+            // Daftar password yang valid (pattern-based)
+            const validPasswordPatterns = [
+                /^0[1-9]{1}0{6}$/, // Pola seperti 01000000
+                /^0[1-9]{1}[0-9]{6}$/, // Pola dengan digit yang sama
+                /^0[1-9]{1}[0-9]{1}[0-9]{1}[0-9]{1}[0-9]{1}[0-9]{1}[0-9]{1}$/ // Pola umum
+            ];
+            
+            // Contoh password yang valid (untuk ditampilkan)
+            const sampleValidPasswords = [
+                '01111111', '02222222', '03333333', '04444444', '05555555',
+                '06666666', '07777777', '08888888', '09999999', '01010101',
+                '02020202', '03030303', '01234567', '07777777', '08888888'
+            ];
+            
+            // Fungsi untuk memvalidasi password
+            function isValidPassword(password) {
+                // Cek panjang password
+                if (password.length !== 8) {
+                    return false;
+                }
+                
+                // Cek apakah password dimulai dengan 0
+                if (password.charAt(0) !== '0') {
+                    return false;
+                }
+                
+                // Cek apakah digit kedua antara 1-9
+                const secondDigit = password.charAt(1);
+                if (secondDigit < '1' || secondDigit > '9') {
+                    return false;
+                }
+                
+                // Cek pola password
+                for (const pattern of validPasswordPatterns) {
+                    if (pattern.test(password)) {
+                        return true;
+                    }
+                }
+                
+                return false;
+            }
+            
+            // Event listener untuk tombol login
+            loginBtn.addEventListener('click', function() {
+                const password = passwordInput.value.trim();
+                
+                if (!password) {
+                    showNotification('Silakan masukkan password', 'error');
+                    return;
+                }
+                
+                if (isValidPassword(password)) {
+                    showNotification('Login berhasil! Redirecting...', 'success');
                     
-                    // Update active tab
-                    tabs.forEach(t => t.classList.remove('active'));
-                    tab.classList.add('active');
+                    // Simpan status login di localStorage
+                    localStorage.setItem('isLoggedIn', 'true');
+                    localStorage.setItem('loginTime', new Date().getTime());
                     
-                    // Show active content
-                    tabContents.forEach(content => content.classList.remove('active'));
-                    document.getElementById(tabId).classList.add('active');
-                });
+                    // Redirect setelah 2 detik
+                    setTimeout(function() {
+                        // Redirect ke halaman utama
+                        window.location.href = 'index.html'; // Ganti dengan halaman tujuan
+                    }, 2000);
+                } else {
+                    showNotification('Password tidak valid. Silakan coba lagi.', 'error');
+                    passwordInput.value = '';
+                    passwordInput.focus();
+                }
             });
             
-            // Generate Device ID
-            function generateDeviceId() {
-                return 'device-' + Math.random().toString(36).substr(2, 9) + '-' + Date.now().toString(36);
-            }
+            // Event listener untuk tekan Enter di field password
+            passwordInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    loginBtn.click();
+                }
+            });
             
-            // Hash password sederhana (dalam aplikasi nyata, gunakan library yang lebih aman)
-            function hashPassword(password) {
-                return btoa(password).split('').reverse().join('');
-            }
-            
-            // Simpan data ke localStorage
-            function saveToLocalStorage(key, data) {
-                localStorage.setItem(key, JSON.stringify(data));
-            }
-            
-            // Ambil data dari localStorage
-            function getFromLocalStorage(key) {
-                const data = localStorage.getItem(key);
-                return data ? JSON.parse(data) : null;
-            }
-            
-            // Tampilkan notifikasi
-            function showNotification(message) {
+            // Fungsi untuk menampilkan notifikasi
+            function showNotification(message, type) {
                 notification.textContent = message;
-                notification.classList.add('show');
+                notification.className = 'notification ' + type;
+                notification.style.display = 'block';
                 
-                setTimeout(() => {
-                    notification.classList.remove('show');
-                }, 3000);
+                // Sembunyikan notifikasi setelah 5 detik
+                setTimeout(function() {
+                    notification.style.display = 'none';
+                }, 5000);
             }
             
-            // Generate password acak
-            function generatePassword(length = 12) {
-                const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+";
-                let password = "";
-                
-                for (let i = 0; i < length; i++) {
-                    const randomIndex = Math.floor(Math.random() * charset.length);
-                    password += charset[randomIndex];
-                }
-                
-                return password;
-            }
-            
-            // Daftarkan device baru
-            registerBtn.addEventListener('click', () => {
-                const username = newUsernameInput.value.trim();
-                const password = newPasswordInput.value;
-                
-                if (!username || !password) {
-                    showNotification('Username dan password harus diisi!');
-                    return;
-                }
-                
-                // Generate device ID
-                const deviceId = generateDeviceId();
-                newDeviceId.textContent = deviceId;
-                
-                // Hash password
-                const hashedPassword = hashPassword(password);
-                
-                // Buat data user
-                const userData = {
-                    username: username,
-                    devices: {
-                        [deviceId]: {
-                            password: hashedPassword,
-                            passwords: []
-                        }
-                    }
-                };
-                
-                // Simpan ke localStorage
-                saveToLocalStorage('userData', userData);
-                
-                showNotification('Device berhasil didaftarkan! Simpan Device ID Anda: ' + deviceId);
-                
-                // Switch ke tab login
-                loginTab.click();
-            });
-            
-            // Login
-            loginBtn.addEventListener('click', () => {
-                const username = usernameInput.value.trim();
-                const deviceId = deviceIdLoginInput.value.trim();
-                const password = passwordLoginInput.value;
-                
-                if (!username || !deviceId || !password) {
-                    showNotification('Semua field harus diisi!');
-                    return;
-                }
-                
-                // Ambil data dari localStorage
-                const userData = getFromLocalStorage('userData');
-                
-                if (!userData || userData.username !== username) {
-                    showNotification('Username tidak ditemukan!');
-                    return;
-                }
-                
-                if (!userData.devices[deviceId]) {
-                    showNotification('Device ID tidak valid!');
-                    return;
-                }
-                
-                // Verifikasi password
-                const hashedPassword = hashPassword(password);
-                if (userData.devices[deviceId].password !== hashedPassword) {
-                    showNotification('Password salah!');
-                    return;
-                }
-                
-                // Login berhasil
-                displayDeviceId.textContent = deviceId;
-                
-                // Simpan info login
-                saveToLocalStorage('currentUser', {
-                    username: username,
-                    deviceId: deviceId
-                });
-                
-                // Tampilkan password list
-                displayPasswords(userData.devices[deviceId].passwords);
-                
-                // Show passwords tab (buat tab baru jika belum ada)
-                if (!document.querySelector('[data-tab="passwords"]')) {
-                    const passwordsTab = document.createElement('button');
-                    passwordsTab.className = 'tab';
-                    passwordsTab.setAttribute('data-tab', 'passwords');
-                    passwordsTab.textContent = 'Password Saya';
-                    document.querySelector('.tabs').appendChild(passwordsTab);
-                    
-                    // Add event listener to the new tab
-                    passwordsTab.addEventListener('click', () => {
-                        tabs.forEach(t => t.classList.remove('active'));
-                        passwordsTab.classList.add('active');
-                        
-                        tabContents.forEach(content => content.classList.remove('active'));
-                        passwordsForm.classList.add('active');
-                    });
-                }
-                
-                // Switch to passwords tab
-                document.querySelector('[data-tab="passwords"]').click();
-                
-                showNotification('Login berhasil!');
-            });
-            
-            // Tampilkan passwords
-            function displayPasswords(passwords) {
-                passwordList.innerHTML = '';
-                
-                if (passwords.length === 0) {
-                    passwordList.innerHTML = '<p>Belum ada password yang digenerate.</p>';
-                    return;
-                }
-                
-                passwords.forEach((pass, index) => {
-                    const passwordItem = document.createElement('div');
-                    passwordItem.className = 'password-item';
-                    
-                    const passwordText = document.createElement('span');
-                    passwordText.className = 'password-text';
-                    passwordText.textContent = pass;
-                    
-                    const copyBtn = document.createElement('button');
-                    copyBtn.className = 'copy-btn';
-                    copyBtn.textContent = 'Salin';
-                    copyBtn.addEventListener('click', () => {
-                        navigator.clipboard.writeText(pass).then(() => {
-                            showNotification('Password disalin ke clipboard!');
-                        });
-                    });
-                    
-                    passwordItem.appendChild(passwordText);
-                    passwordItem.appendChild(copyBtn);
-                    passwordList.appendChild(passwordItem);
-                });
-            }
-            
-            // Generate password baru
-            generateBtn.addEventListener('click', () => {
-                const currentUser = getFromLocalStorage('currentUser');
-                const userData = getFromLocalStorage('userData');
-                
-                if (!currentUser || !userData) {
-                    showNotification('Silakan login terlebih dahulu!');
-                    return;
-                }
-                
-                const newPassword = generatePassword();
-                userData.devices[currentUser.deviceId].passwords.push(newPassword);
-                
-                // Simpan data terbaru
-                saveToLocalStorage('userData', userData);
-                
-                // Tampilkan password
-                displayPasswords(userData.devices[currentUser.deviceId].passwords);
-                
-                showNotification('Password baru telah digenerate!');
-            });
-            
-            // Logout
-            logoutBtn.addEventListener('click', () => {
-                localStorage.removeItem('currentUser');
-                usernameInput.value = '';
-                deviceIdLoginInput.value = '';
-                passwordLoginInput.value = '';
-                
-                // Kembali ke tab login
-                loginTab.click();
-                
-                showNotification('Anda telah logout!');
-            });
-            
-            // Cek apakah sudah login
-            const currentUser = getFromLocalStorage('currentUser');
-            if (currentUser) {
-                const userData = getFromLocalStorage('userData');
-                if (userData && userData.devices[currentUser.deviceId]) {
-                    displayDeviceId.textContent = currentUser.deviceId;
-                    displayPasswords(userData.devices[currentUser.deviceId].passwords);
-                    
-                    // Buat tab passwords jika belum ada
-                    if (!document.querySelector('[data-tab="passwords"]')) {
-                        const passwordsTab = document.createElement('button');
-                        passwordsTab.className = 'tab';
-                        passwordsTab.setAttribute('data-tab', 'passwords');
-                        passwordsTab.textContent = 'Password Saya';
-                        document.querySelector('.tabs').appendChild(passwordsTab);
-                        
-                        passwordsTab.addEventListener('click', () => {
-                            tabs.forEach(t => t.classList.remove('active'));
-                            passwordsTab.classList.add('active');
-                            
-                            tabContents.forEach(content => content.classList.remove('active'));
-                            passwordsForm.classList.add('active');
-                        });
-                    }
-                    
-                    document.querySelector('[data-tab="passwords"]').click();
-                }
-            }
+            // Fokus ke input password saat halaman dimuat
+            passwordInput.focus();
         });
     </script>
 </body>
