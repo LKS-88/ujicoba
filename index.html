@@ -14,7 +14,7 @@
         }
         
         body {
-            background: linear-gradient(135deg, #1a2a3a 0%, #2c3e50 100%);
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
             min-height: 100vh;
             display: flex;
             justify-content: center;
@@ -24,29 +24,25 @@
             overflow: hidden;
         }
         
-        body::before {
-            content: "";
+        /* Particle Background */
+        #particles-js {
             position: absolute;
-            top: 0;
-            left: 0;
             width: 100%;
             height: 100%;
-            background: 
-                radial-gradient(circle at 20% 20%, rgba(41, 128, 185, 0.1) 0%, transparent 40%),
-                radial-gradient(circle at 80% 80%, rgba(52, 152, 219, 0.1) 0%, transparent 40%),
-                radial-gradient(circle at 40% 60%, rgba(26, 188, 156, 0.1) 0%, transparent 40%);
-            opacity: 0.5;
+            top: 0;
+            left: 0;
+            z-index: 0;
         }
         
         .container {
             width: 100%;
             max-width: 500px;
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(255, 255, 255, 0.8);
             border-radius: 20px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
             overflow: hidden;
-            backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
             transform: translateZ(0);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             z-index: 10;
@@ -54,17 +50,17 @@
         
         .container:hover {
             transform: translateY(-5px);
-            box-shadow: 0 20px 45px rgba(0, 0, 0, 0.6);
+            box-shadow: 0 20px 45px rgba(0, 0, 0, 0.15);
         }
         
         header {
-            background: linear-gradient(135deg, #2c3e50 0%, #1a2a3a 100%);
+            background: linear-gradient(135deg, #4b6cb7 0%, #182848 100%);
             color: white;
             padding: 35px 30px;
             text-align: center;
             position: relative;
             overflow: hidden;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
         }
         
         header::after {
@@ -75,20 +71,20 @@
             width: 100%;
             height: 5px;
             background: linear-gradient(90deg, #3498db, #2ecc71, #3498db);
-            box-shadow: 0 0 15px rgba(46, 204, 113, 0.5);
+            box-shadow: 0 0 15px rgba(46, 204, 113, 0.3);
         }
         
         .logo {
             width: 90px;
             height: 90px;
-            background: linear-gradient(135deg, #3498db 0%, #2c3e50 100%);
+            background: linear-gradient(135deg, #4b6cb7 0%, #182848 100%);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             margin: 0 auto 15px;
-            border: 3px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 0 25px rgba(52, 152, 219, 0.6);
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 0 25px rgba(75, 108, 183, 0.4);
             position: relative;
             overflow: hidden;
         }
@@ -98,14 +94,13 @@
             position: absolute;
             width: 60%;
             height: 60%;
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.2);
             border-radius: 50%;
         }
         
-        .logo i {
-            font-size: 40px;
-            color: white;
-            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        .logo img {
+            width: 70%;
+            height: auto;
             z-index: 1;
         }
         
@@ -114,7 +109,7 @@
             margin-bottom: 8px;
             font-weight: 700;
             letter-spacing: 0.5px;
-            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
         }
         
         header p {
@@ -126,7 +121,28 @@
         
         .login-content {
             padding: 35px;
-            background: rgba(255, 255, 255, 0.03);
+            background: rgba(255, 255, 255, 0.5);
+        }
+        
+        .welcome-message {
+            margin-bottom: 25px;
+            padding: 20px;
+            background: linear-gradient(to right, rgba(75, 108, 183, 0.1), rgba(24, 40, 72, 0.1));
+            border-radius: 10px;
+            text-align: center;
+            border-left: 4px solid #4b6cb7;
+        }
+        
+        .welcome-message h2 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 20px;
+        }
+        
+        .welcome-message p {
+            color: #34495e;
+            line-height: 1.6;
+            font-size: 14px;
         }
         
         .form-group {
@@ -138,20 +154,20 @@
             display: block;
             margin-bottom: 12px;
             font-weight: 600;
-            color: #ecf0f1;
+            color: #2c3e50;
             font-size: 15px;
             letter-spacing: 0.5px;
         }
         
         .username-display {
-            background: linear-gradient(to right, rgba(44, 62, 80, 0.6), rgba(52, 73, 94, 0.6));
+            background: linear-gradient(to right, rgba(75, 108, 183, 0.1), rgba(24, 40, 72, 0.1));
             padding: 16px;
             border-radius: 10px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(75, 108, 183, 0.2);
             font-weight: 600;
-            color: #ecf0f1;
+            color: #2c3e50;
             text-align: center;
-            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2);
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
             letter-spacing: 0.5px;
             backdrop-filter: blur(5px);
             display: flex;
@@ -181,13 +197,13 @@
         .form-group input {
             width: 100%;
             padding: 17px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(75, 108, 183, 0.3);
             border-radius: 10px;
             font-size: 16px;
             transition: all 0.3s;
-            background: rgba(44, 62, 80, 0.5);
-            color: #ecf0f1;
-            box-shadow: inset 0 1px 5px rgba(0, 0, 0, 0.2);
+            background: rgba(255, 255, 255, 0.8);
+            color: #2c3e50;
+            box-shadow: inset 0 1px 5px rgba(0, 0, 0, 0.1);
             letter-spacing: 1px;
         }
         
@@ -196,10 +212,10 @@
         }
         
         .form-group input:focus {
-            border-color: #3498db;
+            border-color: #4b6cb7;
             outline: none;
-            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.3), inset 0 1px 5px rgba(0, 0, 0, 0.2);
-            background: rgba(44, 62, 80, 0.7);
+            box-shadow: 0 0 0 3px rgba(75, 108, 183, 0.2), inset 0 1px 5px rgba(0, 0, 0, 0.1);
+            background: rgba(255, 255, 255, 1);
         }
         
         .toggle-password {
@@ -215,13 +231,13 @@
         }
         
         .toggle-password:hover {
-            color: #3498db;
+            color: #4b6cb7;
         }
         
         button {
             width: 100%;
             padding: 17px;
-            background: linear-gradient(135deg, #3498db 0%, #2c3e50 100%);
+            background: linear-gradient(135deg, #4b6cb7 0%, #182848 100%);
             color: white;
             border: none;
             border-radius: 10px;
@@ -229,7 +245,7 @@
             font-size: 16px;
             font-weight: 600;
             transition: all 0.3s;
-            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+            box-shadow: 0 5px 15px rgba(75, 108, 183, 0.3);
             letter-spacing: 0.5px;
             position: relative;
             overflow: hidden;
@@ -256,7 +272,7 @@
         }
         
         button:hover {
-            box-shadow: 0 8px 20px rgba(52, 152, 219, 0.6);
+            box-shadow: 0 8px 20px rgba(75, 108, 183, 0.4);
             transform: translateY(-3px);
         }
         
@@ -272,34 +288,34 @@
             display: none;
             animation: fadeIn 0.5s;
             backdrop-filter: blur(5px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.5);
         }
         
         .success {
             background: linear-gradient(to right, rgba(39, 174, 96, 0.2), rgba(46, 204, 113, 0.2));
-            color: #ecf0f1;
+            color: #2c3e50;
             border: 1px solid rgba(46, 204, 113, 0.3);
         }
         
         .error {
             background: linear-gradient(to right, rgba(231, 76, 60, 0.2), rgba(192, 57, 43, 0.2));
-            color: #ecf0f1;
+            color: #2c3e50;
             border: 1px solid rgba(192, 57, 43, 0.3);
         }
         
         .password-info {
             margin-top: 30px;
-            background: linear-gradient(to right, rgba(44, 62, 80, 0.6), rgba(52, 73, 94, 0.6));
+            background: linear-gradient(to right, rgba(75, 108, 183, 0.1), rgba(24, 40, 72, 0.1));
             padding: 22px;
             border-radius: 10px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(75, 108, 183, 0.2);
             text-align: center;
             backdrop-filter: blur(5px);
         }
         
         .password-info h3 {
             margin-bottom: 18px;
-            color: #ecf0f1;
+            color: #2c3e50;
             font-size: 18px;
             display: flex;
             align-items: center;
@@ -310,7 +326,7 @@
         
         .password-info p {
             font-size: 14px;
-            color: #bdc3c7;
+            color: #34495e;
             line-height: 1.6;
             margin-bottom: 12px;
         }
@@ -319,38 +335,54 @@
             margin-top: 18px;
             font-size: 13px;
             font-style: italic;
-            background: rgba(52, 152, 219, 0.2);
+            background: rgba(75, 108, 183, 0.1);
             padding: 12px;
             border-radius: 8px;
-            color: #3498db;
-            border-left: 3px solid #3498db;
+            color: #4b6cb7;
+            border-left: 3px solid #4b6cb7;
         }
         
-        .password-format {
+        .developer-info {
+            margin-top: 30px;
+            padding: 20px;
+            background: linear-gradient(to right, rgba(75, 108, 183, 0.1), rgba(24, 40, 72, 0.1));
+            border-radius: 10px;
+            text-align: center;
+            border-top: 1px solid rgba(75, 108, 183, 0.2);
+        }
+        
+        .developer-info h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+        
+        .contact-links {
             display: flex;
+            flex-wrap: wrap;
             justify-content: center;
-            margin: 18px 0;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .contact-link {
+            display: flex;
+            align-items: center;
             gap: 8px;
-        }
-        
-        .format-part {
-            padding: 10px 14px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 8px;
-            font-weight: 600;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            color: #4b6cb7;
+            text-decoration: none;
             font-size: 14px;
-            min-width: 80px;
+            transition: all 0.3s;
+            padding: 8px 15px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.5);
+            border: 1px solid rgba(75, 108, 183, 0.2);
         }
         
-        .letter-part {
-            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
-            color: white;
-        }
-        
-        .number-part {
-            background: linear-gradient(135deg, #2c3e50 0%, #1a2a3a 100%);
-            color: white;
+        .contact-link:hover {
+            background: rgba(75, 108, 183, 0.1);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 10px rgba(75, 108, 183, 0.2);
         }
         
         footer {
@@ -358,15 +390,15 @@
             padding: 22px;
             font-size: 13px;
             color: #7f8c8d;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            background: rgba(26, 42, 58, 0.7);
+            border-top: 1px solid rgba(75, 108, 183, 0.2);
+            background: rgba(255, 255, 255, 0.5);
             letter-spacing: 0.5px;
         }
         
         .attempts-counter {
             text-align: right;
             font-size: 13px;
-            color: #95a5a6;
+            color: #7f8c8d;
             margin-top: 10px;
             display: flex;
             align-items: center;
@@ -389,9 +421,10 @@
             animation: shake 0.5s;
         }
         
-        @media (max-width: 500px) {
+        @media (max-width: 768px) {
             .container {
                 border-radius: 15px;
+                max-width: 90%;
             }
             
             body {
@@ -406,29 +439,63 @@
                 padding: 25px 20px;
             }
             
-            .password-format {
+            .contact-links {
                 flex-direction: column;
                 align-items: center;
             }
             
-            .format-part {
+            .contact-link {
                 width: 100%;
-                max-width: 200px;
+                justify-content: center;
+            }
+        }
+        
+        @media (max-width: 500px) {
+            .container {
+                border-radius: 12px;
+                max-width: 95%;
+            }
+            
+            .login-content {
+                padding: 20px;
+            }
+            
+            header {
+                padding: 20px 15px;
+            }
+            
+            header h1 {
+                font-size: 22px;
+            }
+            
+            .welcome-message {
+                padding: 15px;
+            }
+            
+            .password-info {
+                padding: 18px;
             }
         }
     </style>
 </head>
 <body>
+    <div id="particles-js"></div>
+    
     <div class="container">
         <header>
             <div class="logo">
-                <i class="fas fa-shield-alt"></i>
+                <img src="https://raw.githubusercontent.com/LKS-88/anekamarket/refs/heads/main/Logo-Anekamarketku.png" alt="Lentera Karya Situbondo">
             </div>
             <h1>Lentera Karya Situbondo</h1>
             <p>Sistem Keamanan Premium</p>
         </header>
         
         <div class="login-content">
+            <div class="welcome-message">
+                <h2>Selamat Datang!</h2>
+                <p>Kami mengucapkan terima kasih atas kepercayaan Anda menggunakan aplikasi Lentera Karya Situbondo. Sistem ini dirancang untuk memberikan pengalaman terbaik dengan keamanan tingkat tinggi yang melindungi data dan informasi penting Anda.</p>
+            </div>
+            
             <div class="form-group">
                 <label for="username">Username</label>
                 <div class="username-display" id="username-display">
@@ -460,30 +527,72 @@
             <div class="password-info">
                 <h3>
                     <i class="fas fa-info-circle"></i>
-                    Format Password
+                    Informasi Password
                 </h3>
-                <div class="password-format">
-                    <div class="format-part letter-part">Huruf (A-Z)</div>
-                    <div class="format-part number-part">Angka 0</div>
-                    <div class="format-part number-part">7 Digit</div>
-                </div>
-                <p>Password terdiri dari 9 karakter dengan format:</p>
-                <p>1 huruf kapital (A-Z) + angka 0 + 7 digit angka</p>
-                
-                <div class="password-hint">
-                    <i class="fas fa-lightbulb"></i>
-                    Contoh: S01111111, V02468642, X03579753
+                <p>Password terdiri dari 9 karakter dengan format khusus yang telah ditentukan. Pastikan Anda memasukkan password dengan format yang benar untuk mengakses sistem.</p>
+            </div>
+            
+            <div class="developer-info">
+                <h3>Hak Cipta &copy; 2025 Lentera Karya Situbondo</h3>
+                <p>Untuk bantuan dan informasi lebih lanjut:</p>
+                <div class="contact-links">
+                    <a href="https://www.anekamarket.my.id" target="_blank" class="contact-link">
+                        <i class="fas fa-globe"></i> www.anekamarket.my.id
+                    </a>
+                    <a href="https://wa.me/6285647709114" target="_blank" class="contact-link">
+                        <i class="fab fa-whatsapp"></i> +62 856-4770-9114
+                    </a>
+                    <a href="mailto:admin@anekamarket.my.id" class="contact-link">
+                        <i class="fas fa-envelope"></i> admin@anekamarket.my.id
+                    </a>
                 </div>
             </div>
         </div>
         
         <footer>
-            &copy; 2023 Lentera Karya Situbondo. Hak Cipta Dilindungi.
+            &copy; 2025 Lentera Karya Situbondo. Hak Cipta Dilindungi.
         </footer>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // Inisialisasi partikel background
+            particlesJS('particles-js', {
+                particles: {
+                    number: { value: 80, density: { enable: true, value_area: 800 } },
+                    color: { value: "#4b6cb7" },
+                    shape: { type: "circle" },
+                    opacity: { value: 0.5, random: true },
+                    size: { value: 3, random: true },
+                    line_linked: {
+                        enable: true,
+                        distance: 150,
+                        color: "#4b6cb7",
+                        opacity: 0.4,
+                        width: 1
+                    },
+                    move: {
+                        enable: true,
+                        speed: 2,
+                        direction: "none",
+                        random: true,
+                        straight: false,
+                        out_mode: "out",
+                        bounce: false
+                    }
+                },
+                interactivity: {
+                    detect_on: "canvas",
+                    events: {
+                        onhover: { enable: true, mode: "grab" },
+                        onclick: { enable: true, mode: "push" },
+                        resize: true
+                    }
+                },
+                retina_detect: true
+            });
+            
             const passwordInput = document.getElementById('password');
             const loginBtn = document.getElementById('login-btn');
             const notification = document.getElementById('notification');
