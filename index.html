@@ -3,31 +3,200 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Lentera Karya Situbondo</title>
+    <title>APLIKASI BARJAS - Dinas Peternakan dan Perikanan Situbondo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        :root {
+            --primary-color: #0d47a1;
+            --secondary-color: #00695c;
+            --accent-color: #ff8f00;
+            --light-blue: #e3f2fd;
+            --dark-blue: #082e5c;
+            --gradient-primary: linear-gradient(135deg, var(--primary-color), var(--dark-blue));
+            --gradient-secondary: linear-gradient(135deg, var(--secondary-color), #004d40);
+            --gradient-accent: linear-gradient(135deg, var(--accent-color), #e65100);
+            --shadow-sm: 0 2px 8px rgba(0,0,0,0.08);
+            --shadow-md: 0 4px 16px rgba(0,0,0,0.12);
+            --shadow-lg: 0 8px 28px rgba(0,0,0,0.15);
+            --login-gradient: linear-gradient(135deg, #0d47a1, #00695c, #ff8f00);
         }
         
         body {
-            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            background: linear-gradient(135deg, #f5f9ff 0%, #e8f5e9 100%);
+            font-family: 'Poppins', 'Segoe UI', sans-serif;
             min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-            position: relative;
+            padding: 10px 0;
             overflow-x: hidden;
         }
         
-        /* Particle Background */
-        #particles-js {
+        .app-container {
+            max-width: 1600px;
+            margin: 0 auto;
+            background: white;
+            box-shadow: var(--shadow-lg);
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+            z-index: 10;
+        }
+        
+        .app-header {
+            background: var(--gradient-primary);
+            color: white;
+            padding: 20px 15px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .app-logo {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .app-title {
+            font-size: 1.8rem;
+            font-weight: 800;
+            margin: 0;
+        }
+        
+        .app-subtitle {
+            font-size: 1rem;
+            opacity: 0.95;
+            font-weight: 300;
+            letter-spacing: 0.5px;
+            margin-bottom: 5px;
+        }
+        
+        .nav-pills .nav-link {
+            border-radius: 8px;
+            margin-bottom: 8px;
+            padding: 12px 15px;
+            font-weight: 500;
+            color: #444;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            font-size: 0.9rem;
+        }
+        
+        .nav-pills .nav-link:hover {
+            background-color: #f0f7ff;
+            transform: translateX(3px);
+        }
+        
+        .nav-pills .nav-link.active {
+            background: var(--gradient-primary);
+            font-weight: 600;
+            box-shadow: var(--shadow-md);
+            transform: translateX(3px);
+            color: white;
+        }
+        
+        .section-title {
+            border-left: 4px solid var(--primary-color);
+            padding-left: 12px;
+            margin: 20px 0;
+            font-weight: 700;
+            color: var(--dark-blue);
+            font-size: 1.4rem;
+        }
+        
+        /* PERBAIKAN TATA LETAK SIDEBAR */
+        .col-md-3.col-lg-2.p-4.bg-light {
+            min-height: calc(100vh - 80px);
+            position: sticky;
+            top: 0;
+            overflow-y: auto;
+        }
+        
+        /* Untuk tampilan mobile */
+        @media (max-width: 991.98px) {
+            .col-md-3.col-lg-2.p-4.bg-light {
+                position: fixed;
+                left: -280px;
+                top: 0;
+                bottom: 0;
+                z-index: 1050;
+                width: 280px;
+                transition: left 0.3s ease;
+                padding-top: 60px;
+            }
+            
+            .col-md-3.col-lg-2.p-4.bg-light.mobile-show {
+                left: 0;
+            }
+            
+            .col-md-9.col-lg-10.p-5 {
+                width: 100%;
+                flex: 0 0 100%;
+                max-width: 100%;
+                padding: 15px !important;
+            }
+            
+            .mobile-menu-btn {
+                display: flex !important;
+                position: fixed;
+                top: 15px;
+                left: 15px;
+                z-index: 1050;
+                background: var(--gradient-primary);
+                color: white;
+                border: none;
+                border-radius: 50%;
+                width: 45px;
+                height: 45px;
+                box-shadow: var(--shadow-lg);
+                align-items: center;
+                justify-content: center;
+            }
+            
+            .sidebar-overlay.mobile-show {
+                display: block;
+            }
+        }
+        
+        .mobile-menu-btn {
+            display: none;
+        }
+        
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1040;
+        }
+        
+        .watermark {
             position: absolute;
+            bottom: 10px;
+            right: 15px;
+            opacity: 0.8;
+            font-size: 0.8rem;
+            color: white;
+            font-weight: 300;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f9ff 0%, #e8f5e9 100%);
+            font-family: 'Poppins', 'Segoe UI', sans-serif;
+            min-height: 100vh;
+            padding: 10px 0;
+            overflow-x: hidden;
+        }
+        
+        /* Container untuk particles.js */
+        #particles-js {
+            position: fixed;
             width: 100%;
             height: 100%;
             top: 0;
@@ -35,829 +204,3334 @@
             z-index: 0;
         }
         
-        .container {
-            width: 100%;
-            max-width: 500px;
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 20px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+        .app-container {
+            max-width: 1600px;
+            margin: 0 auto;
+            background: white;
+            box-shadow: var(--shadow-lg);
+            border-radius: 12px;
             overflow: hidden;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.4);
-            transform: translateZ(0);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
             z-index: 10;
-            margin: 20px;
         }
         
-        .container:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 45px rgba(0, 0, 0, 0.25);
-        }
-        
-        header {
-            background: linear-gradient(135deg, #3498db 0%, #2ecc71 50%, #f39c12 100%);
+        .app-header {
+            background: var(--gradient-primary);
             color: white;
-            padding: 35px 30px;
+            padding: 20px 15px;
             text-align: center;
             position: relative;
             overflow: hidden;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
         }
         
-        header::after {
+        .app-header::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        
+        .app-logo {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .app-title {
+            font-size: 1.8rem;
+            font-weight: 800;
+            margin: 0;
+            position: relative;
+            z-index: 1;
+            text-shadow: 1px 1px 4px rgba(0,0,0,0.3);
+        }
+        
+        .app-subtitle {
+            font-size: 1rem;
+            opacity: 0.95;
+            position: relative;
+            z-index: 1;
+            font-weight: 300;
+            letter-spacing: 0.5px;
+            margin-bottom: 5px;
+        }
+        
+        .nav-pills .nav-link {
+            border-radius: 8px;
+            margin-bottom: 8px;
+            padding: 12px 15px;
+            font-weight: 500;
+            color: #444;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            font-size: 0.9rem;
+        }
+        
+        .nav-pills .nav-link:hover {
+            background-color: #f0f7ff;
+            transform: translateX(3px);
+        }
+        
+        .nav-pills .nav-link.active {
+            background: var(--gradient-primary);
+            font-weight: 600;
+            box-shadow: var(--shadow-md);
+            transform: translateX(3px);
+        }
+        
+        .section-title {
+            border-left: 4px solid var(--primary-color);
+            padding-left: 12px;
+            margin: 20px 0;
+            font-weight: 700;
+            color: var(--dark-blue);
+            font-size: 1.4rem;
+            position: relative;
+        }
+        
+        .section-title::after {
+            content: "";
+            position: absolute;
+            bottom: -5px;
+            left: 12px;
+            width: 40px;
+            height: 2px;
+            background: var(--gradient-primary);
+            border-radius: 2px;
+        }
+        
+        .btn-primary {
+            background: var(--gradient-primary);
+            border: none;
+            padding: 10px 20px;
+            font-weight: 600;
+            box-shadow: var(--shadow-md);
+            border-radius: 8px;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .btn-success {
+            background: var(--gradient-secondary);
+            border: none;
+            padding: 10px 20px;
+            font-weight: 600;
+            box-shadow: var(--shadow-md);
+            border-radius: 8px;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+        
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .btn-warning {
+            background: var(--gradient-accent);
+            border: none;
+            padding: 10px 20px;
+            font-weight: 600;
+            box-shadow: var(--shadow-md);
+            border-radius: 8px;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+        
+        .btn-warning:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .form-label {
+            font-weight: 600;
+            color: #444;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            font-size: 0.9rem;
+        }
+        
+        .form-label i {
+            margin-right: 6px;
+            color: var(--primary-color);
+        }
+        
+        .form-control, .form-select {
+            border-radius: 8px;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            transition: all 0.3s;
+            box-shadow: var(--shadow-sm);
+            font-size: 0.9rem;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(13, 71, 161, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        .copyright {
+            text-align: center;
+            padding: 20px;
+            background-color: var(--light-blue);
+            color: var(--dark-blue);
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        
+        .data-table {
+            font-size: 0.85rem;
+            border-collapse: separate;
+            border-spacing: 0;
+            box-shadow: var(--shadow-sm);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .data-table th {
+            background: var(--gradient-primary);
+            color: white;
+            font-weight: 600;
+            padding: 12px 10px;
+            text-align: center;
+            position: relative;
+            font-size: 0.85rem;
+        }
+        
+        .data-table th::after {
             content: "";
             position: absolute;
             bottom: 0;
             left: 0;
             width: 100%;
-            height: 5px;
-            background: linear-gradient(90deg, #3498db, #2ecc71, #f39c12);
-            box-shadow: 0 0 15px rgba(46, 204, 113, 0.5);
+            height: 1px;
+            background: rgba(255,255,255,0.3);
         }
         
-        .logo {
-            width: 90px;
-            height: 90px;
-            background: linear-gradient(135deg, #3498db 0%, #2ecc71 50%, #f39c12 100%);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 15px;
-            border: 3px solid rgba(255, 255, 255, 0.3);
-            box-shadow: 0 0 25px rgba(52, 152, 219, 0.5);
-            position: relative;
-            overflow: hidden;
+        .data-table td {
+            padding: 10px 8px;
+            vertical-align: middle;
+            border-bottom: 1px solid #eee;
+            font-size: 0.85rem;
         }
         
-        .logo::before {
-            content: "";
-            position: absolute;
-            width: 60%;
-            height: 60%;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 50%;
+        .data-table tr:nth-child(even) {
+            background-color: #f9fbff;
         }
         
-        .logo img {
-            width: 70%;
-            height: auto;
-            z-index: 1;
+        .data-table tr:hover {
+            background-color: #edf5ff;
         }
         
-        header h1 {
-            font-size: 28px;
-            margin-bottom: 8px;
-            font-weight: 700;
-            letter-spacing: 0.5px;
-            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-        }
-        
-        header p {
-            font-size: 16px;
-            opacity: 0.9;
-            font-weight: 300;
-            letter-spacing: 0.5px;
-        }
-        
-        .login-content {
-            padding: 35px;
-            background: rgba(255, 255, 255, 0.9);
-        }
-        
-        .welcome-message {
-            margin-bottom: 25px;
-            padding: 20px;
-            background: linear-gradient(to right, rgba(52, 152, 219, 0.1), rgba(46, 204, 113, 0.1), rgba(243, 156, 18, 0.1));
-            border-radius: 15px;
+        .feature-icon {
+            font-size: 1.1rem;
+            margin-right: 8px;
+            width: 24px;
             text-align: center;
-            border-left: 4px solid #3498db;
         }
         
-        .welcome-message h2 {
-            color: #2c3e50;
-            margin-bottom: 12px;
-            font-size: 22px;
-            font-weight: 600;
-            background: linear-gradient(135deg, #3498db, #2ecc71, #f39c12);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        
-        .welcome-message p {
-            color: #34495e;
-            line-height: 1.7;
-            font-size: 15px;
-            font-weight: 400;
-        }
-        
-        .form-group {
-            margin-bottom: 25px;
-            position: relative;
-        }
-        
-        .form-group label {
-            display: block;
-            margin-bottom: 12px;
-            font-weight: 600;
-            color: #2c3e50;
-            font-size: 16px;
-            letter-spacing: 0.5px;
-        }
-        
-        .username-display {
-            background: linear-gradient(to right, rgba(52, 152, 219, 0.1), rgba(46, 204, 113, 0.1), rgba(243, 156, 18, 0.1));
-            padding: 16px;
+        .password-modal .modal-content {
             border-radius: 12px;
-            border: 1px solid rgba(52, 152, 219, 0.2);
-            font-weight: 600;
-            color: #2c3e50;
-            text-align: center;
-            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
-            letter-spacing: 0.5px;
-            backdrop-filter: blur(5px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            font-size: 16px;
-        }
-        
-        .input-with-icon {
-            position: relative;
-        }
-        
-        .input-with-icon i {
-            position: absolute;
-            left: 18px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #7f8c8d;
-            font-size: 18px;
-            z-index: 1;
-        }
-        
-        .input-with-icon input {
-            padding-left: 50px;
-        }
-        
-        .form-group input {
-            width: 100%;
-            padding: 17px;
-            border: 1px solid rgba(52, 152, 219, 0.3);
-            border-radius: 12px;
-            font-size: 16px;
-            transition: all 0.3s;
-            background: rgba(255, 255, 255, 0.9);
-            color: #2c3e50;
-            box-shadow: inset 0 1px 5px rgba(0, 0, 0, 0.1);
-            letter-spacing: 1px;
-            font-weight: 500;
-        }
-        
-        .form-group input::placeholder {
-            color: #95a5a6;
-            font-weight: 400;
-        }
-        
-        .form-group input:focus {
-            border-color: #3498db;
-            outline: none;
-            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2), inset 0 1px 5px rgba(0, 0, 0, 0.1);
-            background: rgba(255, 255, 255, 1);
-        }
-        
-        .toggle-password {
-            position: absolute;
-            right: 18px;
-            top: 50%;
-            transform: translateY(-50%);
-            cursor: pointer;
-            color: #7f8c8d;
-            font-size: 18px;
-            z-index: 1;
-            transition: all 0.3s;
-            background: rgba(255, 255, 255, 0.5);
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-        }
-        
-        .toggle-password:hover {
-            color: #3498db;
-            background: rgba(52, 152, 219, 0.1);
-            transform: translateY(-50%) scale(1.1);
-        }
-        
-        button {
-            width: 100%;
-            padding: 17px;
-            background: linear-gradient(135deg, #3498db 0%, #2ecc71 50%, #f39c12 100%);
-            color: white;
+            box-shadow: var(--shadow-lg);
             border: none;
-            border-radius: 12px;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: 600;
-            transition: all 0.3s;
-            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
-            letter-spacing: 0.5px;
-            position: relative;
-            overflow: hidden;
-            margin-top: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
         }
         
-        button::before {
+        .card {
+            border-radius: 10px;
+            border: none;
+            box-shadow: var(--shadow-md);
+            transition: all 0.3s ease;
+            overflow: hidden;
+            margin-bottom: 15px;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .card-header {
+            border-radius: 10px 10px 0 0 !important;
+            font-weight: 600;
+            padding: 15px 20px;
+            background: var(--gradient-primary);
+            color: white;
+            font-size: 0.95rem;
+        }
+        
+        .stats-box {
+            text-align: center;
+            padding: 20px 15px;
+            border-radius: 10px;
+            background: white;
+            box-shadow: var(--shadow-md);
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 15px;
+        }
+        
+        .stats-box::before {
             content: "";
             position: absolute;
             top: 0;
-            left: -100%;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--gradient-primary);
+            border-radius: 2px;
+        }
+        
+        .stats-box:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .stats-number {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--primary-color);
+            margin: 10px 0;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+        
+        .stats-label {
+            font-size: 0.9rem;
+            color: #666;
+            font-weight: 500;
+        }
+        
+        .notification-toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1050;
+            min-width: 280px;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: var(--shadow-lg);
+            max-width: calc(100vw - 40px);
+        }
+        
+        .input-error {
+            border-color: #dc3545;
+            box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.2);
+        }
+        
+        .error-message {
+            color: #dc3545;
+            font-size: 0.8rem;
+            margin-top: 5px;
+            display: none;
+            font-weight: 500;
+        }
+        
+        .watermark {
+            position: absolute;
+            bottom: 10px;
+            right: 15px;
+            opacity: 0.8;
+            font-size: 0.8rem;
+            color: white;
+            font-weight: 300;
+        }
+        
+        .control-panel {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .control-title {
+            font-size: 1rem;
+            color: var(--primary-color);
+            font-weight: 600;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--light-blue);
+        }
+        
+        .floating-action-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--gradient-primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow-lg);
+            z-index: 1000;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .floating-action-btn:hover {
+            transform: scale(1.1) rotate(90deg);
+        }
+        
+        .filter-section {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .badge-custom {
+            background: var(--gradient-primary);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 16px;
+            font-weight: 600;
+            font-size: 0.8rem;
+        }
+        
+        .mobile-menu-btn {
+            display: none;
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            z-index: 1050;
+            background: var(--gradient-primary);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            transition: 0.5s;
+            background: rgba(0,0,0,0.5);
+            z-index: 1040;
         }
         
-        button:hover::before {
-            left: 100%;
-        }
-        
-        button:hover {
-            box-shadow: 0 8px 20px rgba(52, 152, 219, 0.4);
-            transform: translateY(-3px);
-        }
-        
-        button:active {
-            transform: translateY(0);
-        }
-        
-        button:disabled {
-            background: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 50%, #636e72 100%);
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        }
-        
-        button:disabled::before {
-            display: none;
-        }
-        
-        .notification {
-            margin-top: 20px;
-            padding: 16px;
-            border-radius: 12px;
-            text-align: center;
-            display: none;
-            animation: fadeIn 0.5s;
-            backdrop-filter: blur(5px);
-            border: 1px solid rgba(255, 255, 255, 0.5);
-            font-weight: 500;
-        }
-        
-        .success {
-            background: linear-gradient(to right, rgba(39, 174, 96, 0.2), rgba(46, 204, 113, 0.2));
-            color: #2c3e50;
-            border: 1px solid rgba(46, 204, 113, 0.3);
-        }
-        
-        .error {
-            background: linear-gradient(to right, rgba(231, 76, 60, 0.2), rgba(192, 57, 43, 0.2));
-            color: #2c3e50;
-            border: 1px solid rgba(192, 57, 43, 0.3);
-        }
-        
-        .password-info {
-            margin-top: 30px;
-            background: linear-gradient(to right, rgba(52, 152, 219, 0.1), rgba(46, 204, 113, 0.1), rgba(243, 156, 18, 0.1));
-            padding: 22px;
-            border-radius: 15px;
-            border: 1px solid rgba(52, 152, 219, 0.2);
-            text-align: center;
-            backdrop-filter: blur(5px);
-        }
-        
-        .password-info h3 {
-            margin-bottom: 18px;
-            color: #2c3e50;
-            font-size: 18px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            font-weight: 600;
-        }
-        
-        .password-info p {
-            font-size: 15px;
-            color: #34495e;
-            line-height: 1.6;
-            margin-bottom: 12px;
-            font-weight: 400;
-        }
-        
-        .password-hint {
-            margin-top: 18px;
-            font-size: 14px;
-            font-style: italic;
-            background: rgba(52, 152, 219, 0.1);
-            padding: 12px;
-            border-radius: 10px;
-            color: #3498db;
-            border-left: 3px solid #3498db;
-            font-weight: 500;
-        }
-        
-        .developer-info {
-            margin-top: 30px;
-            padding: 20px;
-            background: linear-gradient(to right, rgba(52, 152, 219, 0.1), rgba(46, 204, 113, 0.1), rgba(243, 156, 18, 0.1));
-            border-radius: 15px;
-            text-align: center;
-            border-top: 1px solid rgba(52, 152, 219, 0.2);
-        }
-        
-        .developer-info h3 {
-            color: #2c3e50;
-            margin-bottom: 15px;
-            font-size: 17px;
-            background: linear-gradient(135deg, #3498db, #2ecc71, #f39c12);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            font-weight: 600;
-        }
-        
-        .contact-links {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 15px;
-            margin-top: 15px;
-        }
-        
-        .contact-link {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            color: #3498db;
-            text-decoration: none;
-            font-size: 14px;
-            transition: all 0.3s;
-            padding: 10px 16px;
-            border-radius: 10px;
-            background: rgba(255, 255, 255, 0.7);
-            border: 1px solid rgba(52, 152, 219, 0.2);
-            font-weight: 500;
-        }
-        
-        .contact-link:hover {
-            background: rgba(52, 152, 219, 0.1);
-            transform: translateY(-2px);
-            box-shadow: 0 5px 10px rgba(52, 152, 219, 0.2);
-            color: #2980b9;
-        }
-        
-        footer {
-            text-align: center;
-            padding: 22px;
-            font-size: 14px;
-            color: #7f8c8d;
-            border-top: 1px solid rgba(52, 152, 219, 0.2);
-            background: rgba(255, 255, 255, 0.7);
-            letter-spacing: 0.5px;
-            font-weight: 500;
-        }
-        
-        .attempts-counter {
-            text-align: right;
-            font-size: 14px;
-            color: #7f8c8d;
-            margin-top: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: flex-end;
-            gap: 8px;
-            font-weight: 500;
-        }
-        
-        .countdown-timer {
-            margin-top: 15px;
-            padding: 12px;
-            background: linear-gradient(to right, rgba(231, 76, 60, 0.1), rgba(192, 57, 43, 0.1));
-            border-radius: 10px;
-            text-align: center;
-            display: none;
-            border: 1px solid rgba(192, 57, 43, 0.2);
-            font-weight: 500;
-            color: #c0392b;
-        }
-        
+        /* Animations */
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-10px); }
+            from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
         
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
-            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        .animate-fadeIn {
+            animation: fadeIn 0.5s ease forwards;
         }
         
-        .shake {
-            animation: shake 0.5s;
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
         }
         
-        @media (max-width: 768px) {
-            .container {
-                border-radius: 15px;
-                max-width: 90%;
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 8px;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-color);
+            border-radius: 8px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--dark-blue);
+        }
+        
+        /* Responsive styles */
+        @media (max-width: 991.98px) {
+            .col-md-3.col-lg-2 {
+                position: fixed;
+                left: -300px;
+                top: 0;
+                bottom: 0;
+                z-index: 1050;
+                width: 280px;
+                transition: left 0.3s ease;
+                overflow-y: auto;
+                padding-top: 60px;
             }
             
-            body {
-                padding: 15px;
+            .col-md-3.col-lg-2.mobile-show {
+                left: 0;
             }
             
-            .login-content {
-                padding: 25px;
-            }
-            
-            header {
-                padding: 25px 20px;
-            }
-            
-            .contact-links {
-                flex-direction: column;
-                align-items: center;
-            }
-            
-            .contact-link {
+            .col-md-9.col-lg-10 {
                 width: 100%;
+                flex: 0 0 100%;
+                max-width: 100%;
+            }
+            
+            .mobile-menu-btn {
+                display: flex;
+                align-items: center;
                 justify-content: center;
             }
             
-            header h1 {
-                font-size: 24px;
-            }
-            
-            .welcome-message h2 {
-                font-size: 20px;
+            .sidebar-overlay.mobile-show {
+                display: block;
             }
         }
         
-        @media (max-width: 500px) {
-            .container {
-                border-radius: 12px;
-                max-width: 95%;
+        /* Print Styles - IMPROVED FOR LANDSCAPE */
+        @media print {
+            @page {
+                size: landscape;
+                margin: 0.5cm;
             }
             
-            .login-content {
-                padding: 20px;
+            body * {
+                visibility: hidden;
             }
             
-            header {
-                padding: 20px 15px;
+            .app-container, .app-container * {
+                visibility: visible;
             }
             
-            header h1 {
-                font-size: 22px;
+            .app-container {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                box-shadow: none;
             }
             
-            .welcome-message {
-                padding: 15px;
+            .nav-pills, .mobile-menu-btn, .sidebar-overlay, .floating-action-btn,
+            .btn-group, .filter-section, .toast {
+                display: none !important;
             }
             
-            .password-info {
-                padding: 18px;
+            .col-md-3.col-lg-2.p-4.bg-light {
+                display: none !important;
             }
             
-            .developer-info {
-                padding: 15px;
+            .col-md-9.col-lg-10.p-5 {
+                width: 100%;
+                flex: 0 0 100%;
+                max-width: 100%;
+                padding: 0 !important;
             }
             
-            .contact-link {
-                padding: 8px 12px;
-                font-size: 13px;
+            .copyright {
+                display: none;
+            }
+            
+            .data-table {
+                font-size: 10px;
+                width: 100% !important;
+            }
+            
+            .data-table th, .data-table td {
+                padding: 4px 2px;
+            }
+            
+            /* Sembunyikan kolom aksi dan link Google Drive saat mencetak */
+            .data-table th:last-child,
+            .data-table td:last-child {
+                display: none !important;
+            }
+            
+            /* Judul untuk laporan cetak */
+            .print-header {
+                display: block !important;
+                text-align: center;
+                margin-bottom: 15px;
+            }
+            
+            .print-title {
+                font-size: 18px;
+                font-weight: bold;
+                margin-bottom: 5px;
+            }
+            
+            .print-subtitle {
+                font-size: 14px;
+                margin-bottom: 10px;
+            }
+            
+            .print-date {
+                font-size: 12px;
+                text-align: right;
+                margin-bottom: 10px;
             }
         }
+
+        /* Styling untuk form link Google Drive */
+        .link-section {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .link-section-title {
+            font-size: 1.1rem;
+            color: var(--primary-color);
+            font-weight: 600;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .link-input-group {
+            margin-bottom: 10px;
+        }
+        
+        /* GPS Button */
+        .gps-button {
+            margin-top: 8px;
+            padding: 8px 12px;
+            font-size: 0.85rem;
+        }
+        
+        /* View Links Modal */
+        .links-modal .modal-dialog {
+            max-width: 800px;
+        }
+        
+        .link-item {
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .link-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        
+        .link-label {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: var(--primary-color);
+        }
+        
+        .link-url {
+            word-break: break-all;
+            margin-bottom: 5px;
+        }
+        
+        /* Security code hidden by default */
+        .security-code {
+            display: none;
+        }
+        
+        /* Print header hidden by default */
+        .print-header {
+            display: none;
+        }
+        
+        /* WhatsApp link style */
+        .whatsapp-link {
+            color: #25D366;
+            text-decoration: none;
+        }
+        
+        .whatsapp-link:hover {
+            text-decoration: underline;
+        }
+        
+        /* View Link Button */
+        .btn-view {
+            background: linear-gradient(135deg, #17a2b8, #138496);
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+        }
+        
+        .btn-view:hover {
+            background: linear-gradient(135deg, #138496, #117a8b);
+            color: white;
+        }
+        
+        /* Undo Button */
+        .btn-undo {
+            background: linear-gradient(135deg, #6c757d, #5a6268);
+            color: white;
+            border: none;
+        }
+        
+        .btn-undo:hover {
+            background: linear-gradient(135deg, #5a6268, #4e555b);
+            color: white;
+        }
+        
+        /* WhatsApp number link in table */
+        .whatsapp-number {
+            color: #25D366;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+        
+        /* Welcome Modal Styles */
+        .welcome-modal .modal-content {
+            border-radius: 15px;
+            overflow: hidden;
+            border: none;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        .welcome-header {
+            background: var(--gradient-primary);
+            color: white;
+            text-align: center;
+            padding: 25px;
+        }
+        
+        .welcome-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+        
+        .welcome-body {
+            padding: 25px;
+            text-align: center;
+        }
+        
+        .welcome-footer {
+            background: #f8f9fa;
+            padding: 15px;
+            text-align: center;
+            border-top: 1px solid #eee;
+        }
+        
+        .countdown-timer {
+            font-size: 0.9rem;
+            color: #6c757d;
+            margin-top: 10px;
+        }
+        
+        /* Button untuk cetak per data */
+        .btn-print-individual {
+            background: linear-gradient(135deg, #6f42c1, #5a2d95);
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+        }
+        
+        .btn-print-individual:hover {
+            background: linear-gradient(135deg, #5a2d95, #4a2479);
+            color: white;
+        }
+        
+        /* Developer Info Styles */
+        .developer-info {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .developer-logo {
+            max-width: 120px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+        }
+        
+        .developer-contact a {
+            color: var(--primary-color);
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+        
+        .developer-contact a:hover {
+            color: var(--dark-blue);
+            text-decoration: underline;
+        }
+        
+        /* Welcome Splash Screen */
+        .welcome-splash {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--gradient-primary);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease;
+        }
+        
+        .welcome-splash-content {
+            text-align: center;
+            max-width: 600px;
+            padding: 30px;
+        }
+        
+        .welcome-splash-logo {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+        
+        .welcome-splash-title {
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin-bottom: 15px;
+        }
+        
+        .welcome-splash-message {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+        
+        .welcome-splash-countdown {
+            font-size: 1rem;
+            margin-top: 20px;
+        }
+        
+        .welcome-splash-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .welcome-splash-close:hover {
+            background: rgba(255,255,255,0.3);
+            transform: rotate(90deg);
+        }
+        
+        /* Map Autocomplete */
+        .pac-container {
+            z-index: 1060 !important;
+            border-radius: 8px;
+            box-shadow: var(--shadow-lg);
+            border: none;
+            margin-top: 5px;
+        }
+        
+        .pac-item {
+            padding: 8px 10px;
+            cursor: pointer;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .pac-item:hover {
+            background-color: #f5f5f5;
+        }
+        
+        .pac-item-query {
+            font-size: 0.9rem;
+            color: var(--primary-color);
+        }
+        
+        /* Loading spinner */
+        .spinner-border-sm {
+            width: 1rem;
+            height: 1rem;
+        }
+
+        /* Login Modal Styles */
+.login-modal .modal-content {
+    border-radius: 15px;
+    overflow: hidden;
+    border: none;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+.login-header {
+    background: var(--login-gradient);
+    color: white;
+    text-align: center;
+    padding: 25px 20px;
+    position: relative;
+}
+
+.login-icon {
+    font-size: 3rem;
+    margin-bottom: 15px;
+    color: white;
+}
+
+.login-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin: 0;
+}
+
+.login-subtitle {
+    font-size: 1rem;
+    opacity: 0.9;
+    margin: 5px 0 0;
+}
+
+.login-body {
+    padding: 25px;
+}
+
+.login-form-group {
+    margin-bottom: 20px;
+}
+
+.login-form-label {
+    font-weight: 600;
+    color: var(--dark-blue);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+}
+
+.login-form-label i {
+    margin-right: 10px;
+    color: var(--dark-blue);
+}
+
+.login-form-control {
+    border-radius: 8px;
+    padding: 12px 15px;
+    border: 2px solid #ddd;
+    transition: all 0.3s;
+}
+
+.login-form-control:focus {
+    border-color: var(--dark-blue);
+    box-shadow: 0 0 0 3px rgba(13, 71, 161, 0.2);
+}
+
+.login-input-group-text {
+    background: var(--light-blue);
+    border: 2px solid #ddd;
+    border-left: none;
+}
+
+.btn-login {
+    background: var(--gradient-secondary);
+    color: white;
+    border: none;
+    padding: 12px;
+    font-weight: 600;
+    border-radius: 8px;
+    width: 100%;
+    transition: all 0.3s;
+    margin-top: 10px;
+}
+
+.btn-login:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 105, 92, 0.4);
+}
+
+.btn-login:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.login-security-notice {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 0.85rem;
+    color: #666;
+}
+
+.login-attempts-count {
+    text-align: center;
+    font-size: 0.9rem;
+    color: #ff8f00;
+    font-weight: 500;
+    margin-top: 5px;
+}
+
+.login-blocked-message {
+    text-align: center;
+    background: rgba(220, 53, 69, 0.1);
+    border-radius: 8px;
+    padding: 15px;
+    margin-top: 20px;
+    color: #dc3545;
+    font-weight: 500;
+}
+
+.login-countdown {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--dark-blue);
+}
+
+.login-developer-info {
+    background: var(--light-blue);
+    border-radius: 10px;
+    padding: 20px;
+    margin-top: 25px;
+    text-align: center;
+}
+
+.login-developer-logo {
+    max-width: 180px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+}
+
+.login-developer-contact a {
+    color: var(--dark-blue);
+    text-decoration: none;
+    transition: all 0.3s;
+    display: inline-block;
+    margin: 5px 0;
+}
+
+.login-developer-contact a:hover {
+    color: var(--primary-color);
+    text-decoration: underline;
+    transform: translateY(-2px);
+}
+
+.login-copyright {
+    text-align: center;
+    margin-top: 20px;
+    color: #666;
+    font-size: 0.9rem;
+    opacity: 0.9;
+}
+
+/* Animations */
+@keyframes login-shake {
+    0%, 100% { transform: translateX(0); }
+    10%, 30%, 50%, 70%, 90% { transform: translateX(-10px); }
+    20%, 40%, 60%, 80% { transform: translateX(10px); }
+}
+
+.login-shake {
+    animation: login-shake 0.6s cubic-bezier(.36,.07,.19,.97) both;
+}
+
+/* Login particle background */
+#login-particles {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+}
+
+/* Login container */
+.login-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, rgba(13, 71, 161, 0.8) 0%, rgba(0, 105, 92, 0.8) 50%, rgba(255, 143, 0, 0.8) 100%);
+    padding: 20px;
+    position: relative;
+}
+
+.login-card {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+    overflow: hidden;
+    width: 100%;
+    max-width: 450px;
+}
+
+.login-form-container {
+    padding: 30px;
+}
+
+.login-form-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.login-form-header h2 {
+    color: var(--dark-blue);
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.login-form-header p {
+    color: #666;
+    font-size: 1rem;
+}
+
+.login-form-footer {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.login-form-footer a {
+    color: var(--dark-blue);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.login-form-footer a:hover {
+    text-decoration: underline;
+}
+
+/* Responsive adjustments */
+@media (max-width: 576px) {
+    .login-card {
+        margin: 10px;
+    }
+    
+    .login-form-container {
+        padding: 20px;
+    }
+}
+
+/* Security code styling */
+.security-code-container {
+    margin-top: 15px;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.security-code-label {
+    font-weight: 600;
+    color: var(--dark-blue);
+    margin-bottom: 10px;
+}
+
+.security-code-value {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    letter-spacing: 2px;
+    background: white;
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px dashed #ddd;
+}
+
+/* Login attempts warning */
+.login-attempts-warning {
+    background: rgba(255, 193, 7, 0.1);
+    border-left: 4px solid #ffc107;
+    padding: 10px 15px;
+    margin-top: 15px;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    color: #856404;
+}
+
+/* Login success message */
+.login-success-message {
+    background: rgba(40, 167, 69, 0.1);
+    border-left: 4px solid #28a745;
+    padding: 10px 15px;
+    margin-top: 15px;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    color: #155724;
+}
+
+/* Login error message */
+.login-error-message {
+    background: rgba(220, 53, 69, 0.1);
+    border-left: 4px solid #dc3545;
+    padding: 10px 15px;
+    margin-top: 15px;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    color: #721c24;
+}
+
     </style>
 </head>
 <body>
-    <div id="particles-js"></div>
-    
-    <div class="container">
-        <header>
-            <div class="logo">
-                <img src="https://raw.githubusercontent.com/LKS-88/anekamarket/refs/heads/main/Logo-Anekamarketku.png" alt="Lentera Karya Situbondo">
-            </div>
-            <h1>Lentera Karya Situbondo</h1>
-            <p>Sistem Keamanan Premium</p>
-        </header>
-        
-        <div class="login-content">
-            <div class="welcome-message">
-                <h2>Selamat Datang!</h2>
-                <p>Kami mengucapkan terima kasih atas kepercayaan Anda menggunakan aplikasi Lentera Karya Situbondo. Sistem ini dirancang untuk memberikan pengalaman terbaik dengan keamanan tingkat tinggi yang melindungi data dan informasi penting Anda.</p>
-            </div>
-            
-            <div class="form-group">
-                <label for="username">Username</label>
-                <div class="username-display" id="username-display">
-                    <i class="fas fa-user-circle"></i> Lentera Karya Situbondo
+    <!-- Login Modal -->
+    <div class="modal fade login-modal" id="loginModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header login-header">
+                    <div class="w-100 text-center">
+                        <div class="login-icon">
+                            <i class="fas fa-lock"></i>
+                        </div>
+                        <h5 class="modal-title login-title" id="loginModalLabel">AUTHENTICATION REQUIRED</h5>
+                        <p class="login-subtitle">Masukkan kode keamanan untuk mengakses aplikasi</p>
+                    </div>
+                </div>
+                <div class="modal-body login-body">
+                    <div class="mb-4">
+                        <label for="securityCode" class="form-label login-form-label">
+                            <i class="fas fa-key"></i> Kode Keamanan
+                        </label>
+                        <input type="password" class="form-control login-form-control" id="securityCode" placeholder="Masukkan kode akses">
+                        <div class="login-attempts-warning mt-2" id="loginAttemptsWarning" style="display: none;">
+                            Percobaan login tersisa: <span id="remainingAttempts">3</span>
+                        </div>
+                        <div class="login-blocked-message mt-2" id="loginBlockedMessage" style="display: none;">
+                            Akses ditangguhkan. Silakan coba lagi dalam <span id="countdownTimer" class="login-countdown">30</span> detik.
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-login" id="loginBtn">
+                        <i class="fas fa-sign-in-alt me-2"></i> Masuk ke Aplikasi
+                    </button>
+                    <div class="security-code-container mt-4">
+                        <div class="security-code-label">Kode Keamanan Saat Ini:</div>
+                        <div class="security-code-value" id="currentSecurityCode">BARJAS2024</div>
+                    </div>
+                    <div class="login-security-notice mt-3">
+                        <i class="fas fa-info-circle me-1"></i> Hubungi administrator jika lupa kode akses
+                    </div>
+                </div>
+                <div class="modal-footer login-footer justify-content-center">
+                    <div class="login-copyright">
+                        &copy; 2024 Dinas Peternakan dan Perikanan Kabupaten Situbondo
+                    </div>
                 </div>
             </div>
-            
-            <div class="form-group">
-                <label for="password">Password</label>
-                <div class="input-with-icon">
-                    <i class="fas fa-key"></i>
-                    <input type="password" id="password" placeholder="Masukkan password yang valid">
-                    <span class="toggle-password" id="toggle-password">
-                        <i class="fas fa-eye"></i>
-                    </span>
+        </div>
+    </div>
+
+    <!-- Welcome Splash Screen -->
+    <div class="welcome-splash" id="welcomeSplash">
+        <div class="welcome-splash-content">
+            <div class="welcome-splash-logo">
+                <i class="fas fa-cow"></i>
+            </div>
+            <h1 class="welcome-splash-title">APLIKASI BARJAS</h1>
+            <p class="welcome-splash-message">
+                Sistem Informasi Bantuan Sarana dan Prasarana Peternakan dan Perikanan
+                <br>Dinas Peternakan dan Perikanan Kabupaten Situbondo
+            </p>
+            <div class="welcome-splash-countdown">
+                Memuat aplikasi... <span id="splashCountdown">3</span>
+            </div>
+        </div>
+        <button class="welcome-splash-close" id="skipSplash">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+
+    <!-- Mobile Menu Button -->
+    <button class="mobile-menu-btn" id="mobileMenuBtn">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- Sidebar Overlay -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <div class="app-container animate-fadeIn">
+        <div class="app-header">
+            <div class="app-logo">
+                <i class="fas fa-cow"></i>
+            </div>
+            <h1 class="app-title">APLIKASI BARJAS</h1>
+            <p class="app-subtitle">Bantuan Sarana dan Prasarana Peternakan dan Perikanan</p>
+            <p class="app-subtitle">Dinas Peternakan dan Perikanan Kabupaten Situbondo</p>
+            <div class="watermark">v2.0.0</div>
+        </div>
+
+        <div class="row g-0">
+            <!-- Sidebar Navigation -->
+            <div class="col-md-3 col-lg-2 p-4 bg-light" id="sidebar">
+                <ul class="nav nav-pills flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#" data-section="dashboard">
+                            <i class="fas fa-tachometer-alt feature-icon"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-section="inputData">
+                            <i class="fas fa-edit feature-icon"></i> Input Data Bantuan
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-section="viewData">
+                            <i class="fas fa-table feature-icon"></i> Lihat Data
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-section="links">
+                            <i class="fas fa-link feature-icon"></i> Kelola Link
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-section="settings">
+                            <i class="fas fa-cog feature-icon"></i> Pengaturan
+                        </a>
+                    </li>
+                    <li class="nav-item mt-4">
+                        <a class="nav-link" href="#" id="logoutBtn">
+                            <i class="fas fa-sign-out-alt feature-icon"></i> Keluar
+                        </a>
+                    </li>
+                </ul>
+
+                <div class="developer-info mt-5">
+                    <h6 class="mb-3">Developer Info</h6>
+                    <p class="small mb-2">Dikembangkan oleh:</p>
+                    <p class="small mb-2 fw-bold">Tim IT Dinas Peternakan dan Perikanan</p>
+                    <div class="developer-contact small">
+                        <p class="mb-1"><i class="fas fa-envelope me-2"></i> email@example.com</p>
+                        <p class="mb-1"><i class="fab fa-whatsapp me-2"></i> <a href="https://wa.me/628123456789" target="_blank">+62 812-3456-789</a></p>
+                    </div>
                 </div>
-                <div class="attempts-counter">
-                    <i class="fas fa-shield-alt"></i>
-                    Percobaan: <span id="attempts-count">0</span>/5
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-md-9 col-lg-10 p-5">
+                <!-- Dashboard Section -->
+                <div class="content-section" id="dashboardSection">
+                    <h2 class="section-title">Dashboard</h2>
+                    
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="stats-box">
+                                <i class="fas fa-users feature-icon text-primary"></i>
+                                <div class="stats-number" id="totalPenerima">0</div>
+                                <div class="stats-label">Total Penerima Bantuan</div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="stats-box">
+                                <i class="fas fa-map-marker-alt feature-icon text-success"></i>
+                                <div class="stats-number" id="totalDesa">0</div>
+                                <div class="stats-label">Desa Terjangkau</div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="stats-box">
+                                <i class="fas fa-boxes feature-icon text-warning"></i>
+                                <div class="stats-number" id="totalBantuan">0</div>
+                                <div class="stats-label">Jenis Bantuan</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card mt-4">
+                        <div class="card-header">
+                            <i class="fas fa-chart-bar me-2"></i> Statistik Bantuan per Kecamatan
+                        </div>
+                        <div class="card-body">
+                            <canvas id="kecamatanChart" height="250"></canvas>
+                        </div>
+                    </div>
+                    
+                    <div class="row mt-4">
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <i class="fas fa-list me-2"></i> Data Terbaru
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-sm data-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Nama</th>
+                                                    <th>Desa</th>
+                                                    <th>Bantuan</th>
+                                                    <th>Tanggal</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="recentDataTable">
+                                                <!-- Data akan diisi oleh JavaScript -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <i class="fas fa-info-circle me-2"></i> Informasi Penting
+                                </div>
+                                <div class="card-body">
+                                    <div class="alert alert-info">
+                                        <i class="fas fa-exclamation-circle me-2"></i> Pastikan data yang dimasukkan sudah sesuai dengan ketentuan.
+                                    </div>
+                                    <div class="alert alert-warning">
+                                        <i class="fas fa-exclamation-triangle me-2"></i> Periksa kembali alamat lokasi sebelum menyimpan data.
+                                    </div>
+                                    <div class="alert alert-success">
+                                        <i class="fas fa-check-circle me-2"></i> Data yang sudah disimpan dapat dilihat di menu Lihat Data.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            
-            <div id="countdown-timer" class="countdown-timer">
-                <i class="fas fa-clock"></i> Tombol login dibekukan selama: <span id="countdown">05:00</span>
-            </div>
-            
-            <button id="login-btn">
-                <i class="fas fa-lock"></i> Akses Sistem
-            </button>
-            
-            <div id="notification" class="notification"></div>
-            
-            <div class="password-info">
-                <h3>
-                    <i class="fas fa-info-circle"></i>
-                    Informasi Password
-                </h3>
-                <p>Password terdiri dari 9 karakter dengan format khusus yang telah ditentukan. Pastikan Anda memasukkan password dengan format yang benar untuk mengakses sistem.</p>
-            </div>
-            
-            <div class="developer-info">
-                <h3>Hak Cipta &copy; 2025 Lentera Karya Situbondo</h3>
-                <p>Untuk bantuan dan informasi lebih lanjut:</p>
-                <div class="contact-links">
-                    <a href="https://www.anekamarket.my.id" target="_blank" class="contact-link">
-                        <i class="fas fa-globe"></i> www.anekamarket.my.id
-                    </a>
-                    <a href="https://wa.me/6285647709114" target="_blank" class="contact-link">
-                        <i class="fab fa-whatsapp"></i> +62 856-4770-9114
-                    </a>
-                    <a href="mailto:admin@anekamarket.my.id" class="contact-link">
-                        <i class="fas fa-envelope"></i> admin@anekamarket.my.id
-                    </a>
+
+                <!-- Input Data Section -->
+                <div class="content-section d-none" id="inputDataSection">
+                    <h2 class="section-title">Input Data Bantuan</h2>
+                    
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i> Isi form berikut dengan data penerima bantuan yang valid.
+                    </div>
+                    
+                    <form id="dataForm">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="card mb-4">
+                                    <div class="card-header">Data Penerima</div>
+                                    <div class="card-body">
+                                        <div class="mb-3">
+                                            <label for="namaPenerima" class="form-label"><i class="fas fa-user me-1"></i> Nama Penerima</label>
+                                            <input type="text" class="form-control" id="namaPenerima" required>
+                                            <div class="error-message" id="namaPenerimaError">Nama penerima harus diisi</div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="noTelepon" class="form-label"><i class="fas fa-phone me-1"></i> Nomor Telepon/WhatsApp</label>
+                                            <input type="tel" class="form-control" id="noTelepon">
+                                            <div class="error-message" id="noTeleponError">Format nomor telepon tidak valid</div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="nik" class="form-label"><i class="fas fa-id-card me-1"></i> NIK</label>
+                                            <input type="text" class="form-control" id="nik">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="alamat" class="form-label"><i class="fas fa-map-marker-alt me-1"></i> Alamat Lengkap</label>
+                                            <textarea class="form-control" id="alamat" rows="2"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="card mb-4">
+                                    <div class="card-header">Lokasi</div>
+                                    <div class="card-body">
+                                        <div class="mb-3">
+                                            <label for="kecamatan" class="form-label"><i class="fas fa-map me-1"></i> Kecamatan</label>
+                                            <select class="form-select" id="kecamatan" required>
+                                                <option value="">Pilih Kecamatan</option>
+                                                <option value="Arjasa">Arjasa</option>
+                                                <option value="Asembagus">Asembagus</option>
+                                                <option value="Banyuglugur">Banyuglugur</option>
+                                                <option value="Banyuputih">Banyuputih</option>
+                                                <option value="Besuki">Besuki</option>
+                                                <option value="Bungatan">Bungatan</option>
+                                                <option value="Jangkar">Jangkar</option>
+                                                <option value="Jatibanteng">Jatibanteng</option>
+                                                <option value="Kapongan">Kapongan</option>
+                                                <option value="Kendit">Kendit</option>
+                                                <option value="Mangaran">Mangaran</option>
+                                                <option value="Mlandingan">Mlandingan</option>
+                                                <option value="Panarukan">Panarukan</option>
+                                                <option value="Panji">Panji</option>
+                                                <option value="Situbondo">Situbondo</option>
+                                                <option value="Suboh">Suboh</option>
+                                                <option value="Sumbermalang">Sumbermalang</option>
+                                            </select>
+                                            <div class="error-message" id="kecamatanError">Pilih kecamatan</div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="desa" class="form-label"><i class="fas fa-map-marked me-1"></i> Desa</label>
+                                            <select class="form-select" id="desa" required>
+                                                <option value="">Pilih Desa</option>
+                                                <!-- Opsi desa akan diisi berdasarkan kecamatan yang dipilih -->
+                                            </select>
+                                            <div class="error-message" id="desaError">Pilih desa</div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="tahunAnggaran" class="form-label"><i class="fas fa-calendar me-1"></i> Tahun Anggaran</label>
+                                            <select class="form-select" id="tahunAnggaran" required>
+                                                <option value="">Pilih Tahun Anggaran</option>
+                                                <!-- Opsi tahun akan diisi oleh JavaScript -->
+                                            </select>
+                                            <div class="error-message" id="tahunAnggaranError">Pilih tahun anggaran</div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="koordinat" class="form-label"><i class="fas fa-map-pin me-1"></i> Koordinat Lokasi</label>
+                                            <div class="input-group">
+                                                <input type="text" class="form-control" id="koordinat" placeholder="Klik tombol GPS untuk mendapatkan koordinat" readonly>
+                                                <button class="btn btn-outline-secondary" type="button" id="getGpsBtn">
+                                                    <i class="fas fa-crosshairs"></i> GPS
+                                                </button>
+                                            </div>
+                                            <div class="error-message" id="koordinatError">Koordinat tidak valid</div>
+                                            <button type="button" class="btn btn-sm btn-outline-primary mt-2 gps-button" id="manualGpsBtn">
+                                                <i class="fas fa-pencil-alt me-1"></i> Input Manual
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="card mb-4">
+                                    <div class="card-header">Detail Bantuan</div>
+                                    <div class="card-body">
+                                        <div class="mb-3">
+                                            <label for="jenisBantuan" class="form-label"><i class="fas fa-box me-1"></i> Jenis Bantuan</label>
+                                            <select class="form-select" id="jenisBantuan" required>
+                                                <option value="">Pilih Jenis Bantuan</option>
+                                                <option value="Pakan Ternak">Pakan Ternak</option>
+                                                <option value="Bibit Ikan">Bibit Ikan</option>
+                                                <option value="Bibit Ternak">Bibit Ternak</option>
+                                                <option value="Alat Penangkapan Ikan">Alat Penangkapan Ikan</option>
+                                                <option value="Kandang Ternak">Kandang Ternak</option>
+                                                <option value="Kolam Ikan">Kolam Ikan</option>
+                                                <option value="Obat-obatan">Obat-obatan</option>
+                                                <option value="Lainnya">Lainnya</option>
+                                            </select>
+                                            <div class="error-message" id="jenisBantuanError">Pilih jenis bantuan</div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="jumlahBantuan" class="form-label"><i class="fas fa-calculator me-1"></i> Jumlah Bantuan</label>
+                                            <input type="number" class="form-control" id="jumlahBantuan" min="1" required>
+                                            <div class="error-message" id="jumlahBantuanError">Jumlah bantuan harus diisi</div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="satuan" class="form-label"><i class="fas fa-balance-scale me-1"></i> Satuan</label>
+                                            <input type="text" class="form-control" id="satuan" placeholder="Contoh: Kg, Ekor, Unit" required>
+                                            <div class="error-message" id="satuanError">Satuan harus diisi</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="card mb-4">
+                                    <div class="card-header">Dokumentasi</div>
+                                    <div class="card-body">
+                                        <div class="mb-3">
+                                            <label for="foto" class="form-label"><i class="fas fa-camera me-1"></i> Upload Foto</label>
+                                            <input type="file" class="form-control" id="foto" accept="image/*">
+                                            <div class="form-text">Format: JPG, PNG. Maksimal 2MB</div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="keterangan" class="form-label"><i class="fas fa-sticky-note me-1"></i> Keterangan Tambahan</label>
+                                            <textarea class="form-control" id="keterangan" rows="4" placeholder="Tambahkan catatan jika diperlukan"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between mt-4">
+                            <button type="reset" class="btn btn-secondary">
+                                <i class="fas fa-undo me-1"></i> Reset Form
+                            </button>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-1"></i> Simpan Data
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- View Data Section -->
+                <div class="content-section d-none" id="viewDataSection">
+                    <h2 class="section-title">Lihat Data Bantuan</h2>
+                    
+                    <div class="filter-section">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="mb-3">
+                                    <label for="filterKecamatan" class="form-label">Kecamatan</label>
+                                    <select class="form-select" id="filterKecamatan">
+                                        <option value="">Semua Kecamatan</option>
+                                        <!-- Opsi kecamatan akan diisi oleh JavaScript -->
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="mb-3">
+                                    <label for="filterDesa" class="form-label">Desa</label>
+                                    <select class="form-select" id="filterDesa">
+                                        <option value="">Semua Desa</option>
+                                        <!-- Opsi desa akan diisi oleh JavaScript -->
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="mb-3">
+                                    <label for="filterTahun" class="form-label">Tahun Anggaran</label>
+                                    <select class="form-select" id="filterTahun">
+                                        <option value="">Semua Tahun</option>
+                                        <!-- Opsi tahun akan diisi oleh JavaScript -->
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="mb-3">
+                                    <label for="filterJenis" class="form-label">Jenis Bantuan</label>
+                                    <select class="form-select" id="filterJenis">
+                                        <option value="">Semua Jenis</option>
+                                        <!-- Opsi jenis bantuan akan diisi oleh JavaScript -->
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-end">
+                            <button class="btn btn-outline-secondary me-2" id="resetFilterBtn">
+                                <i class="fas fa-sync-alt me-1"></i> Reset Filter
+                            </button>
+                            <button class="btn btn-primary" id="applyFilterBtn">
+                                <i class="fas fa-filter me-1"></i> Terapkan Filter
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="control-panel">
+                        <div class="control-title">Kelola Data</div>
+                        <div class="d-flex flex-wrap gap-2">
+                            <button class="btn btn-success" id="exportExcelBtn">
+                                <i class="fas fa-file-excel me-1"></i> Export Excel
+                            </button>
+                            <button class="btn btn-danger" id="exportPdfBtn">
+                                <i class="fas fa-file-pdf me-1"></i> Export PDF
+                            </button>
+                            <button class="btn btn-warning" id="printDataBtn">
+                                <i class="fas fa-print me-1"></i> Cetak Data
+                            </button>
+                            <button class="btn btn-info" id="viewLinksBtn">
+                                <i class="fas fa-link me-1"></i> Lihat Link
+                            </button>
+                            <button class="btn btn-outline-danger" id="deleteAllBtn">
+                                <i class="fas fa-trash me-1"></i> Hapus Semua Data
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="table-responsive mt-4">
+                        <table class="table table-striped table-bordered data-table" id="dataTable">
+                            <thead>
+                                <tr>
+                                    <th>No</th>
+                                    <th>Nama Penerima</th>
+                                    <th>Desa</th>
+                                    <th>Kecamatan</th>
+                                    <th>Jenis Bantuan</th>
+                                    <th>Jumlah</th>
+                                    <th>Tahun</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Data akan diisi oleh JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between align-items-center mt-3">
+                        <div class="fw-bold" id="totalRecords">Total Data: 0</div>
+                        <nav>
+                            <ul class="pagination justify-content-end" id="pagination">
+                                <!-- Pagination akan diisi oleh JavaScript -->
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+
+                <!-- Links Section -->
+                <div class="content-section d-none" id="linksSection">
+                    <h2 class="section-title">Kelola Link Google Drive</h2>
+                    
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i> Tambahkan link Google Drive untuk setiap jenis bantuan.
+                    </div>
+                    
+                    <div class="link-section">
+                        <div class="link-section-title">Tambah Link Baru</div>
+                        <form id="linkForm">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3 link-input-group">
+                                        <label for="linkJenisBantuan" class="form-label">Jenis Bantuan</label>
+                                        <select class="form-select" id="linkJenisBantuan" required>
+                                            <option value="">Pilih Jenis Bantuan</option>
+                                            <!-- Opsi jenis bantuan akan diisi oleh JavaScript -->
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3 link-input-group">
+                                        <label for="linkUrl" class="form-label">URL Google Drive</label>
+                                        <input type="url" class="form-control" id="linkUrl" placeholder="https://drive.google.com/..." required>
+                                    </div>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-plus me-1"></i> Tambah Link
+                            </button>
+                        </form>
+                    </div>
+                    
+                    <div class="card mt-4">
+                        <div class="card-header">Daftar Link Google Drive</div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-bordered data-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Jenis Bantuan</th>
+                                            <th>URL</th>
+                                            <th>Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="linksTable">
+                                        <!-- Data link akan diisi oleh JavaScript -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Settings Section -->
+                <div class="content-section d-none" id="settingsSection">
+                    <h2 class="section-title">Pengaturan Aplikasi</h2>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card mb-4">
+                                <div class="card-header">Pengaturan Umum</div>
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        <label for="appTitle" class="form-label">Judul Aplikasi</label>
+                                        <input type="text" class="form-control" id="appTitle" value="APLIKASI BARJAS">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="appSubtitle" class="form-label">Subjudul Aplikasi</label>
+                                        <input type="text" class="form-control" id="appSubtitle" value="Bantuan Sarana dan Prasarana Peternakan dan Perikanan">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="securityCode" class="form-label">Kode Keamanan</label>
+                                        <input type="text" class="form-control" id="securityCode" value="BARJAS2024">
+                                        <div class="form-text">Kode ini digunakan untuk mengakses aplikasi</div>
+                                    </div>
+                                    <button class="btn btn-primary" id="saveSettingsBtn">
+                                        <i class="fas fa-save me-1"></i> Simpan Pengaturan
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="card mb-4">
+                                <div class="card-header">Ekspor/Impor Data</div>
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        <label for="importData" class="form-label">Impor Data dari File</label>
+                                        <input type="file" class="form-control" id="importData" accept=".json,.xlsx,.xls">
+                                        <div class="form-text">Format file: JSON, XLSX, XLS</div>
+                                    </div>
+                                    <div class="d-flex flex-wrap gap-2">
+                                        <button class="btn btn-success" id="exportDataBtn">
+                                            <i class="fas fa-download me-1"></i> Ekspor Data (JSON)
+                                        </button>
+                                        <button class="btn btn-info" id="exportExcelDataBtn">
+                                            <i class="fas fa-download me-1"></i> Ekspor Data (Excel)
+                                        </button>
+                                        <button class="btn btn-warning" id="importDataBtn">
+                                            <i class="fas fa-upload me-1"></i> Impor Data
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="card">
+                                <div class="card-header">Informasi Aplikasi</div>
+                                <div class="card-body">
+                                    <div class="mb-2"><strong>Versi:</strong> 2.0.0</div>
+                                    <div class="mb-2"><strong>Dibuat oleh:</strong> Dinas Peternakan dan Perikanan Kabupaten Situbondo</div>
+                                    <div class="mb-2"><strong>Tanggal Pembuatan:</strong> 1 Juni 2024</div>
+                                    <div class="mb-2"><strong>Teknologi:</strong> HTML5, CSS3, JavaScript, Bootstrap 5</div>
+                                    <div class="mb-2"><strong>Browser Minimal:</strong> Chrome 60+, Firefox 60+, Safari 12+, Edge 79+</div>
+                                    <hr>
+                                    <div class="text-center">
+                                        <button class="btn btn-outline-primary" id="appInfoBtn">
+                                            <i class="fas fa-info-circle me-1"></i> Tampilkan Info Aplikasi
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
         
-        <footer>
-            &copy; 2025 Lentera Karya Situbondo. Hak Cipta Dilindungi.
-        </footer>
+        <div class="copyright">
+            &copy; 2024 Dinas Peternakan dan Perikanan Kabupaten Situbondo. All Rights Reserved.
+        </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <!-- Floating Action Button -->
+    <div class="floating-action-btn" id="scrollToTopBtn">
+        <i class="fas fa-arrow-up"></i>
+    </div>
+
+    <!-- Notification Toast -->
+    <div class="toast notification-toast" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="true" data-bs-delay="5000">
+        <div class="toast-header">
+            <i class="fas fa-bell text-primary me-2"></i>
+            <strong class="me-auto">Notifikasi</strong>
+            <small>Baru saja</small>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body">
+            <!-- Pesan notifikasi akan diisi oleh JavaScript -->
+        </div>
+    </div>
+
+    <!-- View Links Modal -->
+    <div class="modal fade links-modal" id="viewLinksModal" tabindex="-1" aria-labelledby="viewLinksModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="viewLinksModalLabel">Link Google Drive</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="linksModalBody">
+                    <!-- Konten akan diisi oleh JavaScript -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
     <script>
+        // Inisialisasi variabel global
+        let dataBantuan = JSON.parse(localStorage.getItem('dataBantuan')) || [];
+        let linksData = JSON.parse(localStorage.getItem('linksData')) || [];
+        let appSettings = JSON.parse(localStorage.getItem('appSettings')) || {
+            appTitle: "APLIKASI BARJAS",
+            appSubtitle: "Bantuan Sarana dan Prasarana Peternakan dan Perikanan",
+            securityCode: "BARJAS2024"
+        };
+        let loginAttempts = 0;
+        let isLoginBlocked = false;
+        let loginBlockTimeout;
+
+        // Data desa berdasarkan kecamatan
+        const desaByKecamatan = {
+            "Arjasa": ["Arjasa", "Biting", "Candijati", "Darsono", "Jugosari", "Kalianyar", "Kamal", "Kemuningan", "Blimbing"],
+            "Asembagus": ["Asembagus", "Awar-awar", "Banyuputih", "Kedunglo", "Kertosari", "Mojosari", "Perante", "Trigonco"],
+            "Banyuglugur": ["Banyuglugur", "Kalianget", "Kalisari", "Sumberanyar", "Tepos", "Selobanteng"],
+            "Banyuputih": ["Banyuputih", "Sumberejo", "Sumberwaru", "Tamankursi", "Wringinanom"],
+            "Besuki": ["Besuki", "Blimbing", "Demung", "Jembangan", "Langkap", "Pesisir", "Sumberejo", "Tanggulangin"],
+            "Bungatan": ["Bungatan", "Cemara", "Kesambirampak", "Matekan", "Mojosari", "Paowan", "Sepat", "Taman"],
+            "Jangkar": ["Jangkar", "Juglangan", "Sembon", "Sumberkolak", "Tembokrejo"],
+            "Jatibanteng": ["Jatibanteng", "Curahsuri", "Kembangsari", "Pategalan", "Sanen", "Sumberanyar", "Widoropayung"],
+            "Kapongan": ["Kapongan", "Kedungdowo", "Keting", "Ngembangan", "Pakis", "Peleyan", "Seletreng", "Slateng", "Tlogosari"],
+            "Kendit": ["Kendit", "Balung", "Kukusan", "Rajekwesi", "Tambak Ukir", "Tanjung Kamal"],
+            "Mangaran": ["Mangaran", "Gadingan", "Jelgung", "Sumberanyar", "Sumberejo"],
+            "Mlandingan": ["Mlandingan", "Campoan", "Sumbernangka", "Kertasari", "Klatakan"],
+            "Panarukan": ["Panarukan", "Alasmalang", "Gelung", "Kilensari", "Paowan", "Peleyan", "Sumberkolak"],
+            "Panji": ["Panji", "Battal", "Curah Jeru", "Gunung Malang", "Mimbaan", "Sliwung", "Tenggir", "Tokelan"],
+            "Situbondo": ["Situbondo", "Dawuhan", "Jember", "Jemur", "Karanganyar", "Karangnongko", "Kebonsari", "Kotakan", "Patokan"],
+            "Suboh": ["Suboh", "Banyuanyar", "Gunung Putri", "Ketah", "Mojodungkul", "Sumberpinang", "Tanjung Kodok"],
+            "Sumbermalang": ["Sumbermalang", "Banyuputih", "Kalitapen", "Malang", "Tamansari", "Tlogosari"]
+        };
+
+        // Inisialisasi aplikasi saat dokumen siap
         document.addEventListener('DOMContentLoaded', function() {
-            // Inisialisasi partikel background
-            particlesJS('particles-js', {
-                particles: {
-                    number: { value: 80, density: { enable: true, value_area: 800 } },
-                    color: { value: ["#3498db", "#2ecc71", "#f39c12"] },
-                    shape: { type: "circle" },
-                    opacity: { value: 0.5, random: true },
-                    size: { value: 3, random: true },
-                    line_linked: {
-                        enable: true,
-                        distance: 150,
-                        color: "#3498db",
-                        opacity: 0.4,
-                        width: 1
-                    },
-                    move: {
-                        enable: true,
-                        speed: 2,
-                        direction: "none",
-                        random: true,
-                        straight: false,
-                        out_mode: "out",
-                        bounce: false
-                    }
-                },
-                interactivity: {
-                    detect_on: "canvas",
-                    events: {
-                        onhover: { enable: true, mode: "grab" },
-                        onclick: { enable: true, mode: "push" },
-                        resize: true
-                    }
-                },
-                retina_detect: true
-            });
+            // Tampilkan splash screen
+            showSplashScreen();
             
-            const passwordInput = document.getElementById('password');
-            const loginBtn = document.getElementById('login-btn');
-            const notification = document.getElementById('notification');
-            const attemptsCounter = document.getElementById('attempts-count');
-            const togglePassword = document.getElementById('toggle-password');
-            const countdownTimer = document.getElementById('countdown-timer');
-            const countdownDisplay = document.getElementById('countdown');
+            // Inisialisasi komponen
+            initSecurityCode();
+            initTahunAnggaran();
+            initKecamatanOptions();
+            initJenisBantuanOptions();
+            initNavigation();
+            initEventListeners();
             
-            // Inisialisasi jumlah percobaan login
-            let loginAttempts = parseInt(localStorage.getItem('loginAttempts')) || 0;
-            attemptsCounter.textContent = loginAttempts;
+            // Setup form validation
+            setupFormValidation();
             
-            // Waktu pembekuan tombol (dalam milidetik)
-            const LOCK_DURATION = 5 * 60 * 1000; // 5 menit
+            // Load data
+            loadDataTable();
+            updateDashboardStats();
             
-            // Batas maksimal percobaan login
-            const MAX_ATTEMPTS = 5;
+            // Setup filter options
+            setupFilterOptions();
             
-            // Cek apakah tombol login sedang dibekukan
-            const lockUntil = localStorage.getItem('loginLockUntil');
-            if (lockUntil && new Date().getTime() < parseInt(lockUntil)) {
-                disableLoginForm();
-                const timeLeft = parseInt(lockUntil) - new Date().getTime();
-                startCountdown(timeLeft);
-            } else if (loginAttempts >= MAX_ATTEMPTS) {
-                disableLoginForm();
-                showNotification('Anda telah melebihi batas percobaan login. Silakan coba lagi nanti.', 'error');
-            }
+            // Setup chart
+            setTimeout(initCharts, 1000);
             
-            // Fungsi untuk memvalidasi password
-            function isValidPassword(password) {
-                // Cek panjang password
-                if (password.length !== 9) {
-                    return false;
-                }
-                
-                // Cek apakah karakter pertama adalah huruf kapital A-Z
-                const firstChar = password.charAt(0);
-                if (!/^[A-Z]$/.test(firstChar)) {
-                    return false;
-                }
-                
-                // Cek apakah karakter kedua adalah angka 0
-                if (password.charAt(1) !== '0') {
-                    return false;
-                }
-                
-                // Cek apakah 7 karakter berikutnya adalah angka
-                const numberPart = password.substring(2);
-                if (!/^\d{7}$/.test(numberPart)) {
-                    return false;
-                }
-                
-                return true;
-            }
-            
-            // Fungsi untuk menonaktifkan form login
-            function disableLoginForm() {
-                passwordInput.disabled = true;
-                loginBtn.disabled = true;
-                loginBtn.style.opacity = '0.7';
-                loginBtn.style.cursor = 'not-allowed';
-                loginBtn.innerHTML = '<i class="fas fa-ban"></i> Login Diblokir';
-            }
-            
-            // Fungsi untuk mengaktifkan form login
-            function enableLoginForm() {
-                passwordInput.disabled = false;
-                loginBtn.disabled = false;
-                loginBtn.style.opacity = '1';
-                loginBtn.style.cursor = 'pointer';
-                loginBtn.innerHTML = '<i class="fas fa-lock"></i> Akses Sistem';
-                countdownTimer.style.display = 'none';
-                
-                // Reset counter percobaan
-                loginAttempts = 0;
-                localStorage.setItem('loginAttempts', loginAttempts);
-                attemptsCounter.textContent = loginAttempts;
-                
-                // Hapus waktu pembekuan
-                localStorage.removeItem('loginLockUntil');
-            }
-            
-            // Fungsi untuk memulai countdown
-            function startCountdown(duration) {
-                let timer = duration;
-                const interval = 1000; // 1 detik
-                
-                countdownTimer.style.display = 'block';
-                
-                const countdownInterval = setInterval(function() {
-                    const minutes = Math.floor(timer / 60000);
-                    const seconds = Math.floor((timer % 60000) / 1000);
-                    
-                    countdownDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-                    
-                    if (timer <= 0) {
-                        clearInterval(countdownInterval);
-                        enableLoginForm();
-                    }
-                    
-                    timer -= interval;
-                }, interval);
-            }
-            
-            // Event listener untuk tombol login
-            loginBtn.addEventListener('click', function() {
-                const password = passwordInput.value.trim();
-                
-                if (!password) {
-                    showNotification('Silakan masukkan password', 'error');
-                    passwordInput.classList.add('shake');
-                    setTimeout(() => passwordInput.classList.remove('shake'), 500);
-                    return;
-                }
-                
-                if (isValidPassword(password)) {
-                    showNotification('Akses diberikan! Mengarahkan ke dashboard...', 'success');
-                    
-                    // Reset counter percobaan
-                    localStorage.setItem('loginAttempts', '0');
-                    
-                    // Simpan status login di localStorage
-                    localStorage.setItem('isLoggedIn', 'true');
-                    localStorage.setItem('loginTime', new Date().getTime());
-                    
-                    // Redirect setelah 2 detik
-                    setTimeout(function() {
-                        // Redirect ke halaman utama
-                        window.location.href = 'index.html'; // Ganti dengan halaman tujuan
-                    }, 2000);
-                } else {
-                    // Tambah counter percobaan
-                    loginAttempts++;
-                    localStorage.setItem('loginAttempts', loginAttempts);
-                    attemptsCounter.textContent = loginAttempts;
-                    
-                    showNotification('Password tidak valid. Silakan coba lagi.', 'error');
-                    passwordInput.classList.add('shake');
-                    setTimeout(() => passwordInput.classList.remove('shake'), 500);
-                    passwordInput.value = '';
-                    passwordInput.focus();
-                    
-                    // Cek jika sudah melebihi batas percobaan
-                    if (loginAttempts >= MAX_ATTEMPTS) {
-                        // Set waktu pembekuan
-                        const lockUntilTime = new Date().getTime() + LOCK_DURATION;
-                        localStorage.setItem('loginLockUntil', lockUntilTime);
-                        
-                        disableLoginForm();
-                        startCountdown(LOCK_DURATION);
-                        showNotification('Anda telah melebihi batas percobaan login. Silakan coba lagi setelah 5 menit.', 'error');
-                    }
-                }
-            });
-            
-            // Event listener untuk toggle password visibility
-            togglePassword.addEventListener('click', function() {
-                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-                passwordInput.setAttribute('type', type);
-                
-                // Toggle icon
-                togglePassword.innerHTML = type === 'password' ? 
-                    '<i class="fas fa-eye"></i>' : 
-                    '<i class="fas fa-eye-slash"></i>';
-            });
-            
-            // Event listener untuk tekan Enter di field password
-            passwordInput.addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    loginBtn.click();
-                }
-            });
-            
-            // Fungsi untuk menampilkan notifikasi
-            function showNotification(message, type) {
-                notification.textContent = message;
-                notification.className = 'notification ' + type;
-                notification.style.display = 'block';
-                
-                // Sembunyikan notifikasi setelah 5 detik
-                setTimeout(function() {
-                    notification.style.display = 'none';
-                }, 5000);
-            }
-            
-            // Fokus ke input password saat halaman dimuat
-            passwordInput.focus();
+            // Tampilkan modal login setelah splash screen
+            setTimeout(() => {
+                $('#loginModal').modal('show');
+            }, 3500);
         });
+
+        // Fungsi untuk menampilkan splash screen
+        function showSplashScreen() {
+            let countdown = 3;
+            const countdownElement = document.getElementById('splashCountdown');
+            const countdownInterval = setInterval(() => {
+                countdown--;
+                countdownElement.textContent = countdown;
+                
+                if (countdown <= 0) {
+                    clearInterval(countdownInterval);
+                    document.getElementById('welcomeSplash').style.opacity = '0';
+                    setTimeout(() => {
+                        document.getElementById('welcomeSplash').style.display = 'none';
+                    }, 500);
+                }
+            }, 1000);
+            
+            // Skip splash screen jika diklik
+            document.getElementById('skipSplash').addEventListener('click', function() {
+                clearInterval(countdownInterval);
+                document.getElementById('welcomeSplash').style.opacity = '0';
+                setTimeout(() => {
+                    document.getElementById('welcomeSplash').style.display = 'none';
+                }, 500);
+            });
+        }
+
+        // Inisialisasi kode keamanan
+        function initSecurityCode() {
+            document.getElementById('currentSecurityCode').textContent = appSettings.securityCode;
+        }
+
+        // Inisialisasi pilihan tahun anggaran
+        function initTahunAnggaran() {
+            const tahunSelect = document.getElementById('tahunAnggaran');
+            const tahunFilterSelect = document.getElementById('filterTahun');
+            const currentYear = new Date().getFullYear();
+            
+            // Kosongkan opsi yang ada
+            tahunSelect.innerHTML = '<option value="">Pilih Tahun Anggaran</option>';
+            tahunFilterSelect.innerHTML = '<option value="">Semua Tahun</option>';
+            
+            // Tambahkan opsi tahun dari 2020 hingga tahun sekarang + 2
+            for (let year = 2020; year <= currentYear + 2; year++) {
+                tahunSelect.innerHTML += `<option value="${year}">${year}</option>`;
+                tahunFilterSelect.innerHTML += `<option value="${year}">${year}</option>`;
+            }
+        }
+
+        // Inisialisasi pilihan kecamatan
+        function initKecamatanOptions() {
+            const kecamatanSelect = document.getElementById('kecamatan');
+            const filterKecamatanSelect = document.getElementById('filterKecamatan');
+            
+            // Pastikan opsi default ada
+            kecamatanSelect.innerHTML = '<option value="">Pilih Kecamatan</option>';
+            filterKecamatanSelect.innerHTML = '<option value="">Semua Kecamatan</option>';
+            
+            // Tambahkan opsi kecamatan
+            for (const kecamatan in desaByKecamatan) {
+                kecamatanSelect.innerHTML += `<option value="${kecamatan}">${kecamatan}</option>`;
+                filterKecamatanSelect.innerHTML += `<option value="${kecamatan}">${kecamatan}</option>`;
+            }
+            
+            // Event listener untuk perubahan kecamatan
+            kecamatanSelect.addEventListener('change', function() {
+                updateDesaOptions(this.value, 'desa');
+            });
+            
+            filterKecamatanSelect.addEventListener('change', function() {
+                updateDesaOptions(this.value, 'filterDesa');
+            });
+        }
+
+        // Perbarui opsi desa berdasarkan kecamatan yang dipilih
+        function updateDesaOptions(kecamatan, targetElementId) {
+            const desaSelect = document.getElementById(targetElementId);
+            
+            // Kosongkan opsi yang ada
+            desaSelect.innerHTML = targetElementId === 'desa' 
+                ? '<option value="">Pilih Desa</option>' 
+                : '<option value="">Semua Desa</option>';
+            
+            // Jika kecamatan dipilih, tambahkan opsi desa
+            if (kecamatan && desaByKecamatan[kecamatan]) {
+                desaByKecamatan[kecamatan].forEach(desa => {
+                    desaSelect.innerHTML += `<option value="${desa}">${desa}</option>`;
+                });
+            }
+        }
+
+        // Inisialisasi pilihan jenis bantuan
+        function initJenisBantuanOptions() {
+            const jenisBantuanSelect = document.getElementById('jenisBantuan');
+            const filterJenisSelect = document.getElementById('filterJenis');
+            const linkJenisSelect = document.getElementById('linkJenisBantuan');
+            
+            // Daftar jenis bantuan
+            const jenisBantuan = [
+                "Pakan Ternak", "Bibit Ikan", "Bibit Ternak", 
+                "Alat Penangkapan Ikan", "Kandang Ternak", 
+                "Kolam Ikan", "Obat-obatan", "Lainnya"
+            ];
+            
+            // Kosongkan opsi yang ada
+            jenisBantuanSelect.innerHTML = '<option value="">Pilih Jenis Bantuan</option>';
+            filterJenisSelect.innerHTML = '<option value="">Semua Jenis</option>';
+            linkJenisSelect.innerHTML = '<option value="">Pilih Jenis Bantuan</option>';
+            
+            // Tambahkan opsi jenis bantuan
+            jenisBantuan.forEach(jenis => {
+                jenisBantuanSelect.innerHTML += `<option value="${jenis}">${jenis}</option>`;
+                filterJenisSelect.innerHTML += `<option value="${jenis}">${jenis}</option>`;
+                linkJenisSelect.innerHTML += `<option value="${jenis}">${jenis}</option>`;
+            });
+        }
+
+        // Inisialisasi navigasi
+        function initNavigation() {
+            // Navigasi menu
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // Jika ini adalah logout button
+                    if (this.id === 'logoutBtn') {
+                        logout();
+                        return;
+                    }
+                    
+                    // Aktifkan menu yang dipilih
+                    document.querySelectorAll('.nav-link').forEach(navLink => {
+                        navLink.classList.remove('active');
+                    });
+                    this.classList.add('active');
+                    
+                    // Tampilkan section yang sesuai
+                    const sectionId = this.getAttribute('data-section') + 'Section';
+                    document.querySelectorAll('.content-section').forEach(section => {
+                        section.classList.add('d-none');
+                    });
+                    document.getElementById(sectionId).classList.remove('d-none');
+                    
+                    // Sembunyikan sidebar di mobile setelah memilih menu
+                    if (window.innerWidth < 992) {
+                        document.getElementById('sidebar').classList.remove('mobile-show');
+                        document.getElementById('sidebarOverlay').classList.remove('mobile-show');
+                    }
+                });
+            });
+            
+            // Tombol menu mobile
+            document.getElementById('mobileMenuBtn').addEventListener('click', function() {
+                document.getElementById('sidebar').classList.add('mobile-show');
+                document.getElementById('sidebarOverlay').classList.add('mobile-show');
+            });
+            
+            // Overlay sidebar mobile
+            document.getElementById('sidebarOverlay').addEventListener('click', function() {
+                document.getElementById('sidebar').classList.remove('mobile-show');
+                this.classList.remove('mobile-show');
+            });
+        }
+
+        // Inisialisasi event listeners
+        function initEventListeners() {
+            // Event listener untuk form input data
+            document.getElementById('dataForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                simpanData();
+            });
+            
+            // Event listener untuk form link
+            document.getElementById('linkForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                tambahLink();
+            });
+            
+            // Event listener untuk tombol GPS
+            document.getElementById('getGpsBtn').addEventListener('click', getCurrentLocation);
+            
+            // Event listener untuk input manual koordinat
+            document.getElementById('manualGpsBtn').addEventListener('click', function() {
+                const koordinat = prompt('Masukkan koordinat manual (contoh: -7.123456, 113.123456):');
+                if (koordinat) {
+                    document.getElementById('koordinat').value = koordinat;
+                }
+            });
+            
+            // Event listener untuk tombol filter
+            document.getElementById('applyFilterBtn').addEventListener('click', applyFilters);
+            document.getElementById('resetFilterBtn').addEventListener('click', resetFilters);
+            
+            // Event listener untuk tombol ekspor
+            document.getElementById('exportExcelBtn').addEventListener('click', exportToExcel);
+            document.getElementById('exportPdfBtn').addEventListener('click', exportToPDF);
+            document.getElementById('printDataBtn').addEventListener('click', printData);
+            
+            // Event listener untuk tombol hapus semua data
+            document.getElementById('deleteAllBtn').addEventListener('click', confirmDeleteAllData);
+            
+            // Event listener untuk tombol lihat link
+            document.getElementById('viewLinksBtn').addEventListener('click', viewLinksModal);
+            
+            // Event listener untuk tombol scroll to top
+            document.getElementById('scrollToTopBtn').addEventListener('click', function() {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+            
+            // Event listener untuk tombol pengaturan
+            document.getElementById('saveSettingsBtn').addEventListener('click', saveSettings);
+            document.getElementById('exportDataBtn').addEventListener('click', exportData);
+            document.getElementById('exportExcelDataBtn').addEventListener('click', exportDataAsExcel);
+            document.getElementById('importDataBtn').addEventListener('click', importData);
+            document.getElementById('appInfoBtn').addEventListener('click', showAppInfo);
+            
+            // Event listener untuk login
+            document.getElementById('loginBtn').addEventListener('click', validateLogin);
+            document.getElementById('securityCode').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    validateLogin();
+                }
+            });
+        }
+
+        // Setup form validation
+        function setupFormValidation() {
+            // Validasi form input data
+            const form = document.getElementById('dataForm');
+            const inputs = form.querySelectorAll('input[required], select[required]');
+            
+            inputs.forEach(input => {
+                input.addEventListener('blur', function() {
+                    validateField(this);
+                });
+                
+                input.addEventListener('input', function() {
+                    clearValidation(this);
+                });
+            });
+        }
+
+        // Validasi field form
+        function validateField(field) {
+            let isValid = true;
+            let errorMessage = '';
+            
+            // Clear previous validation
+            clearValidation(field);
+            
+            // Validasi berdasarkan jenis field
+            if (field.value.trim() === '') {
+                isValid = false;
+                errorMessage = 'Field ini harus diisi';
+            } else if (field.id === 'noTelepon' && field.value.trim() !== '') {
+                const phoneRegex = /^[0-9+]{10,15}$/;
+                if (!phoneRegex.test(field.value.trim())) {
+                    isValid = false;
+                    errorMessage = 'Format nomor telepon tidak valid';
+                }
+            } else if (field.id === 'koordinat' && field.value.trim() !== '') {
+                const coordRegex = /^-?\d{1,3}\.\d+,\s*-?\d{1,3}\.\d+$/;
+                if (!coordRegex.test(field.value.trim())) {
+                    isValid = false;
+                    errorMessage = 'Format koordinat tidak valid. Gunakan format: latitude, longitude';
+                }
+            }
+            
+            // Tampilkan error jika tidak valid
+            if (!isValid) {
+                field.classList.add('input-error');
+                const errorElement = document.getElementById(field.id + 'Error');
+                if (errorElement) {
+                    errorElement.style.display = 'block';
+                    errorElement.textContent = errorMessage;
+                }
+            }
+            
+            return isValid;
+        }
+
+        // Clear validation
+        function clearValidation(field) {
+            field.classList.remove('input-error');
+            const errorElement = document.getElementById(field.id + 'Error');
+            if (errorElement) {
+                errorElement.style.display = 'none';
+            }
+        }
+
+        // Validasi seluruh form
+        function validateForm() {
+            const form = document.getElementById('dataForm');
+            const inputs = form.querySelectorAll('input[required], select[required]');
+            let isValid = true;
+            
+            inputs.forEach(input => {
+                if (!validateField(input)) {
+                    isValid = false;
+                }
+            });
+            
+            return isValid;
+        }
+
+        // Simpan data ke localStorage
+        function simpanData() {
+            if (!validateForm()) {
+                showNotification('Harap periksa form input dan lengkapi data yang diperlukan', 'error');
+                return;
+            }
+            
+            const newData = {
+                id: Date.now(), // ID unik berdasarkan timestamp
+                namaPenerima: document.getElementById('namaPenerima').value,
+                noTelepon: document.getElementById('noTelepon').value,
+                nik: document.getElementById('nik').value,
+                alamat: document.getElementById('alamat').value,
+                kecamatan: document.getElementById('kecamatan').value,
+                desa: document.getElementById('desa').value,
+                tahunAnggaran: document.getElementById('tahunAnggaran').value,
+                koordinat: document.getElementById('koordinat').value,
+                jenisBantuan: document.getElementById('jenisBantuan').value,
+                jumlahBantuan: document.getElementById('jumlahBantuan').value,
+                satuan: document.getElementById('satuan').value,
+                keterangan: document.getElementById('keterangan').value,
+                foto: document.getElementById('foto').value, // Hanya menyimpan nama file
+                tanggalInput: new Date().toISOString()
+            };
+            
+            // Tambahkan data ke array
+            dataBantuan.push(newData);
+            
+            // Simpan ke localStorage
+            localStorage.setItem('dataBantuan', JSON.stringify(dataBantuan));
+            
+            // Reset form
+            document.getElementById('dataForm').reset();
+            
+            // Perbarui tabel dan dashboard
+            loadDataTable();
+            updateDashboardStats();
+            
+            // Tampilkan notifikasi
+            showNotification('Data berhasil disimpan', 'success');
+        }
+
+        // Muat data ke tabel
+        function loadDataTable() {
+            const tableBody = document.querySelector('#dataTable tbody');
+            tableBody.innerHTML = '';
+            
+            if (dataBantuan.length === 0) {
+                tableBody.innerHTML = '<tr><td colspan="8" class="text-center">Tidak ada data</td></tr>';
+                document.getElementById('totalRecords').textContent = 'Total Data: 0';
+                return;
+            }
+            
+            // Urutkan data berdasarkan tanggal input (terbaru pertama)
+            const sortedData = [...dataBantuan].sort((a, b) => b.id - a.id);
+            
+            // Tampilkan data
+            sortedData.forEach((data, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${data.namaPenerima}</td>
+                    <td>${data.desa}</td>
+                    <td>${data.kecamatan}</td>
+                    <td>${data.jenisBantuan}</td>
+                    <td>${data.jumlahBantuan} ${data.satuan}</td>
+                    <td>${data.tahunAnggaran}</td>
+                    <td>
+                        <button class="btn btn-sm btn-primary view-data" data-id="${data.id}">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <button class="btn btn-sm btn-warning edit-data" data-id="${data.id}">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-sm btn-danger delete-data" data-id="${data.id}">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+            
+            // Update total records
+            document.getElementById('totalRecords').textContent = `Total Data: ${dataBantuan.length}`;
+            
+            // Tambahkan event listener untuk tombol aksi
+            document.querySelectorAll('.view-data').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    viewData(this.getAttribute('data-id'));
+                });
+            });
+            
+            document.querySelectorAll('.edit-data').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    editData(this.getAttribute('data-id'));
+                });
+            });
+            
+            document.querySelectorAll('.delete-data').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    deleteData(this.getAttribute('data-id'));
+                });
+            });
+        }
+
+        // Lihat detail data
+        function viewData(id) {
+            const data = dataBantuan.find(item => item.id == id);
+            if (!data) return;
+            
+            // Format konten modal
+            const modalContent = `
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5>Data Penerima</h5>
+                        <table class="table table-sm">
+                            <tr><th>Nama</th><td>${data.namaPenerima}</td></tr>
+                            <tr><th>Telepon</th><td>${data.noTelepon || '-'}</td></tr>
+                            <tr><th>NIK</th><td>${data.nik || '-'}</td></tr>
+                            <tr><th>Alamat</th><td>${data.alamat || '-'}</td></tr>
+                        </table>
+                    </div>
+                    <div class="col-md-6">
+                        <h5>Lokasi & Bantuan</h5>
+                        <table class="table table-sm">
+                            <tr><th>Kecamatan</th><td>${data.kecamatan}</td></tr>
+                            <tr><th>Desa</th><td>${data.desa}</td></tr>
+                            <tr><th>Tahun</th><td>${data.tahunAnggaran}</td></tr>
+                            <tr><th>Koordinat</th><td>${data.koordinat || '-'}</td></tr>
+                            <tr><th>Jenis Bantuan</th><td>${data.jenisBantuan}</td></tr>
+                            <tr><th>Jumlah</th><td>${data.jumlahBantuan} ${data.satuan}</td></tr>
+                        </table>
+                    </div>
+                </div>
+                ${data.keterangan ? `<div class="mt-3"><strong>Keterangan:</strong> ${data.keterangan}</div>` : ''}
+            `;
+            
+            // Tampilkan modal
+            showCustomModal('Detail Data Penerima Bantuan', modalContent);
+        }
+
+        // Edit data
+        function editData(id) {
+            const data = dataBantuan.find(item => item.id == id);
+            if (!data) return;
+            
+            // Isi form dengan data yang ada
+            document.getElementById('namaPenerima').value = data.namaPenerima;
+            document.getElementById('noTelepon').value = data.noTelepon || '';
+            document.getElementById('nik').value = data.nik || '';
+            document.getElementById('alamat').value = data.alamat || '';
+            document.getElementById('kecamatan').value = data.kecamatan;
+            updateDesaOptions(data.kecamatan, 'desa');
+            setTimeout(() => {
+                document.getElementById('desa').value = data.desa;
+            }, 100);
+            document.getElementById('tahunAnggaran').value = data.tahunAnggaran;
+            document.getElementById('koordinat').value = data.koordinat || '';
+            document.getElementById('jenisBantuan').value = data.jenisBantuan;
+            document.getElementById('jumlahBantuan').value = data.jumlahBantuan;
+            document.getElementById('satuan').value = data.satuan;
+            document.getElementById('keterangan').value = data.keterangan || '';
+            
+            // Hapus data lama
+            dataBantuan = dataBantuan.filter(item => item.id != id);
+            localStorage.setItem('dataBantuan', JSON.stringify(dataBantuan));
+            
+            // Perbarui tabel
+            loadDataTable();
+            
+            // Scroll ke form input
+            document.querySelector('[data-section="inputData"]').click();
+            window.scrollTo(0, 0);
+            
+            // Tampilkan notifikasi
+            showNotification('Data siap untuk diedit', 'info');
+        }
+
+        // Hapus data
+        function deleteData(id) {
+            if (!confirm('Apakah Anda yakin ingin menghapus data ini?')) return;
+            
+            // Hapus data dari array
+            dataBantuan = dataBantuan.filter(item => item.id != id);
+            
+            // Simpan ke localStorage
+            localStorage.setItem('dataBantuan', JSON.stringify(dataBantuan));
+            
+            // Perbarui tabel dan dashboard
+            loadDataTable();
+            updateDashboardStats();
+            
+            // Tampilkan notifikasi
+            showNotification('Data berhasil dihapus', 'success');
+        }
+
+        // Setup filter options
+        function setupFilterOptions() {
+            // Isi opsi filter
+            initKecamatanOptions();
+            initTahunAnggaran();
+            initJenisBantuanOptions();
+        }
+
+        // Terapkan filter
+        function applyFilters() {
+            const kecamatan = document.getElementById('filterKecamatan').value;
+            const desa = document.getElementById('filterDesa').value;
+            const tahun = document.getElementById('filterTahun').value;
+            const jenis = document.getElementById('filterJenis').value;
+            
+            // Filter data
+            let filteredData = dataBantuan;
+            
+            if (kecamatan) {
+                filteredData = filteredData.filter(data => data.kecamatan === kecamatan);
+            }
+            
+            if (desa) {
+                filteredData = filteredData.filter(data => data.desa === desa);
+            }
+            
+            if (tahun) {
+                filteredData = filteredData.filter(data => data.tahunAnggaran == tahun);
+            }
+            
+            if (jenis) {
+                filteredData = filteredData.filter(data => data.jenisBantuan === jenis);
+            }
+            
+            // Tampilkan data yang difilter
+            const tableBody = document.querySelector('#dataTable tbody');
+            tableBody.innerHTML = '';
+            
+            if (filteredData.length === 0) {
+                tableBody.innerHTML = '<tr><td colspan="8" class="text-center">Tidak ada data yang sesuai dengan filter</td></tr>';
+                document.getElementById('totalRecords').textContent = `Total Data: 0 (difilter dari ${dataBantuan.length} data)`;
+                return;
+            }
+            
+            // Tampilkan data yang difilter
+            filteredData.forEach((data, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${data.namaPenerima}</td>
+                    <td>${data.desa}</td>
+                    <td>${data.kecamatan}</td>
+                    <td>${data.jenisBantuan}</td>
+                    <td>${data.jumlahBantuan} ${data.satuan}</td>
+                    <td>${data.tahunAnggaran}</td>
+                    <td>
+                        <button class="btn btn-sm btn-primary view-data" data-id="${data.id}">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <button class="btn btn-sm btn-warning edit-data" data-id="${data.id}">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-sm btn-danger delete-data" data-id="${data.id}">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+            
+            // Update total records
+            document.getElementById('totalRecords').textContent = `Total Data: ${filteredData.length} (difilter dari ${dataBantuan.length} data)`;
+            
+            // Tambahkan event listener untuk tombol aksi
+            document.querySelectorAll('.view-data').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    viewData(this.getAttribute('data-id'));
+                });
+            });
+            
+            document.querySelectorAll('.edit-data').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    editData(this.getAttribute('data-id'));
+                });
+            });
+            
+            document.querySelectorAll('.delete-data').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    deleteData(this.getAttribute('data-id'));
+                });
+            });
+        }
+
+        // Reset filter
+        function resetFilters() {
+            document.getElementById('filterKecamatan').value = '';
+            document.getElementById('filterDesa').value = '';
+            document.getElementById('filterTahun').value = '';
+            document.getElementById('filterJenis').value = '';
+            
+            // Muat ulang semua data
+            loadDataTable();
+        }
+
+        // Dapatkan lokasi saat ini
+        function getCurrentLocation() {
+            if (!navigator.geolocation) {
+                showNotification('Geolocation tidak didukung oleh browser Anda', 'error');
+                return;
+            }
+            
+            // Tampilkan indikator loading
+            const gpsBtn = document.getElementById('getGpsBtn');
+            const originalHtml = gpsBtn.innerHTML;
+            gpsBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+            gpsBtn.disabled = true;
+            
+            // Dapatkan posisi
+            navigator.geolocation.getCurrentPosition(
+                function(position) {
+                    const latitude = position.coords.latitude;
+                    const longitude = position.coords.longitude;
+                    document.getElementById('koordinat').value = `${latitude}, ${longitude}`;
+                    
+                    // Kembalikan tombol ke keadaan semula
+                    gpsBtn.innerHTML = originalHtml;
+                    gpsBtn.disabled = false;
+                    
+                    showNotification('Lokasi berhasil didapatkan', 'success');
+                },
+                function(error) {
+                    let errorMessage;
+                    switch(error.code) {
+                        case error.PERMISSION_DENIED:
+                            errorMessage = 'Akses lokasi ditolak oleh pengguna';
+                            break;
+                        case error.POSITION_UNAVAILABLE:
+                            errorMessage = 'Informasi lokasi tidak tersedia';
+                            break;
+                        case error.TIMEOUT:
+                            errorMessage = 'Permintaan lokasi timeout';
+                            break;
+                        default:
+                            errorMessage = 'Error tidak diketahui';
+                    }
+                    
+                    // Kembalikan tombol ke keadaan semula
+                    gpsBtn.innerHTML = originalHtml;
+                    gpsBtn.disabled = false;
+                    
+                    showNotification(errorMessage, 'error');
+                },
+                {
+                    enableHighAccuracy: true,
+                    timeout: 10000,
+                    maximumAge: 60000
+                }
+            );
+        }
+
+        // Ekspor ke Excel
+        function exportToExcel() {
+            if (dataBantuan.length === 0) {
+                showNotification('Tidak ada data untuk diekspor', 'warning');
+                return;
+            }
+            
+            try {
+                // Siapkan data untuk diekspor
+                const dataToExport = dataBantuan.map(item => ({
+                    'Nama Penerima': item.namaPenerima,
+                    'Telepon': item.noTelepon || '',
+                    'NIK': item.nik || '',
+                    'Alamat': item.alamat || '',
+                    'Kecamatan': item.kecamatan,
+                    'Desa': item.desa,
+                    'Tahun Anggaran': item.tahunAnggaran,
+                    'Koordinat': item.koordinat || '',
+                    'Jenis Bantuan': item.jenisBantuan,
+                    'Jumlah': item.jumlahBantuan,
+                    'Satuan': item.satuan,
+                    'Keterangan': item.keterangan || '',
+                    'Tanggal Input': new Date(item.tanggalInput).toLocaleDateString('id-ID')
+                }));
+                
+                // Buat worksheet
+                const ws = XLSX.utils.json_to_sheet(dataToExport);
+                
+                // Buat workbook
+                const wb = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(wb, ws, 'Data Bantuan');
+                
+                // Ekspor ke file
+                XLSX.writeFile(wb, 'data_bantuan.xlsx');
+                
+                showNotification('Data berhasil diekspor ke Excel', 'success');
+            } catch (error) {
+                console.error('Error exporting to Excel:', error);
+                showNotification('Gagal mengekspor data ke Excel', 'error');
+            }
+        }
+
+        // Ekspor ke PDF
+        function exportToPDF() {
+            if (dataBantuan.length === 0) {
+                showNotification('Tidak ada data untuk diekspor', 'warning');
+                return;
+            }
+            
+            try {
+                // Buat instance jsPDF
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF();
+                
+                // Tambahkan judul
+                doc.setFontSize(16);
+                doc.text('DATA BANTUAN SARANA DAN PRASARANA', 105, 15, { align: 'center' });
+                doc.setFontSize(12);
+                doc.text('Dinas Peternakan dan Perikanan Kabupaten Situbondo', 105, 22, { align: 'center' });
+                
+                // Siapkan data untuk tabel
+                const tableData = dataBantuan.map(item => [
+                    item.namaPenerima,
+                    item.desa,
+                    item.kecamatan,
+                    item.jenisBantuan,
+                    item.jumlahBantuan + ' ' + item.satuan,
+                    item.tahunAnggaran
+                ]);
+                
+                // Buat tabel
+                doc.autoTable({
+                    head: [['Nama Penerima', 'Desa', 'Kecamatan', 'Jenis Bantuan', 'Jumlah', 'Tahun']],
+                    body: tableData,
+                    startY: 30,
+                    theme: 'grid',
+                    styles: { fontSize: 8 },
+                    headStyles: { fillColor: [13, 71, 161] }
+                });
+                
+                // Simpan PDF
+                doc.save('data_bantuan.pdf');
+                
+                showNotification('Data berhasil diekspor ke PDF', 'success');
+            } catch (error) {
+                console.error('Error exporting to PDF:', error);
+                showNotification('Gagal mengekspor data ke PDF', 'error');
+            }
+        }
+
+        // Cetak data
+        function printData() {
+            if (dataBantuan.length === 0) {
+                showNotification('Tidak ada data untuk dicetak', 'warning');
+                return;
+            }
+            
+            // Buat jendela cetak
+            const printWindow = window.open('', '_blank');
+            printWindow.document.write(`
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>Cetak Data Bantuan</title>
+                    <style>
+                        body { font-family: Arial, sans-serif; margin: 20px; }
+                        h1 { text-align: center; color: #0d47a1; }
+                        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+                        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+                        th { background-color: #0d47a1; color: white; }
+                        tr:nth-child(even) { background-color: #f2f2f2; }
+                        @media print {
+                            body { margin: 0; }
+                            .no-print { display: none; }
+                        }
+                    </style>
+                </head>
+                <body>
+                    <h1>DATA BANTUAN SARANA DAN PRASARANA</h1>
+                    <h3 style="text-align: center;">Dinas Peternakan dan Perikanan Kabupaten Situbondo</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Nama Penerima</th>
+                                <th>Desa</th>
+                                <th>Kecamatan</th>
+                                <th>Jenis Bantuan</th>
+                                <th>Jumlah</th>
+                                <th>Tahun</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${dataBantuan.map(item => `
+                                <tr>
+                                    <td>${item.namaPenerima}</td>
+                                    <td>${item.desa}</td>
+                                    <td>${item.kecamatan}</td>
+                                    <td>${item.jenisBantuan}</td>
+                                    <td>${item.jumlahBantuan} ${item.satuan}</td>
+                                    <td>${item.tahunAnggaran}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                    <p style="text-align: center; margin-top: 20px;">
+                        Dicetak pada: ${new Date().toLocaleDateString('id-ID')}
+                    </p>
+                    <div class="no-print" style="text-align: center; margin-top: 20px;">
+                        <button onclick="window.print()">Cetak</button>
+                        <button onclick="window.close()">Tutup</button>
+                    </div>
+                </body>
+                </html>
+            `);
+            printWindow.document.close();
+        }
+
+        // Konfirmasi hapus semua data
+        function confirmDeleteAllData() {
+            if (dataBantuan.length === 0) {
+                showNotification('Tidak ada data untuk dihapus', 'warning');
+                return;
+            }
+            
+            if (!confirm('Apakah Anda yakin ingin menghapus SEMUA data? Tindakan ini tidak dapat dibatalkan.')) {
+                return;
+            }
+            
+            // Hapus semua data
+            dataBantuan = [];
+            localStorage.setItem('dataBantuan', JSON.stringify(dataBantuan));
+            
+            // Perbarui tabel dan dashboard
+            loadDataTable();
+            updateDashboardStats();
+            
+            // Tampilkan notifikasi
+            showNotification('Semua data berhasil dihapus', 'success');
+        }
+
+        // Tambah link Google Drive
+        function tambahLink() {
+            const jenisBantuan = document.getElementById('linkJenisBantuan').value;
+            const url = document.getElementById('linkUrl').value;
+            
+            if (!jenisBantuan || !url) {
+                showNotification('Harap isi semua field', 'error');
+                return;
+            }
+            
+            // Validasi URL
+            try {
+                new URL(url);
+            } catch (e) {
+                showNotification('Format URL tidak valid', 'error');
+                return;
+            }
+            
+            // Cek apakah link untuk jenis bantuan ini sudah ada
+            const existingIndex = linksData.findIndex(link => link.jenisBantuan === jenisBantuan);
+            
+            if (existingIndex !== -1) {
+                // Update link yang sudah ada
+                linksData[existingIndex].url = url;
+                showNotification('Link berhasil diperbarui', 'success');
+            } else {
+                // Tambahkan link baru
+                linksData.push({
+                    id: Date.now(),
+                    jenisBantuan: jenisBantuan,
+                    url: url
+                });
+                showNotification('Link berhasil ditambahkan', 'success');
+            }
+            
+            // Simpan ke localStorage
+            localStorage.setItem('linksData', JSON.stringify(linksData));
+            
+            // Perbarui tabel link
+            loadLinksTable();
+            
+            // Reset form
+            document.getElementById('linkForm').reset();
+        }
+
+        // Muat tabel link
+        function loadLinksTable() {
+            const tableBody = document.getElementById('linksTable');
+            tableBody.innerHTML = '';
+            
+            if (linksData.length === 0) {
+                tableBody.innerHTML = '<tr><td colspan="3" class="text-center">Tidak ada data link</td></tr>';
+                return;
+            }
+            
+            // Tampilkan data link
+            linksData.forEach(link => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${link.jenisBantuan}</td>
+                    <td>${link.url}</td>
+                    <td>
+                        <button class="btn btn-sm btn-primary view-link" data-url="${link.url}">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <button class="btn btn-sm btn-danger delete-link" data-id="${link.id}">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+            
+            // Tambahkan event listener untuk tombol aksi
+            document.querySelectorAll('.view-link').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    window.open(this.getAttribute('data-url'), '_blank');
+                });
+            });
+            
+            document.querySelectorAll('.delete-link').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    deleteLink(this.getAttribute('data-id'));
+                });
+            });
+        }
+
+        // Hapus link
+        function deleteLink(id) {
+            if (!confirm('Apakah Anda yakin ingin menghapus link ini?')) return;
+            
+            // Hapus link dari array
+            linksData = linksData.filter(link => link.id != id);
+            
+            // Simpan ke localStorage
+            localStorage.setItem('linksData', JSON.stringify(linksData));
+            
+            // Perbarui tabel link
+            loadLinksTable();
+            
+            // Tampilkan notifikasi
+            showNotification('Link berhasil dihapus', 'success');
+        }
+
+        // Tampilkan modal link
+        function viewLinksModal() {
+            if (linksData.length === 0) {
+                showNotification('Tidak ada link yang tersedia', 'warning');
+                return;
+            }
+            
+            let modalContent = '<div class="list-group">';
+            
+            linksData.forEach(link => {
+                modalContent += `
+                    <div class="list-group-item">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h6 class="mb-1">${link.jenisBantuan}</h6>
+                            <small><a href="${link.url}" target="_blank">Buka</a></small>
+                        </div>
+                        <p class="mb-1">${link.url}</p>
+                    </div>
+                `;
+            });
+            
+            modalContent += '</div>';
+            
+            // Tampilkan modal
+            const modal = new bootstrap.Modal(document.getElementById('viewLinksModal'));
+            document.getElementById('linksModalBody').innerHTML = modalContent;
+            modal.show();
+        }
+
+        // Perbarui statistik dashboard
+        function updateDashboardStats() {
+            // Total penerima bantuan
+            document.getElementById('totalPenerima').textContent = dataBantuan.length;
+            
+            // Total desa terjangkau
+            const desaTerjangkau = new Set(dataBantuan.map(data => data.desa)).size;
+            document.getElementById('totalDesa').textContent = desaTerjangkau;
+            
+            // Total jenis bantuan
+            const jenisBantuan = new Set(dataBantuan.map(data => data.jenisBantuan)).size;
+            document.getElementById('totalBantuan').textContent = jenisBantuan;
+            
+            // Data terbaru untuk tabel
+            const recentData = [...dataBantuan].sort((a, b) => new Date(b.tanggalInput) - new Date(a.tanggalInput)).slice(0, 5);
+            const recentDataTable = document.getElementById('recentDataTable');
+            recentDataTable.innerHTML = '';
+            
+            if (recentData.length === 0) {
+                recentDataTable.innerHTML = '<tr><td colspan="4" class="text-center">Tidak ada data</td></tr>';
+                return;
+            }
+            
+            recentData.forEach(data => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${data.namaPenerima}</td>
+                    <td>${data.desa}</td>
+                    <td>${data.jenisBantuan}</td>
+                    <td>${new Date(data.tanggalInput).toLocaleDateString('id-ID')}</td>
+                `;
+                recentDataTable.appendChild(row);
+            });
+        }
+
+        // Inisialisasi chart
+        function initCharts() {
+            const ctx = document.getElementById('kecamatanChart').getContext('2d');
+            
+            // Hitung data per kecamatan
+            const kecamatanCount = {};
+            dataBantuan.forEach(data => {
+                if (kecamatanCount[data.kecamatan]) {
+                    kecamatanCount[data.kecamatan]++;
+                } else {
+                    kecamatanCount[data.kecamatan] = 1;
+                }
+            });
+            
+            // Siapkan data untuk chart
+            const labels = Object.keys(kecamatanCount);
+            const data = Object.values(kecamatanCount);
+            
+            // Buat chart
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Jumlah Penerima per Kecamatan',
+                        data: data,
+                        backgroundColor: 'rgba(13, 71, 161, 0.7)',
+                        borderColor: 'rgba(13, 71, 161, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        title: {
+                            display: true,
+                            text: 'Distribusi Penerima Bantuan per Kecamatan'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                precision: 0
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Simpan pengaturan
+        function saveSettings() {
+            const appTitle = document.getElementById('appTitle').value;
+            const appSubtitle = document.getElementById('appSubtitle').value;
+            const securityCode = document.getElementById('securityCode').value;
+            
+            if (!appTitle || !appSubtitle || !securityCode) {
+                showNotification('Harap isi semua field pengaturan', 'error');
+                return;
+            }
+            
+            // Simpan pengaturan
+            appSettings = {
+                appTitle: appTitle,
+                appSubtitle: appSubtitle,
+                securityCode: securityCode
+            };
+            
+            localStorage.setItem('appSettings', JSON.stringify(appSettings));
+            
+            // Perbarui judul aplikasi
+            document.querySelector('.app-title').textContent = appTitle;
+            document.querySelector('.app-subtitle').textContent = appSubtitle;
+            document.getElementById('currentSecurityCode').textContent = securityCode;
+            
+            showNotification('Pengaturan berhasil disimpan', 'success');
+        }
+
+        // Ekspor data
+        function exportData() {
+            if (dataBantuan.length === 0) {
+                showNotification('Tidak ada data untuk diekspor', 'warning');
+                return;
+            }
+            
+            // Buat data untuk ekspor
+            const exportData = {
+                dataBantuan: dataBantuan,
+                linksData: linksData,
+                appSettings: appSettings,
+                exportedAt: new Date().toISOString()
+            };
+            
+            // Buat blob dan download
+            const dataStr = JSON.stringify(exportData, null, 2);
+            const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+            
+            const exportFileDefaultName = 'backup_data_bantuan.json';
+            
+            const linkElement = document.createElement('a');
+            linkElement.setAttribute('href', dataUri);
+            linkElement.setAttribute('download', exportFileDefaultName);
+            linkElement.click();
+            
+            showNotification('Data berhasil diekspor', 'success');
+        }
+
+        // Ekspor data sebagai Excel
+        function exportDataAsExcel() {
+            exportToExcel(); // Gunakan fungsi yang sudah ada
+        }
+
+        // Impor data
+        function importData() {
+            const fileInput = document.getElementById('importData');
+            const file = fileInput.files[0];
+            
+            if (!file) {
+                showNotification('Pilih file terlebih dahulu', 'error');
+                return;
+            }
+            
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                try {
+                    let importedData;
+                    
+                    if (file.name.endsWith('.json')) {
+                        // Import dari JSON
+                        importedData = JSON.parse(e.target.result);
+                    } else if (file.name.endsWith('.xlsx') || file.name.endsWith('.xls')) {
+                        // Import dari Excel (tidak diimplementasikan di sini)
+                        showNotification('Fitur impor dari Excel belum tersedia', 'warning');
+                        return;
+                    } else {
+                        showNotification('Format file tidak didukung', 'error');
+                        return;
+                    }
+                    
+                    // Validasi data
+                    if (!importedData.dataBantuan) {
+                        showNotification('Format data tidak valid', 'error');
+                        return;
+                    }
+                    
+                    // Konfirmasi sebelum impor
+                    if (!confirm('Impor data akan menimpa data yang sudah ada. Lanjutkan?')) {
+                        return;
+                    }
+                    
+                    // Impor data
+                    if (importedData.dataBantuan) {
+                        dataBantuan = importedData.dataBantuan;
+                        localStorage.setItem('dataBantuan', JSON.stringify(dataBantuan));
+                    }
+                    
+                    if (importedData.linksData) {
+                        linksData = importedData.linksData;
+                        localStorage.setItem('linksData', JSON.stringify(linksData));
+                    }
+                    
+                    if (importedData.appSettings) {
+                        appSettings = importedData.appSettings;
+                        localStorage.setItem('appSettings', JSON.stringify(appSettings));
+                        
+                        // Perbarui pengaturan di UI
+                        document.getElementById('appTitle').value = appSettings.appTitle;
+                        document.getElementById('appSubtitle').value = appSettings.appSubtitle;
+                        document.getElementById('securityCode').value = appSettings.securityCode;
+                        document.querySelector('.app-title').textContent = appSettings.appTitle;
+                        document.querySelector('.app-subtitle').textContent = appSettings.appSubtitle;
+                        document.getElementById('currentSecurityCode').textContent = appSettings.securityCode;
+                    }
+                    
+                    // Perbarui UI
+                    loadDataTable();
+                    loadLinksTable();
+                    updateDashboardStats();
+                    initCharts();
+                    
+                    showNotification('Data berhasil diimpor', 'success');
+                    
+                    // Reset file input
+                    fileInput.value = '';
+                } catch (error) {
+                    console.error('Error importing data:', error);
+                    showNotification('Gagal mengimpor data: ' + error.message, 'error');
+                }
+            };
+            
+            reader.readAsText(file);
+        }
+
+        // Tampilkan info aplikasi
+        function showAppInfo() {
+            const modalContent = `
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5>Informasi Aplikasi</h5>
+                        <ul class="list-group">
+                            <li class="list-group-item"><strong>Nama:</strong> APLIKASI BARJAS</li>
+                            <li class="list-group-item"><strong>Versi:</strong> 2.0.0</li>
+                            <li class="list-group-item"><strong>Dibuat:</strong> Juni 2024</li>
+                            <li class="list-group-item"><strong>Developer:</strong> Dinas Peternakan dan Perikanan Kabupaten Situbondo</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h5>Teknologi</h5>
+                        <ul class="list-group">
+                            <li class="list-group-item">HTML5, CSS3, JavaScript</li>
+                            <li class="list-group-item">Bootstrap 5.3.0</li>
+                            <li class="list-group-item">Chart.js 3.9.1</li>
+                            <li class="list-group-item">SheetJS (xlsx) 0.18.5</li>
+                            <li class="list-group-item">jsPDF 2.5.1</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="mt-3">
+                    <h5>Fitur</h5>
+                    <ul>
+                        <li>Input data penerima bantuan</li>
+                        <li>Manajemen data dengan filter</li>
+                        <li>Ekspor data ke Excel dan PDF</li>
+                        <li>Pencetakan data</li>
+                        <li>Manajemen link Google Drive</li>
+                        <li>Dashboard dengan statistik</li>
+                        <li>Autentikasi keamanan</li>
+                    </ul>
+                </div>
+            `;
+            
+            showCustomModal('Informasi Aplikasi', modalContent);
+        }
+
+        // Tampilkan modal kustom
+        function showCustomModal(title, content) {
+            // Buat modal dinamis
+            const modalId = 'customModal';
+            let modalElement = document.getElementById(modalId);
+            
+            // Hapus modal jika sudah ada
+            if (modalElement) {
+                modalElement.remove();
+            }
+            
+            // Buat modal baru
+            modalElement = document.createElement('div');
+            modalElement.className = 'modal fade';
+            modalElement.id = modalId;
+            modalElement.tabIndex = -1;
+            modalElement.innerHTML = `
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">${title}</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            ${content}
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Tambahkan modal ke body
+            document.body.appendChild(modalElement);
+            
+            // Tampilkan modal
+            const modal = new bootstrap.Modal(modalElement);
+            modal.show();
+            
+            // Hapus modal setelah ditutup
+            modalElement.addEventListener('hidden.bs.modal', function() {
+                modalElement.remove();
+            });
+        }
+
+        // Tampilkan notifikasi
+        function showNotification(message, type = 'info') {
+            const toast = document.querySelector('.notification-toast');
+            const toastBody = toast.querySelector('.toast-body');
+            
+            // Set pesan dan warna berdasarkan jenis notifikasi
+            toastBody.textContent = message;
+            
+            // Tampilkan toast
+            const bsToast = new bootstrap.Toast(toast);
+            bsToast.show();
+        }
+
+        // Validasi login
+        function validateLogin() {
+            if (isLoginBlocked) {
+                showNotification('Akses ditangguhkan. Silakan coba lagi nanti.', 'error');
+                return;
+            }
+            
+            const inputCode = document.getElementById('securityCode').value;
+            const correctCode = appSettings.securityCode;
+            
+            if (inputCode === correctCode) {
+                // Login berhasil
+                $('#loginModal').modal('hide');
+                showNotification('Login berhasil. Selamat datang!', 'success');
+                
+                // Reset percobaan login
+                loginAttempts = 0;
+                document.getElementById('loginAttemptsWarning').style.display = 'none';
+            } else {
+                // Login gagal
+                loginAttempts++;
+                
+                if (loginAttempts >= 3) {
+                    // Blokir akses setelah 3 percobaan gagal
+                    isLoginBlocked = true;
+                    document.getElementById('loginBlockedMessage').style.display = 'block';
+                    document.getElementById('loginAttemptsWarning').style.display = 'none';
+                    
+                    // Set timeout untuk membuka blokir setelah 30 detik
+                    let countdown = 30;
+                    document.getElementById('countdownTimer').textContent = countdown;
+                    
+                    const countdownInterval = setInterval(() => {
+                        countdown--;
+                        document.getElementById('countdownTimer').textContent = countdown;
+                        
+                        if (countdown <= 0) {
+                            clearInterval(countdownInterval);
+                            isLoginBlocked = false;
+                            loginAttempts = 0;
+                            document.getElementById('loginBlockedMessage').style.display = 'none';
+                        }
+                    }, 1000);
+                } else {
+                    // Tampilkan peringatan percobaan login
+                    document.getElementById('remainingAttempts').textContent = 3 - loginAttempts;
+                    document.getElementById('loginAttemptsWarning').style.display = 'block';
+                }
+                
+                showNotification('Kode keamanan salah', 'error');
+            }
+        }
+
+        // Logout
+        function logout() {
+            if (confirm('Apakah Anda yakin ingin keluar?')) {
+                $('#loginModal').modal('show');
+                showNotification('Anda telah logout', 'info');
+            }
+        }
+
+        // Inisialisasi saat sidebar link diklik
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', function() {
+                // Jika ini adalah link menu biasa
+                if (this.getAttribute('data-section')) {
+                    // Sembunyikan semua section
+                    document.querySelectorAll('.content-section').forEach(section => {
+                        section.classList.add('d-none');
+                    });
+                    
+                    // Tampilkan section yang sesuai
+                    const sectionId = this.getAttribute('data-section') + 'Section';
+                    document.getElementById(sectionId).classList.remove('d-none');
+                    
+                    // Jika section yang dipilih adalah Lihat Data, muat ulang tabel
+                    if (sectionId === 'viewDataSection') {
+                        loadDataTable();
+                    }
+                    
+                    // Jika section yang dipilih adalah Links, muat ulang tabel link
+                    if (sectionId === 'linksSection') {
+                        loadLinksTable();
+                    }
+                }
+            });
+        });
+
+        // Load data saat pertama kali dibuka
+        window.addEventListener('load', function() {
+            // Muat data dari localStorage
+            const savedData = localStorage.getItem('dataBantuan');
+            if (savedData) {
+                dataBantuan = JSON.parse(savedData);
+            }
+            
+            const savedLinks = localStorage.getItem('linksData');
+            if (savedLinks) {
+                linksData = JSON.parse(savedLinks);
+            }
+            
+            const savedSettings = localStorage.getItem('appSettings');
+            if (savedSettings) {
+                appSettings = JSON.parse(savedSettings);
+                
+                // Terapkan pengaturan
+                document.getElementById('appTitle').value = appSettings.appTitle;
+                document.getElementById('appSubtitle').value = appSettings.appSubtitle;
+                document.getElementById('securityCode').value = appSettings.securityCode;
+                document.querySelector('.app-title').textContent = appSettings.appTitle;
+                document.querySelector('.app-subtitle').textContent = appSettings.appSubtitle;
+            }
+            
+            // Muat data tabel
+            loadDataTable();
+            loadLinksTable();
+            updateDashboardStats();
+            
+            // Setup filter options
+            setupFilterOptions();
+        });
+
     </script>
 </body>
 </html>
