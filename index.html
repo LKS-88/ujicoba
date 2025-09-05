@@ -11,6 +11,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
+        /* [KODE CSS YANG SAMA PERSIS SEBELUMNYA] */
+        /* Tetap mempertahankan semua style yang sudah ada */
         :root {
             --primary-color: #0d47a1;
             --secondary-color: #00695c;
@@ -1079,134 +1081,14 @@
                                                 <input type="text" class="form-control" id="namaKelompok">
                                             </div>
                                             <div class="mb-3">
-                                                <label for="desa" class="form-label"><i class="fas fa-map-marker-alt"></i> Desa</label>
-                                                <select class="form-select" id="desa" required>
-                                                    <option value="" selected disabled>Pilih Desa</option>
-                                                    <option value="Agel">Agel</option>
-                                                    <option value="Alas Bayur">Alas Bayur</option>
-                                                    <option value="Alasmalang">Alasmalang</option>
-                                                    <option value="Alastengah">Alastengah</option>
-                                                    <option value="Arjasa">Arjasa</option>
-                                                    <option value="Ardirejo">Ardirejo</option>
-                                                    <option value="Asembagus">Asembagus</option>
-                                                    <option value="Awar-awar">Awar-awar</option>
-                                                    <option value="Awang-awang">Awang-awang</option>
-                                                    <option value="Baderan">Baderan</option>
-                                                    <option value="Balung">Balung</option>
-                                                    <option value="Bantal">Bantal</option>
-                                                    <option value="Battal">Battal</option>
-                                                    <option value="Bayeman">Bayeman</option>
-                                                    <option value="Besuki">Besuki</option>
-                                                    <option value="Bletok">Bletok</option>
-                                                    <option value="Blimbing">Blimbing</option>
-                                                    <option value="Bloro">Bloro</option>
-                                                    <option value="Buduan">Buduan</option>
-                                                    <option value="Bugeman">Bugeman</option>
-                                                    <option value="Bungatan">Bungatan</option>
-                                                    <option value="Campoan">Campoan</option>
-                                                    <option value="Cemara">Cemara</option>
-                                                    <option value="Curah Cottok">Curah Cottok</option>
-                                                    <option value="Curah Jeru">Curah Jeru</option>
-                                                    <option value="Curah Kalak">Curah Kalak</option>
-                                                    <option value="Curah Suri">Curah Suri</option>
-                                                    <option value="Curah Tatal">Curah Tatal</option>
-                                                    <option value="Dawuhan">Dawuhan</option>
-                                                    <option value="Demung">Demung</option>
-                                                    <option value="Duwet">Duwet</option>
-                                                    <option value="Gadingan">Gadingan</option>
-                                                    <option value="Gebangan">Gebangan</option>
-                                                    <option value="Gelung">Gelung</option>
-                                                    <option value="Gudang">Gudang</option>
-                                                    <option value="Gunung Malang">Gunung Malang</option>
-                                                    <option value="Gunung Putri">Gunung Putri</option>
-                                                    <option value="Jangkar">Jangkar</option>
-                                                    <option value="Jatisari">Jatisari</option>
-                                                    <option value="Jatibanteng">Jatibanteng</option>
-                                                    <option value="Jetis">Jetis</option>
-                                                    <option value="Juglangan">Juglangan</option>
-                                                    <option value="Kalianget">Kalianget</option>
-                                                    <option value="Kalibagor">Kalibagor</option>
-                                                    <option value="Kalimas">Kalimas</option>
-                                                    <option value="Kalirejo">Kalirejo</option>
-                                                    <option value="Kalisari">Kalisari</option>
-                                                    <option value="Kandang">Kandang</option>
-                                                    <option value="Kayu Putih">Kayu Putih</option>
-                                                    <option value="Kayumas">Kayumas</option>
-                                                    <option value="Kedungdowo">Kedungdowo</option>
-                                                    <option value="Kedunglo">Kedunglo</option>
-                                                    <option value="Kembangsari">Kembangsari</option>
-                                                    <option value="Ketah">Ketah</option>
-                                                    <option value="Ketowan">Ketowan</option>
-                                                    <option value="Kilensari">Kilensari</option>
-                                                    <option value="Klampokan">Klampokan</option>
-                                                    <option value="Klatakan">Klatakan</option>
-                                                    <option value="Kotakan">Kotakan</option>
-                                                    <option value="Kumbangsari">Kumbangsari</option>
-                                                    <option value="Kukusan">Kukusan</option>
-                                                    <option value="Lamongan">Lamongan</option>
-                                                    <option value="Landangan">Landangan</option>
-                                                    <option value="Langkap">Langkap</option>
-                                                    <option value="Lebeng">Lebeng</option>
-                                                    <option value="Lubawang">Lubawang</option>
-                                                    <option value="Mangaran">Mangaran</option>
-                                                    <option value="Mimbaan">Mimbaan</option>
-                                                    <option value="Mlandingan Kulon">Mlandingan Kulon</option>
-                                                    <option value="Mlandingan Wetan">Mlandingan Wetan</option>
-                                                    <option value="Mojodungkol">Mojodungkol</option>
-                                                    <option value="Mojosari">Mojosari</option>
-                                                    <option value="Olean">Olean</option>
-                                                    <option value="Palangan">Palangan</option>
-                                                    <option value="Panarukan">Panarukan</option>
-                                                    <option value="Panji Kidul">Panji Kidul</option>
-                                                    <option value="Panji Lor">Panji Lor</option>
-                                                    <option value="Parante">Parante</option>
-                                                    <option value="Pasir Putih">Pasir Putih</option>
-                                                    <option value="Patemon">Patemon</option>
-                                                    <option value="Patokan">Patokan</option>
-                                                    <option value="Paowan">Paowan</option>
-                                                    <option value="Peleyan">Peleyan</option>
-                                                    <option value="Pesisir">Pesisir</option>
-                                                    <option value="Pesanggrahan">Pesanggrahan</option>
-                                                    <option value="Pategalan">Pategalan</option>
-                                                    <option value="Plalangan">Plalangan</option>
-                                                    <option value="Pokaan">Pokaan</option>
-                                                    <option value="Rajekwesi">Rajekwesi</option>
-                                                    <option value="Seletreng">Seletreng</option>
-                                                    <option value="Selobanteng">Selobanteng</option>
-                                                    <option value="Selomukti">Selomukti</option>
-                                                    <option value="Selowogo">Selowogo</option>
-                                                    <option value="Semambung">Semambung</option>
-                                                    <option value="Semiring">Semiring</option>
-                                                    <option value="Sliwung">Sliwung</option>
-                                                    <option value="Sopet">Sopet</option>
-                                                    <option value="Sumber Pinang">Sumber Pinang</option>
-                                                    <option value="Sumberanyar">Sumberanyar</option>
-                                                    <option value="Sumberargo">Sumberargo</option>
-                                                    <option value="Sumberkolak">Sumberkolak</option>
-                                                    <option value="Sumberejo">Sumberejo</option>
-                                                    <option value="Sumbertengah">Sumbertengah</option>
-                                                    <option value="Sumberwaru">Sumberwaru</option>
-                                                    <option value="Tamankursi">Tamankursi</option>
-                                                    <option value="Tamansari">Tamansari</option>
-                                                    <option value="Taman">Taman</option>
-                                                    <option value="Talkandang">Talkandang</option>
-                                                    <option value="Tanjung Glugur">Tanjung Glugur</option>
-                                                    <option value="Tanjung Kamal">Tanjung Kamal</option>
-                                                    <option value="Tanjung Pecinan">Tanjung Pecinan</option>
-                                                    <option value="Tambak Ukir">Tambak Ukir</option>
-                                                    <option value="Telempong">Telempong</option>
-                                                    <option value="Tenggir">Tenggir</option>
-                                                    <option value="Tepos">Tepos</option>
-                                                    <option value="Tokelan">Tokelan</option>
-                                                    <option value="Tlogosari">Tlogosari</option>
-                                                    <option value="Trigonco">Trigonco</option>
-                                                    <option value="Trebungan">Trebungan</option>
-                                                    <option value="Widoropayung">Widoropayung</option>
-                                                    <option value="Wonokoyo">Wonokoyo</option>
-                                                    <option value="Wonorejo">Wonorejo</option>
-                                                    <option value="Wringinanom">Wringinanom</option>
+                                                <label for="jabatan" class="form-label"><i class="fas fa-user-tag"></i> Jabatan dalam Kelompok</label>
+                                                <select class="form-select" id="jabatan">
+                                                    <option value="Individu">Individu</option>
+                                                    <option value="Ketua">Ketua</option>
+                                                    <option value="Sekretaris">Sekretaris</option>
+                                                    <option value="Bendahara">Bendahara</option>
+                                                    <option value="Anggota">Anggota</option>
                                                 </select>
-                                                <div class="error-message" id="desaError">Desa harus dipilih</div>
                                             </div>
                                         </div>
                                     </div>
@@ -1214,61 +1096,138 @@
                                 
                                 <div class="col-md-6">
                                     <div class="card mb-4">
-                                        <div class="card-header">Detail Bantuan</div>
+                                        <div class="card-header">Data Bantuan</div>
                                         <div class="card-body">
                                             <div class="mb-3">
-                                                <label for="jenisBantuan" class="form-label"><i class="fas fa-box"></i> Jenis Bantuan</label>
-                                                <select class="form-select" id="jenisBantuan" required>
-                                                    <option value="" selected disabled>Pilih Jenis Bantuan</option>
-                                                    <option value="Bantuan Tunai">Bantuan Tunai</option>
-                                                    <option value="Bahan Pangan">Bahan Pangan</option>
-                                                    <option value="Bahan Sandang">Bahan Sandang</option>
-                                                    <option value="Alat Tulis">Alat Tulis</option>
-                                                    <option value="Bibit Tanaman">Bibit Tanaman</option>
-                                                    <option value="Obat-obatan">Obat-obatan</option>
-                                                    <option value="Lainnya">Lainnya</option>
-                                                </select>
-                                                <div class="error-message" id="jenisBantuanError">Jenis bantuan harus dipilih</div>
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="jumlahBantuan" class="form-label"><i class="fas fa-coins"></i> Jumlah Bantuan</label>
-                                                <input type="number" class="form-control" id="jumlahBantuan" min="1" required>
-                                                <div class="error-message" id="jumlahBantuanError">Jumlah bantuan harus diisi</div>
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="satuan" class="form-label"><i class="fas fa-balance-scale"></i> Satuan</label>
-                                                <select class="form-select" id="satuan" required>
-                                                    <option value="Rupiah" selected>Rupiah</option>
-                                                    <option value="Kg">Kilogram</option>
-                                                    <option value="Liter">Liter</option>
-                                                    <option value="Unit">Unit</option>
-                                                    <option value="Paket">Paket</option>
-                                                    <option value="Lainnya">Lainnya</option>
+                                                <label for="tahunAnggaran" class="form-label"><i class="fas fa-calendar"></i> Tahun Anggaran</label>
+                                                <select class="form-select" id="tahunAnggaran" required>
+                                                    <option value="">Pilih Tahun</option>
+                                                    <!-- Options akan diisi oleh JavaScript -->
                                                 </select>
                                             </div>
                                             <div class="mb-3">
-                                                <label for="tahun" class="form-label"><i class="fas fa-calendar"></i> Tahun</label>
-                                                <select class="form-select" id="tahun" required>
-                                                    <option value="" selected disabled>Pilih Tahun</option>
-                                                    <?php
-                                                    for ($year = 2020; $year <= 2090; $year++) {
-                                                        echo "<option value=\"$year\">$year</option>";
-                                                    }
-                                                    ?>
+                                                <label for="kecamatan" class="form-label"><i class="fas fa-map-marker-alt"></i> Kecamatan</label>
+                                                <select class="form-select" id="kecamatan" required>
+                                                    <option value="">Pilih Kecamatan</option>
+                                                    <option value="Arjasa">Arjasa</option>
+                                                    <option value="Asembagus">Asembagus</option>
+                                                    <option value="Banyuglugur">Banyuglugur</option>
+                                                    <option value="Banyuputih">Banyuputih</option>
+                                                    <option value="Besuki">Besuki</option>
+                                                    <option value="Bungatan">Bungatan</option>
+                                                    <option value="Jangkar">Jangkar</option>
+                                                    <option value="Jatibanteng">Jatibanteng</option>
+                                                    <option value="Kapongan">Kapongan</option>
+                                                    <option value="Kendit">Kendit</option>
+                                                    <option value="Mangaran">Mangaran</option>
+                                                    <option value="Mlandingan">Mlandingan</option>
+                                                    <option value="Panarukan">Panarukan</option>
+                                                    <option value="Panji">Panji</option>
+                                                    <option value="Situbondo">Situbondo</option>
+                                                    <option value="Suboh">Suboh</option>
+                                                    <option value="Sumbermalang">Sumbermalang</option>
                                                 </select>
-                                                <div class="error-message" id="tahunError">Tahun harus dipilih</div>
+                                                <div class="error-message" id="kecamatanError">Kecamatan harus dipilih</div>
                                             </div>
                                             <div class="mb-3">
-                                                <label for="keterangan" class="form-label"><i class="fas fa-sticky-note"></i> Keterangan (opsional)</label>
-                                                <textarea class="form-control" id="keterangan" rows="3"></textarea>
+                                                <label for="desa" class="form-label"><i class="fas fa-map-pin"></i> Desa/Kelurahan</label>
+                                                <select class="form-select" id="desa" required>
+                                                    <option value="">Pilih Desa</option>
+                                                    <!-- Options akan diisi secara dinamis berdasarkan pilihan kecamatan -->
+                                                </select>
+                                                <div class="error-message" id="desaError">Desa harus dipilih</div>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="alamat" class="form-label"><i class="fas fa-home"></i> Alamat Lengkap</label>
+                                                <textarea class="form-control" id="alamat" rows="2"></textarea>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                             
-                            <div class="d-flex justify-content-end gap-2">
-                                <button type="reset" class="btn btn-secondary">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="card mb-4">
+                                        <div class="card-header">Detail Bantuan</div>
+                                        <div class="card-body">
+                                            <div class="mb-3">
+                                                <label for="jenisBantuan" class="form-label"><i class="fas fa-gift"></i> Jenis Bantuan</label>
+                                                <select class="form-select" id="jenisBantuan" required>
+                                                    <option value="">Pilih Jenis Bantuan</option>
+                                                    <option value="Tunai">Tunai</option>
+                                                    <option value="Beras">Beras</option>
+                                                    <option value="Pupuk">Pupuk</option>
+                                                    <option value="Bibit">Bibit</option>
+                                                    <option value="Peralatan">Peralatan</option>
+                                                    <option value="Lainnya">Lainnya</option>
+                                                </select>
+                                                <div class="error-message" id="jenisBantuanError">Jenis bantuan harus dipilih</div>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="namaBantuan" class="form-label"><i class="fas fa-tag"></i> Nama Bantuan (jika ada)</label>
+                                                <input type="text" class="form-control" id="namaBantuan">
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="jumlahBantuan" class="form-label"><i class="fas fa-calculator"></i> Jumlah Bantuan</label>
+                                                <input type="number" class="form-control" id="jumlahBantuan" min="1" required>
+                                                <div class="error-message" id="jumlahBantuanError">Jumlah bantuan harus diisi</div>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="satuanBantuan" class="form-label"><i class="fas fa-balance-scale"></i> Satuan</label>
+                                                <select class="form-select" id="satuanBantuan" required>
+                                                    <option value="">Pilih Satuan</option>
+                                                    <option value="Rupiah">Rupiah</option>
+                                                    <option value="Kg">Kilogram</option>
+                                                    <option value="Karung">Karung</option>
+                                                    <option value="Paket">Paket</option>
+                                                    <option value="Unit">Unit</option>
+                                                    <option value="Lainnya">Lainnya</option>
+                                                </select>
+                                                <div class="error-message" id="satuanBantuanError">Satuan harus dipilih</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <div class="card mb-4">
+                                        <div class="card-header">Informasi Tambahan</div>
+                                        <div class="card-body">
+                                            <div class="mb-3">
+                                                <label for="tanggalTerima" class="form-label"><i class="fas fa-calendar-day"></i> Tanggal Penerimaan</label>
+                                                <input type="date" class="form-control" id="tanggalTerima" required>
+                                                <div class="error-message" id="tanggalTerimaError">Tanggal harus diisi</div>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="namaPetugas" class="form-label"><i class="fas fa-user-check"></i> Nama Petugas Penyalur</label>
+                                                <input type="text" class="form-control" id="namaPetugas">
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="driveLink" class="form-label"><i class="fas fa-link"></i> Link Google Drive (jika ada)</label>
+                                                <input type="url" class="form-control" id="driveLink" placeholder="https://drive.google.com/...">
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="kodeValidasi" class="form-label"><i class="fas fa-key"></i> Kode Validasi</label>
+                                                <div class="input-group">
+                                                    <input type="text" class="form-control" id="kodeValidasi" required>
+                                                    <button class="btn btn-outline-secondary" type="button" id="generateCodeBtn">
+                                                        <i class="fas fa-sync-alt"></i> Generate
+                                                    </button>
+                                                </div>
+                                                <div class="error-message" id="kodeValidasiError">Kode validasi harus diisi</div>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="keterangan" class="form-label"><i class="fas fa-sticky-note"></i> Keterangan Tambahan</label>
+                                                <textarea class="form-control" id="keterangan" rows="2"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                <button type="reset" class="btn btn-secondary me-md-2">
                                     <i class="fas fa-undo me-1"></i> Reset
                                 </button>
                                 <button type="submit" class="btn btn-primary">
@@ -1282,199 +1241,152 @@
                     <div class="tab-pane fade" id="v-pills-data" role="tabpanel" aria-labelledby="v-pills-data-tab">
                         <h2 class="section-title">Data Bantuan</h2>
                         
-                        <div class="filter-section mb-4">
+                        <div class="filter-section">
                             <div class="row">
                                 <div class="col-md-3">
-                                    <label for="filterTahun" class="form-label"><i class="fas fa-filter"></i> Filter Tahun</label>
-                                    <select class="form-select" id="filterTahun">
-                                        <option value="all">Semua Tahun</option>
-                                        <?php
-                                        for ($year = 2020; $year <= 2090; $year++) {
-                                            echo "<option value=\"$year\">$year</option>";
-                                        }
-                                        ?>
-                                    </select>
+                                    <div class="mb-3">
+                                        <label for="filterTahun" class="form-label">Tahun</label>
+                                        <select class="form-select" id="filterTahun">
+                                            <option value="all">Semua Tahun</option>
+                                            <!-- Options akan diisi oleh JavaScript -->
+                                        </select>
+                                    </div>
                                 </div>
                                 <div class="col-md-3">
-                                    <label for="filterJenis" class="form-label"><i class="fas fa-filter"></i> Filter Jenis</label>
-                                    <select class="form-select" id="filterJenis">
-                                        <option value="all">Semua Jenis</option>
-                                        <option value="Bantuan Tunai">Bantuan Tunai</option>
-                                        <option value="Bahan Pangan">Bahan Pangan</option>
-                                        <option value="Bahan Sandang">Bahan Sandang</option>
-                                        <option value="Alat Tulis">Alat Tulis</option>
-                                        <option value="Bibit Tanaman">Bibit Tanaman</option>
-                                        <option value="Obat-obatan">Obat-obatan</option>
-                                        <option value="Lainnya">Lainnya</option>
-                                    </select>
+                                    <div class="mb-3">
+                                        <label for="filterKecamatan" class="form-label">Kecamatan</label>
+                                        <select class="form-select" id="filterKecamatan">
+                                            <option value="all">Semua Kecamatan</option>
+                                            <option value="Arjasa">Arjasa</option>
+                                            <option value="Asembagus">Asembagus</option>
+                                            <option value="Banyuglugur">Banyuglugur</option>
+                                            <option value="Banyuputih">Banyuputih</option>
+                                            <option value="Besuki">Besuki</option>
+                                            <option value="Bungatan">Bungatan</option>
+                                            <option value="Jangkar">Jangkar</option>
+                                            <option value="Jatibanteng">Jatibanteng</option>
+                                            <option value="Kapongan">Kapongan</option>
+                                            <option value="Kendit">Kendit</option>
+                                            <option value="Mangaran">Mangaran</option>
+                                            <option value="Mlandingan">Mlandingan</option>
+                                            <option value="Panarukan">Panarukan</option>
+                                            <option value="Panji">Panji</option>
+                                            <option value="Situbondo">Situbondo</option>
+                                            <option value="Suboh">Suboh</option>
+                                            <option value="Sumbermalang">Sumbermalang</option>
+                                        </select>
+                                    </div>
                                 </div>
                                 <div class="col-md-3">
-                                    <label for="filterDesa" class="form-label"><i class="fas fa-filter"></i> Filter Desa</label>
-                                    <select class="form-select" id="filterDesa">
-                                        <option value="all">Semua Desa</option>
-                                        <option value="Agel">Agel</option>
-                                        <option value="Alas Bayur">Alas Bayur</option>
-                                        <option value="Alasmalang">Alasmalang</option>
-                                        <option value="Alastengah">Alastengah</option>
-                                        <option value="Arjasa">Arjasa</option>
-                                        <option value="Ardirejo">Ardirejo</option>
-                                        <option value="Asembagus">Asembagus</option>
-                                        <option value="Awar-awar">Awar-awar</option>
-                                        <option value="Awang-awang">Awang-awang</option>
-                                        <option value="Baderan">Baderan</option>
-                                        <option value="Balung">Balung</option>
-                                        <option value="Bantal">Bantal</option>
-                                        <option value="Battal">Battal</option>
-                                        <option value="Bayeman">Bayeman</option>
-                                        <option value="Besuki">Besuki</option>
-                                        <option value="Bletok">Bletok</option>
-                                        <option value="Blimbing">Blimbing</option>
-                                        <option value="Bloro">Bloro</option>
-                                        <option value="Buduan">Buduan</option>
-                                        <option value="Bugeman">Bugeman</option>
-                                        <option value="Bungatan">Bungatan</option>
-                                        <option value="Campoan">Campoan</option>
-                                        <option value="Cemara">Cemara</option>
-                                        <option value="Curah Cottok">Curah Cottok</option>
-                                        <option value="Curah Jeru">Curah Jeru</option>
-                                        <option value="Curah Kalak">Curah Kalak</option>
-                                        <option value="Curah Suri">Curah Suri</option>
-                                        <option value="Curah Tatal">Curah Tatal</option>
-                                        <option value="Dawuhan">Dawuhan</option>
-                                        <option value="Demung">Demung</option>
-                                        <option value="Duwet">Duwet</option>
-                                        <option value="Gadingan">Gadingan</option>
-                                        <option value="Gebangan">Gebangan</option>
-                                        <option value="Gelung">Gelung</option>
-                                        <option value="Gudang">Gudang</option>
-                                        <option value="Gunung Malang">Gunung Malang</option>
-                                        <option value="Gunung Putri">Gunung Putri</option>
-                                        <option value="Jangkar">Jangkar</option>
-                                        <option value="Jatisari">Jatisari</option>
-                                        <option value="Jatibanteng">Jatibanteng</option>
-                                        <option value="Jetis">Jetis</option>
-                                        <option value="Juglangan">Juglangan</option>
-                                        <option value="Kalianget">Kalianget</option>
-                                        <option value="Kalibagor">Kalibagor</option>
-                                        <option value="Kalimas">Kalimas</option>
-                                        <option value="Kalirejo">Kalirejo</option>
-                                        <option value="Kalisari">Kalisari</option>
-                                        <option value="Kandang">Kandang</option>
-                                        <option value="Kayu Putih">Kayu Putih</option>
-                                        <option value="Kayumas">Kayumas</option>
-                                        <option value="Kedungdowo">Kedungdowo</option>
-                                        <option value="Kedunglo">Kedunglo</option>
-                                        <option value="Kembangsari">Kembangsari</option>
-                                        <option value="Ketah">Ketah</option>
-                                        <option value="Ketowan">Ketowan</option>
-                                        <option value="Kilensari">Kilensari</option>
-                                        <option value="Klampokan">Klampokan</option>
-                                        <option value="Klatakan">Klatakan</option>
-                                        <option value="Kotakan">Kotakan</option>
-                                        <option value="Kumbangsari">Kumbangsari</option>
-                                        <option value="Kukusan">Kukusan</option>
-                                        <option value="Lamongan">Lamongan</option>
-                                        <option value="Landangan">Landangan</option>
-                                        <option value="Langkap">Langkap</option>
-                                        <option value="Lebeng">Lebeng</option>
-                                        <option value="Lubawang">Lubawang</option>
-                                        <option value="Mangaran">Mangaran</option>
-                                        <option value="Mimbaan">Mimbaan</option>
-                                        <option value="Mlandingan Kulon">Mlandingan Kulon</option>
-                                        <option value="Mlandingan Wetan">Mlandingan Wetan</option>
-                                        <option value="Mojodungkol">Mojodungkol</option>
-                                        <option value="Mojosari">Mojosari</option>
-                                        <option value="Olean">Olean</option>
-                                        <option value="Palangan">Palangan</option>
-                                        <option value="Panarukan">Panarukan</option>
-                                        <option value="Panji Kidul">Panji Kidul</option>
-                                        <option value="Panji Lor">Panji Lor</option>
-                                        <option value="Parante">Parante</option>
-                                        <option value="Pasir Putih">Pasir Putih</option>
-                                        <option value="Patemon">Patemon</option>
-                                        <option value="Patokan">Patokan</option>
-                                        <option value="Paowan">Paowan</option>
-                                        <option value="Peleyan">Peleyan</option>
-                                        <option value="Pesisir">Pesisir</option>
-                                        <option value="Pesanggrahan">Pesanggrahan</option>
-                                        <option value="Pategalan">Pategalan</option>
-                                        <option value="Plalangan">Plalangan</option>
-                                        <option value="Pokaan">Pokaan</option>
-                                        <option value="Rajekwesi">Rajekwesi</option>
-                                        <option value="Seletreng">Seletreng</option>
-                                        <option value="Selobanteng">Selobanteng</option>
-                                        <option value="Selomukti">Selomukti</option>
-                                        <option value="Selowogo">Selowogo</option>
-                                        <option value="Semambung">Semambung</option>
-                                        <option value="Semiring">Semiring</option>
-                                        <option value="Sliwung">Sliwung</option>
-                                        <option value="Sopet">Sopet</option>
-                                        <option value="Sumber Pinang">Sumber Pinang</option>
-                                        <option value="Sumberanyar">Sumberanyar</option>
-                                        <option value="Sumberargo">Sumberargo</option>
-                                        <option value="Sumberkolak">Sumberkolak</option>
-                                        <option value="Sumberejo">Sumberejo</option>
-                                        <option value="Sumbertengah">Sumbertengah</option>
-                                        <option value="Sumberwaru">Sumberwaru</option>
-                                        <option value="Tamankursi">Tamankursi</option>
-                                        <option value="Tamansari">Tamansari</option>
-                                        <option value="Taman">Taman</option>
-                                        <option value="Talkandang">Talkandang</option>
-                                        <option value="Tanjung Glugur">Tanjung Glugur</option>
-                                        <option value="Tanjung Kamal">Tanjung Kamal</option>
-                                        <option value="Tanjung Pecinan">Tanjung Pecinan</option>
-                                        <option value="Tambak Ukir">Tambak Ukir</option>
-                                        <option value="Telempong">Telempong</option>
-                                        <option value="Tenggir">Tenggir</option>
-                                        <option value="Tepos">Tepos</option>
-                                        <option value="Tokelan">Tokelan</option>
-                                        <option value="Tlogosari">Tlogosari</option>
-                                        <option value="Trigonco">Trigonco</option>
-                                        <option value="Trebungan">Trebungan</option>
-                                        <option value="Widoropayung">Widoropayung</option>
-                                        <option value="Wonokoyo">Wonokoyo</option>
-                                        <option value="Wonorejo">Wonorejo</option>
-                                        <option value="Wringinanom">Wringinanom</option>
-                                    </select>
+                                    <div class="mb-3">
+                                        <label for="filterJenis" class="form-label">Jenis Bantuan</label>
+                                        <select class="form-select" id="filterJenis">
+                                            <option value="all">Semua Jenis</option>
+                                            <option value="Tunai">Tunai</option>
+                                            <option value="Beras">Beras</option>
+                                            <option value="Pupuk">Pupuk</option>
+                                            <option value="Bibit">Bibit</option>
+                                            <option value="Peralatan">Peralatan</option>
+                                            <option value="Lainnya">Lainnya</option>
+                                        </select>
+                                    </div>
                                 </div>
                                 <div class="col-md-3">
-                                    <label for="searchInput" class="form-label"><i class="fas fa-search"></i> Pencarian</label>
-                                    <input type="text" class="form-control" id="searchInput" placeholder="Cari nama/NIK...">
+                                    <div class="mb-3">
+                                        <label for="searchInput" class="form-label">Pencarian</label>
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" id="searchInput" placeholder="Cari data...">
+                                            <button class="btn btn-outline-secondary" type="button" id="clearSearchBtn">
+                                                <i class="fas fa-times"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <button class="btn btn-sm btn-outline-primary" id="applyFilterBtn">
+                                        <i class="fas fa-filter me-1"></i> Terapkan Filter
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-secondary ms-2" id="resetFilterBtn">
+                                        <i class="fas fa-redo me-1"></i> Reset
+                                    </button>
+                                </div>
+                                <div>
+                                    <span class="badge bg-primary" id="totalRecords">0 Data</span>
                                 </div>
                             </div>
                         </div>
                         
-                        <div class="table-responsive">
-                            <table class="table table-hover data-table" id="dataTable">
+                        <div class="control-panel">
+                            <div class="control-title">Kontrol Data</div>
+                            <div class="d-flex flex-wrap gap-2">
+                                <button class="btn btn-sm btn-success" id="exportExcelBtn">
+                                    <i class="fas fa-file-excel me-1"></i> Export Excel
+                                </button>
+                                <button class="btn btn-sm btn-danger" id="exportPdfBtn">
+                                    <i class="fas fa-file-pdf me-1"></i> Export PDF
+                                </button>
+                                <button class="btn btn-sm btn-warning" id="printDataBtn">
+                                    <i class="fas fa-print me-1"></i> Cetak
+                                </button>
+                                <button class="btn btn-sm btn-info" id="importDataBtn">
+                                    <i class="fas fa-file-import me-1"></i> Import Data
+                                </button>
+                                <button class="btn btn-sm btn-secondary" id="backupDataBtn">
+                                    <i class="fas fa-download me-1"></i> Backup
+                                </button>
+                                <button class="btn btn-sm btn-dark" id="restoreDataBtn">
+                                    <i class="fas fa-upload me-1"></i> Restore
+                                </button>
+                                <button class="btn btn-sm btn-outline-danger" id="deleteAllBtn">
+                                    <i class="fas fa-trash me-1"></i> Hapus Semua
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="table-responsive mt-4">
+                            <table class="table table-striped table-bordered table-hover data-table" id="mainDataTable">
                                 <thead>
                                     <tr>
                                         <th>No</th>
                                         <th>Nama</th>
                                         <th>NIK</th>
                                         <th>WhatsApp</th>
+                                        <th>Kecamatan</th>
                                         <th>Desa</th>
                                         <th>Jenis Bantuan</th>
                                         <th>Jumlah</th>
-                                        <th>Tahun</th>
+                                        <th>Tanggal</th>
                                         <th>Aksi</th>
                                     </tr>
                                 </thead>
-                                <tbody id="tableBody">
+                                <tbody id="dataTableBody">
                                     <tr>
-                                        <td colspan="9" class="text-center">Tidak ada data</td>
+                                        <td colspan="10" class="text-center">Tidak ada data</td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
                         
                         <div class="d-flex justify-content-between align-items-center mt-3">
-                            <div class="fw-bold" id="tableInfo">Menampilkan 0 dari 0 data</div>
+                            <div class="form-group d-flex align-items-center">
+                                <label for="itemsPerPageSelect" class="me-2 mb-0">Baris per halaman:</label>
+                                <select class="form-select form-select-sm" id="itemsPerPageSelect" style="width: 80px;">
+                                    <option value="10">10</option>
+                                    <option value="25" selected>25</option>
+                                    <option value="50">50</option>
+                                    <option value="100">100</option>
+                                </select>
+                            </div>
                             <nav>
-                                <ul class="pagination" id="pagination">
+                                <ul class="pagination pagination-sm" id="pagination">
                                     <li class="page-item disabled">
                                         <a class="page-link" href="#" tabindex="-1">Previous</a>
                                     </li>
-                                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                                    <li class="page-item active">
+                                        <a class="page-link" href="#">1</a>
+                                    </li>
                                     <li class="page-item disabled">
                                         <a class="page-link" href="#">Next</a>
                                     </li>
@@ -1487,73 +1399,115 @@
                     <div class="tab-pane fade" id="v-pills-statistik" role="tabpanel" aria-labelledby="v-pills-statistik-tab">
                         <h2 class="section-title">Statistik Bantuan</h2>
                         
-                        <div class="row mb-4">
+                        <div class="row">
                             <div class="col-md-4">
-                                <div class="card">
-                                    <div class="card-header">
-                                        <i class="fas fa-filter me-2"></i> Filter Statistik
-                                    </div>
+                                <div class="card mb-4">
+                                    <div class="card-header">Filter Statistik</div>
                                     <div class="card-body">
                                         <div class="mb-3">
                                             <label for="statTahun" class="form-label">Tahun</label>
                                             <select class="form-select" id="statTahun">
                                                 <option value="all">Semua Tahun</option>
-                                                <?php
-                                                for ($year = 2020; $year <= 2090; $year++) {
-                                                    echo "<option value=\"$year\">$year</option>";
-                                                }
-                                                ?>
+                                                <!-- Options akan diisi oleh JavaScript -->
+                                            </select>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="statKecamatan" class="form-label">Kecamatan</label>
+                                            <select class="form-select" id="statKecamatan">
+                                                <option value="all">Semua Kecamatan</option>
+                                                <option value="Arjasa">Arjasa</option>
+                                                <option value="Asembagus">Asembagus</option>
+                                                <option value="Banyuglugur">Banyuglugur</option>
+                                                <option value="Banyuputih">Banyuputih</option>
+                                                <option value="Besuki">Besuki</option>
+                                                <option value="Bungatan">Bungatan</option>
+                                                <option value="Jangkar">Jangkar</option>
+                                                <option value="Jatibanteng">Jatibanteng</option>
+                                                <option value="Kapongan">Kapongan</option>
+                                                <option value="Kendit">Kendit</option>
+                                                <option value="Mangaran">Mangaran</option>
+                                                <option value="Mlandingan">Mlandingan</option>
+                                                <option value="Panarukan">Panarukan</option>
+                                                <option value="Panji">Panji</option>
+                                                <option value="Situbondo">Situbondo</option>
+                                                <option value="Suboh">Suboh</option>
+                                                <option value="Sumbermalang">Sumbermalang</option>
                                             </select>
                                         </div>
                                         <div class="mb-3">
                                             <label for="statJenis" class="form-label">Jenis Bantuan</label>
                                             <select class="form-select" id="statJenis">
                                                 <option value="all">Semua Jenis</option>
-                                                <option value="Bantuan Tunai">Bantuan Tunai</option>
-                                                <option value="Bahan Pangan">Bahan Pangan</option>
-                                                <option value="Bahan Sandang">Bahan Sandang</option>
-                                                <option value="Alat Tulis">Alat Tulis</option>
-                                                <option value="Bibit Tanaman">Bibit Tanaman</option>
-                                                <option value="Obat-obatan">Obat-obatan</option>
+                                                <option value="Tunai">Tunai</option>
+                                                <option value="Beras">Beras</option>
+                                                <option value="Pupuk">Pupuk</option>
+                                                <option value="Bibit">Bibit</option>
+                                                <option value="Peralatan">Peralatan</option>
                                                 <option value="Lainnya">Lainnya</option>
                                             </select>
                                         </div>
-                                        <button class="btn btn-primary w-100" id="applyStatFilter">
-                                            <i class="fas fa-chart-line me-1"></i> Terapkan Filter
+                                        <button class="btn btn-primary w-100" id="applyStatFilterBtn">
+                                            <i class="fas fa-filter me-1"></i> Terapkan Filter
                                         </button>
                                     </div>
                                 </div>
                             </div>
+                            
                             <div class="col-md-8">
-                                <div class="card">
-                                    <div class="card-header">
-                                        <i class="fas fa-chart-pie me-2"></i> Distribusi Bantuan per Desa
-                                    </div>
+                                <div class="card mb-4">
+                                    <div class="card-header">Distribusi per Kecamatan</div>
                                     <div class="card-body">
-                                        <canvas id="desaDistributionChart" height="250"></canvas>
+                                        <canvas id="kecamatanChart" height="250"></canvas>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         
-                        <div class="row">
+                        <div class="row mt-4">
                             <div class="col-md-6">
-                                <div class="card">
-                                    <div class="card-header">
-                                        <i class="fas fa-chart-bar me-2"></i> Bantuan per Jenis
-                                    </div>
+                                <div class="card mb-4">
+                                    <div class="card-header">Perbandingan Tahun</div>
                                     <div class="card-body">
-                                        <canvas id="jenisStatChart" height="250"></canvas>
+                                        <canvas id="tahunComparisonChart" height="250"></canvas>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-6">
-                                <div class="card">
-                                    <div class="card-header">
-                                        <i class="fas fa-chart-line me-2"></i> Tren Bantuan per Tahun
-                                    </div>
+                                <div class="card mb-4">
+                                    <div class="card-header">Top 10 Desa Penerima</div>
                                     <div class="card-body">
-                                        <canvas id="trenStatChart" height="250"></canvas>
+                                        <canvas id="desaChart" height="250"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row mt-4">
+                            <div class="col-md-12">
+                                <div class="card">
+                                    <div class="card-header">Rekap Data Statistik</div>
+                                    <div class="card-body">
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Kecamatan</th>
+                                                        <th>Jumlah Penerima</th>
+                                                        <th>Tunai</th>
+                                                        <th>Beras</th>
+                                                        <th>Pupuk</th>
+                                                        <th>Bibit</th>
+                                                        <th>Peralatan</th>
+                                                        <th>Lainnya</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="statistikTableBody">
+                                                    <tr>
+                                                        <td colspan="8" class="text-center">Tidak ada data</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -1562,166 +1516,77 @@
                     
                     <!-- Laporan -->
                     <div class="tab-pane fade" id="v-pills-laporan" role="tabpanel" aria-labelledby="v-pills-laporan-tab">
-                        <h2 class="section-title">Laporan Bantuan</h2>
+                        <h2 class="section-title">Laporan dan Ekspor Data</h2>
                         
-                        <div class="row mb-4">
+                        <div class="row">
                             <div class="col-md-6">
-                                <div class="card">
-                                    <div class="card-header">
-                                        <i class="fas fa-cog me-2"></i> Pengaturan Laporan
-                                    </div>
+                                <div class="card mb-4">
+                                    <div class="card-header">Buat Laporan</div>
                                     <div class="card-body">
                                         <div class="mb-3">
-                                            <label for="reportTahun" class="form-label">Tahun</label>
-                                            <select class="form-select" id="reportTahun">
-                                                <option value="all">Semua Tahun</option>
-                                                <?php
-                                                for ($year = 2020; $year <= 2090; $year++) {
-                                                    echo "<option value=\"$year\">$year</option>";
-                                                }
-                                                ?>
+                                            <label for="reportType" class="form-label">Jenis Laporan</label>
+                                            <select class="form-select" id="reportType">
+                                                <option value="all">Semua Data</option>
+                                                <option value="yearly">Per Tahun</option>
+                                                <option value="monthly">Per Bulan</option>
+                                                <option value="kecamatan">Per Kecamatan</option>
+                                                <option value="jenis">Per Jenis Bantuan</option>
                                             </select>
                                         </div>
-                                        <div class="mb-3">
+                                        <div class="mb-3" id="yearSelection">
+                                            <label for="reportYear" class="form-label">Tahun</label>
+                                            <select class="form-select" id="reportYear">
+                                                <!-- Options akan diisi oleh JavaScript -->
+                                            </select>
+                                        </div>
+                                        <div class="mb-3 d-none" id="monthSelection">
+                                            <label for="reportMonth" class="form-label">Bulan</label>
+                                            <select class="form-select" id="reportMonth">
+                                                <option value="01">Januari</option>
+                                                <option value="02">Februari</option>
+                                                <option value="03">Maret</option>
+                                                <option value="04">April</option>
+                                                <option value="05">Mei</option>
+                                                <option value="06">Juni</option>
+                                                <option value="07">Juli</option>
+                                                <option value="08">Agustus</option>
+                                                <option value="09">September</option>
+                                                <option value="10">Oktober</option>
+                                                <option value="11">November</option>
+                                                <option value="12">Desember</option>
+                                            </select>
+                                        </div>
+                                        <div class="mb-3 d-none" id="kecamatanSelection">
+                                            <label for="reportKecamatan" class="form-label">Kecamatan</label>
+                                            <select class="form-select" id="reportKecamatan">
+                                                <option value="Arjasa">Arjasa</option>
+                                                <option value="Asembagus">Asembagus</option>
+                                                <option value="Banyuglugur">Banyuglugur</option>
+                                                <option value="Banyuputih">Banyuputih</option>
+                                                <option value="Besuki">Besuki</option>
+                                                <option value="Bungatan">Bungatan</option>
+                                                <option value="Jangkar">Jangkar</option>
+                                                <option value="Jatibanteng">Jatibanteng</option>
+                                                <option value="Kapongan">Kapongan</option>
+                                                <option value="Kendit">Kendit</option>
+                                                <option value="Mangaran">Mangaran</option>
+                                                <option value="Mlandingan">Mlandingan</option>
+                                                <option value="Panarukan">Panarukan</option>
+                                                <option value="Panji">Panji</option>
+                                                <option value="Situbondo">Situbondo</option>
+                                                <option value="Suboh">Suboh</option>
+                                                <option value="Sumbermalang">Sumbermalang</option>
+                                            </select>
+                                        </div>
+                                        <div class="mb-3 d-none" id="jenisSelection">
                                             <label for="reportJenis" class="form-label">Jenis Bantuan</label>
                                             <select class="form-select" id="reportJenis">
-                                                <option value="all">Semua Jenis</option>
-                                                <option value="Bantuan Tunai">Bantuan Tunai</option>
-                                                <option value="Bahan Pangan">Bahan Pangan</option>
-                                                <option value="Bahan Sandang">Bahan Sandang</option>
-                                                <option value="Alat Tulis">Alat Tulis</option>
-                                                <option value="Bibit Tanaman">Bibit Tanaman</option>
-                                                <option value="Obat-obatan">Obat-obatan</option>
+                                                <option value="Tunai">Tunai</option>
+                                                <option value="Beras">Beras</option>
+                                                <option value="Pupuk">Pupuk</option>
+                                                <option value="Bibit">Bibit</option>
+                                                <option value="Peralatan">Peralatan</option>
                                                 <option value="Lainnya">Lainnya</option>
-                                            </select>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="reportDesa" class="form-label">Desa</label>
-                                            <select class="form-select" id="reportDesa">
-                                                <option value="all">Semua Desa</option>
-                                                <option value="Agel">Agel</option>
-                                                <option value="Alas Bayur">Alas Bayur</option>
-                                                <option value="Alasmalang">Alasmalang</option>
-                                                <option value="Alastengah">Alastengah</option>
-                                                <option value="Arjasa">Arjasa</option>
-                                                <option value="Ardirejo">Ardirejo</option>
-                                                <option value="Asembagus">Asembagus</option>
-                                                <option value="Awar-awar">Awar-awar</option>
-                                                <option value="Awang-awang">Awang-awang</option>
-                                                <option value="Baderan">Baderan</option>
-                                                <option value="Balung">Balung</option>
-                                                <option value="Bantal">Bantal</option>
-                                                <option value="Battal">Battal</option>
-                                                <option value="Bayeman">Bayeman</option>
-                                                <option value="Besuki">Besuki</option>
-                                                <option value="Bletok">Bletok</option>
-                                                <option value="Blimbing">Blimbing</option>
-                                                <option value="Bloro">Bloro</option>
-                                                <option value="Buduan">Buduan</option>
-                                                <option value="Bugeman">Bugeman</option>
-                                                <option value="Bungatan">Bungatan</option>
-                                                <option value="Campoan">Campoan</option>
-                                                <option value="Cemara">Cemara</option>
-                                                <option value="Curah Cottok">Curah Cottok</option>
-                                                <option value="Curah Jeru">Curah Jeru</option>
-                                                <option value="Curah Kalak">Curah Kalak</option>
-                                                <option value="Curah Suri">Curah Suri</option>
-                                                <option value="Curah Tatal">Curah Tatal</option>
-                                                <option value="Dawuhan">Dawuhan</option>
-                                                <option value="Demung">Demung</option>
-                                                <option value="Duwet">Duwet</option>
-                                                <option value="Gadingan">Gadingan</option>
-                                                <option value="Gebangan">Gebangan</option>
-                                                <option value="Gelung">Gelung</option>
-                                                <option value="Gudang">Gudang</option>
-                                                <option value="Gunung Malang">Gunung Malang</option>
-                                                <option value="Gunung Putri">Gunung Putri</option>
-                                                <option value="Jangkar">Jangkar</option>
-                                                <option value="Jatisari">Jatisari</option>
-                                                <option value="Jatibanteng">Jatibanteng</option>
-                                                <option value="Jetis">Jetis</option>
-                                                <option value="Juglangan">Juglangan</option>
-                                                <option value="Kalianget">Kalianget</option>
-                                                <option value="Kalibagor">Kalibagor</option>
-                                                <option value="Kalimas">Kalimas</option>
-                                                <option value="Kalirejo">Kalirejo</option>
-                                                <option value="Kalisari">Kalisari</option>
-                                                <option value="Kandang">Kandang</option>
-                                                <option value="Kayu Putih">Kayu Putih</option>
-                                                <option value="Kayumas">Kayumas</option>
-                                                <option value="Kedungdowo">Kedungdowo</option>
-                                                <option value="Kedunglo">Kedunglo</option>
-                                                <option value="Kembangsari">Kembangsari</option>
-                                                <option value="Ketah">Ketah</option>
-                                                <option value="Ketowan">Ketowan</option>
-                                                <option value="Kilensari">Kilensari</option>
-                                                <option value="Klampokan">Klampokan</option>
-                                                <option value="Klatakan">Klatakan</option>
-                                                <option value="Kotakan">Kotakan</option>
-                                                <option value="Kumbangsari">Kumbangsari</option>
-                                                <option value="Kukusan">Kukusan</option>
-                                                <option value="Lamongan">Lamongan</option>
-                                                <option value="Landangan">Landangan</option>
-                                                <option value="Langkap">Langkap</option>
-                                                <option value="Lebeng">Lebeng</option>
-                                                <option value="Lubawang">Lubawang</option>
-                                                <option value="Mangaran">Mangaran</option>
-                                                <option value="Mimbaan">Mimbaan</option>
-                                                <option value="Mlandingan Kulon">Mlandingan Kulon</option>
-                                                <option value="Mlandingan Wetan">Mlandingan Wetan</option>
-                                                <option value="Mojodungkol">Mojodungkol</option>
-                                                <option value="Mojosari">Mojosari</option>
-                                                <option value="Olean">Olean</option>
-                                                <option value="Palangan">Palangan</option>
-                                                <option value="Panarukan">Panarukan</option>
-                                                <option value="Panji Kidul">Panji Kidul</option>
-                                                <option value="Panji Lor">Panji Lor</option>
-                                                <option value="Parante">Parante</option>
-                                                <option value="Pasir Putih">Pasir Putih</option>
-                                                <option value="Patemon">Patemon</option>
-                                                <option value="Patokan">Patokan</option>
-                                                <option value="Paowan">Paowan</option>
-                                                <option value="Peleyan">Peleyan</option>
-                                                <option value="Pesisir">Pesisir</option>
-                                                <option value="Pesanggrahan">Pesanggrahan</option>
-                                                <option value="Pategalan">Pategalan</option>
-                                                <option value="Plalangan">Plalangan</option>
-                                                <option value="Pokaan">Pokaan</option>
-                                                <option value="Rajekwesi">Rajekwesi</option>
-                                                <option value="Seletreng">Seletreng</option>
-                                                <option value="Selobanteng">Selobanteng</option>
-                                                <option value="Selomukti">Selomukti</option>
-                                                <option value="Selowogo">Selowogo</option>
-                                                <option value="Semambung">Semambung</option>
-                                                <option value="Semiring">Semiring</option>
-                                                <option value="Sliwung">Sliwung</option>
-                                                <option value="Sopet">Sopet</option>
-                                                <option value="Sumber Pinang">Sumber Pinang</option>
-                                                <option value="Sumberanyar">Sumberanyar</option>
-                                                <option value="Sumberargo">Sumberargo</option>
-                                                <option value="Sumberkolak">Sumberkolak</option>
-                                                <option value="Sumberejo">Sumberejo</option>
-                                                <option value="Sumbertengah">Sumbertengah</option>
-                                                <option value="Sumberwaru">Sumberwaru</option>
-                                                <option value="Tamankursi">Tamankursi</option>
-                                                <option value="Tamansari">Tamansari</option>
-                                                <option value="Taman">Taman</option>
-                                                <option value="Talkandang">Talkandang</option>
-                                                <option value="Tanjung Glugur">Tanjung Glugur</option>
-                                                <option value="Tanjung Kamal">Tanjung Kamal</option>
-                                                <option value="Tanjung Pecinan">Tanjung Pecinan</option>
-                                                <option value="Tambak Ukir">Tambak Ukir</option>
-                                                <option value="Telempong">Telempong</option>
-                                                <option value="Tenggir">Tenggir</option>
-                                                <option value="Tepos">Tepos</option>
-                                                <option value="Tokelan">Tokelan</option>
-                                                <option value="Tlogosari">Tlogosari</option>
-                                                <option value="Trigonco">Trigonco</option>
-                                                <option value="Trebungan">Trebungan</option>
-                                                <option value="Widoropayung">Widoropayung</option>
-                                                <option value="Wonokoyo">Wonokoyo</option>
-                                                <option value="Wonorejo">Wonorejo</option>
-                                                <option value="Wringinanom">Wringinanom</option>
                                             </select>
                                         </div>
                                         <div class="mb-3">
@@ -1729,37 +1594,81 @@
                                             <select class="form-select" id="reportFormat">
                                                 <option value="pdf">PDF</option>
                                                 <option value="excel">Excel</option>
+                                                <option value="print">Cetak Langsung</option>
                                             </select>
                                         </div>
-                                        <button class="btn btn-primary w-100" id="generateReport">
-                                            <i class="fas fa-file-export me-1"></i> Generate Laporan
+                                        <button class="btn btn-primary w-100" id="generateReportBtn">
+                                            <i class="fas fa-file-export me-1"></i> Buat Laporan
                                         </button>
                                     </div>
                                 </div>
                             </div>
+                            
                             <div class="col-md-6">
-                                <div class="card">
-                                    <div class="card-header">
-                                        <i class="fas fa-info-circle me-2"></i> Informasi Laporan
-                                    </div>
+                                <div class="card mb-4">
+                                    <div class="card-header">Template Laporan</div>
                                     <div class="card-body">
-                                        <div class="alert alert-info">
-                                            <h6><i class="fas fa-lightbulb me-2"></i> Tips Laporan</h6>
-                                            <ul class="mb-0 ps-3">
-                                                <li>Pilih tahun, jenis bantuan, dan desa untuk memfilter laporan</li>
-                                                <li>Gunakan format PDF untuk laporan yang siap dicetak</li>
-                                                <li>Gunakan format Excel untuk analisis data lebih lanjut</li>
-                                                <li>Laporan akan mencakup semua data sesuai dengan filter yang dipilih</li>
-                                            </ul>
-                                        </div>
-                                        <div class="alert alert-warning mt-3">
-                                            <h6><i class="fas fa-exclamation-triangle me-2"></i> Perhatian</h6>
-                                            <p class="mb-0">Pastikan data yang akan dilaporkan sudah benar. Laporan yang sudah digenerate tidak dapat dibatalkan.</p>
+                                        <div class="mb-3">
+                                            <label class="form-label">Pilih Template</label>
+                                            <div class="list-group">
+                                                <a href="#" class="list-group-item list-group-item-action">
+                                                    <div class="d-flex w-100 justify-content-between">
+                                                        <h6 class="mb-1">Laporan Bulanan Standar</h6>
+                                                        <small class="text-muted">PDF</small>
+                                                    </div>
+                                                    <p class="mb-1 small">Laporan ringkasan data bantuan per bulan</p>
+                                                </a>
+                                                <a href="#" class="list-group-item list-group-item-action">
+                                                    <div class="d-flex w-100 justify-content-between">
+                                                        <h6 class="mb-1">Laporan Tahunan Komprehensif</h6>
+                                                        <small class="text-muted">Excel</small>
+                                                    </div>
+                                                    <p class="mb-1 small">Laporan detail semua data per tahun</p>
+                                                </a>
+                                                <a href="#" class="list-group-item list-group-item-action">
+                                                    <div class="d-flex w-100 justify-content-between">
+                                                        <h6 class="mb-1">Laporan per Kecamatan</h6>
+                                                        <small class="text-muted">PDF</small>
+                                                    </div>
+                                                    <p class="mb-1 small">Distribusi bantuan per kecamatan</p>
+                                                </a>
+                                                <a href="#" class="list-group-item list-group-item-action">
+                                                    <div class="d-flex w-100 justify-content-between">
+                                                        <h6 class="mb-1">Laporan per Jenis Bantuan</h6>
+                                                        <small class="text-muted">Excel</small>
+                                                    </div>
+                                                    <p class="mb-1 small">Statistik bantuan berdasarkan jenis</p>
+                                                </a>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
+                        
+                        <div class="card">
+                            <div class="card-header">Riwayat Laporan</div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>Tanggal</th>
+                                                <th>Jenis Laporan</th>
+                                                <th>Parameter</th>
+                                                <th>Format</th>
+                                                <th>Aksi</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td colspan="5" class="text-center">Belum ada riwayat laporan</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            </div>
                     </div>
                     
                     <!-- Pengaturan -->
@@ -1771,99 +1680,123 @@
                                 <div class="card mb-4">
                                     <div class="card-header">Pengaturan Umum</div>
                                     <div class="card-body">
-                                        <div class="mb-3">
-                                            <label for="appName" class="form-label">Nama Aplikasi</label>
-                                            <input type="text" class="form-control" id="appName" value="BARJAS - Sistem Bantuan Terpadu">
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="appTheme" class="form-label">Tema Aplikasi</label>
-                                            <select class="form-select" id="appTheme">
-                                                <option value="default" selected>Default (Biru)</option>
-                                                <option value="green">Hijau</option>
-                                                <option value="orange">Oranye</option>
-                                                <option value="purple">Ungu</option>
-                                            </select>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="itemsPerPage" class="form-label">Item per Halaman</label>
-                                            <select class="form-select" id="itemsPerPage">
-                                                <option value="10">10 Item</option>
-                                                <option value="25" selected>25 Item</option>
-                                                <option value="50">50 Item</option>
-                                                <option value="100">100 Item</option>
-                                            </select>
-                                        </div>
-                                        <button class="btn btn-primary w-100">
-                                            <i class="fas fa-save me-1"></i> Simpan Pengaturan
-                                        </button>
+                                        <form id="settingsForm">
+                                            <div class="mb-3">
+                                                <label for="appName" class="form-label">Nama Aplikasi</label>
+                                                <input type="text" class="form-control" id="appName" value="BARJAS">
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="appSubtitle" class="form-label">Subjudul Aplikasi</label>
+                                                <input type="text" class="form-control" id="appSubtitle" value="Sistem Bantuan Terpadu">
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="defaultTahun" class="form-label">Tahun Default</label>
+                                                <select class="form-select" id="defaultTahun">
+                                                    <!-- Options akan diisi oleh JavaScript -->
+                                                </select>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="itemsPerPage" class="form-label">Item per Halaman</label>
+                                                <select class="form-select" id="itemsPerPage">
+                                                    <option value="10">10</option>
+                                                    <option value="25" selected>25</option>
+                                                    <option value="50">50</option>
+                                                    <option value="100">100</option>
+                                                </select>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="backupInterval" class="form-label">Interval Backup (hari)</label>
+                                                <input type="number" class="form-control" id="backupInterval" value="7" min="1">
+                                            </div>
+                                            <div class="mb-3 form-check form-switch">
+                                                <input class="form-check-input" type="checkbox" id="autoSave" checked>
+                                                <label class="form-check-label" for="autoSave">Auto-save Data</label>
+                                            </div>
+                                            <div class="mb-3 form-check form-switch">
+                                                <input class="form-check-input" type="checkbox" id="notifications" checked>
+                                                <label class="form-check-label" for="notifications">Notifikasi</label>
+                                            </div>
+                                            <button type="submit" class="btn btn-primary">
+                                                <i class="fas fa-save me-1"></i> Simpan Pengaturan
+                                            </button>
+                                        </form>
                                     </div>
                                 </div>
                             </div>
                             
                             <div class="col-md-6">
                                 <div class="card mb-4">
-                                    <div class="card-header">Manajemen Data</div>
+                                    <div class="card-header">Keamanan</div>
                                     <div class="card-body">
-                                        <div class="mb-3">
-                                            <label for="backupData" class="form-label">Backup Data</label>
-                                            <div class="d-grid gap-2">
-                                                <button class="btn btn-outline-primary" id="backupBtn">
-                                                    <i class="fas fa-download me-1"></i> Backup Data ke JSON
-                                                </button>
+                                        <form id="securityForm">
+                                            <div class="mb-3">
+                                                <label for="securityCode" class="form-label">Kode Keamanan</label>
+                                                <input type="password" class="form-control" id="securityCode" value="1234">
+                                                <div class="form-text">Kode ini digunakan untuk akses ke fitur sensitif</div>
                                             </div>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="restoreData" class="form-label">Restore Data</label>
-                                            <input type="file" class="form-control" id="restoreData" accept=".json">
-                                        </div>
-                                        <div class="mb-3">
-                                            <label class="form-label">Reset Data</label>
-                                            <div class="d-grid gap-2">
-                                                <button class="btn btn-outline-danger" id="resetDataBtn">
-                                                    <i class="fas fa-trash-alt me-1"></i> Hapus Semua Data
-                                                </button>
+                                            <div class="mb-3">
+                                                <label for="newPassword" class="form-label">Password Baru</label>
+                                                <input type="password" class="form-control" id="newPassword">
                                             </div>
+                                            <div class="mb-3">
+                                                <label for="confirmPassword" class="form-label">Konfirmasi Password</label>
+                                                <input type="password" class="form-control" id="confirmPassword">
+                                                <div class="error-message" id="passwordError">Password tidak cocok</div>
+                                            </div>
+                                                                                      <button type="submit" class="btn btn-primary">
+                                                <i class="fas fa-lock me-1"></i> Update Keamanan
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                                
+                                <div class="card mb-4">
+                                    <div class="card-header">Pemeliharaan</div>
+                                    <div class="card-body">
+                                        <div class="d-grid gap-2">
+                                            <button class="btn btn-outline-secondary" id="clearCacheBtn">
+                                                <i class="fas fa-broom me-1"></i> Bersihkan Cache
+                                            </button>
+                                            <button class="btn btn-outline-info" id="checkUpdateBtn">
+                                                <i class="fas fa-sync-alt me-1"></i> Periksa Pembaruan
+                                            </button>
+                                            <button class="btn btn-outline-warning" id="rebuildIndexBtn">
+                                                <i class="fas fa-database me-1"></i> Perbaiki Index Data
+                                            </button>
+                                            <button class="btn btn-outline-danger" id="resetAppBtn">
+                                                <i class="fas fa-trash-alt me-1"></i> Reset Aplikasi
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                        
-                        <div class="card">
-                            <div class="card-header">Informasi Sistem</div>
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <ul class="list-group list-group-flush">
-                                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                                Versi Aplikasi
-                                                <span class="badge bg-primary rounded-pill">1.2.0</span>
-                                            </li>
-                                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                                Total Data Tersimpan
-                                                <span class="badge bg-primary rounded-pill" id="totalDataCount">0</span>
-                                            </li>
-                                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                                Browser
-                                                <span class="badge bg-primary rounded-pill" id="browserInfo">Chrome</span>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <ul class="list-group list-group-flush">
-                                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                                Tanggal Hari Ini
-                                                <span class="badge bg-primary rounded-pill" id="currentDate">01/01/2023</span>
-                                            </li>
-                                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                                Ukuran Penyimpanan
-                                                <span class="badge bg-primary rounded-pill" id="storageSize">0 KB</span>
-                                            </li>
-                                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                                Status
-                                                <span class="badge bg-success rounded-pill">Aktif</span>
-                                            </li>
-                                        </ul>
+                                
+                                <div class="card">
+                                    <div class="card-header">Info Aplikasi</div>
+                                    <div class="card-body">
+                                        <div class="mb-2">
+                                            <strong>Versi:</strong> 1.2.0
+                                        </div>
+                                        <div class="mb-2">
+                                            <strong>Terakhir Diperbarui:</strong> 15 Desember 2023
+                                        </div>
+                                        <div class="mb-2">
+                                            <strong>Ukuran Database:</strong> <span id="dbSize">0 MB</span>
+                                        </div>
+                                        <div class="mb-2">
+                                            <strong>Total Data:</strong> <span id="totalDataSettings">0</span> records
+                                        </div>
+                                        <div class="mb-2">
+                                            <strong>Browser:</strong> <span id="browserInfo"></span>
+                                        </div>
+                                        <div class="mb-2">
+                                            <strong>LocalStorage:</strong> <span id="localStorageStatus">Supported</span>
+                                        </div>
+                                        <hr>
+                                        <div class="text-center">
+                                            <button class="btn btn-sm btn-outline-primary" id="aboutBtn">
+                                                <i class="fas fa-info-circle me-1"></i> Tentang Aplikasi
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -1872,7 +1805,7 @@
                     
                     <!-- Bantuan -->
                     <div class="tab-pane fade" id="v-pills-bantuan" role="tabpanel" aria-labelledby="v-pills-bantuan-tab">
-                        <h2 class="section-title">Bantuan & Panduan</h2>
+                        <h2 class="section-title">Bantuan dan Panduan</h2>
                         
                         <div class="row">
                             <div class="col-md-6">
@@ -1882,7 +1815,7 @@
                                         <div class="accordion" id="helpAccordion">
                                             <div class="accordion-item">
                                                 <h2 class="accordion-header">
-                                                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#helpOne" aria-expanded="true" aria-controls="helpOne">
+                                                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#helpOne">
                                                         Cara Input Data
                                                     </button>
                                                 </h2>
@@ -1891,49 +1824,62 @@
                                                         <ol>
                                                             <li>Buka menu <strong>Input Data</strong></li>
                                                             <li>Isi semua field yang wajib diisi (ditandai dengan *)</li>
-                                                            <li>Pastikan NIK terdiri dari 16 digit angka</li>
-                                                            <li>Pilih desa dari dropdown yang tersedia</li>
-                                                            <li>Pilih tahun dari opsi 2020-2090</li>
-                                                            <li>Klik tombol <strong>Simpan Data</strong></li>
+                                                            <li>Klik tombol <strong>Generate</strong> untuk kode validasi</li>
+                                                            <li>Tekan tombol <strong>Simpan Data</strong> untuk menyimpan</li>
                                                         </ol>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="accordion-item">
                                                 <h2 class="accordion-header">
-                                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#helpTwo" aria-expanded="false" aria-controls="helpTwo">
-                                                        Cara Melihat Data
+                                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#helpTwo">
+                                                        Cara Filter Data
                                                     </button>
                                                 </h2>
                                                 <div id="helpTwo" class="accordion-collapse collapse" data-bs-parent="#helpAccordion">
                                                     <div class="accordion-body">
-                                                        <ol>
-                                                            <li>Buka menu <strong>Data Bantuan</strong></li>
-                                                            <li>Gunakan filter untuk menyaring data berdasarkan tahun, jenis bantuan, atau desa</li>
-                                                            <li>Gunakan kotak pencarian untuk mencari data berdasarkan nama atau NIK</li>
-                                                            <li>Gunakan pagination untuk navigasi halaman data</li>
-                                                        </ol>
+                                                        <p>Anda dapat memfilter data berdasarkan:</p>
+                                                        <ul>
+                                                            <li>Tahun anggaran</li>
+                                                            <li>Kecamatan</li>
+                                                            <li>Jenis bantuan</li>
+                                                            <li>Kata kunci pencarian</li>
+                                                        </ul>
+                                                        <p>Gunakan tombol <strong>Terapkan Filter</strong> untuk menerapkan filter yang dipilih.</p>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="accordion-item">
                                                 <h2 class="accordion-header">
-                                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#helpThree" aria-expanded="false" aria-controls="helpThree">
-                                                        Cara Membuat Laporan
+                                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#helpThree">
+                                                        Cara Ekspor Data
                                                     </button>
                                                 </h2>
                                                 <div id="helpThree" class="accordion-collapse collapse" data-bs-parent="#helpAccordion">
                                                     <div class="accordion-body">
-                                                        <ol>
-                                                            <li>Buka menu <strong>Laporan</strong></li>
-                                                            <li>Pilih tahun, jenis bantuan, dan desa yang ingin dilaporkan</li>
-                                                            <li>Pilih format laporan (PDF atau Excel)</li>
-                                                            <li>Klik tombol <strong>Generate Laporan</strong></li>
-                                                            <li>Tunggu hingga proses selesai dan laporan akan diunduh secara otomatis</li>
-                                                        </ol>
+                                                        <p>Data dapat diekspor dalam format:</p>
+                                                        <ul>
+                                                            <li><strong>Excel</strong> - untuk analisis data lebih lanjut</li>
+                                                            <li><strong>PDF</strong> - untuk laporan dan dokumentasi</li>
+                                                            <li><strong>Cetak</strong> - untuk mencetak langsung</li>
+                                                        </ul>
+                                                        <p>Pilih format yang diinginkan lalu klik tombol ekspor yang sesuai.</p>
                                                     </div>
                                                 </div>
                                             </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="card mb-4">
+                                    <div class="card-header">Video Tutorial</div>
+                                    <div class="card-body">
+                                        <div class="text-center p-3 bg-light rounded">
+                                            <i class="fas fa-video fa-3x text-secondary mb-3"></i>
+                                            <p>Video tutorial akan segera tersedia</p>
+                                            <button class="btn btn-outline-primary btn-sm" disabled>
+                                                <i class="fas fa-play-circle me-1"></i> Putar Tutorial
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
@@ -1946,56 +1892,66 @@
                                         <div class="accordion" id="faqAccordion">
                                             <div class="accordion-item">
                                                 <h2 class="accordion-header">
-                                                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faqOne" aria-expanded="true" aria-controls="faqOne">
-                                                        Bagaimana cara mengubah data yang sudah terinput?
+                                                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faqOne">
+                                                        Bagaimana cara backup data?
                                                     </button>
                                                 </h2>
                                                 <div id="faqOne" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
                                                     <div class="accordion-body">
-                                                        Untuk mengubah data yang sudah terinput, buka menu <strong>Data Bantuan</strong>, cari data yang ingin diubah, lalu klik tombol <strong>Edit</strong> pada kolom aksi. Setelah selesai mengubah data, klik tombol <strong>Simpan Perubahan</strong>.
+                                                        Untuk backup data, buka menu <strong>Data Bantuan</strong> lalu klik tombol <strong>Backup</strong>. File backup akan diunduh secara otomatis.
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="accordion-item">
                                                 <h2 class="accordion-header">
-                                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqTwo" aria-expanded="false" aria-controls="faqTwo">
-                                                        Apa yang harus dilakukan jika lupa menyimpan data?
+                                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqTwo">
+                                                        Apa fungsi kode validasi?
                                                     </button>
                                                 </h2>
                                                 <div id="faqTwo" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
                                                     <div class="accordion-body">
-                                                        Data yang sudah diinput akan otomatis tersimpan di browser Anda. Namun, disarankan untuk selalu melakukan backup data secara berkala dengan menggunakan fitur <strong>Backup Data</strong> di menu Pengaturan.
+                                                        Kode validasi digunakan untuk memverifikasi keaslian data dan mencegah duplikasi. Kode ini digenerate secara otomatis dan unik untuk setiap entri data.
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="accordion-item">
                                                 <h2 class="accordion-header">
-                                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqThree" aria-expanded="false" aria-controls="faqThree">
-                                                        Bagaimana cara mencetak data individual?
+                                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqThree">
+                                                        Data saya hilang, bagaimana mengembalikannya?
                                                     </button>
                                                 </h2>
                                                 <div id="faqThree" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
                                                     <div class="accordion-body">
-                                                        Untuk mencetak data individual, buka menu <strong>Data Bantuan</strong>, cari data yang ingin dicetak, lalu klik tombol <strong>Cetak</strong> pada kolom aksi. Data akan dicetak dalam format yang rapi dan siap digunakan.
+                                                        Jika Anda telah melakukan backup sebelumnya, Anda dapat mengembalikan data dengan menggunakan fitur <strong>Restore</strong> di menu Data Bantuan. Jika tidak, hubungi developer untuk bantuan lebih lanjut.
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                        
-                        <div class="card">
-                            <div class="card-header">Dukungan Teknis</div>
-                            <div class="card-body">
-                                <p>Jika Anda mengalami kendala atau memiliki pertanyaan lebih lanjut, silakan hubungi tim dukungan teknis kami:</p>
-                                <ul>
-                                    <li>Email: <a href="mailto:support@barjas.app">support@barjas.app</a></li>
-                                    <li>Telepon: (021) 1234-5678</li>
-                                    <li>WhatsApp: <a href="https://wa.me/628123456789" class="whatsapp-link">+62 812-3456-789</a></li>
-                                </ul>
-                                <p class="mb-0">Jam operasional: Senin - Jumat, 08:00 - 17:00 WIB</p>
+                                
+                                <div class="card">
+                                    <div class="card-header">Dukungan Teknis</div>
+                                    <div class="card-body">
+                                        <p>Untuk bantuan teknis dan pertanyaan lebih lanjut, hubungi:</p>
+                                        <div class="developer-info">
+                                            <h6>Developer Support</h6>
+                                            <div class="developer-contact">
+                                                <p><i class="fas fa-envelope me-2"></i> Email: support@barjas.app</p>
+                                                <p><i class="fab fa-whatsapp me-2"></i> WhatsApp: +62 812-3456-7890</p>
+                                                <p><i class="fas fa-clock me-2"></i> Waktu Respons: 1-2 hari kerja</p>
+                                            </div>
+                                        </div>
+                                        <div class="text-center mt-3">
+                                            <button class="btn btn-outline-success me-2" id="contactSupportBtn">
+                                                <i class="fas fa-headset me-1"></i> Hubungi Support
+                                            </button>
+                                            <button class="btn btn-outline-info" id="requestFeatureBtn">
+                                                <i class="fas fa-lightbulb me-1"></i> Request Fitur
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -2004,7 +1960,7 @@
         </div>
         
         <div class="copyright">
-            &copy; 2023 BARJAS - Sistem Bantuan Terpadu. Hak Cipta Dilindungi.
+            &copy; 2023 BARJAS - Sistem Bantuan Terpadu. All rights reserved.
         </div>
     </div>
     
@@ -2013,92 +1969,98 @@
         <i class="fas fa-plus"></i>
     </div>
     
-    <!-- Toast Notification -->
-    <div class="toast align-items-center text-white bg-success border-0 position-fixed top-0 end-0 m-3" role="alert" aria-live="assertive" aria-atomic="true" id="successToast">
-        <div class="d-flex">
-            <div class="toast-body">
-                <i class="fas fa-check-circle me-2"></i> <span id="toastMessage">Operasi berhasil dilakukan</span>
-            </div>
-            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+    <!-- Notification Toast -->
+    <div class="toast notification-toast" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="true" data-bs-delay="5000">
+        <div class="toast-header">
+            <strong class="me-auto" id="toastTitle">Notification</strong>
+            <small id="toastTime">Just now</small>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
         </div>
-    </div>
-    
-    <div class="toast align-items-center text-white bg-danger border-0 position-fixed top-0 end-0 m-3" role="alert" aria-live="assertive" aria-atomic="true" id="errorToast">
-        <div class="d-flex">
-            <div class="toast-body">
-                <i class="fas fa-exclamation-circle me-2"></i> <span id="errorToastMessage">Terjadi kesalahan</span>
-            </div>
-            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        <div class="toast-body" id="toastMessage">
+            Operation completed successfully.
         </div>
     </div>
     
     <!-- Welcome Modal -->
-    <div class="modal fade welcome-modal" id="welcomeModal" tabindex="-1" aria-labelledby="welcomeModalLabel" aria-hidden="true">
+    <div class="modal fade welcome-modal" id="welcomeModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="welcome-header">
                     <i class="fas fa-hands-helping welcome-icon"></i>
                     <h3 class="welcome-title">Selamat Datang di BARJAS</h3>
-                    <p>Sistem Bantuan Terpadu</p>
                 </div>
                 <div class="welcome-body">
-                    <p>Aplikasi BARJAS membantu Anda mengelola data bantuan dengan mudah dan efisien.</p>
-                    <div class="countdown-timer" id="countdownTimer">
-                        Modal akan tertutup otomatis dalam <span id="countdown">5</span> detik
+                    <h5>Sistem Bantuan Terpadu</h5>
+                    <p>Aplikasi untuk mengelola data bantuan dengan mudah dan efisien.</p>
+                    <div class="countdown-timer">
+                        Aplikasi siap digunakan dalam: <span id="countdown">5</span> detik
                     </div>
                 </div>
                 <div class="welcome-footer">
-                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Mulai Sekarang</button>
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal" id="skipCountdownBtn">
+                        Lewati dan Mulai Sekarang
+                    </button>
                 </div>
             </div>
         </div>
     </div>
     
     <!-- Login Modal -->
-    <div class="modal fade login-modal" id="loginModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+    <div class="modal fade login-modal" id="loginModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="login-header">
                     <i class="fas fa-lock login-icon"></i>
                     <h3 class="login-title">Akses Terkunci</h3>
-                    <p class="login-subtitle">Masukkan kode akses untuk melanjutkan</p>
+                    <p class="login-subtitle">Masukkan kode keamanan untuk melanjutkan</p>
                 </div>
                 <div class="login-body">
                     <form id="loginForm">
                         <div class="login-form-group">
-                            <label for="accessCode" class="login-form-label"><i class="fas fa-key"></i> Kode Akses</label>
+                            <label for="loginPassword" class="login-form-label">
+                                <i class="fas fa-key"></i> Kode Keamanan
+                            </label>
                             <div class="input-group">
-                                <input type="password" class="form-control login-form-control" id="accessCode" placeholder="Masukkan kode akses" required>
+                                <input type="password" class="form-control login-form-control" id="loginPassword" placeholder="Masukkan kode keamanan" required>
                                 <span class="input-group-text" id="togglePassword">
                                     <i class="fas fa-eye"></i>
                                 </span>
                             </div>
-                            <div class="login-attempts-count" id="attemptsCount">
-                                Percobaan: <span id="attempts">0</span>/3
-                            </div>
                         </div>
-                        <button type="submit" class="btn btn-login" id="loginBtn">
-                            <i class="fas fa-unlock me-2"></i> Buka Akses
+                        
+                        <div id="loginError" class="alert alert-danger d-none" role="alert">
+                            <i class="fas fa-exclamation-circle me-2"></i> Kode keamanan salah!
+                        </div>
+                        
+                        <div id="loginAttempts" class="login-attempts-count d-none">
+                            Percobaan tersisa: <span id="attemptsCount">3</span>
+                        </div>
+                        
+                        <div id="loginBlocked" class="login-blocked-message d-none">
+                            <i class="fas fa-ban me-2"></i> Akses diblokir selama <span id="blockTime">5</span> menit
+                        </div>
+                        
+                        <button type="submit" class="btn btn-login" id="loginSubmitBtn">
+                            <span class="spinner-border spinner-border-sm d-none" id="loginSpinner" role="status" aria-hidden="true"></span>
+                            <i class="fas fa-unlock-alt me-2 d-none" id="loginIcon"></i>
+                            <span id="loginText">Masuk</span>
                         </button>
                     </form>
                     
-                    <div class="login-blocked-message" id="blockedMessage" style="display: none;">
-                        <i class="fas fa-ban me-2"></i> Akses terkunci selama <span id="countdown" class="login-countdown">30</span> detik
-                    </div>
-                    
                     <div class="login-security-notice">
-                        <i class="fas fa-info-circle me-1"></i> Kode akses default: <strong>123456</strong>
-                    </div>
+                        <i class="fas fa-info-circle me-2"></i> Hubungi administrator jika lupa kode keamanan
+                    </div>                 
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- JavaScript Libraries -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/locales/bootstrap-datepicker.id.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
+    <!-- Main Application Script -->
     <script>
         // Inisialisasi variabel global
         let bantuanData = JSON.parse(localStorage.getItem('bantuanData')) || [];
