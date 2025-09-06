@@ -11,6 +11,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
+        /* Semua style CSS yang asli tetap dipertahankan di sini */
         :root {
             --primary-color: #0d47a1;
             --secondary-color: #00695c;
@@ -2067,6 +2068,21 @@
         let blockedUntil = parseInt(localStorage.getItem('blockedUntil')) || 0;
         const CORRECT_CODE = "123456"; // Kode keamanan default
         
+        // Daftar desa yang diminta
+        const desaList = [
+            "Agel", "Alas Bayur", "Alasmalang", "Alastengah", "Arjasa", "Ardirejo", "Asembagus", 
+            "Awar-awar", "Awang-awang", "Baderan", "Balung", "Bantal", "Battal", "Bayeman", "Besuki", "Bletok", "Blimbing", "Bloro", "Buduan", "Bugeman", "Bungatan", 
+            "Campoan", "Cemara", "Curah Cottok", "Curah Jeru", "Curah Kalak", "Curah Suri", "Curah Tatal", "Dawuhan", "Demung", "Duwet", "Gadingan", "Gebangan", 
+            "Gelung", "Gudang", "Gunung Malang", "Gunung Putri", "Jangkar", "Jatisari", "Jatibanteng", "Jetis", "Juglangan", "Kalianget", "Kalibagor", "Kalimas", 
+            "Kalirejo", "Kalisari", "Kandang", "Kayu Putih", "Kayumas", "Kedungdowo", "Kedunglo", "Kembangsari", "Ketah", "Ketowan", "Kilensari", "Klampokan", 
+            "Klatakan", "Kotakan", "Kumbangsari", "Kukusan", "Lamongan", "Landangan", "Langkap", "Lebeng", "Lubawang", "Mangaran", "Mimbaan", "Mlandingan Kulon", 
+            "Mlandingan Wetan", "Mojodungkol", "Mojosari", "Olean", "Palangan", "Panarukan", "Panji Kidul", "Panji Lor", "Parante", "Pasir Putih", "Patemon", 
+            "Patokan", "Paowan", "Peleyan", "Pesisir", "Pesanggrahan", "Pategalan", "Patemon", "Plalangan", "Pokaan", "Rajekwesi", "Seletreng", "Selobanteng", 
+            "Selomukti", "Selowogo", "Semambung", "Semiring", "Sliwung", "Sopet", "Sumber Pinang", "Sumberanyar", "Sumberargo", "Sumberkolak", "Sumberejo", 
+            "Sumbertengah", "Sumberwaru", "Tamankursi", "Tamansari", "Taman", "Talkandang", "Tanjung Glugur", "Tanjung Kamal", "Tanjung Pecinan", "Tambak Ukir", 
+            "Telempong", "Tenggir", "Tepos", "Tokelan", "Tlogosari", "Trigonco", "Trebungan", "Widoropayung", "Wonokoyo", "Wonorejo", "Wringinanom"
+        ];
+        
         // DOM Elements
         const mobileMenuBtn = document.getElementById('mobileMenuBtn');
         const sidebarMenu = document.getElementById('sidebarMenu');
@@ -2333,6 +2349,66 @@
             
             // Update system info
             updateSystemInfo();
+            
+            // Populate year options
+            populateYearOptions();
+            
+            // Populate desa options
+            populateDesaOptions();
+        }
+        
+        // Populate year options (2020-2090)
+        function populateYearOptions() {
+            const startYear = 2020;
+            const endYear = 2090;
+            
+            // Get all year select elements
+            const yearSelects = [
+                'tahunAnggaran', 'filterTahun', 'statTahun', 'reportYear', 'defaultTahun'
+            ];
+            
+            yearSelects.forEach(selectId => {
+                const selectElement = document.getElementById(selectId);
+                if (selectElement) {
+                    // Clear existing options except the first one
+                    const firstOption = selectElement.options[0];
+                    selectElement.innerHTML = '';
+                    selectElement.appendChild(firstOption);
+                    
+                    // Add years from 2020 to 2090
+                    for (let year = startYear; year <= endYear; year++) {
+                        const option = document.createElement('option');
+                        option.value = year;
+                        option.textContent = year;
+                        selectElement.appendChild(option);
+                    }
+                    
+                    // Set current year as selected if it's tahunAnggaran
+                    if (selectId === 'tahunAnggaran') {
+                        const currentYear = new Date().getFullYear();
+                        selectElement.value = currentYear;
+                    }
+                }
+            });
+        }
+        
+        // Populate desa options
+        function populateDesaOptions() {
+            const desaSelect = document.getElementById('desa');
+            if (desaSelect) {
+                // Clear existing options except the first one
+                const firstOption = desaSelect.options[0];
+                desaSelect.innerHTML = '';
+                desaSelect.appendChild(firstOption);
+                
+                // Add all desa options
+                desaList.forEach(desa => {
+                    const option = document.createElement('option');
+                    option.value = desa;
+                    option.textContent = desa;
+                    desaSelect.appendChild(option);
+                });
+            }
         }
         
         // Setup event listeners
@@ -2358,30 +2434,6 @@
                 document.getElementById('kodeValidasi').value = code;
             });
             
-            // Fill tahun options
-            const currentYear = new Date().getFullYear();
-            const tahunAnggaran = document.getElementById('tahunAnggaran');
-            const filterTahun = document.getElementById('filterTahun');
-            const statTahun = document.getElementById('statTahun');
-            const reportYear = document.getElementById('reportYear');
-            const defaultTahun = document.getElementById('defaultTahun');
-            
-            for (let year = currentYear - 5; year <= currentYear + 5; year++) {
-                const option = document.createElement('option');
-                option.value = year;
-                option.textContent = year;
-                
-                if (year === currentYear) {
-                    option.selected = true;
-                }
-                
-                tahunAnggaran.appendChild(option.cloneNode(true));
-                filterTahun.appendChild(option.cloneNode(true));
-                statTahun.appendChild(option.cloneNode(true));
-                reportYear.appendChild(option.cloneNode(true));
-                defaultTahun.appendChild(option.cloneNode(true));
-            }
-            
             // Kecamatan change event
             document.getElementById('kecamatan').addEventListener('change', function() {
                 const kecamatan = this.value;
@@ -2392,11 +2444,7 @@
                 
                 // Add desa options based on kecamatan
                 if (kecamatan) {
-                    // This would typically come from a database
-                    const desaList = [
-                        "Desa A", "Desa B", "Desa C", "Desa D", "Desa E"
-                    ];
-                    
+                    // Add all desa options
                     desaList.forEach(desa => {
                         const option = document.createElement('option');
                         option.value = desa;
@@ -2731,7 +2779,7 @@
                                     </div>
                                     <div class="mb-3">
                                         <label for="editNik" class="form-label">NIK</label>
-                                        <input type="text" class="form-control" id="editNik" value="${data.nik}" maxlength="16" required>
+                                        <input type="text" class="formControl" id="editNik" value="${data.nik}" maxlength="16" required>
                                     </div>
                                     <div class="mb-3">
                                         <label for="editWhatsapp" class="form-label">WhatsApp</label>
@@ -2805,7 +2853,7 @@
                                             <option value="Lainnya" ${data.jenisBantuan === 'Lainnya' ? 'selected' : ''}>Lainnya</option>
                                         </select>
                                     </div>
-                                    <div class="mb-3">
+                                                                        <div class="mb-3">
                                         <label for="editNamaBantuan" class="form-label">Nama Bantuan</label>
                                         <input type="text" class="form-control" id="editNamaBantuan" value="${data.namaBantuan}">
                                     </div>
@@ -2829,30 +2877,18 @@
                                         <label for="editTanggalTerima" class="form-label">Tanggal Terima</label>
                                         <input type="date" class="form-control" id="editTanggalTerima" value="${data.tanggalTerima}" required>
                                     </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6">
                                     <div class="mb-3">
                                         <label for="editNamaPetugas" class="form-label">Nama Petugas</label>
                                         <input type="text" class="form-control" id="editNamaPetugas" value="${data.namaPetugas}">
                                     </div>
-                                </div>
-                                <div class="col-md-6">
                                     <div class="mb-3">
-                                        <label for="editDriveLink" class="form-label">Link Google Drive</label>
+                                        <label for="editDriveLink" class="form-label">Link Drive</label>
                                         <input type="url" class="form-control" id="editDriveLink" value="${data.driveLink}">
                                     </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6">
                                     <div class="mb-3">
                                         <label for="editKodeValidasi" class="form-label">Kode Validasi</label>
                                         <input type="text" class="form-control" id="editKodeValidasi" value="${data.kodeValidasi}" required>
                                     </div>
-                                </div>
-                                <div class="col-md-6">
                                     <div class="mb-3">
                                         <label for="editKeterangan" class="form-label">Keterangan</label>
                                         <textarea class="form-control" id="editKeterangan" rows="2">${data.keterangan}</textarea>
@@ -2869,57 +2905,36 @@
                 `;
                 
                 // Create and show modal
-                const modal = showModal('Edit Data', modalContent);
+                const editModal = showModal('Edit Data', modalContent);
                 
-                // Fill tahun options
-                const currentYear = new Date().getFullYear();
-                const editTahunAnggaran = document.getElementById('editTahunAnggaran');
-                editTahunAnggaran.innerHTML = '';
+                // Populate tahun anggaran options
+                const tahunSelect = document.getElementById('editTahunAnggaran');
+                const startYear = 2020;
+                const endYear = 2090;
                 
-                for (let year = currentYear - 5; year <= currentYear + 5; year++) {
+                for (let year = startYear; year <= endYear; year++) {
                     const option = document.createElement('option');
                     option.value = year;
                     option.textContent = year;
-                    
                     if (year == data.tahunAnggaran) {
                         option.selected = true;
                     }
-                    
-                    editTahunAnggaran.appendChild(option);
+                    tahunSelect.appendChild(option);
                 }
                 
-                // Fill desa options based on kecamatan
-                const editKecamatan = document.getElementById('editKecamatan');
-                const editDesa = document.getElementById('editDesa');
-                
-                editKecamatan.addEventListener('change', function() {
-                    const kecamatan = this.value;
-                    editDesa.innerHTML = '<option value="">Pilih Desa</option>';
-                    
-                    if (kecamatan) {
-                        // This would typically come from a database
-                        const desaList = [
-                            "Desa A", "Desa B", "Desa C", "Desa D", "Desa E"
-                        ];
-                        
-                        desaList.forEach(desa => {
-                            const option = document.createElement('option');
-                            option.value = desa;
-                            option.textContent = desa;
-                            editDesa.appendChild(option);
-                        });
+                // Populate desa options
+                const desaSelect = document.getElementById('editDesa');
+                desaList.forEach(desa => {
+                    const option = document.createElement('option');
+                    option.value = desa;
+                    option.textContent = desa;
+                    if (desa === data.desa) {
+                        option.selected = true;
                     }
+                    desaSelect.appendChild(option);
                 });
                 
-                // Trigger change event to populate desa options
-                editKecamatan.dispatchEvent(new Event('change'));
-                
-                // Set the correct desa value
-                setTimeout(() => {
-                    editDesa.value = data.desa;
-                }, 100);
-                
-                // Add event listener to save button
+                // Add event listener for save button
                 document.getElementById('saveEditBtn').addEventListener('click', function() {
                     saveEditedData(data.id);
                 });
@@ -2928,37 +2943,36 @@
         
         // Save edited data
         function saveEditedData(id) {
-            // Get form values
-            const nama = document.getElementById('editNama').value;
-            const nik = document.getElementById('editNik').value;
-            const whatsapp = document.getElementById('editWhatsapp').value;
-            const namaKelompok = document.getElementById('editNamaKelompok').value;
-            const jabatan = document.getElementById('editJabatan').value;
-            const tahunAnggaran = document.getElementById('editTahunAnggaran').value;
-            const kecamatan = document.getElementById('editKecamatan').value;
-            const desa = document.getElementById('editDesa').value;
-            const alamat = document.getElementById('editAlamat').value;
-            const jenisBantuan = document.getElementById('editJenisBantuan').value;
-            const namaBantuan = document.getElementById('editNamaBantuan').value;
-            const jumlahBantuan = document.getElementById('editJumlahBantuan').value;
-            const satuanBantuan = document.getElementById('editSatuanBantuan').value;
-            const tanggalTerima = document.getElementById('editTanggalTerima').value;
-            const namaPetugas = document.getElementById('editNamaPetugas').value;
-            const driveLink = document.getElementById('editDriveLink').value;
-            const kodeValidasi = document.getElementById('editKodeValidasi').value;
-            const keterangan = document.getElementById('editKeterangan').value;
-            
-            // Validate required fields
-            if (!nama || !nik || !whatsapp || !tahunAnggaran || !kecamatan || !desa || 
-                !jenisBantuan || !jumlahBantuan || !satuanBantuan || !tanggalTerima || !kodeValidasi) {
-                showNotification('Error', 'Harap isi semua field yang wajib diisi', 'error');
-                return;
-            }
-            
-            // Find data index
             const dataIndex = bantuanData.findIndex(item => item.id == id);
             
             if (dataIndex !== -1) {
+                // Get form values
+                const nama = document.getElementById('editNama').value;
+                const nik = document.getElementById('editNik').value;
+                const whatsapp = document.getElementById('editWhatsapp').value;
+                const namaKelompok = document.getElementById('editNamaKelompok').value;
+                const jabatan = document.getElementById('editJabatan').value;
+                const tahunAnggaran = document.getElementById('editTahunAnggaran').value;
+                const kecamatan = document.getElementById('editKecamatan').value;
+                const desa = document.getElementById('editDesa').value;
+                const alamat = document.getElementById('editAlamat').value;
+                const jenisBantuan = document.getElementById('editJenisBantuan').value;
+                const namaBantuan = document.getElementById('editNamaBantuan').value;
+                const jumlahBantuan = document.getElementById('editJumlahBantuan').value;
+                const satuanBantuan = document.getElementById('editSatuanBantuan').value;
+                const tanggalTerima = document.getElementById('editTanggalTerima').value;
+                const namaPetugas = document.getElementById('editNamaPetugas').value;
+                const driveLink = document.getElementById('editDriveLink').value;
+                const kodeValidasi = document.getElementById('editKodeValidasi').value;
+                const keterangan = document.getElementById('editKeterangan').value;
+                
+                // Validate required fields
+                if (!nama || !nik || !whatsapp || !tahunAnggaran || !kecamatan || !desa || 
+                    !jenisBantuan || !jumlahBantuan || !satuanBantuan || !tanggalTerima || !kodeValidasi) {
+                    showNotification('Error', 'Harap isi semua field yang wajib diisi', 'error');
+                    return;
+                }
+                
                 // Update data
                 bantuanData[dataIndex] = {
                     ...bantuanData[dataIndex],
@@ -2979,7 +2993,8 @@
                     namaPetugas: namaPetugas || '-',
                     driveLink: driveLink || '-',
                     kodeValidasi,
-                    keterangan: keterangan || '-'
+                    keterangan: keterangan || '-',
+                    tanggalUpdate: new Date().toISOString()
                 };
                 
                 // Save to localStorage
@@ -2989,48 +3004,96 @@
                 bootstrap.Modal.getInstance(document.querySelector('.modal')).hide();
                 
                 // Show success message
-                showNotification('Sukses', 'Data berhasil diupdate', 'success');
+                showNotification('Sukses', 'Data berhasil diperbarui', 'success');
                 
                 // Update UI
+                updateDashboardStats();
                 loadDataTable();
                 updateRecentData();
-                updateDashboardStats();
             }
         }
         
         // Delete data
         function deleteData(id) {
             if (confirm('Apakah Anda yakin ingin menghapus data ini?')) {
-                // Filter out the data with the given ID
-                bantuanData = bantuanData.filter(item => item.id != id);
+                const dataIndex = bantuanData.findIndex(item => item.id == id);
+                
+                if (dataIndex !== -1) {
+                    // Store deleted data for potential undo
+                    const deletedData = bantuanData[dataIndex];
+                    
+                    // Remove from array
+                    bantuanData.splice(dataIndex, 1);
+                    
+                    // Save to localStorage
+                    localStorage.setItem('bantuanData', JSON.stringify(bantuanData));
+                    
+                    // Show success message with undo option
+                    showNotificationWithUndo('Data dihapus', 'Data berhasil dihapus dari sistem', deletedData);
+                    
+                    // Update UI
+                    updateDashboardStats();
+                    loadDataTable();
+                    updateRecentData();
+                    updateSystemInfo();
+                }
+            }
+        }
+        
+        // Show notification with undo option
+        function showNotificationWithUndo(title, message, deletedData) {
+            const toastElement = document.querySelector('.notification-toast');
+            const toastBody = document.getElementById('toastMessage');
+            
+            toastBody.innerHTML = `
+                ${message}
+                <div class="mt-2">
+                    <button class="btn btn-sm btn-undo" id="undoDeleteBtn">Batalkan</button>
+                </div>
+            `;
+            
+            // Set toast title and time
+            document.getElementById('toastTitle').textContent = title;
+            document.getElementById('toastTime').textContent = new Date().toLocaleTimeString();
+            
+            // Show toast
+            toast.show();
+            
+            // Add event listener to undo button
+            document.getElementById('undoDeleteBtn').addEventListener('click', function() {
+                // Restore deleted data
+                bantuanData.push(deletedData);
                 
                 // Save to localStorage
                 localStorage.setItem('bantuanData', JSON.stringify(bantuanData));
                 
-                // Show success message
-                showNotification('Sukses', 'Data berhasil dihapus', 'success');
-                
                 // Update UI
+                updateDashboardStats();
                 loadDataTable();
                 updateRecentData();
-                updateDashboardStats();
                 updateSystemInfo();
-            }
+                
+                // Show success message
+                showNotification('Dibatalkan', 'Data berhasil dikembalikan', 'success');
+                
+                // Hide toast
+                toast.hide();
+            });
         }
         
         // Update recent data table
         function updateRecentData() {
-            const recentDataTable = document.getElementById('recentDataTable');
+            const tableBody = document.getElementById('recentDataTable');
             
-            // Clear table
-            recentDataTable.innerHTML = '';
+            // Clear table body
+            tableBody.innerHTML = '';
             
             if (bantuanData.length === 0) {
-                recentDataTable.innerHTML = '<tr><td colspan="7" class="text-center">Tidak ada data</td></tr>';
+                tableBody.innerHTML = '<tr><td colspan="7" class="text-center">Tidak ada data</td></tr>';
                 return;
             }
             
-            // Get 5 most recent data
+            // Get latest 5 records
             const recentData = [...bantuanData]
                 .sort((a, b) => new Date(b.tanggalInput) - new Date(a.tanggalInput))
                 .slice(0, 5);
@@ -3053,7 +3116,7 @@
                     </td>
                 `;
                 
-                recentDataTable.appendChild(row);
+                tableBody.appendChild(row);
             });
             
             // Add event listeners to view buttons
@@ -3067,192 +3130,212 @@
         
         // Update system information
         function updateSystemInfo() {
+            // Calculate database size
+            const dataStr = JSON.stringify(bantuanData);
+            const dataSize = new Blob([dataStr]).size;
+            const dataSizeMB = (dataSize / (1024 * 1024)).toFixed(2);
+            
+            document.getElementById('dbSize').textContent = `${dataSizeMB} MB`;
             document.getElementById('totalDataSettings').textContent = bantuanData.length;
             
-            // Calculate storage size
-            const dataStr = JSON.stringify(bantuanData);
-            const storageSize = new Blob([dataStr]).size;
-            document.getElementById('dbSize').textContent = `${(storageSize / 1024).toFixed(2)} KB`;
-            
             // Browser info
-            const userAgent = navigator.userAgent;
-            let browserName;
+            document.getElementById('browserInfo').textContent = navigator.userAgent;
             
-            if (userAgent.includes('Chrome')) browserName = 'Chrome';
-            else if (userAgent.includes('Firefox')) browserName = 'Firefox';
-            else if (userAgent.includes('Safari')) browserName = 'Safari';
-            else if (userAgent.includes('Edg')) browserName = 'Edge';
-            else browserName = 'Unknown';
-            
-            document.getElementById('browserInfo').textContent = browserName;
+            // LocalStorage status
+            try {
+                localStorage.setItem('test', 'test');
+                localStorage.removeItem('test');
+                document.getElementById('localStorageStatus').textContent = 'Supported';
+            } catch (e) {
+                document.getElementById('localStorageStatus').textContent = 'Not Supported';
+            }
         }
         
         // Initialize charts
         function initCharts() {
-            // Jenis Bantuan Chart (Pie)
+            // Jenis Bantuan Chart
             const jenisBantuanCtx = document.getElementById('jenisBantuanChart').getContext('2d');
-            window.jenisBantuanChart = new Chart(jenisBantuanCtx, {
+            const jenisBantuanChart = new Chart(jenisBantuanCtx, {
                 type: 'pie',
                 data: {
-                    labels: [],
+                    labels: ['Tunai', 'Beras', 'Pupuk', 'Bibit', 'Peralatan', 'Lainnya'],
                     datasets: [{
-                        data: [],
+                        data: [0, 0, 0, 0, 0, 0],
                         backgroundColor: [
-                            '#0d47a1', '#1565c0', '#1976d2', '#1e88e5', '#2196f3', '#42a5f5', '#64b5f6'
+                            '#4e73df', '#1cc88a', '#36b9cc', '#f6c23e', '#e74a3b', '#858796'
                         ],
-                        borderWidth: 1
+                        hoverBackgroundColor: [
+                            '#2e59d9', '#17a673', '#2c9faf', '#dda20a', '#be2617', '#60616f'
+                        ],
+                        hoverBorderColor: "rgba(234, 236, 244, 1)",
                     }]
                 },
                 options: {
-                    responsive: true,
+                    maintainAspectRatio: false,
                     plugins: {
                         legend: {
-                            position: 'bottom'
+                            position: 'bottom',
+                            labels: {
+                                usePointStyle: true,
+                                padding: 20
+                            }
                         },
-                        title: {
-                            display: true,
-                            text: 'Distribusi Jenis Bantuan'
+                        tooltip: {
+                            backgroundColor: "rgb(255,255,255)",
+                            bodyColor: "#858796",
+                            titleMarginBottom: 10,
+                            titleColor: '#6e707e',
+                            borderColor: '#dddfeb',
+                            borderWidth: 1,
+                            padding: 15,
+                            displayColors: false,
+                            callbacks: {
+                                label: function(context) {
+                                    return `${context.label}: ${context.raw} data`;
+                                }
+                            }
                         }
                     }
                 }
             });
             
-            // Tren Bantuan Chart (Line)
+            // Tren Bantuan Chart
             const trenBantuanCtx = document.getElementById('trenBantuanChart').getContext('2d');
-            window.trenBantuanChart = new Chart(trenBantuanCtx, {
+            const trenBantuanChart = new Chart(trenBantuanCtx, {
                 type: 'line',
                 data: {
-                    labels: [],
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'],
                     datasets: [{
                         label: 'Jumlah Bantuan',
-                        data: [],
-                        backgroundColor: 'rgba(13, 71, 161, 0.2)',
-                        borderColor: 'rgba(13, 71, 161, 1)',
-                        borderWidth: 2,
+                        data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                        backgroundColor: 'rgba(78, 115, 223, 0.05)',
+                        borderColor: 'rgba(78, 115, 223, 1)',
+                        pointRadius: 3,
+                        pointBackgroundColor: 'rgba(78, 115, 223, 1)',
+                        pointBorderColor: 'rgba(78, 115, 223, 1)',
+                        pointHoverRadius: 3,
+                        pointHoverBackgroundColor: 'rgba(78, 115, 223, 1)',
+                        pointHoverBorderColor: 'rgba(78, 115, 223, 1)',
+                        pointHitRadius: 10,
+                        pointBorderWidth: 2,
                         tension: 0.3,
                         fill: true
                     }]
                 },
                 options: {
-                    responsive: true,
-                    plugins: {
-                        title: {
-                            display: true,
-                            text: 'Tren Bantuan per Bulan'
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        },
+                        y: {
+                            ticks: {
+                                beginAtZero: true
+                            },
+                            grid: {
+                                color: "rgb(234, 236, 244)",
+                                drawBorder: false
+                            }
                         }
                     },
-                    scales: {
-                        y: {
-                            beginAtZero: true
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            backgroundColor: "rgb(255,255,255)",
+                            bodyColor: "#858796",
+                            titleMarginBottom: 10,
+                            titleColor: '#6e707e',
+                            borderColor: '#dddfeb',
+                            borderWidth: 1,
+                            padding: 15,
+                            displayColors: false
                         }
                     }
                 }
             });
             
             // Update charts with data
-            updateCharts();
+            updateCharts(jenisBantuanChart, trenBantuanChart);
         }
         
         // Update charts with current data
-        function updateCharts() {
+        function updateCharts(jenisBantuanChart, trenBantuanChart) {
             // Update Jenis Bantuan Chart
-            const jenisCount = {};
-            
-            bantuanData.forEach(item => {
-                if (jenisCount[item.jenisBantuan]) {
-                    jenisCount[item.jenisBantuan]++;
-                } else {
-                    jenisCount[item.jenisBantuan] = 1;
-                }
-            });
-            
-            window.jenisBantuanChart.data.labels = Object.keys(jenisCount);
-            window.jenisBantuanChart.data.datasets[0].data = Object.values(jenisCount);
-            window.jenisBantuanChart.update();
-            
-            // Update Tren Bantuan Chart (by month)
-            const monthCount = {
-                'Jan': 0, 'Feb': 0, 'Mar': 0, 'Apr': 0, 'May': 0, 'Jun': 0,
-                'Jul': 0, 'Aug': 0, 'Sep': 0, 'Oct': 0, 'Nov': 0, 'Dec': 0
+            const jenisCount = {
+                'Tunai': 0,
+                'Beras': 0,
+                'Pupuk': 0,
+                'Bibit': 0,
+                'Peralatan': 0,
+                'Lainnya': 0
             };
             
             bantuanData.forEach(item => {
+                if (jenisCount.hasOwnProperty(item.jenisBantuan)) {
+                    jenisCount[item.jenisBantuan]++;
+                }
+            });
+            
+            jenisBantuanChart.data.datasets[0].data = [
+                jenisCount['Tunai'],
+                jenisCount['Beras'],
+                jenisCount['Pupuk'],
+                jenisCount['Bibit'],
+                jenisCount['Peralatan'],
+                jenisCount['Lainnya']
+            ];
+            jenisBantuanChart.update();
+            
+            // Update Tren Bantuan Chart
+            const currentYear = new Date().getFullYear();
+            const monthlyData = Array(12).fill(0);
+            
+            bantuanData.forEach(item => {
                 const date = new Date(item.tanggalTerima);
-                const month = date.toLocaleString('id-ID', { month: 'short' });
-                monthCount[month] += item.jumlahBantuan;
+                if (date.getFullYear() === currentYear) {
+                    monthlyData[date.getMonth()]++;
+                }
             });
             
-            window.trenBantuanChart.data.labels = Object.keys(monthCount);
-            window.trenBantuanChart.data.datasets[0].data = Object.values(monthCount);
-            window.trenBantuanChart.update();
-        }
-        
-        // Show modal with custom content
-        function showModal(title, content) {
-            // Create modal element
-            const modalElement = document.createElement('div');
-            modalElement.className = 'modal fade';
-            modalElement.tabIndex = -1;
-            modalElement.innerHTML = `
-                <div class="modal-dialog modal-lg">
-                    <div class="modal-content">
-                        ${content}
-                    </div>
-                </div>
-            `;
-            
-            // Add to document
-            document.body.appendChild(modalElement);
-            
-            // Create and show modal
-            const modal = new bootstrap.Modal(modalElement);
-            modal.show();
-            
-            // Remove modal from DOM after hidden
-            modalElement.addEventListener('hidden.bs.modal', function() {
-                document.body.removeChild(modalElement);
-            });
-            
-            return modal;
+            trenBantuanChart.data.datasets[0].data = monthlyData;
+            trenBantuanChart.update();
         }
         
         // Export to Excel
         function exportToExcel() {
-            // Prepare worksheet data
-            const worksheetData = [
-                ['LAPORAN DATA BANTUAN'],
-                ['BARJAS - Sistem Bantuan Terpadu'],
-                [''],
-                ['Tanggal Cetak:', new Date().toLocaleDateString('id-ID')],
-                [''],
-                ['No', 'Nama', 'NIK', 'WhatsApp', 'Kecamatan', 'Desa', 'Jenis Bantuan', 'Jumlah', 'Satuan', 'Tanggal Terima']
-            ];
-            
-            // Add data rows
-            bantuanData.forEach((item, index) => {
-                worksheetData.push([
-                    index + 1,
-                    item.nama,
-                    item.nik,
-                    item.whatsapp,
-                    item.kecamatan,
-                    item.desa,
-                    item.jenisBantuan,
-                    item.jumlahBantuan,
-                    item.satuanBantuan,
-                    new Date(item.tanggalTerima).toLocaleDateString('id-ID')
-                ]);
-            });
-            
             // Create workbook and worksheet
-            const ws = XLSX.utils.aoa_to_sheet(worksheetData);
             const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, 'Laporan Bantuan');
+            const ws = XLSX.utils.json_to_sheet(bantuanData.map(item => ({
+                'Nama': item.nama,
+                'NIK': item.nik,
+                'WhatsApp': item.whatsapp,
+                'Kelompok': item.namaKelompok,
+                'Jabatan': item.jabatan,
+                'Tahun': item.tahunAnggaran,
+                'Kecamatan': item.kecamatan,
+                'Desa': item.desa,
+                'Alamat': item.alamat,
+                'Jenis Bantuan': item.jenisBantuan,
+                'Nama Bantuan': item.namaBantuan,
+                'Jumlah': item.jumlahBantuan,
+                'Satuan': item.satuanBantuan,
+                'Tanggal Terima': new Date(item.tanggalTerima).toLocaleDateString('id-ID'),
+                'Petugas': item.namaPetugas,
+                'Kode Validasi': item.kodeValidasi,
+                'Keterangan': item.keterangan
+            })));
+            
+            // Add worksheet to workbook
+            XLSX.utils.book_append_sheet(wb, ws, 'Data Bantuan');
             
             // Generate Excel file and download
-            const fileName = `Laporan_Bantuan_${new Date().getTime()}.xlsx`;
-            XLSX.writeFile(wb, fileName);
+            XLSX.writeFile(wb, `Data_Bantuan_${new Date().toISOString().split('T')[0]}.xlsx`);
             
+            // Show notification
             showNotification('Sukses', 'Data berhasil diekspor ke Excel', 'success');
         }
         
@@ -3265,53 +3348,73 @@
             doc.setFontSize(18);
             doc.text('LAPORAN DATA BANTUAN', 105, 15, { align: 'center' });
             doc.setFontSize(12);
-            doc.text('BARJAS - Sistem Bantuan Terpadu', 105, 22, { align: 'center' });
-            
-            // Add date
-            doc.setFontSize(10);
-            doc.text(`Tanggal Cetak: ${new Date().toLocaleDateString('id-ID')}`, 14, 35);
-            
-            // Prepare table data
-            const tableData = bantuanData.map(item => [
-                item.nama,
-                item.nik,
-                item.whatsapp,
-                item.kecamatan,
-                item.desa,
-                item.jenisBantuan,
-                `${item.jumlahBantuan} ${item.satuanBantuan}`,
-                new Date(item.tanggalTerima).toLocaleDateString('id-ID')
-            ]);
+            doc.text(`Tanggal: ${new Date().toLocaleDateString('id-ID')}`, 105, 22, { align: 'center' });
             
             // Add table
             doc.autoTable({
-                head: [['Nama', 'NIK', 'WhatsApp', 'Kecamatan', 'Desa', 'Jenis Bantuan', 'Jumlah', 'Tanggal']],
-                body: tableData,
-                startY: 40,
+                head: [['Nama', 'NIK', 'Kecamatan', 'Jenis', 'Jumlah', 'Tanggal']],
+                body: bantuanData.map(item => [
+                    item.nama,
+                    item.nik,
+                    item.kecamatan,
+                    item.jenisBantuan,
+                    `${item.jumlahBantuan} ${item.satuanBantuan}`,
+                    new Date(item.tanggalTerima).toLocaleDateString('id-ID')
+                ]),
+                startY: 30,
                 theme: 'grid',
-                headStyles: {
-                    fillColor: [13, 71, 161],
-                    textColor: 255
-                },
-                alternateRowStyles: {
-                    fillColor: [240, 240, 240]
-                }
+                styles: { fontSize: 8 },
+                headStyles: { fillColor: [78, 115, 223] }
             });
             
-            // Add summary
-            const totalBantuan = bantuanData.reduce((sum, item) => sum + item.jumlahBantuan, 0);
-            const lastPage = doc.internal.getNumberOfPages();
-            doc.setPage(lastPage);
-            doc.setFontSize(10);
-            doc.text(`Total Data: ${bantuanData.length}`, 14, doc.lastAutoTable.finalY + 10);
-            doc.text(`Total Bantuan: ${totalBantuan}`, 14, doc.lastAutoTable.finalY + 15);
+            // Save PDF
+            doc.save(`Laporan_Bantuan_${new Date().toISOString().split('T')[0]}.pdf`);
             
-            // Save the PDF
-            const fileName = `Laporan_Bantuan_${new Date().getTime()}.pdf`;
-            doc.save(fileName);
-            
+            // Show notification
             showNotification('Sukses', 'Data berhasil diekspor ke PDF', 'success');
         }
+        
+        // Show modal with custom content
+        function showModal(title, content) {
+            // Create modal element
+            const modalDiv = document.createElement('div');
+            modalDiv.className = 'modal fade';
+            modalDiv.innerHTML = `
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        ${content}
+                    </div>
+                </div>
+            `;
+            
+            // Add to document
+            document.body.appendChild(modalDiv);
+            
+            // Create and show modal
+            const modal = new bootstrap.Modal(modalDiv);
+            modal.show();
+            
+            // Remove modal from DOM after hidden
+            modalDiv.addEventListener('hidden.bs.modal', function() {
+                document.body.removeChild(modalDiv);
+            });
+            
+            return modal;
+        }
+        
+        // Welcome modal countdown
+        const countdownElement = document.getElementById('countdown');
+        let countdownValue = 5;
+        
+        const countdownInterval = setInterval(() => {
+            countdownValue--;
+            countdownElement.textContent = countdownValue;
+            
+            if (countdownValue <= 0) {
+                clearInterval(countdownInterval);
+                welcomeModal.hide();
+            }
+        }, 1000);
     </script>
 </body>
 </html>
