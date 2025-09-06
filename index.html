@@ -383,7 +383,7 @@
         }
         
         .control-title {
-            font-size: 1rem;
+            font-size: 1.1rem;
             color: var(--primary-color);
             font-weight: 600;
             margin-bottom: 15px;
@@ -2065,15 +2065,16 @@
         let loginAttempts = parseInt(localStorage.getItem('loginAttempts')) || 0;
         let isBlocked = localStorage.getItem('isBlocked') === 'true';
         let blockedUntil = parseInt(localStorage.getItem('blockedUntil')) || 0;
+        const CORRECT_CODE = "123456"; // Kode keamanan default
         
         // DOM Elements
         const mobileMenuBtn = document.getElementById('mobileMenuBtn');
         const sidebarMenu = document.getElementById('sidebarMenu');
         const sidebarOverlay = document.getElementById('sidebarOverlay');
-        const loginModal = new bootstrap.Modal(document.getElementById('loginModal'));
+        const loginModalElement = document.getElementById('loginModal');
+        const loginModal = new bootstrap.Modal(loginModalElement);
         const welcomeModal = new bootstrap.Modal(document.getElementById('welcomeModal'));
-        const successToast = new bootstrap.Toast(document.getElementById('successToast'));
-        const errorToast = new bootstrap.Toast(document.getElementById('errorToast'));
+        const toast = new bootstrap.Toast(document.getElementById('notificationToast'));
         
         // Toggle mobile menu
         function toggleMobileMenu() {
@@ -2136,23 +2137,28 @@
         // Setup login form
         function setupLoginForm() {
             const loginForm = document.getElementById('loginForm');
-            const accessCodeInput = document.getElementById('accessCode');
+            const loginPassword = document.getElementById('loginPassword');
             const togglePassword = document.getElementById('togglePassword');
+            const loginError = document.getElementById('loginError');
+            const loginAttemptsElement = document.getElementById('loginAttempts');
             const attemptsCount = document.getElementById('attemptsCount');
-            const attemptsSpan = document.getElementById('attempts');
-            const blockedMessage = document.getElementById('blockedMessage');
-            const loginBtn = document.getElementById('loginBtn');
+            const loginBlocked = document.getElementById('loginBlocked');
+            const blockTime = document.getElementById('blockTime');
+            const loginSubmitBtn = document.getElementById('loginSubmitBtn');
+            const loginSpinner = document.getElementById('loginSpinner');
+            const loginIcon = document.getElementById('loginIcon');
+            const loginText = document.getElementById('loginText');
             
             // Update attempts count
-            attemptsSpan.textContent = loginAttempts;
+            attemptsCount.textContent = 3 - loginAttempts;
             
             // Show/hide password
             togglePassword.addEventListener('click', function() {
-                if (accessCodeInput.type === 'password') {
-                    accessCodeInput.type = 'text';
+                if (loginPassword.type === 'password') {
+                    loginPassword.type = 'text';
                     togglePassword.innerHTML = '<i class="fas fa-eye-slash"></i>';
                 } else {
-                    accessCodeInput.type = 'password';
+                    loginPassword.type = 'password';
                     togglePassword.innerHTML = '<i class="fas fa-eye"></i>';
                 }
             });
@@ -2167,76 +2173,108 @@
                 resetLoginAttempts();
             }
             
+            // Show attempts if any
+            if (loginAttempts > 0) {
+                loginAttemptsElement.classList.remove('d-none');
+                attemptsCount.textContent = 3 - loginAttempts;
+            }
+            
             // Handle login form submission
             loginForm.addEventListener('submit', function(e) {
                 e.preventDefault();
                 
-                const accessCode = accessCodeInput.value;
+                const accessCode = loginPassword.value;
                 
-                // Default access code is 123456
-                if (accessCode === '123456') {
-                    // Successful login
-                    localStorage.setItem('isAuthenticated', 'true');
-                    resetLoginAttempts();
-                    loginModal.hide();
-                    initApp();
-                    
-                    // Show welcome modal on first login
-                    const firstVisit = localStorage.getItem('firstVisit');
-                    if (!firstVisit) {
-                        setTimeout(() => {
-                            welcomeModal.show();
-                            localStorage.setItem('firstVisit', 'true');
-                        }, 500);
-                    }
-                } else {
-                    // Failed login
-                    loginAttempts++;
-                    localStorage.setItem('loginAttempts', loginAttempts);
-                    attemptsSpan.textContent = loginAttempts;
-                    
-                    if (loginAttempts >= 3) {
-                        // Block access for 30 seconds
-                        isBlocked = true;
-                        blockedUntil = Date.now() + 30000; // 30 seconds
-                        localStorage.setItem('isBlocked', 'true');
-                        localStorage.setItem('blockedUntil', blockedUntil);
+                // Show loading state
+                loginSpinner.classList.remove('d-none');
+                loginIcon.classList.add('d-none');
+                loginText.textContent = 'Memproses...';
+                loginSubmitBtn.disabled = true;
+                
+                // Simulate login process
+                setTimeout(() => {
+                    // Default access code is 123456
+                    if (accessCode === CORRECT_CODE) {
+                        // Successful login
+                        localStorage.setItem('isAuthenticated', 'true');
+                        resetLoginAttempts();
+                        loginModal.hide();
+                        initApp();
                         
-                        // Show blocked message
-                        attemptsCount.style.display = 'none';
-                        blockedMessage.style.display = 'block';
-                        loginBtn.disabled = true;
+                        // Show success notification
+                        showNotification('Login berhasil', 'Selamat datang di aplikasi BARJAS', 'success');
                         
-                        // Start countdown
-                        startCountdown(30);
+                        // Show welcome modal on first login
+                        const firstVisit = localStorage.getItem('firstVisit');
+                        if (!firstVisit) {
+                            setTimeout(() => {
+                                welcomeModal.show();
+                                localStorage.setItem('firstVisit', 'true');
+                            }, 500);
+                        }
                     } else {
+                        // Failed login
+                        loginAttempts++;
+                        localStorage.setItem('loginAttempts', loginAttempts);
+                        
                         // Show error message
-                        showErrorToast('Kode akses salah. Silakan coba lagi.');
+                        loginError.classList.remove('d-none');
+                        loginPassword.classList.add('input-error');
+                        
+                        // Update attempts count
+                        attemptsCount.textContent = 3 - loginAttempts;
+                        loginAttemptsElement.classList.remove('d-none');
+                        
+                        if (loginAttempts >= 3) {
+                            // Block access for 5 minutes
+                            isBlocked = true;
+                            blockedUntil = Date.now() + 300000; // 5 minutes
+                            localStorage.setItem('isBlocked', 'true');
+                            localStorage.setItem('blockedUntil', blockedUntil);
+                            
+                            // Show blocked message
+                            loginAttemptsElement.classList.add('d-none');
+                            loginBlocked.classList.remove('d-none');
+                            loginSubmitBtn.disabled = true;
+                            
+                            // Start countdown
+                            startCountdown(300);
+                        } else {
+                            // Show error message
+                            showNotification('Login gagal', 'Kode keamanan salah. Silakan coba lagi.', 'error');
+                        }
                     }
-                }
+                    
+                    // Reset button state
+                    loginSpinner.classList.add('d-none');
+                    loginIcon.classList.remove('d-none');
+                    loginText.textContent = 'Masuk';
+                    loginSubmitBtn.disabled = false;
+                    loginPassword.value = '';
+                }, 1000);
             });
         }
         
         // Start countdown for blocked access
         function startCountdown(seconds) {
-            const countdownElement = document.getElementById('countdown');
-            const loginBtn = document.getElementById('loginBtn');
+            const countdownElement = document.getElementById('blockTime');
+            const loginSubmitBtn = document.getElementById('loginSubmitBtn');
             
             let remaining = seconds;
-            countdownElement.textContent = remaining;
+            countdownElement.textContent = Math.ceil(remaining / 60);
             
             const countdownInterval = setInterval(() => {
-                remaining--;
-                countdownElement.textContent = remaining;
+                remaining -= 1;
+                countdownElement.textContent = Math.ceil(remaining / 60);
                 
                 if (remaining <= 0) {
                     clearInterval(countdownInterval);
                     resetLoginAttempts();
                     
                     // Hide blocked message and show attempts count
-                    document.getElementById('blockedMessage').style.display = 'none';
-                    document.getElementById('attemptsCount').style.display = 'block';
-                    loginBtn.disabled = false;
+                    document.getElementById('loginBlocked').classList.add('d-none');
+                    document.getElementById('loginAttempts').classList.remove('d-none');
+                    loginSubmitBtn.disabled = false;
                 }
             }, 1000);
         }
@@ -2249,6 +2287,37 @@
             localStorage.setItem('loginAttempts', loginAttempts);
             localStorage.setItem('isBlocked', 'false');
             localStorage.setItem('blockedUntil', '0');
+        }
+        
+        // Show notification
+        function showNotification(title, message, type = 'info') {
+            const toastTitle = document.getElementById('toastTitle');
+            const toastMessage = document.getElementById('toastMessage');
+            const toastTime = document.getElementById('toastTime');
+            
+            toastTitle.textContent = title;
+            toastMessage.textContent = message;
+            toastTime.textContent = new Date().toLocaleTimeString();
+            
+            // Set background color based on type
+            const toastElement = document.querySelector('.notification-toast');
+            toastElement.classList.remove('bg-primary', 'bg-success', 'bg-danger', 'bg-warning');
+            
+            switch(type) {
+                case 'success':
+                    toastElement.classList.add('bg-success');
+                    break;
+                case 'error':
+                    toastElement.classList.add('bg-danger');
+                    break;
+                case 'warning':
+                    toastElement.classList.add('bg-warning');
+                    break;
+                default:
+                    toastElement.classList.add('bg-primary');
+            }
+            
+            toast.show();
         }
         
         // Initialize the application
@@ -2271,7 +2340,10 @@
             // Logout button
             document.getElementById('logoutBtn').addEventListener('click', function() {
                 localStorage.removeItem('isAuthenticated');
-                window.location.reload();
+                showNotification('Berhasil keluar', 'Anda telah keluar dari aplikasi.', 'info');
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1500);
             });
             
             // Input form submission
@@ -2280,46 +2352,91 @@
                 handleFormSubmit();
             });
             
-            // Filter events
-            document.getElementById('filterTahun').addEventListener('change', function() {
+            // Generate code button
+            document.getElementById('generateCodeBtn').addEventListener('click', function() {
+                const code = Math.random().toString(36).substring(2, 10).toUpperCase();
+                document.getElementById('kodeValidasi').value = code;
+            });
+            
+            // Fill tahun options
+            const currentYear = new Date().getFullYear();
+            const tahunAnggaran = document.getElementById('tahunAnggaran');
+            const filterTahun = document.getElementById('filterTahun');
+            const statTahun = document.getElementById('statTahun');
+            const reportYear = document.getElementById('reportYear');
+            const defaultTahun = document.getElementById('defaultTahun');
+            
+            for (let year = currentYear - 5; year <= currentYear + 5; year++) {
+                const option = document.createElement('option');
+                option.value = year;
+                option.textContent = year;
+                
+                if (year === currentYear) {
+                    option.selected = true;
+                }
+                
+                tahunAnggaran.appendChild(option.cloneNode(true));
+                filterTahun.appendChild(option.cloneNode(true));
+                statTahun.appendChild(option.cloneNode(true));
+                reportYear.appendChild(option.cloneNode(true));
+                defaultTahun.appendChild(option.cloneNode(true));
+            }
+            
+            // Kecamatan change event
+            document.getElementById('kecamatan').addEventListener('change', function() {
+                const kecamatan = this.value;
+                const desaSelect = document.getElementById('desa');
+                
+                // Clear existing options
+                desaSelect.innerHTML = '<option value="">Pilih Desa</option>';
+                
+                // Add desa options based on kecamatan
+                if (kecamatan) {
+                    // This would typically come from a database
+                    const desaList = [
+                        "Desa A", "Desa B", "Desa C", "Desa D", "Desa E"
+                    ];
+                    
+                    desaList.forEach(desa => {
+                        const option = document.createElement('option');
+                        option.value = desa;
+                        option.textContent = desa;
+                        desaSelect.appendChild(option);
+                    });
+                }
+            });
+            
+            // Apply filter button
+            document.getElementById('applyFilterBtn').addEventListener('click', function() {
                 loadDataTable();
             });
             
-            document.getElementById('filterJenis').addEventListener('change', function() {
+            // Reset filter button
+            document.getElementById('resetFilterBtn').addEventListener('click', function() {
+                document.getElementById('filterTahun').value = 'all';
+                document.getElementById('filterKecamatan').value = 'all';
+                document.getElementById('filterJenis').value = 'all';
+                document.getElementById('searchInput').value = '';
                 loadDataTable();
             });
             
-            document.getElementById('filterDesa').addEventListener('change', function() {
+            // Clear search button
+            document.getElementById('clearSearchBtn').addEventListener('click', function() {
+                document.getElementById('searchInput').value = '';
                 loadDataTable();
             });
             
-            document.getElementById('searchInput').addEventListener('input', function() {
-                loadDataTable();
+            // Export buttons
+            document.getElementById('exportExcelBtn').addEventListener('click', function() {
+                exportToExcel();
             });
             
-            // Generate report
-            document.getElementById('generateReport').addEventListener('click', function() {
-                generateReport();
+            document.getElementById('exportPdfBtn').addEventListener('click', function() {
+                exportToPDF();
             });
             
-            // Backup data
-            document.getElementById('backupBtn').addEventListener('click', function() {
-                backupData();
-            });
-            
-            // Restore data
-            document.getElementById('restoreData').addEventListener('change', function(e) {
-                restoreData(e.target.files[0]);
-            });
-            
-            // Reset data
-            document.getElementById('resetDataBtn').addEventListener('click', function() {
-                resetData();
-            });
-            
-            // Apply stat filter
-            document.getElementById('applyStatFilter').addEventListener('click', function() {
-                updateCharts();
+            document.getElementById('printDataBtn').addEventListener('click', function() {
+                window.print();
             });
             
             // FAB button
@@ -2332,129 +2449,46 @@
                 window.scrollTo(0, 0);
             });
             
-            // NIK validation
-            document.getElementById('nik').addEventListener('input', function(e) {
-                validateNIK(e.target);
-            });
-            
-            // Tahun validation
-            document.getElementById('tahun').addEventListener('change', function(e) {
-                validateTahun(e.target);
+            // Skip welcome countdown
+            document.getElementById('skipCountdownBtn').addEventListener('click', function() {
+                welcomeModal.hide();
             });
         }
         
-        // Validate NIK (must be 16 digits)
-        function validateNIK(input) {
-            const nik = input.value;
-            const errorElement = document.getElementById('nikError');
+        // Update dashboard statistics
+        function updateDashboardStats() {
+            document.getElementById('totalPenerima').textContent = bantuanData.length;
             
-            if (nik.length !== 16 || !/^\d+$/.test(nik)) {
-                input.classList.add('input-error');
-                errorElement.style.display = 'block';
-                return false;
-            } else {
-                input.classList.remove('input-error');
-                errorElement.style.display = 'none';
-                return true;
-            }
-        }
-        
-        // Validate Tahun (must be between 2020-2090)
-        function validateTahun(select) {
-            const tahun = parseInt(select.value);
-            const errorElement = document.getElementById('tahunError');
+            const totalBantuan = bantuanData.reduce((sum, item) => sum + item.jumlahBantuan, 0);
+            document.getElementById('totalBantuan').textContent = totalBantuan.toLocaleString('id-ID');
             
-            if (tahun < 2020 || tahun > 2090) {
-                select.classList.add('input-error');
-                errorElement.style.display = 'block';
-                return false;
-            } else {
-                select.classList.remove('input-error');
-                errorElement.style.display = 'none';
-                return true;
-            }
-        }
-        
-        // Handle form submission
-        function handleFormSubmit() {
-            // Get form values
-            const nama = document.getElementById('nama').value;
-            const nik = document.getElementById('nik').value;
-            const whatsapp = document.getElementById('whatsapp').value;
-            const namaKelompok = document.getElementById('namaKelompok').value;
-            const desa = document.getElementById('desa').value;
-            const jenisBantuan = document.getElementById('jenisBantuan').value;
-            const jumlahBantuan = document.getElementById('jumlahBantuan').value;
-            const satuan = document.getElementById('satuan').value;
-            const tahun = document.getElementById('tahun').value;
-            const keterangan = document.getElementById('keterangan').value;
+            // Count unique kecamatan
+            const uniqueKecamatan = new Set(bantuanData.map(item => item.kecamatan));
+            document.getElementById('totalKecamatan').textContent = uniqueKecamatan.size;
             
-            // Validate required fields
-            if (!nama || !nik || !whatsapp || !desa || !jenisBantuan || !jumlahBantuan || !tahun) {
-                showErrorToast('Harap isi semua field yang wajib diisi');
-                return;
-            }
-            
-            // Validate NIK
-            if (!validateNIK(document.getElementById('nik'))) {
-                showErrorToast('NIK harus 16 digit angka');
-                return;
-            }
-            
-            // Validate Tahun
-            if (!validateTahun(document.getElementById('tahun'))) {
-                showErrorToast('Tahun harus antara 2020-2090');
-                return;
-            }
-            
-            // Create new data object
-            const newData = {
-                id: Date.now(), // Unique ID based on timestamp
-                nama,
-                nik,
-                whatsapp,
-                namaKelompok: namaKelompok || '-',
-                desa,
-                jenisBantuan,
-                jumlahBantuan: parseInt(jumlahBantuan),
-                satuan,
-                tahun: parseInt(tahun),
-                keterangan: keterangan || '-',
-                tanggalInput: new Date().toISOString()
-            };
-            
-            // Add to data array
-            bantuanData.push(newData);
-            
-            // Save to localStorage
-            localStorage.setItem('bantuanData', JSON.stringify(bantuanData));
-            
-            // Show success message
-            showSuccessToast('Data berhasil disimpan');
-            
-            // Reset form
-            document.getElementById('inputForm').reset();
-            
-            // Update UI
-            updateDashboardStats();
-            loadDataTable();
-            updateRecentData();
-            updateSystemInfo();
+            // Find the most recent year
+            const years = bantuanData.map(item => item.tahunAnggaran);
+            const mostRecentYear = years.length > 0 ? Math.max(...years) : new Date().getFullYear();
+            document.getElementById('tahunAktif').textContent = mostRecentYear;
         }
         
         // Load data table with filtering and pagination
         function loadDataTable() {
-            const tableBody = document.getElementById('tableBody');
+            const tableBody = document.getElementById('dataTableBody');
             const filterTahun = document.getElementById('filterTahun').value;
+            const filterKecamatan = document.getElementById('filterKecamatan').value;
             const filterJenis = document.getElementById('filterJenis').value;
-            const filterDesa = document.getElementById('filterDesa').value;
             const searchInput = document.getElementById('searchInput').value.toLowerCase();
             
             // Filter data
             let filteredData = bantuanData.filter(item => {
                 let match = true;
                 
-                if (filterTahun !== 'all' && item.tahun !== parseInt(filterTahun)) {
+                if (filterTahun !== 'all' && item.tahunAnggaran != filterTahun) {
+                    match = false;
+                }
+                
+                if (filterKecamatan !== 'all' && item.kecamatan !== filterKecamatan) {
                     match = false;
                 }
                 
@@ -2462,11 +2496,8 @@
                     match = false;
                 }
                 
-                if (filterDesa !== 'all' && item.desa !== filterDesa) {
-                    match = false;
-                }
-                
-                if (searchInput && !item.nama.toLowerCase().includes(searchInput) && !item.nik.includes(searchInput)) {
+                if (searchInput && !item.nama.toLowerCase().includes(searchInput) && 
+                    !item.nik.includes(searchInput) && !item.whatsapp.includes(searchInput)) {
                     match = false;
                 }
                 
@@ -2474,16 +2505,16 @@
             });
             
             // Sort by latest first
-            filteredData.sort((a, b) => b.id - a.id);
+            filteredData.sort((a, b) => new Date(b.tanggalTerima) - new Date(a.tanggalTerima));
             
-            // Update table info
-            document.getElementById('tableInfo').textContent = `Menampilkan ${filteredData.length} dari ${bantuanData.length} data`;
+            // Update total records
+            document.getElementById('totalRecords').textContent = `${filteredData.length} Data`;
             
             // Clear table body
             tableBody.innerHTML = '';
             
             if (filteredData.length === 0) {
-                tableBody.innerHTML = '<tr><td colspan="9" class="text-center">Tidak ada data</td></tr>';
+                tableBody.innerHTML = '<tr><td colspan="10" class="text-center">Tidak ada data</td></tr>';
                 return;
             }
             
@@ -2496,23 +2527,21 @@
                     <td>${item.nama}</td>
                     <td>${item.nik}</td>
                     <td>${item.whatsapp}</td>
+                    <td>${item.kecamatan}</td>
                     <td>${item.desa}</td>
                     <td>${item.jenisBantuan}</td>
-                    <td>${item.jumlahBantuan} ${item.satuan}</td>
-                    <td>${item.tahun}</td>
+                    <td>${item.jumlahBantuan} ${item.satuanBantuan}</td>
+                    <td>${new Date(item.tanggalTerima).toLocaleDateString('id-ID')}</td>
                     <td>
                         <div class="btn-group btn-group-sm">
                             <button class="btn btn-primary btn-view" data-id="${item.id}">
                                 <i class="fas fa-eye"></i>
                             </button>
-                            <button class="btn btn-warning" data-id="${item.id}">
+                            <button class="btn btn-warning btn-edit" data-id="${item.id}">
                                 <i class="fas fa-edit"></i>
                             </button>
-                            <button class="btn btn-danger" data-id="${item.id}">
+                            <button class="btn btn-danger btn-delete" data-id="${item.id}">
                                 <i class="fas fa-trash"></i>
-                            </button>
-                            <button class="btn btn-info btn-print-individual" data-id="${item.id}">
-                                <i class="fas fa-print"></i>
                             </button>
                         </div>
                     </td>
@@ -2530,39 +2559,111 @@
             // View buttons
             document.querySelectorAll('.btn-view').forEach(btn => {
                 btn.addEventListener('click', function() {
-                    const id = parseInt(this.getAttribute('data-id'));
+                    const id = this.getAttribute('data-id');
                     viewData(id);
                 });
             });
             
             // Edit buttons
-            document.querySelectorAll('.btn-warning').forEach(btn => {
+            document.querySelectorAll('.btn-edit').forEach(btn => {
                 btn.addEventListener('click', function() {
-                    const id = parseInt(this.getAttribute('data-id'));
+                    const id = this.getAttribute('data-id');
                     editData(id);
                 });
             });
             
             // Delete buttons
-            document.querySelectorAll('.btn-danger').forEach(btn => {
+            document.querySelectorAll('.btn-delete').forEach(btn => {
                 btn.addEventListener('click', function() {
-                    const id = parseInt(this.getAttribute('data-id'));
+                    const id = this.getAttribute('data-id');
                     deleteData(id);
-                });
-            });
-            
-            // Print buttons
-            document.querySelectorAll('.btn-print-individual').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const id = parseInt(this.getAttribute('data-id'));
-                    printIndividualData(id);
                 });
             });
         }
         
+        // Handle form submission
+        function handleFormSubmit() {
+            // Get form values
+            const nama = document.getElementById('nama').value;
+            const nik = document.getElementById('nik').value;
+            const whatsapp = document.getElementById('whatsapp').value;
+            const namaKelompok = document.getElementById('namaKelompok').value;
+            const jabatan = document.getElementById('jabatan').value;
+            const tahunAnggaran = document.getElementById('tahunAnggaran').value;
+            const kecamatan = document.getElementById('kecamatan').value;
+            const desa = document.getElementById('desa').value;
+            const alamat = document.getElementById('alamat').value;
+            const jenisBantuan = document.getElementById('jenisBantuan').value;
+            const namaBantuan = document.getElementById('namaBantuan').value;
+            const jumlahBantuan = document.getElementById('jumlahBantuan').value;
+            const satuanBantuan = document.getElementById('satuanBantuan').value;
+            const tanggalTerima = document.getElementById('tanggalTerima').value;
+            const namaPetugas = document.getElementById('namaPetugas').value;
+            const driveLink = document.getElementById('driveLink').value;
+            const kodeValidasi = document.getElementById('kodeValidasi').value;
+            const keterangan = document.getElementById('keterangan').value;
+            
+            // Validate required fields
+            if (!nama || !nik || !whatsapp || !tahunAnggaran || !kecamatan || !desa || 
+                !jenisBantuan || !jumlahBantuan || !satuanBantuan || !tanggalTerima || !kodeValidasi) {
+                showNotification('Error', 'Harap isi semua field yang wajib diisi', 'error');
+                return;
+            }
+            
+            // Validate NIK (must be 16 digits)
+            if (nik.length !== 16 || !/^\d+$/.test(nik)) {
+                document.getElementById('nikError').style.display = 'block';
+                document.getElementById('nik').classList.add('input-error');
+                showNotification('Error', 'NIK harus 16 digit angka', 'error');
+                return;
+            }
+            
+            // Create new data object
+            const newData = {
+                id: Date.now(), // Unique ID based on timestamp
+                nama,
+                nik,
+                whatsapp,
+                namaKelompok: namaKelompok || '-',
+                jabatan,
+                tahunAnggaran,
+                kecamatan,
+                desa,
+                alamat: alamat || '-',
+                jenisBantuan,
+                namaBantuan: namaBantuan || '-',
+                jumlahBantuan: parseInt(jumlahBantuan),
+                satuanBantuan,
+                tanggalTerima,
+                namaPetugas: namaPetugas || '-',
+                driveLink: driveLink || '-',
+                kodeValidasi,
+                keterangan: keterangan || '-',
+                tanggalInput: new Date().toISOString()
+            };
+            
+            // Add to data array
+            bantuanData.push(newData);
+            
+            // Save to localStorage
+            localStorage.setItem('bantuanData', JSON.stringify(bantuanData));
+            
+            // Show success message
+            showNotification('Sukses', 'Data berhasil disimpan', 'success');
+            
+            // Reset form
+            document.getElementById('inputForm').reset();
+            
+            // Update UI
+            updateDashboardStats();
+            loadDataTable();
+            updateRecentData();
+            updateSystemInfo();
+        }
+        
         // View data details
         function viewData(id) {
-            const data = bantuanData.find(item => item.id === id);
+            const data = bantuanData.find(item => item.id == id);
             
             if (data) {
                 // Create modal content
@@ -2578,14 +2679,24 @@
                                 <p><strong>NIK:</strong> ${data.nik}</p>
                                 <p><strong>WhatsApp:</strong> ${data.whatsapp}</p>
                                 <p><strong>Nama Kelompok:</strong> ${data.namaKelompok}</p>
+                                <p><strong>Jabatan:</strong> ${data.jabatan}</p>
+                                <p><strong>Kecamatan:</strong> ${data.kecamatan}</p>
                                 <p><strong>Desa:</strong> ${data.desa}</p>
                             </div>
                             <div class="col-md-6">
+                                <p><strong>Alamat:</strong> ${data.alamat}</p>
                                 <p><strong>Jenis Bantuan:</strong> ${data.jenisBantuan}</p>
-                                <p><strong>Jumlah Bantuan:</strong> ${data.jumlahBantuan} ${data.satuan}</p>
-                                <p><strong>Tahun:</strong> ${data.tahun}</p>
-                                <p><strong>Tanggal Input:</strong> ${new Date(data.tanggalInput).toLocaleDateString('id-ID')}</p>
+                                <p><strong>Nama Bantuan:</strong> ${data.namaBantuan}</p>
+                                <p><strong>Jumlah Bantuan:</strong> ${data.jumlahBantuan} ${data.satuanBantuan}</p>
+                                <p><strong>Tanggal Terima:</strong> ${new Date(data.tanggalTerima).toLocaleDateString('id-ID')}</p>
+                                <p><strong>Nama Petugas:</strong> ${data.namaPetugas}</p>
+                                <p><strong>Kode Validasi:</strong> ${data.kodeValidasi}</p>
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-12">
                                 <p><strong>Keterangan:</strong> ${data.keterangan}</p>
+                                ${data.driveLink !== '-' ? `<p><strong>Link Drive:</strong> <a href="${data.driveLink}" target="_blank">${data.driveLink}</a></p>` : ''}
                             </div>
                         </div>
                     </div>
@@ -2601,7 +2712,7 @@
         
         // Edit data
         function editData(id) {
-            const data = bantuanData.find(item => item.id === id);
+            const data = bantuanData.find(item => item.id == id);
             
             if (data) {
                 // Create modal content with form
@@ -2621,7 +2732,6 @@
                                     <div class="mb-3">
                                         <label for="editNik" class="form-label">NIK</label>
                                         <input type="text" class="form-control" id="editNik" value="${data.nik}" maxlength="16" required>
-                                        <div class="error-message" id="editNikError">NIK harus 16 digit angka</div>
                                     </div>
                                     <div class="mb-3">
                                         <label for="editWhatsapp" class="form-label">WhatsApp</label>
@@ -2632,49 +2742,117 @@
                                         <input type="text" class="form-control" id="editNamaKelompok" value="${data.namaKelompok}">
                                     </div>
                                     <div class="mb-3">
-                                        <label for="editDesa" class="form-label">Desa</label>
-                                        <select class="form-select" id="editDesa" required>
-                                            <option value="" disabled>Pilih Desa</option>
-                                            ${getDesaOptions(data.desa)}
+                                        <label for="editJabatan" class="form-label">Jabatan</label>
+                                        <select class="form-select" id="editJabatan">
+                                            <option value="Individu" ${data.jabatan === 'Individu' ? 'selected' : ''}>Individu</option>
+                                            <option value="Ketua" ${data.jabatan === 'Ketua' ? 'selected' : ''}>Ketua</option>
+                                            <option value="Sekretaris" ${data.jabatan === 'Sekretaris' ? 'selected' : ''}>Sekretaris</option>
+                                            <option value="Bendahara" ${data.jabatan === 'Bendahara' ? 'selected' : ''}>Bendahara</option>
+                                            <option value="Anggota" ${data.jabatan === 'Anggota' ? 'selected' : ''}>Anggota</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="editTahunAnggaran" class="form-label">Tahun Anggaran</label>
+                                        <select class="form-select" id="editTahunAnggaran" required>
+                                            <!-- Options akan diisi oleh JavaScript -->
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="editKecamatan" class="form-label">Kecamatan</label>
+                                        <select class="form-select" id="editKecamatan" required>
+                                            <option value="">Pilih Kecamatan</option>
+                                            <option value="Arjasa" ${data.kecamatan === 'Arjasa' ? 'selected' : ''}>Arjasa</option>
+                                            <option value="Asembagus" ${data.kecamatan === 'Asembagus' ? 'selected' : ''}>Asembagus</option>
+                                            <option value="Banyuglugur" ${data.kecamatan === 'Banyuglugur' ? 'selected' : ''}>Banyuglugur</option>
+                                            <option value="Banyuputih" ${data.kecamatan === 'Banyuputih' ? 'selected' : ''}>Banyuputih</option>
+                                            <option value="Besuki" ${data.kecamatan === 'Besuki' ? 'selected' : ''}>Besuki</option>
+                                            <option value="Bungatan" ${data.kecamatan === 'Bungatan' ? 'selected' : ''}>Bungatan</option>
+                                            <option value="Jangkar" ${data.kecamatan === 'Jangkar' ? 'selected' : ''}>Jangkar</option>
+                                            <option value="Jatibanteng" ${data.kecamatan === 'Jatibanteng' ? 'selected' : ''}>Jatibanteng</option>
+                                            <option value="Kapongan" ${data.kecamatan === 'Kapongan' ? 'selected' : ''}>Kapongan</option>
+                                            <option value="Kendit" ${data.kecamatan === 'Kendit' ? 'selected' : ''}>Kendit</option>
+                                            <option value="Mangaran" ${data.kecamatan === 'Mangaran' ? 'selected' : ''}>Mangaran</option>
+                                            <option value="Mlandingan" ${data.kecamatan === 'Mlandingan' ? 'selected' : ''}>Mlandingan</option>
+                                            <option value="Panarukan" ${data.kecamatan === 'Panarukan' ? 'selected' : ''}>Panarukan</option>
+                                            <option value="Panji" ${data.kecamatan === 'Panji' ? 'selected' : ''}>Panji</option>
+                                            <option value="Situbondo" ${data.kecamatan === 'Situbondo' ? 'selected' : ''}>Situbondo</option>
+                                            <option value="Suboh" ${data.kecamatan === 'Suboh' ? 'selected' : ''}>Suboh</option>
+                                            <option value="Sumbermalang" ${data.kecamatan === 'Sumbermalang' ? 'selected' : ''}>Sumbermalang</option>
                                         </select>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="mb-3">
+                                        <label for="editDesa" class="form-label">Desa</label>
+                                        <select class="form-select" id="editDesa" required>
+                                            <option value="">Pilih Desa</option>
+                                            <!-- Options akan diisi secara dinamis -->
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="editAlamat" class="form-label">Alamat</label>
+                                        <textarea class="form-control" id="editAlamat" rows="2">${data.alamat}</textarea>
+                                    </div>
+                                    <div class="mb-3">
                                         <label for="editJenisBantuan" class="form-label">Jenis Bantuan</label>
                                         <select class="form-select" id="editJenisBantuan" required>
-                                            <option value="" disabled>Pilih Jenis Bantuan</option>
-                                            <option value="Bantuan Tunai" ${data.jenisBantuan === 'Bantuan Tunai' ? 'selected' : ''}>Bantuan Tunai</option>
-                                            <option value="Bahan Pangan" ${data.jenisBantuan === 'Bahan Pangan' ? 'selected' : ''}>Bahan Pangan</option>
-                                            <option value="Bahan Sandang" ${data.jenisBantuan === 'Bahan Sandang' ? 'selected' : ''}>Bahan Sandang</option>
-                                            <option value="Alat Tulis" ${data.jenisBantuan === 'Alat Tulis' ? 'selected' : ''}>Alat Tulis</option>
-                                            <option value="Bibit Tanaman" ${data.jenisBantuan === 'Bibit Tanaman' ? 'selected' : ''}>Bibit Tanaman</option>
-                                            <option value="Obat-obatan" ${data.jenisBantuan === 'Obat-obatan' ? 'selected' : ''}>Obat-obatan</option>
+                                            <option value="">Pilih Jenis Bantuan</option>
+                                            <option value="Tunai" ${data.jenisBantuan === 'Tunai' ? 'selected' : ''}>Tunai</option>
+                                            <option value="Beras" ${data.jenisBantuan === 'Beras' ? 'selected' : ''}>Beras</option>
+                                            <option value="Pupuk" ${data.jenisBantuan === 'Pupuk' ? 'selected' : ''}>Pupuk</option>
+                                            <option value="Bibit" ${data.jenisBantuan === 'Bibit' ? 'selected' : ''}>Bibit</option>
+                                            <option value="Peralatan" ${data.jenisBantuan === 'Peralatan' ? 'selected' : ''}>Peralatan</option>
                                             <option value="Lainnya" ${data.jenisBantuan === 'Lainnya' ? 'selected' : ''}>Lainnya</option>
                                         </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="editNamaBantuan" class="form-label">Nama Bantuan</label>
+                                        <input type="text" class="form-control" id="editNamaBantuan" value="${data.namaBantuan}">
                                     </div>
                                     <div class="mb-3">
                                         <label for="editJumlahBantuan" class="form-label">Jumlah Bantuan</label>
                                         <input type="number" class="form-control" id="editJumlahBantuan" value="${data.jumlahBantuan}" min="1" required>
                                     </div>
                                     <div class="mb-3">
-                                        <label for="editSatuan" class="form-label">Satuan</label>
-                                        <select class="form-select" id="editSatuan" required>
-                                            <option value="Rupiah" ${data.satuan === 'Rupiah' ? 'selected' : ''}>Rupiah</option>
-                                            <option value="Kg" ${data.satuan === 'Kg' ? 'selected' : ''}>Kilogram</option>
-                                            <option value="Liter" ${data.satuan === 'Liter' ? 'selected' : ''}>Liter</option>
-                                            <option value="Unit" ${data.satuan === 'Unit' ? 'selected' : ''}>Unit</option>
-                                            <option value="Paket" ${data.satuan === 'Paket' ? 'selected' : ''}>Paket</option>
-                                            <option value="Lainnya" ${data.satuan === 'Lainnya' ? 'selected' : ''}>Lainnya</option>
+                                        <label for="editSatuanBantuan" class="form-label">Satuan</label>
+                                        <select class="form-select" id="editSatuanBantuan" required>
+                                            <option value="">Pilih Satuan</option>
+                                            <option value="Rupiah" ${data.satuanBantuan === 'Rupiah' ? 'selected' : ''}>Rupiah</option>
+                                            <option value="Kg" ${data.satuanBantuan === 'Kg' ? 'selected' : ''}>Kilogram</option>
+                                            <option value="Karung" ${data.satuanBantuan === 'Karung' ? 'selected' : ''}>Karung</option>
+                                            <option value="Paket" ${data.satuanBantuan === 'Paket' ? 'selected' : ''}>Paket</option>
+                                            <option value="Unit" ${data.satuanBantuan === 'Unit' ? 'selected' : ''}>Unit</option>
+                                            <option value="Lainnya" ${data.satuanBantuan === 'Lainnya' ? 'selected' : ''}>Lainnya</option>
                                         </select>
                                     </div>
                                     <div class="mb-3">
-                                        <label for="editTahun" class="form-label">Tahun</label>
-                                        <select class="form-select" id="editTahun" required>
-                                            <option value="" disabled>Pilih Tahun</option>
-                                            ${getTahunOptions(data.tahun)}
-                                        </select>
+                                        <label for="editTanggalTerima" class="form-label">Tanggal Terima</label>
+                                        <input type="date" class="form-control" id="editTanggalTerima" value="${data.tanggalTerima}" required>
                                     </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="editNamaPetugas" class="form-label">Nama Petugas</label>
+                                        <input type="text" class="form-control" id="editNamaPetugas" value="${data.namaPetugas}">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="editDriveLink" class="form-label">Link Google Drive</label>
+                                        <input type="url" class="form-control" id="editDriveLink" value="${data.driveLink}">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="editKodeValidasi" class="form-label">Kode Validasi</label>
+                                        <input type="text" class="form-control" id="editKodeValidasi" value="${data.kodeValidasi}" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
                                     <div class="mb-3">
                                         <label for="editKeterangan" class="form-label">Keterangan</label>
                                         <textarea class="form-control" id="editKeterangan" rows="2">${data.keterangan}</textarea>
@@ -2693,49 +2871,59 @@
                 // Create and show modal
                 const modal = showModal('Edit Data', modalContent);
                 
+                // Fill tahun options
+                const currentYear = new Date().getFullYear();
+                const editTahunAnggaran = document.getElementById('editTahunAnggaran');
+                editTahunAnggaran.innerHTML = '';
+                
+                for (let year = currentYear - 5; year <= currentYear + 5; year++) {
+                    const option = document.createElement('option');
+                    option.value = year;
+                    option.textContent = year;
+                    
+                    if (year == data.tahunAnggaran) {
+                        option.selected = true;
+                    }
+                    
+                    editTahunAnggaran.appendChild(option);
+                }
+                
+                // Fill desa options based on kecamatan
+                const editKecamatan = document.getElementById('editKecamatan');
+                const editDesa = document.getElementById('editDesa');
+                
+                editKecamatan.addEventListener('change', function() {
+                    const kecamatan = this.value;
+                    editDesa.innerHTML = '<option value="">Pilih Desa</option>';
+                    
+                    if (kecamatan) {
+                        // This would typically come from a database
+                        const desaList = [
+                            "Desa A", "Desa B", "Desa C", "Desa D", "Desa E"
+                        ];
+                        
+                        desaList.forEach(desa => {
+                            const option = document.createElement('option');
+                            option.value = desa;
+                            option.textContent = desa;
+                            editDesa.appendChild(option);
+                        });
+                    }
+                });
+                
+                // Trigger change event to populate desa options
+                editKecamatan.dispatchEvent(new Event('change'));
+                
+                // Set the correct desa value
+                setTimeout(() => {
+                    editDesa.value = data.desa;
+                }, 100);
+                
                 // Add event listener to save button
                 document.getElementById('saveEditBtn').addEventListener('click', function() {
                     saveEditedData(data.id);
                 });
-                
-                // Add validation to NIK field
-                document.getElementById('editNik').addEventListener('input', function(e) {
-                    validateNIK(e.target);
-                });
             }
-        }
-        
-        // Get desa options for edit form
-        function getDesaOptions(selectedDesa) {
-            const desaList = [
-                "Agel", "Alas Bayur", "Alasmalang", "Alastengah", "Arjasa", "Ardirejo", "Asembagus", 
-                "Awar-awar", "Awang-awang", "Baderan", "Balung", "Bantal", "Battal", "Bayeman", "Besuki", "Bletok", "Blimbing", "Bloro", "Buduan", "Bugeman", "Bungatan", 
-                "Campoan", "Cemara", "Curah Cottok", "Curah Jeru", "Curah Kalak", "Curah Suri", "Curah Tatal", "Dawuhan", "Demung", "Duwet", "Gadingan", "Gebangan", 
-                "Gelung", "Gudang", "Gunung Malang", "Gunung Putri", "Jangkar", "Jatisari", "Jatibanteng", "Jetis", "Juglangan", "Kalianget", "Kalibagor", "Kalimas", 
-                "Kalirejo", "Kalisari", "Kandang", "Kayu Putih", "Kayumas", "Kedungdowo", "Kedunglo", "Kembangsari", "Ketah", "Ketowan", "Kilensari", "Klampokan", 
-                "Klatakan", "Kotakan", "Kumbangsari", "Kukusan", "Lamongan", "Landangan", "Langkap", "Lebeng", "Lubawang", "Mangaran", "Mimbaan", "Mlandingan Kulon", 
-                "Mlandingan Wetan", "Mojodungkol", "Mojosari", "Olean", "Palangan", "Panarukan", "Panji Kidul", "Panji Lor", "Parante", "Pasir Putih", "Patemon", 
-                "Patokan", "Paowan", "Peleyan", "Pesisir", "Pesanggrahan", "Pategalan", "Patemon", "Plalangan", "Pokaan", "Rajekwesi", "Seletreng", "Selobanteng", 
-                "Selomukti", "Selowogo", "Semambung", "Semiring", "Sliwung", "Sopet", "Sumber Pinang", "Sumberanyar", "Sumberargo", "Sumberkolak", "Sumberejo", 
-                "Sumbertengah", "Sumberwaru", "Tamankursi", "Tamansari", "Taman", "Talkandang", "Tanjung Glugur", "Tanjung Kamal", "Tanjung Pecinan", "Tambak Ukir", 
-                "Telempong", "Tenggir", "Tepos", "Tokelan", "Tlogosari", "Trigonco", "Trebungan", "Widoropayung", "Wonokoyo", "Wonorejo", "Wringinanom"
-            ];
-            
-            let options = '';
-            desaList.forEach(desa => {
-                options += `<option value="${desa}" ${desa === selectedDesa ? 'selected' : ''}>${desa}</option>`;
-            });
-            
-            return options;
-        }
-        
-        // Get tahun options for edit form
-        function getTahunOptions(selectedTahun) {
-            let options = '';
-            for (let year = 2020; year <= 2090; year++) {
-                options += `<option value="${year}" ${year === selectedTahun ? 'selected' : ''}>${year}</option>`;
-            }
-            return options;
         }
         
         // Save edited data
@@ -2745,27 +2933,30 @@
             const nik = document.getElementById('editNik').value;
             const whatsapp = document.getElementById('editWhatsapp').value;
             const namaKelompok = document.getElementById('editNamaKelompok').value;
+            const jabatan = document.getElementById('editJabatan').value;
+            const tahunAnggaran = document.getElementById('editTahunAnggaran').value;
+            const kecamatan = document.getElementById('editKecamatan').value;
             const desa = document.getElementById('editDesa').value;
+            const alamat = document.getElementById('editAlamat').value;
             const jenisBantuan = document.getElementById('editJenisBantuan').value;
+            const namaBantuan = document.getElementById('editNamaBantuan').value;
             const jumlahBantuan = document.getElementById('editJumlahBantuan').value;
-            const satuan = document.getElementById('editSatuan').value;
-            const tahun = document.getElementById('editTahun').value;
+            const satuanBantuan = document.getElementById('editSatuanBantuan').value;
+            const tanggalTerima = document.getElementById('editTanggalTerima').value;
+            const namaPetugas = document.getElementById('editNamaPetugas').value;
+            const driveLink = document.getElementById('editDriveLink').value;
+            const kodeValidasi = document.getElementById('editKodeValidasi').value;
             const keterangan = document.getElementById('editKeterangan').value;
             
             // Validate required fields
-            if (!nama || !nik || !whatsapp || !desa || !jenisBantuan || !jumlahBantuan || !tahun) {
-                showErrorToast('Harap isi semua field yang wajib diisi');
-                return;
-            }
-            
-            // Validate NIK
-            if (!validateNIK(document.getElementById('editNik'))) {
-                showErrorToast('NIK harus 16 digit angka');
+            if (!nama || !nik || !whatsapp || !tahunAnggaran || !kecamatan || !desa || 
+                !jenisBantuan || !jumlahBantuan || !satuanBantuan || !tanggalTerima || !kodeValidasi) {
+                showNotification('Error', 'Harap isi semua field yang wajib diisi', 'error');
                 return;
             }
             
             // Find data index
-            const dataIndex = bantuanData.findIndex(item => item.id === id);
+            const dataIndex = bantuanData.findIndex(item => item.id == id);
             
             if (dataIndex !== -1) {
                 // Update data
@@ -2775,11 +2966,19 @@
                     nik,
                     whatsapp,
                     namaKelompok: namaKelompok || '-',
+                    jabatan,
+                    tahunAnggaran,
+                    kecamatan,
                     desa,
+                    alamat: alamat || '-',
                     jenisBantuan,
+                    namaBantuan: namaBantuan || '-',
                     jumlahBantuan: parseInt(jumlahBantuan),
-                    satuan,
-                    tahun: parseInt(tahun),
+                    satuanBantuan,
+                    tanggalTerima,
+                    namaPetugas: namaPetugas || '-',
+                    driveLink: driveLink || '-',
+                    kodeValidasi,
                     keterangan: keterangan || '-'
                 };
                 
@@ -2790,7 +2989,7 @@
                 bootstrap.Modal.getInstance(document.querySelector('.modal')).hide();
                 
                 // Show success message
-                showSuccessToast('Data berhasil diupdate');
+                showNotification('Sukses', 'Data berhasil diupdate', 'success');
                 
                 // Update UI
                 loadDataTable();
@@ -2803,13 +3002,13 @@
         function deleteData(id) {
             if (confirm('Apakah Anda yakin ingin menghapus data ini?')) {
                 // Filter out the data with the given ID
-                bantuanData = bantuanData.filter(item => item.id !== id);
+                bantuanData = bantuanData.filter(item => item.id != id);
                 
                 // Save to localStorage
                 localStorage.setItem('bantuanData', JSON.stringify(bantuanData));
                 
                 // Show success message
-                showSuccessToast('Data berhasil dihapus');
+                showNotification('Sukses', 'Data berhasil dihapus', 'success');
                 
                 // Update UI
                 loadDataTable();
@@ -2817,337 +3016,6 @@
                 updateDashboardStats();
                 updateSystemInfo();
             }
-        }
-        
-        // Print individual data
-        function printIndividualData(id) {
-            const data = bantuanData.find(item => item.id === id);
-            
-            if (data) {
-                // Create print content
-                const printContent = `
-                    <div class="print-header">
-                        <h1 class="print-title">Laporan Data Bantuan</h1>
-                        <p class="print-subtitle">BARJAS - Sistem Bantuan Terpadu</p>
-                        <p class="print-date">Dicetak pada: ${new Date().toLocaleDateString('id-ID')}</p>
-                    </div>
-                    <table class="table table-bordered">
-                        <tr>
-                            <th width="30%">Nama</th>
-                            <td>${data.nama}</td>
-                        </tr>
-                        <tr>
-                            <th>NIK</th>
-                            <td>${data.nik}</td>
-                        </tr>
-                        <tr>
-                            <th>WhatsApp</th>
-                            <td>${data.whatsapp}</td>
-                        </tr>
-                        <tr>
-                            <th>Nama Kelompok</th>
-                            <td>${data.namaKelompok}</td>
-                        </tr>
-                        <tr>
-                            <th>Desa</th>
-                            <td>${data.desa}</td>
-                        </tr>
-                        <tr>
-                            <th>Jenis Bantuan</th>
-                            <td>${data.jenisBantuan}</td>
-                        </tr>
-                        <tr>
-                            <th>Jumlah Bantuan</th>
-                            <td>${data.jumlahBantuan} ${data.satuan}</td>
-                        </tr>
-                        <tr>
-                            <th>Tahun</th>
-                            <td>${data.tahun}</td>
-                        </tr>
-                        <tr>
-                            <th>Keterangan</th>
-                            <td>${data.keterangan}</td>
-                        </tr>
-                        <tr>
-                            <th>Tanggal Input</th>
-                            <td>${new Date(data.tanggalInput).toLocaleDateString('id-ID')}</td>
-                        </tr>
-                    </table>
-                `;
-                
-                // Open print window
-                const printWindow = window.open('', '_blank');
-                printWindow.document.write(`
-                    <!DOCTYPE html>
-                    <html>
-                    <head>
-                        <title>Cetak Data Bantuan - ${data.nama}</title>
-                        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-                        <style>
-                            body { padding: 20px; font-family: Arial, sans-serif; }
-                            .print-header { text-align: center; margin-bottom: 20px; }
-                            .print-title { font-size: 24px; font-weight: bold; }
-                            .print-subtitle { font-size: 16px; color: #666; }
-                            .print-date { font-size: 14px; text-align: right; margin-bottom: 20px; }
-                            table { width: 100%; border-collapse: collapse; }
-                            th, td { padding: 8px; border: 1px solid #ddd; }
-                            th { background-color: #f8f9fa; text-align: left; width: 30%; }
-                            @media print {
-                                body { padding: 0; }
-                                .print-header { margin-bottom: 15px; }
-                            }
-                        </style>
-                    </head>
-                    <body>
-                        ${printContent}
-                        <script>
-                            window.onload = function() {
-                                window.print();
-                                setTimeout(function() {
-                                    window.close();
-                                }, 500);
-                            }
-                        <\/script>
-                    </body>
-                    </html>
-                `);
-                printWindow.document.close();
-            }
-        }
-        
-        // Generate report
-        function generateReport() {
-            const reportTahun = document.getElementById('reportTahun').value;
-            const reportJenis = document.getElementById('reportJenis').value;
-            const reportDesa = document.getElementById('reportDesa').value;
-            const reportFormat = document.getElementById('reportFormat').value;
-            
-            // Filter data
-            let filteredData = bantuanData.filter(item => {
-                let match = true;
-                
-                if (reportTahun !== 'all' && item.tahun !== parseInt(reportTahun)) {
-                    match = false;
-                }
-                
-                if (reportJenis !== 'all' && item.jenisBantuan !== reportJenis) {
-                    match = false;
-                }
-                
-                if (reportDesa !== 'all' && item.desa !== reportDesa) {
-                    match = false;
-                }
-                
-                return match;
-            });
-            
-            if (filteredData.length === 0) {
-                showErrorToast('Tidak ada data untuk dilaporkan');
-                return;
-            }
-            
-            if (reportFormat === 'pdf') {
-                generatePDFReport(filteredData, reportTahun, reportJenis, reportDesa);
-            } else {
-                generateExcelReport(filteredData, reportTahun, reportJenis, reportDesa);
-            }
-        }
-        
-        // Generate PDF report
-        function generatePDFReport(data, tahun, jenis, desa) {
-            // Using jsPDF with autoTable plugin
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
-            
-            // Add title
-            doc.setFontSize(18);
-            doc.text('LAPORAN DATA BANTUAN', 105, 15, { align: 'center' });
-            doc.setFontSize(12);
-            doc.text('BARJAS - Sistem Bantuan Terpadu', 105, 22, { align: 'center' });
-            
-            // Add filters info
-            let filters = 'Semua Data';
-            if (tahun !== 'all' || jenis !== 'all' || desa !== 'all') {
-                filters = 'Filter: ';
-                if (tahun !== 'all') filters += `Tahun: ${tahun}, `;
-                if (jenis !== 'all') filters += `Jenis: ${jenis}, `;
-                if (desa !== 'all') filters += `Desa: ${desa}`;
-                
-                // Remove trailing comma
-                if (filters.endsWith(', ')) {
-                    filters = filters.slice(0, -2);
-                }
-            }
-            
-            doc.setFontSize(10);
-            doc.text(filters, 14, 30);
-            doc.text(`Tanggal Cetak: ${new Date().toLocaleDateString('id-ID')}`, 14, 35);
-            
-            // Prepare table data
-            const tableData = data.map(item => [
-                item.nama,
-                item.nik,
-                item.whatsapp,
-                item.desa,
-                item.jenisBantuan,
-                `${item.jumlahBantuan} ${item.satuan}`,
-                item.tahun
-            ]);
-            
-            // Add table
-            doc.autoTable({
-                head: [['Nama', 'NIK', 'WhatsApp', 'Desa', 'Jenis Bantuan', 'Jumlah', 'Tahun']],
-                body: tableData,
-                startY: 40,
-                theme: 'grid',
-                headStyles: {
-                    fillColor: [13, 71, 161],
-                    textColor: 255
-                },
-                alternateRowStyles: {
-                    fillColor: [240, 240, 240]
-                }
-            });
-            
-            // Add summary
-            const totalBantuan = data.reduce((sum, item) => sum + item.jumlahBantuan, 0);
-            const lastPage = doc.internal.getNumberOfPages();
-            doc.setPage(lastPage);
-            doc.setFontSize(10);
-            doc.text(`Total Data: ${data.length}`, 14, doc.lastAutoTable.finalY + 10);
-            doc.text(`Total Bantuan: ${totalBantuan}`, 14, doc.lastAutoTable.finalY + 15);
-            
-            // Save the PDF
-            const fileName = `Laporan_Bantuan_${new Date().getTime()}.pdf`;
-            doc.save(fileName);
-            
-            showSuccessToast('Laporan PDF berhasil digenerate');
-        }
-        
-        // Generate Excel report
-        function generateExcelReport(data, tahun, jenis, desa) {
-            // Prepare worksheet data
-            const worksheetData = [
-                ['LAPORAN DATA BANTUAN'],
-                ['BARJAS - Sistem Bantuan Terpadu'],
-                [''],
-                ['Filter:', tahun !== 'all' ? `Tahun: ${tahun}` : 'Semua Tahun', jenis !== 'all' ? `Jenis: ${jenis}` : 'Semua Jenis', desa !== 'all' ? `Desa: ${desa}` : 'Semua Desa'],
-                ['Tanggal Cetak:', new Date().toLocaleDateString('id-ID')],
-                [''],
-                ['Nama', 'NIK', 'WhatsApp', 'Desa', 'Jenis Bantuan', 'Jumlah', 'Satuan', 'Tahun', 'Keterangan']
-            ];
-            
-            // Add data rows
-            data.forEach(item => {
-                worksheetData.push([
-                    item.nama,
-                    item.nik,
-                    item.whatsapp,
-                    item.desa,
-                    item.jenisBantuan,
-                    item.jumlahBantuan,
-                    item.satuan,
-                    item.tahun,
-                    item.keterangan
-                ]);
-            });
-            
-            // Add summary
-            const totalBantuan = data.reduce((sum, item) => sum + item.jumlahBantuan, 0);
-            worksheetData.push(['']);
-            worksheetData.push(['Total Data:', data.length]);
-            worksheetData.push(['Total Bantuan:', totalBantuan]);
-            
-            // Create workbook and worksheet
-            const ws = XLSX.utils.aoa_to_sheet(worksheetData);
-            const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, 'Laporan Bantuan');
-            
-            // Generate Excel file and download
-            const fileName = `Laporan_Bantuan_${new Date().getTime()}.xlsx`;
-            XLSX.writeFile(wb, fileName);
-            
-            showSuccessToast('Laporan Excel berhasil digenerate');
-        }
-        
-        // Backup data to JSON file
-        function backupData() {
-            const dataStr = JSON.stringify(bantuanData, null, 2);
-            const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
-            
-            const exportFileDefaultName = `backup_data_bantuan_${new Date().getTime()}.json`;
-            
-            const linkElement = document.createElement('a');
-            linkElement.setAttribute('href', dataUri);
-            linkElement.setAttribute('download', exportFileDefaultName);
-            linkElement.click();
-            
-            showSuccessToast('Backup data berhasil');
-        }
-        
-        // Restore data from JSON file
-        function restoreData(file) {
-            if (!file) return;
-            
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                try {
-                    const importedData = JSON.parse(e.target.result);
-                    
-                    if (Array.isArray(importedData)) {
-                        if (confirm('Apakah Anda yakin ingin mengimpor data? Data yang sudah ada akan digantikan.')) {
-                            bantuanData = importedData;
-                            localStorage.setItem('bantuanData', JSON.stringify(bantuanData));
-                            
-                            // Update UI
-                            loadDataTable();
-                            updateRecentData();
-                            updateDashboardStats();
-                            updateSystemInfo();
-                            
-                            showSuccessToast('Data berhasil diimpor');
-                        }
-                    } else {
-                        showErrorToast('Format file tidak valid');
-                    }
-                } catch (error) {
-                    showErrorToast('Gagal membaca file: ' + error.message);
-                }
-            };
-            reader.readAsText(file);
-        }
-        
-        // Reset all data
-        function resetData() {
-            if (confirm('Apakah Anda yakin ingin menghapus semua data? Tindakan ini tidak dapat dibatalkan.')) {
-                bantuanData = [];
-                localStorage.setItem('bantuanData', JSON.stringify(bantuanData));
-                
-                // Update UI
-                loadDataTable();
-                updateRecentData();
-                updateDashboardStats();
-                updateSystemInfo();
-                
-                showSuccessToast('Semua data berhasil dihapus');
-            }
-        }
-        
-        // Update dashboard statistics
-        function updateDashboardStats() {
-            document.getElementById('totalPenerima').textContent = bantuanData.length;
-            
-            const totalBantuan = bantuanData.reduce((sum, item) => sum + item.jumlahBantuan, 0);
-            document.getElementById('totalBantuan').textContent = totalBantuan.toLocaleString('id-ID');
-            
-            // Count unique desa
-            const uniqueDesa = new Set(bantuanData.map(item => item.desa));
-            document.getElementById('totalKecamatan').textContent = uniqueDesa.size;
-            
-            // Find the most recent year
-            const years = bantuanData.map(item => item.tahun);
-            const mostRecentYear = years.length > 0 ? Math.max(...years) : new Date().getFullYear();
-            document.getElementById('tahunAktif').textContent = mostRecentYear;
         }
         
         // Update recent data table
@@ -3176,8 +3044,8 @@
                     <td>${item.nik}</td>
                     <td>${item.whatsapp}</td>
                     <td>${item.jenisBantuan}</td>
-                    <td>${item.jumlahBantuan} ${item.satuan}</td>
-                    <td>${new Date(item.tanggalInput).toLocaleDateString('id-ID')}</td>
+                    <td>${item.jumlahBantuan} ${item.satuanBantuan}</td>
+                    <td>${new Date(item.tanggalTerima).toLocaleDateString('id-ID')}</td>
                     <td>
                         <button class="btn btn-sm btn-primary btn-view" data-id="${item.id}">
                             <i class="fas fa-eye"></i>
@@ -3191,7 +3059,7 @@
             // Add event listeners to view buttons
             document.querySelectorAll('#recentDataTable .btn-view').forEach(btn => {
                 btn.addEventListener('click', function() {
-                    const id = parseInt(this.getAttribute('data-id'));
+                    const id = this.getAttribute('data-id');
                     viewData(id);
                 });
             });
@@ -3199,12 +3067,12 @@
         
         // Update system information
         function updateSystemInfo() {
-            document.getElementById('totalDataCount').textContent = bantuanData.length;
+            document.getElementById('totalDataSettings').textContent = bantuanData.length;
             
             // Calculate storage size
             const dataStr = JSON.stringify(bantuanData);
             const storageSize = new Blob([dataStr]).size;
-            document.getElementById('storageSize').textContent = `${(storageSize / 1024).toFixed(2)} KB`;
+            document.getElementById('dbSize').textContent = `${(storageSize / 1024).toFixed(2)} KB`;
             
             // Browser info
             const userAgent = navigator.userAgent;
@@ -3217,9 +3085,6 @@
             else browserName = 'Unknown';
             
             document.getElementById('browserInfo').textContent = browserName;
-            
-            // Current date
-            document.getElementById('currentDate').textContent = new Date().toLocaleDateString('id-ID');
         }
         
         // Initialize charts
@@ -3284,149 +3149,16 @@
                 }
             });
             
-            // Desa Distribution Chart (Bar)
-            const desaDistributionCtx = document.getElementById('desaDistributionChart').getContext('2d');
-            window.desaDistributionChart = new Chart(desaDistributionCtx, {
-                type: 'bar',
-                data: {
-                    labels: [],
-                    datasets: [{
-                        label: 'Jumlah Bantuan',
-                        data: [],
-                        backgroundColor: 'rgba(13, 71, 161, 0.7)',
-                        borderColor: 'rgba(13, 71, 161, 1)',
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: {
-                            display: false
-                        },
-                        title: {
-                            display: true,
-                            text: 'Distribusi Bantuan per Desa'
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true
-                        }
-                    }
-                }
-            });
-            
-            // Jenis Stat Chart (Bar)
-            const jenisStatCtx = document.getElementById('jenisStatChart').getContext('2d');
-            window.jenisStatChart = new Chart(jenisStatCtx, {
-                type: 'bar',
-                data: {
-                    labels: [],
-                    datasets: [{
-                        label: 'Jumlah Bantuan',
-                        data: [],
-                        backgroundColor: 'rgba(0, 105, 92, 0.7)',
-                        borderColor: 'rgba(0, 105, 92, 1)',
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: {
-                            display: false
-                        },
-                        title: {
-                            display: true,
-                            text: 'Bantuan per Jenis'
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true
-                        }
-                    }
-                }
-            });
-            
-            // Tren Stat Chart (Line)
-            const trenStatCtx = document.getElementById('trenStatChart').getContext('2d');
-            window.trenStatChart = new Chart(trenStatCtx, {
-                type: 'line',
-                data: {
-                    labels: [],
-                    datasets: [{
-                        label: 'Jumlah Bantuan',
-                        data: [],
-                        backgroundColor: 'rgba(255, 143, 0, 0.2)',
-                        borderColor: 'rgba(255, 143, 0, 1)',
-                        borderWidth: 2,
-                        tension: 0.3,
-                        fill: true
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        title: {
-                            display: true,
-                            text: 'Tren Bantuan per Tahun'
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true
-                        }
-                    }
-                }
-            });
-            
             // Update charts with data
             updateCharts();
         }
         
         // Update charts with current data
         function updateCharts() {
-            const statTahun = document.getElementById('statTahun').value;
-            const statJenis = document.getElementById('statJenis').value;
-            
-            // Filter data
-            let filteredData = bantuanData.filter(item => {
-                let match = true;
-                
-                if (statTahun !== 'all' && item.tahun !== parseInt(statTahun)) {
-                    match = false;
-                }
-                
-                if (statJenis !== 'all' && item.jenisBantuan !== statJenis) {
-                    match = false;
-                }
-                
-                return match;
-            });
-            
             // Update Jenis Bantuan Chart
-            updateJenisBantuanChart(filteredData);
-            
-            // Update Tren Bantuan Chart
-            updateTrenBantuanChart(filteredData);
-            
-            // Update Desa Distribution Chart
-            updateDesaDistributionChart(filteredData);
-            
-            // Update Jenis Stat Chart
-            updateJenisStatChart(filteredData);
-            
-            // Update Tren Stat Chart
-            updateTrenStatChart(filteredData);
-        }
-        
-        // Update Jenis Bantuan Chart
-        function updateJenisBantuanChart(data) {
             const jenisCount = {};
             
-            data.forEach(item => {
+            bantuanData.forEach(item => {
                 if (jenisCount[item.jenisBantuan]) {
                     jenisCount[item.jenisBantuan]++;
                 } else {
@@ -3437,17 +3169,15 @@
             window.jenisBantuanChart.data.labels = Object.keys(jenisCount);
             window.jenisBantuanChart.data.datasets[0].data = Object.values(jenisCount);
             window.jenisBantuanChart.update();
-        }
-        
-        // Update Tren Bantuan Chart (by month)
-        function updateTrenBantuanChart(data) {
+            
+            // Update Tren Bantuan Chart (by month)
             const monthCount = {
                 'Jan': 0, 'Feb': 0, 'Mar': 0, 'Apr': 0, 'May': 0, 'Jun': 0,
                 'Jul': 0, 'Aug': 0, 'Sep': 0, 'Oct': 0, 'Nov': 0, 'Dec': 0
             };
             
-            data.forEach(item => {
-                const date = new Date(item.tanggalInput);
+            bantuanData.forEach(item => {
+                const date = new Date(item.tanggalTerima);
                 const month = date.toLocaleString('id-ID', { month: 'short' });
                 monthCount[month] += item.jumlahBantuan;
             });
@@ -3455,65 +3185,6 @@
             window.trenBantuanChart.data.labels = Object.keys(monthCount);
             window.trenBantuanChart.data.datasets[0].data = Object.values(monthCount);
             window.trenBantuanChart.update();
-        }
-        
-        // Update Desa Distribution Chart
-        function updateDesaDistributionChart(data) {
-            const desaCount = {};
-            
-            data.forEach(item => {
-                if (desaCount[item.desa]) {
-                    desaCount[item.desa] += item.jumlahBantuan;
-                } else {
-                    desaCount[item.desa] = item.jumlahBantuan;
-                }
-            });
-            
-            // Sort by value and get top 10
-            const sortedDesa = Object.entries(desaCount)
-                .sort((a, b) => b[1] - a[1])
-                .slice(0, 10);
-            
-            window.desaDistributionChart.data.labels = sortedDesa.map(item => item[0]);
-            window.desaDistributionChart.data.datasets[0].data = sortedDesa.map(item => item[1]);
-            window.desaDistributionChart.update();
-        }
-        
-        // Update Jenis Stat Chart
-        function updateJenisStatChart(data) {
-            const jenisSum = {};
-            
-            data.forEach(item => {
-                if (jenisSum[item.jenisBantuan]) {
-                    jenisSum[item.jenisBantuan] += item.jumlahBantuan;
-                } else {
-                    jenisSum[item.jenisBantuan] = item.jumlahBantuan;
-                }
-            });
-            
-            window.jenisStatChart.data.labels = Object.keys(jenisSum);
-            window.jenisStatChart.data.datasets[0].data = Object.values(jenisSum);
-            window.jenisStatChart.update();
-        }
-        
-        // Update Tren Stat Chart (by year)
-        function updateTrenStatChart(data) {
-            const yearSum = {};
-            
-            data.forEach(item => {
-                if (yearSum[item.tahun]) {
-                    yearSum[item.tahun] += item.jumlahBantuan;
-                } else {
-                    yearSum[item.tahun] = item.jumlahBantuan;
-                }
-            });
-            
-            // Sort years
-            const sortedYears = Object.keys(yearSum).sort();
-            
-            window.trenStatChart.data.labels = sortedYears;
-            window.trenStatChart.data.datasets[0].data = sortedYears.map(year => yearSum[year]);
-            window.trenStatChart.update();
         }
         
         // Show modal with custom content
@@ -3545,16 +3216,101 @@
             return modal;
         }
         
-        // Show success toast
-        function showSuccessToast(message) {
-            document.getElementById('toastMessage').textContent = message;
-            successToast.show();
+        // Export to Excel
+        function exportToExcel() {
+            // Prepare worksheet data
+            const worksheetData = [
+                ['LAPORAN DATA BANTUAN'],
+                ['BARJAS - Sistem Bantuan Terpadu'],
+                [''],
+                ['Tanggal Cetak:', new Date().toLocaleDateString('id-ID')],
+                [''],
+                ['No', 'Nama', 'NIK', 'WhatsApp', 'Kecamatan', 'Desa', 'Jenis Bantuan', 'Jumlah', 'Satuan', 'Tanggal Terima']
+            ];
+            
+            // Add data rows
+            bantuanData.forEach((item, index) => {
+                worksheetData.push([
+                    index + 1,
+                    item.nama,
+                    item.nik,
+                    item.whatsapp,
+                    item.kecamatan,
+                    item.desa,
+                    item.jenisBantuan,
+                    item.jumlahBantuan,
+                    item.satuanBantuan,
+                    new Date(item.tanggalTerima).toLocaleDateString('id-ID')
+                ]);
+            });
+            
+            // Create workbook and worksheet
+            const ws = XLSX.utils.aoa_to_sheet(worksheetData);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, 'Laporan Bantuan');
+            
+            // Generate Excel file and download
+            const fileName = `Laporan_Bantuan_${new Date().getTime()}.xlsx`;
+            XLSX.writeFile(wb, fileName);
+            
+            showNotification('Sukses', 'Data berhasil diekspor ke Excel', 'success');
         }
         
-        // Show error toast
-        function showErrorToast(message) {
-            document.getElementById('errorToastMessage').textContent = message;
-            errorToast.show();
+        // Export to PDF
+        function exportToPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            // Add title
+            doc.setFontSize(18);
+            doc.text('LAPORAN DATA BANTUAN', 105, 15, { align: 'center' });
+            doc.setFontSize(12);
+            doc.text('BARJAS - Sistem Bantuan Terpadu', 105, 22, { align: 'center' });
+            
+            // Add date
+            doc.setFontSize(10);
+            doc.text(`Tanggal Cetak: ${new Date().toLocaleDateString('id-ID')}`, 14, 35);
+            
+            // Prepare table data
+            const tableData = bantuanData.map(item => [
+                item.nama,
+                item.nik,
+                item.whatsapp,
+                item.kecamatan,
+                item.desa,
+                item.jenisBantuan,
+                `${item.jumlahBantuan} ${item.satuanBantuan}`,
+                new Date(item.tanggalTerima).toLocaleDateString('id-ID')
+            ]);
+            
+            // Add table
+            doc.autoTable({
+                head: [['Nama', 'NIK', 'WhatsApp', 'Kecamatan', 'Desa', 'Jenis Bantuan', 'Jumlah', 'Tanggal']],
+                body: tableData,
+                startY: 40,
+                theme: 'grid',
+                headStyles: {
+                    fillColor: [13, 71, 161],
+                    textColor: 255
+                },
+                alternateRowStyles: {
+                    fillColor: [240, 240, 240]
+                }
+            });
+            
+            // Add summary
+            const totalBantuan = bantuanData.reduce((sum, item) => sum + item.jumlahBantuan, 0);
+            const lastPage = doc.internal.getNumberOfPages();
+            doc.setPage(lastPage);
+            doc.setFontSize(10);
+            doc.text(`Total Data: ${bantuanData.length}`, 14, doc.lastAutoTable.finalY + 10);
+            doc.text(`Total Bantuan: ${totalBantuan}`, 14, doc.lastAutoTable.finalY + 15);
+            
+            // Save the PDF
+            const fileName = `Laporan_Bantuan_${new Date().getTime()}.pdf`;
+            doc.save(fileName);
+            
+            showNotification('Sukses', 'Data berhasil diekspor ke PDF', 'success');
         }
     </script>
 </body>
