@@ -186,7 +186,7 @@
             text-align: center;
         }
 
-        /* Button Styles - IMPROVED */
+        /* Button Styles - PREMIUM REDESIGN */
         .portal-buttons {
             display: flex;
             flex-direction: column;
@@ -197,8 +197,8 @@
         }
 
         .portal-button {
-            padding: 18px 28px;
-            border-radius: 16px;
+            padding: 20px 30px;
+            border-radius: 12px;
             border: none;
             font-family: 'Montserrat', sans-serif;
             font-weight: 600;
@@ -210,12 +210,12 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 12px;
             text-decoration: none;
             text-align: center;
             z-index: 1;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-            letter-spacing: 0.5px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
         }
 
         .portal-button::before {
@@ -225,10 +225,10 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
             transform: translateX(-100%);
-            z-index: -1;
             transition: transform 0.6s ease;
+            z-index: -1;
         }
 
         .portal-button:hover::before {
@@ -244,47 +244,38 @@
             height: 100%;
             background: inherit;
             z-index: -2;
-            border-radius: 16px;
+            border-radius: 12px;
         }
 
         .barjas-button {
-            background: linear-gradient(135deg, #3a7bd5, #00d2ff);
+            background: linear-gradient(135deg, #2a5ba1, #3a7bd5);
             color: white;
-            box-shadow: 0 8px 25px rgba(58, 123, 213, 0.5);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 8px 25px rgba(42, 91, 161, 0.4);
         }
 
         .sismat-button {
-            background: linear-gradient(135deg, #0f3460, #3a7bd5);
+            background: linear-gradient(135deg, #0c2a4d, #1e4785);
             color: white;
-            box-shadow: 0 8px 25px rgba(15, 52, 96, 0.5);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 8px 25px rgba(12, 42, 77, 0.4);
         }
 
         .help-button {
-            background: linear-gradient(135deg, #25D366, #128C7E);
+            background: linear-gradient(135deg, #1e8c5a, #25D366);
             color: white;
-            box-shadow: 0 8px 25px rgba(37, 211, 102, 0.5);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 8px 25px rgba(30, 140, 90, 0.4);
         }
 
         .portal-button:hover {
-            transform: translateY(-5px) scale(1.03);
-            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+            transform: translateY(-5px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
         }
 
         .portal-button:active {
-            transform: translateY(2px) scale(0.98);
-        }
-
-        .button-icon {
-            font-size: 1.3rem;
-            filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.2));
-            transition: transform 0.3s ease;
-        }
-
-        .portal-button:hover .button-icon {
-            transform: scale(1.2) rotate(5deg);
+            transform: translateY(2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
         }
 
         /* Progress Bar - Optimized */
@@ -479,8 +470,8 @@
             
             .portal-button {
                 flex: 1;
-                min-width: 200px;
-                padding: 20px 30px;
+                min-width: 220px;
+                padding: 22px 32px;
                 font-size: 1.2rem;
             }
         }
@@ -500,7 +491,7 @@
             }
             
             .portal-button {
-                padding: 16px 24px;
+                padding: 18px 24px;
                 font-size: 1rem;
             }
         }
@@ -559,17 +550,14 @@
         
         <div class="portal-buttons">
             <a href="https://disnakkansitubondo-web.github.io/barjas/" class="portal-button barjas-button">
-                <span class="button-icon">📊</span>
                 <span>Aplikasi BARJAS</span>
             </a>
             
             <a href="https://disnakkansitubondo-web.github.io/sismat/" class="portal-button sismat-button">
-                <span class="button-icon">📈</span>
                 <span>Aplikasi SISMAT</span>
             </a>
             
             <a href="https://wa.me/6285647709114?text=Halo,%20saya%20meminta%20bantuan%20informasi%20detail%20terkait%20penggunaan%20portal%20sistem" class="portal-button help-button">
-                <span class="button-icon">💬</span>
                 <span>Bantuan</span>
             </a>
         </div>
