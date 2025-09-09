@@ -1095,6 +1095,119 @@
         .preview-table tr:hover {
             background-color: #eaeaea;
         }
+
+        /* Password Change Modal Styles */
+        .password-modal .modal-content {
+            border-radius: 15px;
+            overflow: hidden;
+            border: none;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .password-header {
+            background: var(--gradient-primary);
+            color: white;
+            text-align: center;
+            padding: 25px 20px;
+        }
+
+        .password-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            color: white;
+        }
+
+        .password-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .password-body {
+            padding: 25px;
+        }
+
+        .password-form-group {
+            margin-bottom: 20px;
+        }
+
+        .password-form-label {
+            font-weight: 600;
+            color: var(--dark-blue);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+        }
+
+        .password-form-label i {
+            margin-right: 10px;
+            color: var(--dark-blue);
+        }
+
+        .password-form-control {
+            border-radius: 8px;
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            transition: all 0.3s;
+        }
+
+        .password-form-control:focus {
+            border-color: var(--dark-blue);
+            box-shadow: 0 0 0 3px rgba(13, 71, 161, 0.2);
+        }
+
+        .btn-change-password {
+            background: var(--gradient-secondary);
+            color: white;
+            border: none;
+            padding: 12px;
+            font-weight: 600;
+            border-radius: 8px;
+            width: 100%;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+
+        .btn-change-password:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 105, 92, 0.4);
+        }
+
+        .password-strength-meter {
+            height: 5px;
+            margin-top: 10px;
+            border-radius: 3px;
+            background-color: #eee;
+        }
+
+        .password-strength-meter-fill {
+            height: 100%;
+            border-radius: 3px;
+            transition: width 0.3s, background-color 0.3s;
+        }
+
+        .password-requirements {
+            margin-top: 15px;
+            font-size: 0.85rem;
+            color: #666;
+        }
+
+        .password-requirements ul {
+            padding-left: 20px;
+            margin-bottom: 0;
+        }
+
+        .password-requirements li {
+            margin-bottom: 5px;
+        }
+
+        .password-requirements .requirement-met {
+            color: #28a745;
+        }
+
+        .password-requirements .requirement-not-met {
+            color: #dc3545;
+        }
     </style>
 </head>
 <body>
@@ -1159,6 +1272,58 @@
         </div>
     </div>
     
+    <!-- Change Password Modal -->
+    <div class="modal fade password-modal" id="changePasswordModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="password-header">
+                    <div class="password-icon">
+                        <i class="fas fa-key"></i>
+                    </div>
+                    <h2 class="password-title">UBAH KODE KEAMANAN</h2>
+                    <p class="login-subtitle">Ganti kode keamanan untuk akses aplikasi</p>
+                </div>
+                <div class="password-body">
+                    <form id="changePasswordForm">
+                        <div class="mb-3 password-form-group">
+                            <label class="form-label password-form-label">
+                                <i class="fas fa-lock"></i> Kode Keamanan Saat Ini
+                            </label>
+                            <input type="password" class="form-control password-form-control" id="currentPassword" placeholder="Masukkan kode keamanan saat ini" required>
+                        </div>
+                        <div class="mb-3 password-form-group">
+                            <label class="form-label password-form-label">
+                                <i class="fas fa-lock"></i> Kode Keamanan Baru
+                            </label>
+                            <input type="password" class="form-control password-form-control" id="newPassword" placeholder="Masukkan kode keamanan baru" required>
+                            <div class="password-strength-meter">
+                                <div class="password-strength-meter-fill" id="passwordStrengthMeter"></div>
+                            </div>
+                        </div>
+                        <div class="mb-3 password-form-group">
+                            <label class="form-label password-form-label">
+                                <i class="fas fa-lock"></i> Konfirmasi Kode Baru
+                            </label>
+                            <input type="password" class="form-control password-form-control" id="confirmPassword" placeholder="Konfirmasi kode keamanan baru" required>
+                            <div class="invalid-feedback" id="confirmPasswordFeedback"></div>
+                        </div>
+                        <div class="password-requirements">
+                            <p class="mb-2">Kode keamanan harus memenuhi:</p>
+                            <ul>
+                                <li id="reqLength" class="requirement-not-met">Minimal 4 karakter</li>
+                                <li id="reqNumber" class="requirement-not-met">Mengandung angka</li>
+                            </ul>
+                        </div>
+                        <button type="submit" class="btn btn-change-password" id="changePasswordButton">
+                            <span class="change-password-button-text">Simpan Kode Baru</span>
+                            <span class="spinner-border spinner-border-sm d-none" id="changePasswordSpinner"></span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
     <!-- Login particle background -->
     <div id="login-particles"></div>
     
@@ -1210,6 +1375,9 @@
                         </button>
                         <button class="nav-link" id="v-pills-settings-tab" data-bs-toggle="pill" data-bs-target="#v-pills-settings" type="button" role="tab" aria-controls="v-pills-settings" aria-selected="false">
                             <i class="fas fa-cog feature-icon"></i> Pengaturan
+                        </button>
+                        <button class="nav-link" id="v-pills-change-password-tab" data-bs-toggle="modal" data-bs-target="#changePasswordModal">
+                            <i class="fas fa-key feature-icon"></i> Ubah Kode Keamanan
                         </button>
                         <button class="nav-link" id="v-pills-logout-tab" type="button">
                             <i class="fas fa-sign-out-alt feature-icon"></i> Keluar
@@ -1895,7 +2063,7 @@
                                                 <input type="file" class="form-control" id="restoreFileInput" accept=".json">
                                                 <button class="btn btn-success mt-3 w-100" id="restoreDataBtn" disabled>
                                                     <i class="fas fa-upload me-1"></i> Restore Data
-                                                </button>
+                                            </button>
                                             </div>
                                             <div class="alert alert-warning mt-3">
                                                 <i class="fas fa-exclamation-triangle me-1"></i>
@@ -1987,15 +2155,60 @@
                                         </div>
                                         
                                         <div class="form-check form-switch mb-3">
-                                            <input class="form-check-input" type="checkbox" id="notifications" checked>
+                                                                                        <input class="form-check-input" type="checkbox" id="notifications" checked>
                                             <label class="form-check-label" for="notifications">Aktifkan Notifikasi</label>
                                         </div>
                                         
+                                        <div class="form-check form-switch mb-3">
+                                            <input class="form-check-input" type="checkbox" id="animations" checked>
+                                            <label class="form-check-label" for="animations">Aktifkan Animasi</label>
+                                        </div>
+                                        
                                         <div class="d-flex justify-content-end">
-                                            <button type="reset" class="btn btn-secondary me-2">Reset</button>
-                                            <button type="submit" class="btn btn-primary">Simpan Pengaturan</button>
+                                            <button type="reset" class="btn btn-secondary me-2">
+                                                <i class="fas fa-undo me-1"></i> Reset
+                                            </button>
+                                            <button type="submit" class="btn btn-primary">
+                                                <i class="fas fa-save me-1"></i> Simpan Pengaturan
+                                            </button>
                                         </div>
                                     </form>
+                                </div>
+                            </div>
+                            
+                            <div class="card mt-4">
+                                <div class="card-header">
+                                    <i class="fas fa-database me-2"></i> Informasi Penyimpanan
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="stats-box">
+                                                <i class="fas fa-hdd fa-2x text-primary"></i>
+                                                <div class="stats-number" id="storageUsage">0 KB</div>
+                                                <div class="stats-label">Penyimpanan Terpakai</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="stats-box">
+                                                <i class="fas fa-table fa-2x text-success"></i>
+                                                <div class="stats-number" id="dataCount">0</div>
+                                                <div class="stats-label">Jumlah Data</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="progress mt-4" style="height: 20px;">
+                                        <div class="progress-bar progress-bar-striped progress-bar-animated" 
+                                             id="storageProgress" role="progressbar" style="width: 0%;" 
+                                             aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                                            0% Terpakai
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="form-text text-center mt-2">
+                                        Penyimpanan lokal browser: <span id="storageLimit">5 MB</span> maksimal
+                                    </div>
                                 </div>
                             </div>
                             
@@ -2006,36 +2219,36 @@
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="col-md-6">
-                                            <ul class="list-group list-group-flush">
-                                                <li class="list-group-item d-flex justify-content-between align-items-center">
-                                                    Versi Aplikasi
-                                                    <span class="badge bg-primary">2.0.1</span>
-                                                </li>
-                                                <li class="list-group-item d-flex justify-content-between align-items-center">
-                                                    Jumlah Data
-                                                    <span class="badge bg-info" id="settingsDataCount">0</span>
-                                                </li>
-                                                <li class="list-group-item d-flex justify-content-between align-items-center">
-                                                    Tanggal Backup Terakhir
-                                                    <span class="badge bg-secondary" id="lastBackupDate">-</span>
-                                                </li>
-                                            </ul>
+                                            <table class="table table-borderless">
+                                                <tr>
+                                                    <th width="40%">Versi Aplikasi</th>
+                                                    <td id="appVersion">9.8.96</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Tangril Rilis</th>
+                                                    <td id="releaseDate">1 Januari 2025</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Browser</th>
+                                                    <td id="browserInfo">Unknown</td>
+                                                </tr>
+                                            </table>
                                         </div>
                                         <div class="col-md-6">
-                                            <ul class="list-group list-group-flush">
-                                                <li class="list-group-item d-flex justify-content-between align-items-center">
-                                                    Browser
-                                                    <span class="badge bg-success" id="browserInfo">-</span>
-                                                </li>
-                                                <li class="list-group-item d-flex justify-content-between align-items-center">
-                                                    Local Storage
-                                                    <span class="badge bg-warning" id="storageInfo">-</span>
-                                                </li>
-                                                <li class="list-group-item d-flex justify-content-between align-items-center">
-                                                    Status
-                                                    <span class="badge bg-success" id="appStatus">Aktif</span>
-                                                </li>
-                                            </ul>
+                                            <table class="table table-borderless">
+                                                <tr>
+                                                    <th width="40%">Pembuat</th>
+                                                    <td>Lentera Karya Situbondo</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Kontak</th>
+                                                    <td>+62 856-4770-9114</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Email</th>
+                                                    <td>admin@anekamarket.my.id</td>
+                                                </tr>
+                                            </table>
                                         </div>
                                     </div>
                                 </div>
@@ -2046,44 +2259,41 @@
             </div>
             
             <div class="copyright">
-                &copy; 2025 BARJAS - Sistem Bantuan Terpadu. Hak Cipta Dilindungi.
+                &copy; 2025 BARJAS - Sistem Bantuan Terpadu. Dibuat oleh <strong>Lentera Karya Situbondo</strong>
             </div>
         </div>
         
         <!-- Floating Action Button -->
-        <div class="floating-action-btn" id="fabBtn">
+        <div class="floating-action-btn" id="fabButton">
             <i class="fas fa-plus"></i>
         </div>
         
         <!-- Notification Toast -->
         <div class="toast notification-toast" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="true" data-bs-delay="5000">
-            <div class="toast-header">
-                <i class="fas fa-bell text-primary me-2"></i>
-                <strong class="me-auto">BARJAS Notification</strong>
-                <small>Just now</small>
-                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            <div class="toast-header bg-primary text-white">
+                <strong class="me-auto" id="toastTitle">Notifikasi</strong>
+                <small id="toastTime">Baru saja</small>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
             </div>
             <div class="toast-body" id="toastMessage">
-                <!-- Message will be inserted here -->
+                Pesan notifikasi akan muncul di sini.
             </div>
         </div>
     </div>
-    
+
     <!-- Modal Konfirmasi Reset Data -->
     <div class="modal fade" id="confirmResetModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header bg-danger text-white">
-                    <h5 class="modal-title">
-                        <i class="fas fa-exclamation-triangle me-2"></i> Konfirmasi Reset Data
-                    </h5>
+                    <h5 class="modal-title"><i class="fas fa-exclamation-triangle me-2"></i> Konfirmasi Reset Data</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <p>Apakah Anda yakin ingin mereset semua data?</p>
-                    <p class="text-danger"><strong>Peringatan:</strong> Tindakan ini akan menghapus semua data dan tidak dapat dibatalkan!</p>
-                    <p>Ketik <strong>RESET</strong> pada kolom di bawah untuk mengonfirmasi:</p>
-                    <input type="text" class="form-control" id="resetConfirmationInput">
+                    <p class="text-danger"><strong>Peringatan:</strong> Tindakan ini tidak dapat dibatalkan! Semua data akan dihapus permanen.</p>
+                    <p>Ketik <strong>"RESET"</strong> pada kolom di bawah untuk mengonfirmasi:</p>
+                    <input type="text" class="form-control" id="resetConfirmation" placeholder="Ketik RESET di sini">
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
@@ -2092,37 +2302,42 @@
             </div>
         </div>
     </div>
-    
-    <!-- Modal Preview Laporan -->
+
+    <!-- Modal Pratinjau Cetak -->
     <div class="modal fade" id="previewModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Pratinjau Laporan</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title"><i class="fas fa-eye me-2"></i> Pratinjau Laporan</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="preview-container" id="previewContent">
-                        <!-- Konten pratinjau akan diisi oleh JavaScript -->
+                    <div class="print-header d-none">
+                        <h3 class="print-title" id="previewTitle">LAPORAN DATA BANTUAN</h3>
+                        <p class="print-subtitle" id="previewSubtitle">DINAS PETERNAKAN DAN PERIKANAN KABUPATEN SITUBONDO</p>
+                        <p class="print-date" id="previewDate"></p>
+                    </div>
+                    <div class="preview-container" id="previewContainer">
+                        <p class="text-center">Memuat pratinjau...</p>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-                    <button type="button" class="btn btn-primary" id="printFromPreviewBtn">
+                    <button type="button" class="btn btn-primary" id="printPreviewBtn">
                         <i class="fas fa-print me-1"></i> Cetak
                     </button>
                 </div>
             </div>
         </div>
     </div>
-    
+
     <!-- Modal Tambah Link Google Drive -->
     <div class="modal fade link-modal" id="driveLinkModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Tambah Link Google Drive</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title"><i class="fab fa-google-drive me-2"></i> Tambah Link Google Drive</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
@@ -2130,7 +2345,7 @@
                         <input type="url" class="form-control" id="modalDriveLink" placeholder="https://drive.google.com/...">
                     </div>
                     <div class="form-text">
-                        Pastikan link dapat diakses secara publik atau melalui izin yang sesuai.
+                        Pastikan link dapat diakses secara publik atau setel ke "Siapa pun dengan link dapat melihat"
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -2140,13 +2355,13 @@
             </div>
         </div>
     </div>
-    
-    <!-- Scripts -->
+
+    <!-- Script Libraries -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/locales/bootstrap-datepicker.id.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
+    <!-- Main Application Script -->
     <script>
         // Inisialisasi variabel global
         let appData = [];
