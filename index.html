@@ -2715,14 +2715,14 @@
                 .sort((a, b) => new Date(b.tanggalInput) - new Date(a.tanggalInput))
                 .slice(0, 5);
             
-            recentData.forEach((item, index) => {
+            recentData.forEach((item, index) {
                 const row = document.createElement('tr');
                 
                 // Hitung usia
                 const today = new Date();
                 const birthDate = new Date(item.tanggalLahir);
                 let age = today.getFullYear() - birthDate.getFullYear();
-                const monthDiff = today.getMonth() - birthDate.getMonth();
+                const monthDiff = today.getMonth() - birthDate.getMonth'];
                 
                 if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
                     age--;
@@ -2799,7 +2799,7 @@
                 const today = new Date();
                 const birthDate = new Date(item.tanggalLahir);
                 let age = today.getFullYear() - birthDate.getFullYear();
-                const monthDiff = today.getMonth() - birthDate.getMonth();
+                const monthDiff = today.getMonth() - birthDate.getMonth'];
                 
                 if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
                     age--;
@@ -2988,7 +2988,7 @@
             const today = new Date();
             const birthDate = new Date(item.tanggalLahir);
             let age = today.getFullYear() - birthDate.getFullYear();
-            const monthDiff = today.getMonth() - birthDate.getMonth();
+            const monthDiff = today.getMonth() - birthDate.getMonth'];
             
             if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
                 age--;
@@ -3005,7 +3005,7 @@
                         <p><strong>Usia:</strong> ${age} tahun</p>
                     </div>
                     <div class="col-md-6">
-                        <p><strong>Desa:</strong> ${item.desa}</p>
+                        <p><strong>Desa:</strong> ${item.desa</p>
                         <p><strong>Alamat:</strong> ${item.alamat}</p>
                         <p><strong>Telepon/WhatsApp:</strong> <a href="https://wa.me/62${item.telepon}" target="_blank">+62${item.telepon}</a></p>
                         <p><strong>Jenis Bantuan:</strong> ${item.jenisBantuan}</p>
@@ -3095,7 +3095,7 @@
                 const today = new Date();
                 const birthDate = new Date(item.tanggalLahir);
                 let age = today.getFullYear() - birthDate.getFullYear();
-                const monthDiff = today.getMonth() - birthDate.getMonth();
+                const monthDiff = today.getMonth() - birthDate.getMonth'];
                 
                 if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
                     age--;
@@ -3157,7 +3157,7 @@
                 const today = new Date();
                 const birthDate = new Date(item.tanggalLahir);
                 let age = today.getFullYear() - birthDate.getFullYear();
-                const monthDiff = today.getMonth() - birthDate.getMonth();
+                const monthDiff = today.getMonth() - birthDate.getMonth'];
                 
                 if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
                     age--;
@@ -3243,7 +3243,7 @@
                                 const today = new Date();
                                 const birthDate = new Date(item.tanggalLahir);
                                 let age = today.getFullYear() - birthDate.getFullYear();
-                                const monthDiff = today.getMonth() - birthDate.getMonth();
+                                const monthDiff = today.getMonth() - birthDate.getMonth'];
                                 
                                 if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
                                     age--;
@@ -3621,7 +3621,7 @@
             penerimaBantuan.forEach(item => {
                 const birthDate = new Date(item.tanggalLahir);
                 let age = today.getFullYear() - birthDate.getFullYear();
-                const monthDiff = today.getMonth() - birthDate.getMonth();
+                const monthDiff = today.getMonth() - birthDate.getMonth'];
                 
                 if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
                     age--;
