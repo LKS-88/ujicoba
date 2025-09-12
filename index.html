@@ -1922,11 +1922,11 @@
                                                 <i class="fas fa-list-ol me-2"></i> Item Per Halaman
                                             </label>
                                             <select class="form-select" id="itemsPerPage">
-                                                <option value="5">5 Item</option>
-                                                <option value="10" selected>10 Item</option>
-                                                <option value="25">25 Item</option>
-                                                <option value="50">50 Item</option>
-                                                <option value="100">100 Item</option>
+                                                <option value="500">500 Item</option>
+                                                <option value="1000" selected>1000 Item</option>
+                                                <option value="25000">25000 Item</option>
+                                                <option value="50000">50000 Item</option>
+                                                <option value="100000">100000 Item</option>
                                             </select>
                                         </div>
                                         
@@ -2565,21 +2565,7 @@
             const tableBody = document.getElementById('dataSuratTable');
             const paginationElement = document.getElementById('pagination');
             const paginationInfoElement = document.getElementById('paginationInfo');
-         // Calculate pagination
-            const totalPages = Math.max(1, Math.ceil(filteredData.length / itemsPerPage)); // Pastikan minimal 1 halaman
-            const startIndex = (currentPage - 1) * itemsPerPage;
-            const endIndex = Math.min(startIndex + itemsPerPage, filteredData.length);
             
-            // Jika currentPage melebihi totalPages, atur ke halaman terakhir
-            if (currentPage > totalPages) {
-                currentPage = totalPages;
-                renderSuratTable(); // Render ulang dengan halaman yang benar
-                return;
-            }
-            
-            // ... sisa kode existing ...
-        }
-             
             // Apply filters
             let filteredData = suratData.filter(item => item.status !== 'archived');
             
@@ -2761,44 +2747,44 @@
         }
         
         // Update pagination controls
-       function updatePaginationControls(paginationElement, currentPage, totalPages) {
-    paginationElement.innerHTML = '';
-    
-    // Previous button
-    const prevLi = document.createElement('li');
-    prevLi.className = `page-item ${currentPage === 1 ? 'disabled' : ''}`;
-    prevLi.innerHTML = `<a class="page-link" href="#" data-page="${currentPage - 1}">Sebelumnya</a>`;
-    paginationElement.appendChild(prevLi);
-    
-    // Page numbers
-    const startPage = Math.max(1, currentPage - 2);
-    const endPage = Math.min(totalPages, startPage + 4);
-    
-    for (let i = startPage; i <= endPage; i++) {
-        const pageLi = document.createElement('li');
-        pageLi.className = `page-item ${i === currentPage ? 'active' : ''}`;
-        pageLi.innerHTML = `<a class="page-link" href="#" data-page="${i}">${i}</a>`;
-        paginationElement.appendChild(pageLi);
-    }
-    
-    // Next button
-    const nextLi = document.createElement('li');
-    nextLi.className = `page-item ${currentPage === totalPages || totalPages === 0 ? 'disabled' : ''}`;
-    nextLi.innerHTML = `<a class="page-link" href="#" data-page="${currentPage + 1}">Selanjutnya</a>`;
-    paginationElement.appendChild(nextLi);
-    
-    // Add event listeners to pagination buttons
-    paginationElement.querySelectorAll('.page-link').forEach(link => {
-        link.addEventListener('click', function(e) {
-            e.preventDefault();
-            const page = parseInt(this.getAttribute('data-page'));
-            if (!isNaN(page) && page >= 1 && page <= totalPages) {
-                currentPage = page;
-                renderSuratTable();
+        function updatePaginationControls(paginationElement, currentPage, totalPages) {
+            paginationElement.innerHTML = '';
+            
+            // Previous button
+            const prevLi = document.createElement('li');
+            prevLi.className = `page-item ${currentPage === 1 ? 'disabled' : ''}`;
+            prevLi.innerHTML = `<a class="page-link" href="#" data-page="${currentPage - 1}">Sebelumnya</a>`;
+            paginationElement.appendChild(prevLi);
+            
+            // Page numbers
+            const startPage = Math.max(1, currentPage - 2);
+            const endPage = Math.min(totalPages, startPage + 4);
+            
+            for (let i = startPage; i <= endPage; i++) {
+                const pageLi = document.createElement('li');
+                pageLi.className = `page-item ${i === currentPage ? 'active' : ''}`;
+                pageLi.innerHTML = `<a class="page-link" href="#" data-page="${i}">${i}</a>`;
+                paginationElement.appendChild(pageLi);
             }
-        });
-    });
-}
+            
+            // Next button
+            const nextLi = document.createElement('li');
+            nextLi.className = `page-item ${currentPage === totalPages ? 'disabled' : ''}`;
+            nextLi.innerHTML = `<a class="page-link" href="#" data-page="${currentPage + 1}">Selanjutnya</a>`;
+            paginationElement.appendChild(nextLi);
+            
+            // Add event listeners to pagination buttons
+            paginationElement.querySelectorAll('.page-link').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const page = parseInt(this.getAttribute('data-page'));
+                    if (!isNaN(page)) {
+                        currentPage = page;
+                        renderSuratTable();
+                    }
+                });
+            });
+        }
         
         // Apply filters to data table
         function applyFilters() {
