@@ -7,9 +7,6 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
         :root {
             --primary-color: #0d47a1;
@@ -3229,376 +3226,296 @@
             // The actual action is passed as a callback
         }
         
-        // Export to Excel
-        function exportToExcel(type = 'data') {
-            let dataToExport = [];
-            let filename = '';
-            
-            if (type === 'data') {
-                dataToExport = suratData.filter(item => item.status !== 'archived');
-                filename = 'data_surat.xlsx';
-            } else if (type === 'arsip') {
-                dataToExport = suratData.filter(item => item.status === 'archived');
-                filename = 'arsip_surat.xlsx';
-            } else if (type === 'report') {
-                // Get filtered report data
-                const startDate = document.getElementById('reportStartDate').value;
-                const endDate = document.getElementById('reportEndDate').value;
-                const jenis = document.getElementById('reportJenis').value;
-                const kategori = document.getElementById('reportKategori').value;
-                
-                dataToExport = [...suratData];
-                
-                if (startDate) {
-                    dataToExport = dataToExport.filter(item => item.tanggal >= startDate);
-                }
-                
-                if (endDate) {
-                    dataToExport = dataToExport.filter(item => item.tanggal <= endDate);
-                }
-                
-                if (jenis) {
-                    dataToExport = dataToExport.filter(item => item.jenis === jenis);
-                }
-                
-                if (kategori) {
-                    dataToExport = dataToExport.filter(item => item.kategori === kategori);
-                }
-                
-                filename = 'laporan_surat.xlsx';
-            }
-            
-            if (dataToExport.length === 0) {
-                showNotification('Tidak ada data untuk diexport', 'warning');
-                return;
-            }
-            
-            // Prepare data for Excel
-            const excelData = dataToExport.map(item => ({
-                'Jenis Surat': item.jenis === 'masuk' ? 'Surat Masuk' : 'Surat Keluar',
-                'Tanggal Surat': formatDate(item.tanggal),
-                'Nomor Surat': item.nomor,
-                'Tanggal Diterima/Dikirim': formatDate(item.tanggalTerima),
-                'Pengirim': item.pengirim,
-                'Penerima': item.penerima,
-                'Perihal': item.perihal,
-                'Kategori': capitalizeFirstLetter(item.kategori),
-                'Prioritas': capitalizeFirstLetter(item.prioritas),
-                'Keterangan': item.keterangan || '',
-                'Link Google Drive': item.linkDrive || '',
-                'Status': item.status === 'archived' ? 'Diarsipkan' : 'Aktif'
-            }));
-            
-            // Create worksheet
-            const ws = XLSX.utils.json_to_sheet(excelData);
-            
-            // Create workbook
-            const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, 'Data Surat');
-            
-            // Export to file
-            XLSX.writeFile(wb, filename);
-            
-            showNotification('Data berhasil diexport ke Excel', 'success');
+        // Export to Excel - FIXED
+function exportToExcel(type = 'data') {
+    let dataToExport = [];
+    let filename = '';
+    let sheetName = 'Data Surat';
+    
+    if (type === 'data') {
+        dataToExport = suratData.filter(item => item.status !== 'archived');
+        filename = 'data_surat.xlsx';
+        sheetName = 'Data Surat';
+    } else if (type === 'arsip') {
+        dataToExport = suratData.filter(item => item.status === 'archived');
+        filename = 'arsip_surat.xlsx';
+        sheetName = 'Arsip Surat';
+    } else if (type === 'report') {
+        // Get filtered report data
+        const startDate = document.getElementById('reportStartDate').value;
+        const endDate = document.getElementById('reportEndDate').value;
+        const jenis = document.getElementById('reportJenis').value;
+        const kategori = document.getElementById('reportKategori').value;
+        
+        dataToExport = [...suratData];
+        
+        if (startDate) {
+            dataToExport = dataToExport.filter(item => item.tanggal >= startDate);
         }
         
-        // Export to PDF
-        function exportToPDF(type = 'data') {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
-            
-            let dataToExport = [];
-            let title = '';
-            
-            if (type === 'data') {
-                dataToExport = suratData.filter(item => item.status !== 'archived');
-                title = 'DATA SURAT';
-            } else if (type === 'arsip') {
-                dataToExport = suratData.filter(item => item.status === 'archived');
-                title = 'ARSIP SURAT';
-            } else if (type === 'report') {
-                // Get filtered report data
-                const startDate = document.getElementById('reportStartDate').value;
-                const endDate = document.getElementById('reportEndDate').value;
-                const jenis = document.getElementById('reportJenis').value;
-                const kategori = document.getElementById('reportKategori').value;
-                
-                dataToExport = [...suratData];
-                
-                if (startDate) {
-                    dataToExport = dataToExport.filter(item => item.tanggal >= startDate);
-                }
-                
-                if (endDate) {
-                    dataToExport = dataToExport.filter(item => item.tanggal <= endDate);
-                }
-                
-                if (jenis) {
-                    dataToExport = dataToExport.filter(item => item.jenis === jenis);
-                }
-                
-                if (kategori) {
-                    dataToExport = dataToExport.filter(item => item.kategori === kategori);
-                }
-                
-                title = 'LAPORAN SURAT';
-            }
-            
-            if (dataToExport.length === 0) {
-                showNotification('Tidak ada data untuk diexport', 'warning');
-                return;
-            }
-            
-            // Prepare data for PDF
-            const tableData = dataToExport.map(item => [
-                item.jenis === 'masuk' ? 'Masuk' : 'Keluar',
-                formatDate(item.tanggal),
-                item.nomor,
-                item.jenis === 'masuk' ? item.pengirim : item.penerima,
-                item.perihal,
-                capitalizeFirstLetter(item.kategori),
-                capitalizeFirstLetter(item.prioritas)
-            ]);
-            
-            // Add title
-            doc.setFontSize(16);
-            doc.text(title, 14, 15);
-            doc.setFontSize(10);
-            doc.text(`Generated on: ${formatDateTime(new Date())}`, 14, 22);
-            
-            // Add table
-            doc.autoTable({
-                startY: 30,
-                head: [['Jenis', 'Tanggal', 'Nomor', 'Pengirim/Penerima', 'Perihal', 'Kategori', 'Prioritas']],
-                body: tableData,
-                theme: 'grid',
-                headStyles: {
-                    fillColor: [13, 71, 161]
-                }
-            });
-            
-            // Save PDF
-            doc.save(`${title.toLowerCase().replace(/\s/g, '_')}.pdf`);
-            
-            showNotification('Data berhasil diexport ke PDF', 'success');
+        if (endDate) {
+            dataToExport = dataToExport.filter(item => item.tanggal <= endDate);
         }
         
-        // Print data
-        function printData(type = 'data') {
-            let dataToPrint = [];
-            let title = '';
-            
-            if (type === 'data') {
-                dataToPrint = suratData.filter(item => item.status !== 'archived');
-                title = 'DATA SURAT';
-            } else if (type === 'report') {
-                // Get filtered report data
-                const startDate = document.getElementById('reportStartDate').value;
-                const endDate = document.getElementById('reportEndDate').value;
-                const jenis = document.getElementById('reportJenis').value;
-                const kategori = document.getElementById('reportKategori').value;
-                
-                dataToPrint = [...suratData];
-                
-                if (startDate) {
-                    dataToPrint = dataToPrint.filter(item => item.tanggal >= startDate);
-                }
-                
-                if (endDate) {
-                    dataToPrint = dataToPrint.filter(item => item.tanggal <= endDate);
-                }
-                
-                if (jenis) {
-                    dataToPrint = dataToPrint.filter(item => item.jenis === jenis);
-                }
-                
-                if (kategori) {
-                    dataToPrint = dataToPrint.filter(item => item.kategori === kategori);
-                }
-                
-                title = 'LAPORAN SURAT';
-            }
-            
-            if (dataToPrint.length === 0) {
-                showNotification('Tidak ada data untuk dicetak', 'warning');
-                return;
-            }
-            
-            // Create print window
-            const printWindow = window.open('', '_blank');
-            printWindow.document.write(`
-                <!DOCTYPE html>
-                <html>
-                <head>
-                    <title>Cetak ${title}</title>
-                    <style>
-                        body { font-family: Arial, sans-serif; margin: 20px; }
-                        .print-header { text-align: center; margin-bottom: 20px; }
-                        .print-title { font-size: 18px; font-weight: bold; }
-                        .print-subtitle { font-size: 14px; margin-bottom: 10px; }
-                        .print-date { text-align: right; font-size: 12px; margin-bottom: 10px; }
-                        table { width: 100%; border-collapse: collapse; font-size: 12px; }
-                        th, td { border: 1px solid #ddd; padding: 6px; text-align: left; }
-                        th { background-color: #f2f2f2; }
-                        @media print {
-                            @page { size: landscape; margin: 0.5cm; }
-                            body { margin: 0; }
-                        }
-                    </style>
-                </head>
-                <body>
-                    <div class="print-header">
-                        <div class="print-title">${title}</div>
-                        <div class="print-subtitle">SISMAT - Sistem Manajemen Surat</div>
-                    </div>
-                    <div class="print-date">Dicetak pada: ${formatDateTime(new Date())}</div>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>No</th>
-                                <th>Jenis</th>
-                                <th>Tanggal</th>
-                                <th>Nomor</th>
-                                <th>Pengirim/Penerima</th>
-                                <th>Perihal</th>
-                                <th>Kategori</th>
-                                <th>Prioritas</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            ${dataToPrint.map((item, index) => `
-                                <tr>
-                                    <td>${index + 1}</td>
-                                    <td>${item.jenis === 'masuk' ? 'Masuk' : 'Keluar'}</td>
-                                    <td>${formatDate(item.tanggal)}</td>
-                                    <td>${item.nomor}</td>
-                                    <td>${item.jenis === 'masuk' ? item.pengirim : item.penerima}</td>
-                                    <td>${item.perihal}</td>
-                                    <td>${capitalizeFirstLetter(item.kategori)}</td>
-                                    <td>${capitalizeFirstLetter(item.prioritas)}</td>
-                                </tr>
-                            `).join('')}
-                        </tbody>
-                    </table>
-                </body>
-                </html>
-            `);
-            
-            printWindow.document.close();
-            printWindow.focus();
-            
-            // Wait for content to load before printing
-            setTimeout(() => {
-                printWindow.print();
-                printWindow.close();
-            }, 250);
+        if (jenis) {
+            dataToExport = dataToExport.filter(item => item.jenis === jenis);
         }
         
-        // Print single data
-        function printSingleData() {
-            const modalBody = document.getElementById('viewModalBody');
-            const id = modalBody.getAttribute('data-current-id');
-            const data = suratData.find(item => item.id === id);
-            
-            if (!data) return;
-            
-            const printWindow = window.open('', '_blank');
-            printWindow.document.write(`
-                <!DOCTYPE html>
-                <html>
-                <head>
-                    <title>Cetak Detail Surat</title>
-                    <style>
-                        body { font-family: Arial, sans-serif; margin: 20px; }
-                        .print-header { text-align: center; margin-bottom: 20px; }
-                        .print-title { font-size: 18px; font-weight: bold; }
-                        .print-subtitle { font-size: 14px; margin-bottom: 10px; }
-                        .print-date { text-align: right; font-size: 12px; margin-bottom: 10px; }
-                        .detail-table { width: 100%; border-collapse: collapse; margin-bottom: 15px; }
-                        .detail-table td { padding: 8px; border-bottom: 1px solid #eee; }
-                        .detail-table td:first-child { font-weight: bold; width: 30%; vertical-align: top; }
-                        @media print {
-                            @page { margin: 1cm; }
-                            body { margin: 0; }
-                        }
-                    </style>
-                </head>
-                <body>
-                    <div class="print-header">
-                        <div class="print-title">DETAIL SURAT</div>
-                        <div class="print-subtitle">SISMAT - Sistem Manajemen Surat</div>
-                    </div>
-                    <div class="print-date">Dicetak pada: ${formatDateTime(new Date())}</div>
-                    
-                    <table class="detail-table">
-                        <tr>
-                            <td>Jenis Surat</td>
-                            <td>${data.jenis === 'masuk' ? 'Surat Masuk' : 'Surat Keluar'}</td>
-                        </tr>
-                        <tr>
-                            <td>Tanggal Surat</td>
-                            <td>${formatDate(data.tanggal)}</td>
-                        </tr>
-                        <tr>
-                            <td>Nomor Surat</td>
-                            <td>${data.nomor}</td>
-                        </tr>
-                        <tr>
-                            <td>Tanggal ${data.jenis === 'masuk' ? 'Diterima' : 'Dikirim'}</td>
-                            <td>${formatDate(data.tanggalTerima)}</td>
-                        </tr>
-                        <tr>
-                            <td>${data.jenis === 'masuk' ? 'Pengirim' : 'Penerima'}</td>
-                            <td>${data.jenis === 'masuk' ? data.pengirim : data.penerima}</td>
-                        </tr>
-                        <tr>
-                            <td>Perihal</td>
-                            <td>${data.perihal}</td>
-                        </tr>
-                        <tr>
-                            <td>Kategori</td>
-                            <td>${capitalizeFirstLetter(data.kategori)}</td>
-                        </tr>
-                        <tr>
-                            <td>Prioritas</td>
-                            <td>${capitalizeFirstLetter(data.prioritas)}</td>
-                        </tr>
-                        <tr>
-                            <td>Keterangan</td>
-                            <td>${data.keterangan || '-'}</td>
-                        </tr>
-                        ${data.linkDrive ? `
-                        <tr>
-                            <td>Link Google Drive</td>
-                            <td>${data.linkDrive}</td>
-                        </tr>
-                        ` : ''}
-                        <tr>
-                            <td>Status</td>
-                            <td>${data.status === 'archived' ? 'Diarsipkan' : 'Aktif'}</td>
-                        </tr>
-                        <tr>
-                            <td>Dibuat Pada</td>
-                            <td>${formatDateTime(data.createdAt)}</td>
-                        </tr>
-                        <tr>
-                            <td>Diupdate Pada</td>
-                            <td>${formatDateTime(data.updatedAt)}</td>
-                        </tr>
-                    </table>
-                </body>
-                </html>
-            `);
-            
-            printWindow.document.close();
-            printWindow.focus();
-            
-            // Wait for content to load before printing
-            setTimeout(() => {
-                printWindow.print();
-                printWindow.close();
-            }, 250);
+        if (kategori) {
+            dataToExport = dataToExport.filter(item => item.kategori === kategori);
         }
+        
+        filename = 'laporan_surat.xlsx';
+        sheetName = 'Laporan Surat';
+    }
+    
+    if (dataToExport.length === 0) {
+        showNotification('Tidak ada data untuk diexport', 'warning');
+        return;
+    }
+    
+    try {
+        // Prepare data for Excel
+        const excelData = dataToExport.map(item => ({
+            'Jenis Surat': item.jenis === 'masuk' ? 'Surat Masuk' : 'Surat Keluar',
+            'Tanggal Surat': formatDate(item.tanggal),
+            'Nomor Surat': item.nomor,
+            'Tanggal Diterima/Dikirim': formatDate(item.tanggalTerima),
+            'Pengirim': item.pengirim,
+            'Penerima': item.penerima,
+            'Perihal': item.perihal,
+            'Kategori': capitalizeFirstLetter(item.kategori),
+            'Prioritas': capitalizeFirstLetter(item.prioritas),
+            'Keterangan': item.keterangan || '',
+            'Link Google Drive': item.linkDrive || '',
+            'Status': item.status === 'archived' ? 'Diarsipkan' : 'Aktif'
+        }));
+        
+        // Create worksheet
+        const ws = XLSX.utils.json_to_sheet(excelData);
+        
+        // Create workbook
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, sheetName);
+        
+        // Export to file
+        XLSX.writeFile(wb, filename);
+        
+        showNotification('Data berhasil diexport ke Excel', 'success');
+    } catch (error) {
+        console.error('Excel export error:', error);
+        showNotification('Gagal mengekspor ke Excel: ' + error.message, 'error');
+    }
+}
+        
+        // Export to PDF - FIXED
+function exportToPDF(type = 'data') {
+    try {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        
+        let dataToExport = [];
+        let title = '';
+        
+        if (type === 'data') {
+            dataToExport = suratData.filter(item => item.status !== 'archived');
+            title = 'DATA SURAT';
+        } else if (type === 'arsip') {
+            dataToExport = suratData.filter(item => item.status === 'archived');
+            title = 'ARSIP SURAT';
+        } else if (type === 'report') {
+            // Get filtered report data
+            const startDate = document.getElementById('reportStartDate').value;
+            const endDate = document.getElementById('reportEndDate').value;
+            const jenis = document.getElementById('reportJenis').value;
+            const kategori = document.getElementById('reportKategori').value;
+            
+            dataToExport = [...suratData];
+            
+            if (startDate) {
+                dataToExport = dataToExport.filter(item => item.tanggal >= startDate);
+            }
+            
+            if (endDate) {
+                dataToExport = dataToExport.filter(item => item.tanggal <= endDate);
+            }
+            
+            if (jenis) {
+                dataToExport = dataToExport.filter(item => item.jenis === jenis);
+            }
+            
+            if (kategori) {
+                dataToExport = dataToExport.filter(item => item.kategori === kategori);
+            }
+            
+            title = 'LAPORAN SURAT';
+        }
+        
+        if (dataToExport.length === 0) {
+            showNotification('Tidak ada data untuk diexport', 'warning');
+            return;
+        }
+        
+        // Prepare data for PDF
+        const tableData = dataToExport.map(item => [
+            item.jenis === 'masuk' ? 'Masuk' : 'Keluar',
+            formatDate(item.tanggal),
+            item.nomor,
+            item.jenis === 'masuk' ? item.pengirim : item.penerima,
+            item.perihal.substring(0, 30) + (item.perihal.length > 30 ? '...' : ''), // Membatasi panjang teks
+            capitalizeFirstLetter(item.kategori),
+            capitalizeFirstLetter(item.prioritas)
+        ]);
+        
+        // Add title
+        doc.setFontSize(16);
+        doc.text(title, 14, 15);
+        doc.setFontSize(10);
+        doc.text(`Generated on: ${formatDateTime(new Date())}`, 14, 22);
+        
+        // Add table
+        doc.autoTable({
+            startY: 30,
+            head: [['Jenis', 'Tanggal', 'Nomor', 'Pengirim/Penerima', 'Perihal', 'Kategori', 'Prioritas']],
+            body: tableData,
+            theme: 'grid',
+            headStyles: {
+                fillColor: [13, 71, 161]
+            },
+            styles: {
+                fontSize: 8,
+                cellPadding: 1
+            },
+            margin: { top: 30 }
+        });
+        
+        // Save PDF
+        doc.save(`${title.toLowerCase().replace(/\s/g, '_')}.pdf`);
+        
+        showNotification('Data berhasil diexport ke PDF', 'success');
+    } catch (error) {
+        console.error('PDF export error:', error);
+        showNotification('Gagal mengekspor ke PDF: ' + error.message, 'error');
+    }
+}
+
+        
+      // Print data - FIXED
+function printData(type = 'data') {
+    let dataToPrint = [];
+    let title = '';
+    
+    if (type === 'data') {
+        dataToPrint = suratData.filter(item => item.status !== 'archived');
+        title = 'DATA SURAT';
+    } else if (type === 'report') {
+        // Get filtered report data
+        const startDate = document.getElementById('reportStartDate').value;
+        const endDate = document.getElementById('reportEndDate').value;
+        const jenis = document.getElementById('reportJenis').value;
+        const kategori = document.getElementById('reportKategori').value;
+        
+        dataToPrint = [...suratData];
+        
+        if (startDate) {
+            dataToPrint = dataToPrint.filter(item => item.tanggal >= startDate);
+        }
+        
+        if (endDate) {
+            dataToPrint = dataToPrint.filter(item => item.tanggal <= endDate);
+        }
+        
+        if (jenis) {
+            dataToPrint = dataToPrint.filter(item => item.jenis === jenis);
+        }
+        
+        if (kategori) {
+            dataToPrint = dataToPrint.filter(item => item.kategori === kategori);
+        }
+        
+        title = 'LAPORAN SURAT';
+    }
+    
+    if (dataToPrint.length === 0) {
+        showNotification('Tidak ada data untuk dicetak', 'warning');
+        return;
+    }
+    
+    // Create print window
+    const printWindow = window.open('', '_blank');
+    
+    // Prepare table rows
+    const tableRows = dataToPrint.map((item, index) => `
+        <tr>
+            <td>${index + 1}</td>
+            <td>${item.jenis === 'masuk' ? 'Masuk' : 'Keluar'}</td>
+            <td>${formatDate(item.tanggal)}</td>
+            <td>${item.nomor}</td>
+            <td>${item.jenis === 'masuk' ? item.pengirim : item.penerima}</td>
+            <td>${item.perihal}</td>
+            <td>${capitalizeFirstLetter(item.kategori)}</td>
+            <td>${capitalizeFirstLetter(item.prioritas)}</td>
+        </tr>
+    `).join('');
+    
+    printWindow.document.write(`
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>Cetak ${title}</title>
+            <style>
+                body { font-family: Arial, sans-serif; margin: 20px; }
+                .print-header { text-align: center; margin-bottom: 20px; }
+                .print-title { font-size: 18px; font-weight: bold; }
+                .print-subtitle { font-size: 14px; margin-bottom: 10px; }
+                .print-date { text-align: right; font-size: 12px; margin-bottom: 10px; }
+                table { width: 100%; border-collapse: collapse; font-size: 12px; }
+                th, td { border: 1px solid #ddd; padding: 6px; text-align: left; }
+                th { background-color: #f2f2f2; }
+                @media print {
+                    @page { size: landscape; margin: 0.5cm; }
+                    body { margin: 0; }
+                }
+            </style>
+        </head>
+        <body>
+            <div class="print-header">
+                <div class="print-title">${title}</div>
+                <div class="print-subtitle">SISMAT - Sistem Manajemen Surat</div>
+            </div>
+            <div class="print-date">Dicetak pada: ${formatDateTime(new Date())}</div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>Jenis</th>
+                        <th>Tanggal</th>
+                        <th>Nomor</th>
+                        <th>Pengirim/Penerima</th>
+                        <th>Perihal</th>
+                        <th>Kategori</th>
+                        <th>Prioritas</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${tableRows}
+                </tbody>
+            </table>
+        </body>
+        </html>
+    `);
+    
+    printWindow.document.close();
+    
+    // Wait for content to load before printing
+    setTimeout(() => {
+        printWindow.print();
+        // Don't close immediately to allow user to see print dialog
+        setTimeout(() => {
+            printWindow.close();
+        }, 500);
+    }, 250);
+}
         
         // Backup data
         function backupData() {
