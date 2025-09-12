@@ -3229,7 +3229,7 @@
             // The actual action is passed as a callback
         }
         
-       // Export to Excel - FIXED
+      // Export to Excel - FIXED
 function exportToExcel(type = 'data') {
     let dataToExport = [];
     let filename = '';
@@ -3314,6 +3314,12 @@ function exportToExcel(type = 'data') {
        // Export to PDF - FIXED
 function exportToPDF(type = 'data') {
     try {
+        // Pastikan jsPDF tersedia
+        if (typeof jspdf === 'undefined') {
+            showNotification('Library jsPDF tidak ditemukan', 'error');
+            return;
+        }
+        
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
         
@@ -3365,7 +3371,7 @@ function exportToPDF(type = 'data') {
             formatDate(item.tanggal),
             item.nomor,
             item.jenis === 'masuk' ? item.pengirim : item.penerima,
-            item.perihal.substring(0, 30) + (item.perihal.length > 30 ? '...' : ''), // Membatasi panjang teks
+            item.perihal.substring(0, 30) + (item.perihal.length > 30 ? '...' : ''),
             capitalizeFirstLetter(item.kategori),
             capitalizeFirstLetter(item.prioritas)
         ]);
