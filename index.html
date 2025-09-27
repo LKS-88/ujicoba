@@ -666,42 +666,66 @@
         .gap-2 {
             gap: 8px;
         }
+        
+        /* Smart Payment Buttons */
+        .smart-payment-buttons {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+        .smart-btn {
+            flex-grow: 1;
+            padding: 8px;
+            font-size: 0.9rem;
+            background-color: var(--light);
+            color: var(--dark);
+            border: 1px solid #ddd;
+        }
+        .smart-btn:hover {
+            background-color: var(--primary-light);
+            border-color: var(--primary);
+        }
 
-        /* Print Styles */
+
+        /* Print Styles - Sempurna */
         @media print {
-            body {
-                background-color: #fff;
-            }
-            body * {
-                visibility: hidden;
-                -webkit-print-color-adjust: exact;
-                print-color-adjust: exact;
-            }
-            #receiptModal, #receiptModal .modal-content, #receiptModal .modal-content * {
-                visibility: visible;
-            }
-            #receiptModal {
-                position: absolute;
-                left: 0;
-                top: 0;
+            body, html {
                 width: 100%;
                 height: auto;
-                background-color: transparent;
-                display: block !important;
+                background: #fff;
+                margin: 0;
+                padding: 0;
             }
-            #receiptModal .modal-content {
-                position: static;
-                width: 100%;
-                max-width: 100%;
+            .no-print, .app-header, .products-panel, .cart-panel, .app-footer, .modal:not(#receiptModal) {
+                display: none !important;
+            }
+            .container {
                 padding: 0;
                 margin: 0;
-                box-shadow: none;
-                border: none;
-                max-height: none;
+            }
+            #receiptModal {
+                position: static;
+                display: block !important;
+                background: transparent;
+                width: 100%;
+                height: auto;
                 overflow: visible;
             }
-            .no-print {
-                display: none !important;
+            #receiptModal .modal-content {
+                box-shadow: none;
+                border: none;
+                padding: 0;
+                margin: 0;
+                width: 100%;
+                max-width: 100%;
+                max-height: none;
+                overflow: visible;
+                border-radius: 0;
+            }
+            #receiptContent {
+                padding: 0;
             }
             @page {
                 size: auto;
@@ -1206,6 +1230,9 @@
                     <label class="form-label">Jumlah Pembayaran</label>
                     <input type="number" id="paymentAmount" class="form-control" placeholder="Masukkan jumlah">
                 </div>
+                
+                <!-- Smart Payment Buttons Container -->
+                <div id="smartPaymentButtons" class="smart-payment-buttons"></div>
                 
                 <div id="changeContainer" style="display: none;">
                     <div class="summary-row">
@@ -1791,7 +1818,8 @@
                 <button class="modal-close">&times;</button>
             </div>
             <div class="modal-body" id="receiptContent">
-                </div>
+                <!-- Receipt content will be generated here -->
+            </div>
             <div class="modal-footer no-print">
                 <button id="downloadReceiptBtn" class="btn btn-success">
                     <i class="fas fa-file-pdf"></i> Download PDF
@@ -1893,7 +1921,7 @@
                 LT: 'HH.mm',
                 LTS: 'HH.mm.ss',
                 L: 'DD/MM/YYYY',
-                LL: 'D MMMM YYYY',
+                LL: 'D MMMM YY',
                 LLL: 'D MMMM YYYY [pukul] HH.mm',
                 LLLL: 'dddd, D MMMM YYYY [pukul] HH.mm'
             },
@@ -2264,6 +2292,8 @@
             $('#paymentAmount').val('');
             $('#changeContainer').hide();
             updatePaymentSummary();
+            // PERBAIKAN: Panggil render smart payment buttons
+            renderSmartPaymentButtons(currentCart.total);
         });
             
         $('#paymentAmount').on('input', function() {
@@ -2594,6 +2624,8 @@
             $('#cashierModal .modal-title').text('Tambah Kasir Baru');
             $('#cashierForm')[0].reset();
             $('#cashierId').val('');
+            $('#cashierUsername').prop('readonly', false);
+            $('#cashierPassword, #cashierConfirmPassword').attr('placeholder', '');
             loadRolesForSelect();
             $('#cashierModal').css('display', 'flex');
         });
@@ -2653,6 +2685,7 @@
             $('#roleModal .modal-title').text('Tambah Role Baru');
             $('#roleForm')[0].reset();
             $('#roleId').val('');
+            $('#roleCode').prop('readonly', false);
             $('#roleModal').css('display', 'flex');
         });
             
@@ -2666,10 +2699,16 @@
             $('#roleName').val(role.name);
             $('#roleCode').val(role.code).prop('readonly', ['admin', 'cashier'].includes(role.code));
             
-            $('#roleForm .permission-checkbox').each(function() {
-                const perm = $(this).data('perm');
-                $(this).prop('checked', role.permissions[perm] || false);
-            });
+            // PERBAIKAN: Pastikan semua checkbox direset sebelum di-set
+            $('#roleForm .permission-checkbox').prop('checked', false);
+            if (role.permissions) {
+                $('#roleForm .permission-checkbox').each(function() {
+                    const perm = $(this).data('perm');
+                    if(role.permissions[perm]) {
+                        $(this).prop('checked', true);
+                    }
+                });
+            }
             
             $('#roleModal').css('display', 'flex');
         });
@@ -2764,6 +2803,7 @@
             showToast('Member berhasil disimpan', 'success');
         });
             
+        // PERBAIKAN: Fungsi simpan role yang lebih robust
         $('#saveRoleBtn').click(function() {
             const id = $('#roleId').val();
             const name = $('#roleName').val().trim();
@@ -2779,14 +2819,22 @@
                 permissions[$(this).data('perm')] = $(this).is(':checked');
             });
             
-            if (id) {
+            if (id) { // Mode Edit
                 const roleIndex = roles.findIndex(r => r.id === id);
-                roles[roleIndex] = {...roles[roleIndex], name, code, permissions};
-            } else {
+                if (roleIndex > -1) {
+                    roles[roleIndex].name = name;
+                    // Kode role default tidak bisa diubah
+                    if (!['admin', 'cashier'].includes(roles[roleIndex].code)) {
+                        roles[roleIndex].code = code;
+                    }
+                    roles[roleIndex].permissions = permissions;
+                }
+            } else { // Mode Tambah Baru
                 roles.push({id: 'R' + moment().format('x'), name, code, permissions});
             }
             
-            saveRoles(); loadRoles();
+            saveRoles(); 
+            loadRoles();
             $('#roleModal').hide();
             showToast('Role berhasil disimpan', 'success');
         });
@@ -2923,8 +2971,12 @@
             let totalRevenue = 0, totalCost = 0;
 
             filtered.forEach(t => {
+                let transactionDiscount = t.discount || 0;
+                let transactionSubtotal = t.subtotal || 0;
                 t.items.forEach(item => {
-                    totalRevenue += item.product.price * item.quantity;
+                    const itemSubtotal = item.product.price * item.quantity;
+                    const itemDiscount = transactionSubtotal > 0 ? (itemSubtotal / transactionSubtotal) * transactionDiscount : 0;
+                    totalRevenue += itemSubtotal - itemDiscount;
                     totalCost += (item.product.cost || 0) * item.quantity;
                 });
             });
@@ -2933,7 +2985,7 @@
             let reportHtml = `
                 <h4>Laporan Laba Rugi</h4>
                 <p>Periode: ${startDate.format('LL')} - ${endDate.format('LL')}</p>
-                <p>Total Penjualan: ${formatCurrency(totalRevenue)}</p>
+                <p>Total Penjualan (Setelah Diskon): ${formatCurrency(totalRevenue)}</p>
                 <p>Total HPP (Modal): ${formatCurrency(totalCost)}</p>
                 <p style="font-weight:bold;">Laba Kotor: ${formatCurrency(grossProfit)}</p>`;
             
@@ -2950,10 +3002,16 @@
             doc.setFontSize(12);
             doc.text(`Periode: ${startDate.format('LL')} - ${endDate.format('LL')}`, 105, 25, { align: 'center' });
             
-            doc.autoTable({
-                html: reportEl.find('table')[0],
-                startY: 35
-            });
+            const summaryText = $(reportEl).find('p').map(function() { return $(this).text() }).get().join('\n');
+            doc.text(summaryText, 14, 35);
+            
+            if ($(reportEl).find('table').length > 0) {
+                 doc.autoTable({
+                    html: reportEl.find('table')[0],
+                    startY: 35 + ($(reportEl).find('p').length * 7)
+                });
+            }
+
 
             const fileName = `${type}_report_${moment().format('YYYYMMDD_HHmmss')}.pdf`;
             doc.save(fileName);
@@ -3024,7 +3082,7 @@
             
         function loadCategoriesForSelect() {
             $('#productCategory').empty().append('<option value="">Pilih Kategori</option>');
-            categories.forEach(cat => $('#productCategory').append(`<option value="${cat}">${cat}</option>`));
+            categories.forEach(cat => $('#productCategory').append(`<option value="${cat}">${cat}</div>`));
         }
             
         function loadCashiers() {
@@ -3084,13 +3142,17 @@
             });
         }
         $('#transactionSearch').on('input', e => loadTransactions(e.target.value));
+        
+        // PERBAIKAN: Fungsi cetak ulang transaksi
         $(document).on('click', '.reprint-receipt', function() {
             const trxId = $(this).data('id');
             const transaction = transactions.find(t => t.id === trxId);
             if (transaction) {
-                lastTransaction = transaction;
+                lastTransaction = transaction; // Update last transaction for PDF download
                 generateReceipt(transaction);
                 $('#receiptModal').css('display', 'flex');
+            } else {
+                showToast('Transaksi tidak ditemukan', 'error');
             }
         });
 
@@ -3196,7 +3258,6 @@
                 const memberId = $('#memberSelect').val();
                 if (customerType === 'member' && memberId) {
                     currentCart.memberId = memberId;
-                    // Future logic for member-specific discounts can go here
                 } else {
                     currentCart.memberId = null;
                 }
@@ -3286,7 +3347,7 @@
                     </div>
                     <div class="receipt-footer">
                         <p>Terima kasih telah berbelanja</p>
-                        <p>&copy; ${new Date().getFullYear()} ${settings.storeName}</p>
+                        <p>${settings.storeDescription || ''}</p>
                     </div>
                 </div>`;
             $('#receiptContent').html(receiptHtml);
@@ -3367,6 +3428,46 @@
             $('#productStock').val(product.stock);
             $('#productModal').css('display', 'flex');
         }
+        
+        // FITUR BARU: Smart Payment Buttons
+        function renderSmartPaymentButtons(total) {
+            const container = $('#smartPaymentButtons');
+            container.empty();
+            
+            if (total <= 0) return;
+
+            const denominations = [5000, 10000, 20000, 50000, 100000];
+            const suggestions = new Set();
+            
+            // 1. Uang Pas
+            suggestions.add(total);
+            
+            // 2. Pembulatan terdekat
+            const nextThousand = Math.ceil(total / 1000) * 1000;
+            if (nextThousand > total) suggestions.add(nextThousand);
+
+            const nextFiveThousand = Math.ceil(total / 5000) * 5000;
+             if (nextFiveThousand > total) suggestions.add(nextFiveThousand);
+            
+            // 3. Denominasi berikutnya
+            for (const denom of denominations) {
+                if (denom > total) {
+                    suggestions.add(denom);
+                    if (suggestions.size >= 4) break; // Batasi jumlah saran
+                }
+            }
+            
+            // Render buttons
+            [...suggestions].sort((a,b) => a-b).slice(0, 4).forEach(amount => {
+                const btnText = amount === total ? 'Uang Pas' : formatCurrency(amount);
+                container.append(`<button class="btn btn-sm smart-btn" data-amount="${amount}">${btnText}</button>`);
+            });
+        }
+        
+        $(document).on('click', '.smart-btn', function() {
+            const amount = $(this).data('amount');
+            $('#paymentAmount').val(amount).trigger('input');
+        });
             
         function formatCurrency(amount) {
             return 'Rp ' + Number(amount).toLocaleString('id-ID');
@@ -3388,7 +3489,7 @@
             
             activeMemos.forEach(memo => {
                 $('#memoContainer').append(`
-                    <div class="memo-card" style="background-color: var(--${memo.color || 'warning'}); color: ${memo.color === 'warning' ? '#000' : '#fff'};">
+                    <div class="memo-card" style="background-color: var(--${memo.color || 'warning'}); color: ${['warning', 'info'].includes(memo.color) ? '#000' : '#fff'};">
                         ${memo.pinned ? '<div class="memo-pin"><i class="fas fa-thumbtack"></i></div>' : ''}
                         <div class="memo-header"><div class="memo-title">${memo.title}</div><button class="memo-close">&times;</button></div>
                         <div class="memo-content">${memo.content}</div>
