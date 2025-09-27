@@ -686,6 +686,9 @@
             max-height: 40vh;
             overflow-y: auto;
         }
+        
+        .data-table .text-danger { color: var(--danger) !important; font-weight: 500; }
+        .data-table .text-success { color: var(--success) !important; font-weight: 500; }
 
         /* product Actions */
         .product-actions {
@@ -1060,6 +1063,25 @@
             text-align: center; font-size: 11px; opacity: 0.8; padding-top: 15px;
             margin-top: 25px; border-top: 1px solid rgba(255,255,255,0.3); z-index: 1;
         }
+
+        /* [BARU] Role Management Styles */
+        .permission-group {
+            margin-bottom: 16px;
+        }
+        .permission-group-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 4px;
+        }
+        .permission-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        .permission-item input {
+            margin-right: 10px;
+        }
     </style>
 </head>
 <body>
@@ -1179,7 +1201,7 @@
                 </div>
                 
                 <div class="form-group">
-                    <label class="form-label">Donasi (opsional)</label>
+                    <label class="form-label">Donasi LAZISNU (opsional)</label>
                     <input type="number" id="donationAmount" class="form-control" placeholder="Masukkan jumlah donasi" value="0" min="0">
                 </div>
                 
@@ -1195,13 +1217,17 @@
                         <span>Subtotal:</span>
                         <span id="orderSubtotal">Rp 0</span>
                     </div>
-                    <div id="donationRow" class="summary-row">
-                        <span>Donasi:</span>
-                        <span id="orderDonation">Rp 0</span>
-                    </div>
                     <div id="discountRow" class="summary-row" style="display: none;">
                         <span>Diskon (0%):</span>
                         <span id="orderDiscount">-Rp 0</span>
+                    </div>
+                     <div id="taxRow" class="summary-row" style="display: none;">
+                        <span>Pajak (0%):</span>
+                        <span id="orderTax">Rp 0</span>
+                    </div>
+                    <div id="donationRow" class="summary-row">
+                        <span>Donasi LAZISNU:</span>
+                        <span id="orderDonation">Rp 0</span>
                     </div>
                     <div class="summary-row total-row">
                         <span>Total:</span>
@@ -1291,6 +1317,10 @@
                         <select id="productCategory" class="form-control" required></select>
                     </div>
                     <div class="form-group">
+                        <label class="form-label">Harga Pokok (Kulak)</label>
+                        <input type="number" id="productCostPrice" class="form-control" required min="0" value="0">
+                    </div>
+                    <div class="form-group">
                         <label class="form-label">Harga Jual</label>
                         <input type="number" id="productPrice" class="form-control" required min="0">
                     </div>
@@ -1343,7 +1373,7 @@
             <div class="modal-body" style="padding: 0 16px 16px 16px;">
                  <div class="tabs">
                     <div class="tab active" data-tab="salesReport"><i class="fas fa-chart-line"></i> Laporan Penjualan</div>
-                    <div class="tab" data-tab="donationsReport"><i class="fas fa-hand-holding-heart"></i> Laporan Donasi</div>
+                    <div class="tab" data-tab="donationsReport"><i class="fas fa-hand-holding-heart"></i> Laporan Donasi LAZISNU</div>
                 </div>
                 
                 <div class="tab-content active" id="salesReportTab">
@@ -1450,10 +1480,11 @@
             <div class="modal-body" style="padding: 0 16px 16px 16px;">
                 <div class="tabs">
                     <div class="tab active" data-tab="users"><i class="fas fa-users-cog"></i> Pengguna</div>
-                    <div class="tab" data-tab="security"><i class="fas fa-shield-alt"></i> Keamanan</div>
+                    <div class="tab" data-tab="security"><i class="fas fa-shield-alt"></i> Keamanan & Pajak</div>
                 </div>
                 <div class="tab-content active" id="usersTab">
                     <h4 class="mt-3">Manajemen Pengguna</h4>
+                    <button id="manageRolesBtn" class="btn btn-sm btn-info mt-2 mb-3">Kelola Hak Akses</button>
                     <button id="showAddUserFormBtn" class="btn btn-sm mt-2 mb-3">Tambah Pengguna Baru</button>
                     <div id="userFormContainer" style="display:none; background: #f9f9f9; padding: 12px; border-radius: var(--rounded-sm); margin-bottom: 16px;">
                         <h5 id="userFormTitle">Tambah Pengguna</h5>
@@ -1462,7 +1493,14 @@
                             <div class="form-group"><label class="form-label">Nama Lengkap</label><input type="text" id="userName" class="form-control" required></div>
                             <div class="form-group"><label class="form-label">Username</label><input type="text" id="userUsername" class="form-control" required></div>
                             <div class="form-group"><label class="form-label">Password</label><input type="password" id="userPassword" class="form-control" placeholder="Kosongkan jika tidak ingin mengubah"></div>
-                            <div class="form-group"><label class="form-label">Hak Akses (Role)</label><select id="userRole" class="form-control"><option value="cashier">Kasir</option><option value="admin">Admin</option></select></div>
+                            <div class="form-group"><label class="form-label">Hak Akses (Role)</label>
+                                <select id="userRole" class="form-control">
+                                    <option value="cashier">Kasir</option>
+                                    <option value="supervisor">Supervisor</option>
+                                    <option value="store_manager">Kepala Toko</option>
+                                    <option value="admin">Admin</option>
+                                </select>
+                            </div>
                             <div class="d-flex gap-2"><button type="button" class="btn btn-warning" id="cancelUserFormBtn">Batal</button><button type="submit" class="btn btn-success" id="saveUserBtn">Simpan</button></div>
                         </form>
                     </div>
@@ -1474,11 +1512,12 @@
                     <hr class="mt-3 mb-3">
                     <form id="panelSecurityForm" class="mt-2"><div class="form-group"><label class="form-label">Password Keamanan Kontrol Panel</label><input type="password" id="panelSecurityCode" class="form-control" required></div><button type="submit" class="btn btn-sm btn-info">Ubah Password</button></form>
                     <hr class="mt-3 mb-3">
-                    <h4 class="mt-3">Pengaturan Diskon</h4>
-                    <form id="discountSettingsForm" class="mt-2">
-                        <div class="form-group"><label class="form-label">Diskon Member (%)</label><input type="number" id="memberDiscount" class="form-control" min="0" max="100" value="2" required></div>
+                    <h4 class="mt-3">Pengaturan Diskon & Pajak</h4>
+                    <form id="taxDiscountSettingsForm" class="mt-2">
+                        <div class="form-group"><label class="form-label">Diskon Member (%)</label><input type="number" id="memberDiscount" class="form-control" min="0" max="100" value="0" required></div>
                         <div class="form-group"><label class="form-label">Diskon Pelanggan Biasa (%)</label><input type="number" id="nonMemberDiscount" class="form-control" min="0" max="100" value="0" required></div>
-                        <button type="submit" class="btn btn-sm btn-success">Simpan Pengaturan Diskon</button>
+                        <div class="form-group"><label class="form-label">Pajak / PPN (%)</label><input type="number" id="taxPercent" class="form-control" min="0" max="100" value="0" required></div>
+                        <button type="submit" class="btn btn-sm btn-success">Simpan Pengaturan</button>
                     </form>
                     <hr class="mt-3 mb-3">
                     <h4 class="mt-3">Ubah Password Login Anda</h4>
@@ -1490,6 +1529,20 @@
                 </div>
             </div>
             <div class="modal-footer"><button class="btn btn-warning modal-close-btn">Tutup</button></div>
+        </div>
+    </div>
+
+    <div id="roleManagementModal" class="modal">
+        <div class="modal-content" style="max-width: 600px;">
+            <div class="modal-header"><h3 class="modal-title">Manajemen Hak Akses</h3><button class="modal-close">&times;</button></div>
+            <div class="modal-body" style="padding: 0 16px 16px 16px;">
+                <div class="tabs" id="roleTabsContainer"></div>
+                <div id="rolePermissionsContainer" class="mt-3"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-warning modal-close-btn">Tutup</button>
+                <button class="btn btn-success" id="saveRolePermissionsBtn">Simpan Hak Akses</button>
+            </div>
         </div>
     </div>
     
@@ -1565,15 +1618,17 @@
                      <div class="search-container mb-3"><i class="fas fa-search"></i><input type="text" id="stockOpnameSearch" class="search-input" placeholder="Cari produk untuk opname..."></div>
                     <div class="data-table-container">
                         <table class="data-table">
-                            <thead><tr><th>Produk</th><th>Stok Sistem</th><th>Stok Fisik</th><th>Selisih</th><th>Aksi</th></tr></thead>
+                            <thead><tr><th>Produk</th><th>Harga Pokok</th><th>Stok Sistem</th><th>Stok Fisik</th><th>Selisih</th><th>Nilai Kerugian</th><th>Aksi</th></tr></thead>
                             <tbody id="stockOpnameList"></tbody>
                         </table>
                     </div>
+                    <div id="stockOpnameSummary" class="mt-3" style="display: none;"></div>
+                    <button id="generateLossReportBtn" class="btn btn-sm btn-warning mt-2">Generate Laporan Kerugian</button>
                 </div>
                 
                 <div class="tab-content" id="stockHistoryTab">
                      <h4 class="mt-3">Riwayat Pergerakan Stok</h4>
-                     <div class="search-container mb-3"><i class="fas fa-search"></i><input type="text" id="stockHistorySearch" class="search-input" placeholder="Cari berdasarkan nama produk..."></div>
+                     <div class="search-container mb-3"><i class="fas fa-search"></i><input type="text" id="stockHistorySearch" class="search-input" placeholder="Cari nama produk, kode transaksi, atau 'retur'..."></div>
                      <div class="data-table-container">
                         <table class="data-table">
                             <thead><tr><th>Tanggal</th><th>Produk</th><th>Perubahan</th><th>Tipe</th><th>Sisa Stok</th><th>Catatan</th></tr></thead>
@@ -1681,36 +1736,29 @@
             if (!users_init.find(u => u.username === 'kasir')) users_init.push(DEFAULT_CASHIER);
             localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(users_init));
             
+            if (!localStorage.getItem(STORAGE_KEYS.PRODUCTS)) localStorage.setItem(STORAGE_KEYS.PRODUCTS, JSON.stringify([]));
+            if (!localStorage.getItem(STORAGE_KEYS.CATEGORIES)) localStorage.setItem(STORAGE_KEYS.CATEGORIES, JSON.stringify([]));
             if (!localStorage.getItem(STORAGE_KEYS.MEMBERS)) localStorage.setItem(STORAGE_KEYS.MEMBERS, JSON.stringify([]));
             if (!localStorage.getItem(STORAGE_KEYS.SUPPLIERS)) localStorage.setItem(STORAGE_KEYS.SUPPLIERS, JSON.stringify([]));
             if (!localStorage.getItem(STORAGE_KEYS.STOCK_HISTORY)) localStorage.setItem(STORAGE_KEYS.STOCK_HISTORY, JSON.stringify([]));
             if (!localStorage.getItem(STORAGE_KEYS.RETURNS)) localStorage.setItem(STORAGE_KEYS.RETURNS, JSON.stringify([]));
-            
-            if (!localStorage.getItem(STORAGE_KEYS.PRODUCTS)) {
-                const sampleProducts = [
-                    { id: 'P001', name: 'Indomie Goreng', category: 'Mie Instan', price: 3000, stock: 100, image: '', description: 'Indomie Seleraku' },
-                    { id: 'P002', name: 'Aqua Botol 600ml', category: 'Minuman', price: 3500, stock: 50, image: '', description: 'Air mineral' },
-                    { id: 'P003', name: 'Chitato Sapi Panggang', category: 'Snack', price: 10000, stock: 75, image: '', description: 'Keripik kentang' },
-                ];
-                localStorage.setItem(STORAGE_KEYS.PRODUCTS, JSON.stringify(sampleProducts));
-            }
-            
-            if (!localStorage.getItem(STORAGE_KEYS.CATEGORIES)) {
-                const sampleCategories = [
-                    { id: 'C001', name: 'Mie Instan' }, { id: 'C002', name: 'Minuman' }, { id: 'C003', name: 'Snack' }
-                ];
-                localStorage.setItem(STORAGE_KEYS.CATEGORIES, JSON.stringify(sampleCategories));
-            }
-            
             if (!localStorage.getItem(STORAGE_KEYS.ORDERS)) localStorage.setItem(STORAGE_KEYS.ORDERS, JSON.stringify([]));
             
             if (!localStorage.getItem(STORAGE_KEYS.SETTINGS)) {
-                localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify({
+                // [BARU] Inisialisasi pengaturan dengan role-based access control (RBAC)
+                const initialSettings = {
                     storeName: 'SUPERMARKET SEDERHANA', storeAddress: 'Jl. Contoh No. 123, Kota',
                     storePhone: '081234567890', storeEmail: 'admin@supermarket.com',
                     itemSecurityCode: CryptoJS.SHA256('17081945').toString(), panelSecurityCode: CryptoJS.SHA256('LKS.1945').toString(),
-                    memberDiscountPercent: 2, nonMemberDiscountPercent: 0
-                }));
+                    memberDiscountPercent: 2, nonMemberDiscountPercent: 0, taxPercent: 0,
+                    roles: {
+                        admin: { label: "Admin", isEditable: false, permissions: getAllPermissions(true) },
+                        store_manager: { label: "Kepala Toko", isEditable: true, permissions: { ...getAllPermissions(true), canAccessControlPanel: false } },
+                        supervisor: { label: "Supervisor", isEditable: true, permissions: { ...getAllPermissions(false), canManageStock: true, canProcessReturn: true, canViewReports: true } },
+                        cashier: { label: "Kasir", isEditable: true, permissions: getAllPermissions(false) }
+                    }
+                };
+                localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(initialSettings));
             }
         }
         
@@ -1728,7 +1776,7 @@
             returns = JSON.parse(localStorage.getItem(STORAGE_KEYS.RETURNS)) || [];
             currentUser = JSON.parse(localStorage.getItem(STORAGE_KEYS.USER)) || null;
             currentOrder = JSON.parse(localStorage.getItem(STORAGE_KEYS.CURRENT_ORDER)) || {
-                items: [], subtotal: 0, total: 0, discount: 0, donation: 0, note: '', memberId: null
+                items: [], subtotal: 0, total: 0, discount: 0, donation: 0, tax: 0, note: '', memberId: null
             };
 
             $('#currentYear').text(new Date().getFullYear());
@@ -1769,16 +1817,16 @@
             $('.modal-close, .modal-close-btn').click(function() { $(this).closest('.modal').hide(); });
 
             // Admin Panel Buttons
-            $('#addProductBtn').click(() => { if (currentUser.role === 'admin') openEditProductModal(null); });
-            $('#manageCategoriesBtn').click(openManageCategoriesModal);
-            $('#viewReportsBtn').click(openReportsModal);
-            $('#historyBtn').click(openHistoryModal);
-            $('#manageMembersBtn').click(openManageMembersModal);
-            $('#manageStoreInfoBtn').click(openManageStoreInfoModal);
-            $('#controlPanelBtn').click(openControlPanel);
-            $('#manageStockBtn').click(openStockManagementModal);
-            $('#manageSuppliersBtn').click(openManageSuppliersModal);
-            $('#processReturnBtn').click(openProcessReturnModal);
+            $('#addProductBtn').click(() => { if (checkPermission('canAddProduct')) openEditProductModal(null); });
+            $('#manageCategoriesBtn').click(() => { if(checkPermission('canManageCategories')) openManageCategoriesModal() });
+            $('#viewReportsBtn').click(() => { if(checkPermission('canViewReports')) openReportsModal() });
+            $('#historyBtn').click(() => { if(checkPermission('canViewHistory')) openHistoryModal() });
+            $('#manageMembersBtn').click(() => { if(checkPermission('canManageMembers')) openManageMembersModal() });
+            $('#manageStoreInfoBtn').click(() => { if(checkPermission('canManageStoreInfo')) openManageStoreInfoModal() });
+            $('#controlPanelBtn').click(() => { if(checkPermission('canAccessControlPanel')) openControlPanel() });
+            $('#manageStockBtn').click(() => { if(checkPermission('canManageStock')) openStockManagementModal() });
+            $('#manageSuppliersBtn').click(() => { if(checkPermission('canManageSuppliers')) openManageSuppliersModal() });
+            $('#processReturnBtn').click(() => { if(checkPermission('canProcessReturn')) openProcessReturnModal() });
             
             // Save/Update actions
             $('#saveProductBtn').click(saveProduct);
@@ -1789,16 +1837,16 @@
             $('#userForm').submit(saveUser);
             $('#itemSecurityForm, #panelSecurityForm').submit(changeSecurityCode);
             $('#changeOwnPasswordForm').submit(changeOwnPassword);
-            $('#discountSettingsForm').submit(saveDiscountSettings);
+            $('#taxDiscountSettingsForm').submit(saveTaxDiscountSettings);
             $('#supplierForm').submit(saveSupplier);
             $('#stockInForm').submit(addIncomingStock);
             $('#findOrderForReturnForm').submit(findOrderForReturn);
             $('#completeReturnBtn').click(completeReturn);
 
             // Backup/Restore
-            $('#backupDataBtn').click(() => { if (currentUser.role === 'admin') showConfirmation('Backup Data', 'Data akan di-backup ke file terenkripsi (.lksbackup). Lanjutkan?', backupData); });
-            $('#restoreFile').change(function() { if (currentUser.role === 'admin') { restoreFromFile(this.files[0]); $(this).val(''); } });
-            $('#resetDataBtn').click(() => { if (currentUser.role === 'admin') promptForPassword('item', () => showConfirmation('Reset Data', 'Semua data akan dihapus permanen. Lanjutkan?', resetAllData, 'danger')); });
+            $('#backupDataBtn').click(() => { if (checkPermission('canBackupRestore')) showConfirmation('Backup Data', 'Data akan di-backup ke file terenkripsi (.lksbackup). Lanjutkan?', backupData); });
+            $('#restoreFile').change(function() { if (checkPermission('canBackupRestore')) { promptForPassword('panel', () => { restoreFromFile(this.files[0]); $(this).val(''); }); } });
+            $('#resetDataBtn').click(() => { if (checkPermission('canResetData')) promptForPassword('panel', () => showConfirmation('Reset Data', 'Semua data akan dihapus permanen. Lanjutkan?', resetAllData, 'danger')); });
             
             // Other UI interactions
             $(document).on('click', '.filter-chip', function() {
@@ -1818,6 +1866,7 @@
             $(document).on('click', '.edit-supplier', function() { editSupplier($(this).data('id')); });
             $(document).on('click', '.delete-supplier', function() { deleteSupplier($(this).data('id')); });
             $(document).on('click', '.adjust-stock-btn', function() { adjustStock($(this).data('id')); });
+            $('#generateLossReportBtn').click(generateLossReport);
             $('#stockOpnameSearch, #stockHistorySearch').on('input', function() {
                 const modalId = $(this).closest('.modal').attr('id');
                 if(modalId === 'stockManagementModal') {
@@ -1841,6 +1890,10 @@
             $('#printReceiptBtn').on('click', () => printElement('#receiptModalBody #receiptContent'));
             $('#downloadReceiptPdfBtn').on('click', downloadReceiptAsPdf);
             
+            // [BARU] Role Management
+            $('#manageRolesBtn').click(openRoleManagementModal);
+            $('#saveRolePermissionsBtn').click(saveRolePermissions);
+
             // Password Prompt
             $('#passwordPromptForm').submit(e => e.preventDefault());
             $('#passwordPromptSubmit').click(submitPasswordPrompt);
@@ -1853,7 +1906,22 @@
             loadCategories(); 
             updateCurrentDate();
             updateStoreInfo();
-            $('#adminPanel').toggle(currentUser.role === 'admin');
+            configureUIAccess();
+        }
+        
+        function configureUIAccess() {
+            $('#adminPanel').toggle(currentUser.role === 'admin' || Object.values(settings.roles[currentUser.role]?.permissions || {}).some(p => p === true));
+            $('#addProductBtn').toggle(checkPermission('canAddProduct'));
+            $('#manageCategoriesBtn').toggle(checkPermission('canManageCategories'));
+            $('#manageStockBtn').toggle(checkPermission('canManageStock'));
+            $('#manageSuppliersBtn').toggle(checkPermission('canManageSuppliers'));
+            $('#processReturnBtn').toggle(checkPermission('canProcessReturn'));
+            $('#viewReportsBtn').toggle(checkPermission('canViewReports'));
+            $('#historyBtn').toggle(checkPermission('canViewHistory'));
+            $('#manageMembersBtn').toggle(checkPermission('canManageMembers'));
+            $('#manageStoreInfoBtn').toggle(checkPermission('canManageStoreInfo'));
+            $('#controlPanelBtn').toggle(checkPermission('canAccessControlPanel'));
+            $('#adminPanel [class*="backup-actions"], #adminPanel #resetDataBtn').parent().toggle(checkPermission('canBackupRestore') || checkPermission('canResetData'));
         }
 
         function handleLogin(e) {
@@ -1925,7 +1993,6 @@
             const paymentAmount = parseFloat($('#paymentAmount').val()) || 0;
             if (paymentAmount < currentOrder.total) return showToast('Jumlah pembayaran kurang', 'error');
 
-            // [PENTING] Validasi stok sebelum menyelesaikan
             for(const item of currentOrder.items) {
                 const product = products.find(p => p.id === item.product.id);
                 if (!product || product.stock < item.quantity) {
@@ -1945,7 +2012,6 @@
                         customerName: $('#customerName').val().trim() || 'Pelanggan',
                     };
                     
-                    // Kurangi stok dan catat riwayat
                     order.items.forEach(item => updateStock(item.product.id, -item.quantity, 'sale', `Penjualan ${order.id}`));
                     
                     orders.unshift(order);
@@ -1972,12 +2038,18 @@
 
         function updateOrder() {
             currentOrder.subtotal = currentOrder.items.reduce((total, item) => total + (item.product.price * item.quantity), 0);
-            const discountPercent = currentOrder.memberId ? (settings.memberDiscountPercent ?? 2) : (settings.nonMemberDiscountPercent ?? 0);
+            
+            const discountPercent = currentOrder.memberId ? (settings.memberDiscountPercent ?? 0) : (settings.nonMemberDiscountPercent ?? 0);
             const discountText = `Diskon (${discountPercent}%)`;
-
             currentOrder.discount = (discountPercent > 0) ? currentOrder.subtotal * (discountPercent / 100) : 0;
+
+            const subtotalAfterDiscount = currentOrder.subtotal - currentOrder.discount;
+            const taxPercent = settings.taxPercent || 0;
+            const taxText = `Pajak (${taxPercent}%)`;
+            currentOrder.tax = taxPercent > 0 ? subtotalAfterDiscount * (taxPercent / 100) : 0;
+
             currentOrder.donation = parseFloat($('#donationAmount').val()) || 0;
-            currentOrder.total = currentOrder.subtotal - currentOrder.discount + currentOrder.donation;
+            currentOrder.total = subtotalAfterDiscount + currentOrder.tax + currentOrder.donation;
             
             localStorage.setItem(STORAGE_KEYS.CURRENT_ORDER, JSON.stringify(currentOrder));
             
@@ -1987,7 +2059,9 @@
             
             $('#discountRow').toggle(currentOrder.discount > 0).find('span:first-child').text(discountText);
             $('#orderDiscount').text(`-${formatCurrency(currentOrder.discount)}`);
-            
+            $('#taxRow').toggle(currentOrder.tax > 0).find('span:first-child').text(taxText);
+            $('#orderTax').text(formatCurrency(currentOrder.tax));
+
             if (currentOrder.items.length === 0) $orderItems.html('<div class="empty-state"><i class="fas fa-shopping-basket"></i><p>Keranjang kosong</p></div>');
             else {
                 currentOrder.items.forEach(item => {
@@ -2009,7 +2083,7 @@
         }
 
         function resetOrder() {
-            currentOrder = { items: [], subtotal: 0, total: 0, discount: 0, donation: 0, note: '', memberId: null };
+            currentOrder = { items: [], subtotal: 0, total: 0, discount: 0, donation: 0, tax: 0, note: '', memberId: null };
             localStorage.setItem(STORAGE_KEYS.CURRENT_ORDER, JSON.stringify(currentOrder));
             updateOrder();
             $('#orderNote, #memberSearchInput').val('');
@@ -2023,14 +2097,16 @@
             $('#productCount').text(`(${filteredProducts.length} produk)`);
             const $productGrid = $('#productGrid').empty();
             if (filteredProducts.length === 0) {
-                $productGrid.html('<div class="empty-state"><i class="fas fa-box-open"></i><p>Tidak ada produk ditemukan</p></div>');
+                $productGrid.html('<div class="empty-state"><i class="fas fa-box-open"></i><p>Belum ada produk. Tambahkan produk melalui Admin Panel.</p></div>');
             } else {
+                const canEdit = checkPermission('canEditProduct');
+                const canDelete = checkPermission('canDeleteProduct');
                 filteredProducts.forEach(product => {
                     const stockClass = product.stock <= 0 ? 'out-of-stock' : (product.stock < 10 ? 'low' : '');
-                    const adminActions = currentUser.role === 'admin' ? `
+                    const adminActions = (canEdit || canDelete) ? `
                         <div class="product-actions">
-                            <div class="action-btn edit-btn edit-product" data-id="${product.id}"><i class="fas fa-edit"></i></div>
-                            <div class="action-btn delete-btn delete-product" data-id="${product.id}"><i class="fas fa-trash"></i></div>
+                            ${canEdit ? `<div class="action-btn edit-btn edit-product" data-id="${product.id}"><i class="fas fa-edit"></i></div>` : ''}
+                            ${canDelete ? `<div class="action-btn delete-btn delete-product" data-id="${product.id}"><i class="fas fa-trash"></i></div>` : ''}
                         </div>` : '';
                     $productGrid.append(`
                         <div class="product-card" data-id="${product.id}">${adminActions}
@@ -2050,7 +2126,9 @@
             $('#productId').val(product ? product.id : '');
             $('#productStock').prop('disabled', !!product);
             if (product) {
-                $('#productName').val(product.name); $('#productPrice').val(product.price);
+                $('#productName').val(product.name); 
+                $('#productCostPrice').val(product.costPrice || 0);
+                $('#productPrice').val(product.price);
                 $('#productStock').val(product.stock); $('#productImage').val(product.image || '');
                 $('#productDescription').val(product.description || ''); $('#productCategory').val(product.category);
             }
@@ -2060,28 +2138,36 @@
         
         function saveProduct() {
             const id = $('#productId').val(), name = $('#productName').val().trim(), category = $('#productCategory').val(),
-                  price = parseFloat($('#productPrice').val()) || 0, stock = parseInt($('#productStock').val()) || 0,
-                  image = $('#productImage').val().trim(), description = $('#productDescription').val().trim();
-            if (!name || !category || price <= 0) return showToast('Nama, kategori, dan harga harus valid', 'error');
+                  costPrice = parseFloat($('#productCostPrice').val()) || 0, price = parseFloat($('#productPrice').val()) || 0, 
+                  stock = parseInt($('#productStock').val()) || 0, image = $('#productImage').val().trim(), 
+                  description = $('#productDescription').val().trim();
+            if (!name || !category || price <= 0) return showToast('Nama, kategori, dan harga jual harus valid', 'error');
+            if(costPrice > price) return showToast('Harga pokok tidak boleh lebih besar dari harga jual', 'warning');
             
             const action = () => {
                 if (id) {
                     const index = products.findIndex(p => p.id === id);
-                    if (index > -1) products[index] = { ...products[index], name, category, price, image, description };
+                    if (index > -1) products[index] = { ...products[index], name, category, costPrice, price, image, description };
                 } else {
-                    const newProduct = { id: 'P' + moment().format('x'), name, category, price, stock, image, description };
+                    const newProduct = { id: 'P' + moment().format('x'), name, category, costPrice, price, stock, image, description };
                     products.unshift(newProduct);
                     updateStock(newProduct.id, stock, 'initial', 'Stok awal produk baru');
                 }
                 saveProducts(); loadProducts(); $('#productModal').hide();
                 showToast(`Produk ${id ? 'diperbarui' : 'disimpan'}`, 'success');
             };
-            if (id) promptForPassword('item', action); else action();
+            
+            if (id) { 
+                if(!checkPermission('canEditProduct')) return; 
+                promptForPassword('item', action); 
+            } else { 
+                if(!checkPermission('canAddProduct')) return;
+                action(); 
+            }
         }
 
         // --- STOCK MANAGEMENT ---
         function openStockManagementModal() {
-            if(currentUser.role !== 'admin') return;
             switchModalTab($('#stockManagementModal'), 'stockIn');
             loadProductsForStockIn();
             loadSuppliersForSelect();
@@ -2095,7 +2181,7 @@
             const product = products[productIndex];
             const oldStock = product.stock;
             product.stock += quantityChange;
-            if(product.stock < 0) product.stock = 0; // Prevent negative stock
+            if(product.stock < 0) product.stock = 0; 
 
             stockHistory.unshift({
                 id: 'SH' + moment().format('x'),
@@ -2105,7 +2191,7 @@
             });
             saveProducts();
             saveStockHistory();
-            loadProducts(); // Refresh grid
+            loadProducts(); 
         }
 
         function addIncomingStock(e) {
@@ -2128,27 +2214,60 @@
         }
 
         function loadProductsForStockOpname(searchTerm = '') {
+            $('#stockOpnameSummary').hide().empty();
             const $list = $('#stockOpnameList').empty();
             const filtered = products.filter(p => !searchTerm || p.name.toLowerCase().includes(searchTerm.toLowerCase()));
             filtered.forEach(p => {
                 $list.append(`
-                    <tr>
+                    <tr data-product-id="${p.id}">
                         <td>${p.name}</td>
-                        <td>${p.stock}</td>
-                        <td><input type="number" class="qty-input" id="physicalStock_${p.id}" value="${p.stock}" style="width: 70px;"></td>
-                        <td id="diff_${p.id}">0</td>
+                        <td>${formatCurrency(p.costPrice || 0)}</td>
+                        <td class="system-stock">${p.stock}</td>
+                        <td><input type="number" class="qty-input physical-stock" value="${p.stock}" style="width: 70px;"></td>
+                        <td class="stock-diff">0</td>
+                        <td class="loss-value">Rp 0</td>
                         <td><button class="btn btn-sm btn-info adjust-stock-btn" data-id="${p.id}">Sesuaikan</button></td>
                     </tr>`);
-                $(`#physicalStock_${p.id}`).on('input', function() {
-                    const physical = parseInt($(this).val()) || 0;
-                    const diff = physical - p.stock;
-                    $(`#diff_${p.id}`).text(diff).css('color', diff < 0 ? 'red' : 'green');
-                });
+            });
+
+            $('.physical-stock').on('input', function() {
+                const $row = $(this).closest('tr');
+                const product = products.find(p => p.id === $row.data('productId'));
+                if(!product) return;
+                const physical = parseInt($(this).val()) || 0;
+                const system = product.stock;
+                const diff = physical - system;
+                const loss = -diff * (product.costPrice || 0);
+                $row.find('.stock-diff').text(diff).css('color', diff < 0 ? 'var(--danger)' : 'var(--success)');
+                $row.find('.loss-value').text(formatCurrency(loss)).css('color', loss > 0 ? 'var(--danger)' : 'var(--success)');
             });
         }
         
+        function generateLossReport() {
+            let totalDiscrepancyItems = 0;
+            let totalLossValue = 0;
+            $('#stockOpnameList tr').each(function() {
+                const $row = $(this);
+                const diff = parseInt($row.find('.stock-diff').text()) || 0;
+                if (diff !== 0) {
+                    const product = products.find(p => p.id === $row.data('productId'));
+                    totalDiscrepancyItems++;
+                    totalLossValue -= diff * (product.costPrice || 0);
+                }
+            });
+            const summaryHTML = `
+                <h4>Ringkasan Kerugian Stok Opname</h4>
+                <div class="summary-row"><span>Total Produk Berselisih:</span> <span>${totalDiscrepancyItems} item</span></div>
+                <div class="summary-row total-row" style="color: ${totalLossValue > 0 ? 'var(--danger)' : 'var(--success)'}">
+                    <span>Total Nilai Kerugian:</span> <span>${formatCurrency(totalLossValue)}</span>
+                </div>
+                <small>${totalLossValue > 0 ? 'Nilai positif menunjukkan kerugian finansial.' : 'Nilai negatif menunjukkan kelebihan barang.'}</small>
+            `;
+            $('#stockOpnameSummary').html(summaryHTML).slideDown();
+        }
+
         function adjustStock(productId) {
-            const physicalStock = parseInt($(`#physicalStock_${productId}`).val());
+            const physicalStock = parseInt($(`#stockOpnameList tr[data-product-id="${productId}"] .physical-stock`).val());
             if (isNaN(physicalStock)) return showToast('Stok fisik tidak valid.', 'error');
             
             const product = products.find(p => p.id === productId);
@@ -2165,14 +2284,21 @@
         
         function loadStockHistory(searchTerm = '') {
             const $list = $('#stockHistoryList').empty();
-            const filtered = stockHistory.filter(h => !searchTerm || h.productName.toLowerCase().includes(searchTerm.toLowerCase()));
+            const lowerSearchTerm = searchTerm.toLowerCase();
+            const filtered = stockHistory.filter(h => 
+                !searchTerm || 
+                h.productName.toLowerCase().includes(lowerSearchTerm) ||
+                (h.notes && h.notes.toLowerCase().includes(lowerSearchTerm)) ||
+                (lowerSearchTerm === 'retur' && h.type === 'return')
+            );
             const typeLabels = {
                 sale: 'Penjualan', supplier_in: 'Stok Masuk', opname_adjustment: 'Opname', initial: 'Stok Awal', 'return': 'Retur'
             };
             filtered.slice(0, 200).forEach(h => {
                 const changeClass = h.quantityChange > 0 ? 'text-success' : 'text-danger';
+                const typeClass = h.type === 'return' ? 'text-danger' : '';
                 $list.append(`
-                    <tr>
+                    <tr class="${typeClass}">
                         <td>${moment(h.date).format('DD/MM/YY HH:mm')}</td>
                         <td>${h.productName}</td>
                         <td class="${changeClass}">${h.quantityChange > 0 ? '+' : ''}${h.quantityChange}</td>
@@ -2186,7 +2312,6 @@
 
         // --- SUPPLIER MANAGEMENT ---
         function openManageSuppliersModal() {
-            if(currentUser.role !== 'admin') return;
             resetSupplierForm();
             loadSuppliersForManagement();
             $('#manageSuppliersModal').css('display', 'flex');
@@ -2252,7 +2377,6 @@
         
         // --- RETURN MANAGEMENT ---
         function openProcessReturnModal() {
-            if(currentUser.role !== 'admin') return;
             $('#findOrderForReturnForm')[0].reset();
             $('#returnOrderDetails, #completeReturnBtn').hide();
             $('#processReturnModal').css('display', 'flex');
@@ -2302,9 +2426,7 @@
             if (returnedItems.length === 0) return showToast('Tidak ada item yang dipilih untuk diretur.', 'warning');
             
             promptForPassword('item', () => {
-                const originalOrder = orders.find(o => o.id === orderId);
                 returnedItems.forEach(item => {
-                    const product = products.find(p => p.id === item.productId);
                     updateStock(item.productId, item.quantity, 'return', `Retur dari ${orderId}. Alasan: ${reason}`);
                 });
                 
@@ -2336,7 +2458,6 @@
             return `
             <div id="receiptContent">
                 <div class="receipt-header">
-                    <img src="https://raw.githubusercontent.com/anekamarket/tester/refs/heads/main/logo-cafe.png" alt="Logo" style="width: 80px; margin-bottom: 5px;">
                     <div class="receipt-title">${settings.storeName}</div>
                     <div>${settings.storeAddress}</div>
                     <div>Telp: ${settings.storePhone}</div>
@@ -2352,31 +2473,25 @@
                 ${order.note ? `<div style="font-size:10px; font-style:italic; padding: 5px 0; border-top: 1px dashed #000;">Catatan: ${order.note}</div>` : ''}
                 <div class="receipt-total">
                     <div class="receipt-item"><span>Subtotal</span> <span>${formatCurrency(order.subtotal)}</span></div>
-                    ${order.donation > 0 ? `<div class="receipt-item"><span>Donasi</span> <span>${formatCurrency(order.donation)}</span></div>` : ''}
                     ${order.discount > 0 ? `<div class="receipt-item"><span>Diskon</span> <span>-${formatCurrency(order.discount)}</span></div>` : ''}
+                    ${order.tax > 0 ? `<div class="receipt-item"><span>Pajak</span> <span>${formatCurrency(order.tax)}</span></div>` : ''}
+                    ${order.donation > 0 ? `<div class="receipt-item"><span>Donasi LAZISNU</span> <span>${formatCurrency(order.donation)}</span></div>` : ''}
                     <div class="receipt-item" style="font-weight:bold; font-size: 14px;"><span>TOTAL</span> <span>${formatCurrency(order.total)}</span></div>
                     <div class="receipt-item"><span>${{ cash: 'Tunai', transfer: 'Transfer', ewallet: 'E-Wallet' }[order.paymentMethod]}</span> <span>${formatCurrency(order.paymentAmount)}</span></div>
                     <div class="receipt-item"><span>Kembali</span> <span>${formatCurrency(order.change)}</span></div>
                 </div>
                 <div class="receipt-footer">
                     <p>Terima kasih telah berbelanja</p>
-                    <div id="receiptQrcode" style="display: flex; justify-content: center; margin: 10px 0;"></div>
                     <p style="margin-top: 10px; border-top: 1px dashed #000; padding-top: 5px;">
-                        AppWeb Lentera Karya Situbondo &copy; 2025<br>
-                        www.anekamarket.my.id | WA: 087865614222
+                        AppWeb Lentera Karya Situbondo &copy; 2025
                     </p>
                 </div>
             </div>`;
         }
-
-        // --- UNCHANGED OR MINIMALLY ADAPTED FUNCTIONS ---
-        // The following functions are mostly unchanged from the original, with minor adaptations
-        // for naming conventions (menu -> product) or data inclusion (e.g., in backup).
-        // They are kept to fulfill the requirement of not removing features.
         
-        function handleEditProductClick(e) { e.stopPropagation(); if (currentUser.role === 'admin') openEditProductModal(products.find(p => p.id === $(this).data('id'))); }
+        function handleEditProductClick(e) { e.stopPropagation(); if (checkPermission('canEditProduct')) openEditProductModal(products.find(p => p.id === $(this).data('id'))); }
         function handleDeleteProductClick(e) {
-            e.stopPropagation(); if (currentUser.role !== 'admin') return;
+            e.stopPropagation(); if (!checkPermission('canDeleteProduct')) return;
             const productId = $(this).data('id');
             promptForPassword('item', () => showConfirmation('Hapus Produk', 'Yakin ingin menghapus produk ini?', () => {
                 products = products.filter(p => p.id !== productId);
@@ -2435,15 +2550,19 @@
             $('#paymentChange').text(formatCurrency(change));
         }
         function updateOrderSummary() {
-            let discountText = '';
+            let discountText = '', taxText = '';
             if (currentOrder.discount > 0) {
-                const percent = currentOrder.memberId ? (settings.memberDiscountPercent??2) : (settings.nonMemberDiscountPercent??0);
+                const percent = currentOrder.memberId ? (settings.memberDiscountPercent??0) : (settings.nonMemberDiscountPercent??0);
                 discountText = `Diskon (${percent}%):`;
+            }
+            if (currentOrder.tax > 0) {
+                taxText = `Pajak (${settings.taxPercent || 0}%):`;
             }
             const summaryHTML = currentOrder.items.map(item => `<div class="summary-row"><span>${item.product.name} (${item.quantity}x)</span><span>${formatCurrency(item.product.price * item.quantity)}</span></div>`).join('') +
                 `<div class="summary-row" style="border-top: 1px dashed #ddd; margin-top: 8px; padding-top: 8px;"><span>Subtotal:</span><span>${formatCurrency(currentOrder.subtotal)}</span></div>` +
-                (currentOrder.donation > 0 ? `<div class="summary-row"><span>Donasi:</span><span>${formatCurrency(currentOrder.donation)}</span></div>` : '') +
                 (currentOrder.discount > 0 ? `<div class="summary-row"><span>${discountText}</span><span>-${formatCurrency(currentOrder.discount)}</span></div>` : '') +
+                (currentOrder.tax > 0 ? `<div class="summary-row"><span>${taxText}</span><span>${formatCurrency(currentOrder.tax)}</span></div>` : '') +
+                (currentOrder.donation > 0 ? `<div class="summary-row"><span>Donasi LAZISNU:</span><span>${formatCurrency(currentOrder.donation)}</span></div>` : '') +
                 `<div class="summary-row total-row"><span>Total:</span><span>${formatCurrency(currentOrder.total)}</span></div>`;
             $('#orderSummary').html(summaryHTML);
         }
@@ -2457,7 +2576,7 @@
                 denominations.forEach(amount => $quickCash.append(`<button class="btn btn-sm btn-outline-primary quick-cash-btn" data-amount="${amount}">${amount === total ? 'Uang Pas' : formatCurrency(amount)}</button>`));
             }
         }
-        function openManageCategoriesModal() { if (currentUser.role === 'admin') { loadCategoriesForManagement(); $('#manageCategoriesModal').css('display', 'flex'); } }
+        function openManageCategoriesModal() { loadCategoriesForManagement(); $('#manageCategoriesModal').css('display', 'flex'); }
         function loadCategories() {
             const $filterRow = $('.filter-row').html('<div class="filter-chip active" data-category="all">Semua</div>');
             categories.forEach(category => $filterRow.append(`<div class="filter-chip" data-category="${category.name}">${category.name}</div>`));
@@ -2469,7 +2588,7 @@
         }
         function loadCategoriesForManagement() {
             const $list = $('#categoriesList').empty();
-            if (categories.length === 0) $list.html('<div class="empty-state"><i class="fas fa-tags"></i><p>Tidak ada kategori</p></div>');
+            if (categories.length === 0) $list.html('<div class="empty-state"><i class="fas fa-tags"></i><p>Belum ada kategori</p></div>');
             else {
                 categories.forEach(category => {
                     const productCount = products.filter(p => p.category === category.name).length;
@@ -2521,12 +2640,13 @@
         }
         function restoreData(data) {
             try {
-                Object.keys(STORAGE_KEYS).forEach(key => localStorage.setItem(STORAGE_KEYS[key], JSON.stringify(data[key.toLowerCase().replace('_','')] || [])));
+                Object.keys(STORAGE_KEYS).forEach(key => localStorage.setItem(STORAGE_KEYS[key], JSON.stringify(data[key.toLowerCase().replace(/_/g,'')] || [])));
                 localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(data.settings));
-                location.reload();
+                showToast('Data berhasil direstore. Aplikasi akan dimuat ulang.', 'success');
+                setTimeout(() => location.reload(), 1500);
             } catch (e) { showToast('Gagal melakukan restore data', 'error'); }
         }
-        function resetAllData() { Object.values(STORAGE_KEYS).forEach(key => { if (key !== STORAGE_KEYS.USER) localStorage.removeItem(key); }); location.reload(); }
+        function resetAllData() { Object.values(STORAGE_KEYS).forEach(key => { if (key !== STORAGE_KEYS.USER) localStorage.removeItem(key); }); showToast('Semua data berhasil direset. Aplikasi akan dimuat ulang.', 'success'); setTimeout(() => location.reload(), 1500); }
         function promptForPassword(type, callback) {
             const title = type === 'item' ? 'Password Edit/Hapus' : 'Password Kontrol Panel';
             $('#passwordPromptTitle').text(title);
@@ -2552,7 +2672,6 @@
             modal.find('.tab-content').removeClass('active');
             modal.find(`[data-tab="${tabName}"]`).addClass('active');
             modal.find(`#${tabName}Tab`).addClass('active');
-            // Lazy loading for stock management tabs
             if(modal.attr('id') === 'stockManagementModal') {
                 if(tabName === 'stockOpname') loadProductsForStockOpname();
                 else if(tabName === 'stockHistory') loadStockHistory();
@@ -2561,8 +2680,6 @@
         function showReceiptModal(order) {
             const receiptHTML = generateReceiptHTML(order);
             $('#receiptModalBody').html(receiptHTML);
-            $('#receiptQrcode').empty();
-            new QRCode(document.getElementById("receiptQrcode"), { text: JSON.stringify({ trxId: order.id, total: order.total }), width: 80, height: 80, correctLevel: QRCode.CorrectLevel.M });
             $('#downloadReceiptPdfBtn').data('order', order);
             $('#receiptModal').css('display', 'flex');
         }
@@ -2639,9 +2756,7 @@
         function saveReturns() { localStorage.setItem(STORAGE_KEYS.RETURNS, JSON.stringify(returns)); }
         
         // This section contains functions for Reports, History, Member/User Management, Store Info, etc.
-        // Their logic is largely identical to the original file, just adapted for the new context.
         function openReportsModal() {
-            if (currentUser.role !== 'admin') return;
             switchModalTab($('#reportsModal'), 'salesReport');
             $('#reportPeriod').val('today').trigger('change');
             $('#reportResults, #donationReportResults').empty();
@@ -2684,7 +2799,7 @@
             let tableHTML = `<table class="data-table"><thead><tr><th>Kode Transaksi</th><th>Tanggal</th><th>Nama Pelanggan</th><th>Jumlah Donasi</th></tr></thead><tbody>`;
             donationOrders.forEach(order => { tableHTML += `<tr><td>${order.id}</td><td>${moment(order.date).format('DD/MM/YY HH:mm')}</td><td>${order.customerName}</td><td>${formatCurrency(order.donation)}</td></tr>`; });
             tableHTML += `</tbody></table>`;
-            $resultsContainer.html(`<div class="panel"><h4>Laporan Donasi (${startDate.format('DD/MM/YY')} - ${endDate.format('DD/MM/YY')})</h4><div class="summary-row total-row" style="border: none; padding-top: 5px;"><span>Total Donasi Terkumpul:</span> <span>${formatCurrency(totalDonation)}</span></div></div><div class="panel mt-3">${tableHTML}</div>`);
+            $resultsContainer.html(`<div class="panel"><h4>Laporan Donasi LAZISNU (${startDate.format('DD/MM/YY')} - ${endDate.format('DD/MM/YY')})</h4><div class="summary-row total-row" style="border: none; padding-top: 5px;"><span>Total Donasi Terkumpul:</span> <span>${formatCurrency(totalDonation)}</span></div></div><div class="panel mt-3">${tableHTML}</div>`);
             $('#printReportBtn, #downloadReportBtn').show();
         }
         function printReport() { printElement('#' + $('#reportsModal .tab-content.active').attr('id') + ' .printable-area'); }
@@ -2698,7 +2813,7 @@
                 pdf.addImage(imgData, 'PNG', 10, 10, pdfWidth - 20, pdfHeight > 0 ? pdfHeight : 0); pdf.save(filename);
             }).catch(err => { showToast('Gagal mengunduh PDF', 'error'); });
         }
-        function openHistoryModal() { if (currentUser.role !== 'admin') return; loadTransactionHistory(); $('#historyModal').css('display', 'flex'); }
+        function openHistoryModal() { loadTransactionHistory(); $('#historyModal').css('display', 'flex'); }
         function loadTransactionHistory(searchTerm = '') {
             const $list = $('#historyResults').empty(); const lowerSearchTerm = searchTerm.toLowerCase();
             const filteredOrders = orders.filter(o => !searchTerm || o.id.toLowerCase().includes(lowerSearchTerm));
@@ -2718,7 +2833,7 @@
                 pdf.save(filename); showToast('PDF berhasil diunduh.', 'success');
             }).catch(err => { showToast('Gagal mengunduh PDF', 'error'); });
         }
-        function openManageMembersModal() { if (currentUser.role === 'admin') { resetMemberForm(); loadMembersForManagement(); $('#memberAdminFields').toggle(currentUser.role === 'admin'); $('#manageMembersModal').css('display', 'flex'); } }
+        function openManageMembersModal() { resetMemberForm(); loadMembersForManagement(); $('#memberAdminFields').toggle(checkPermission('canViewMemberStats')); $('#manageMembersModal').css('display', 'flex'); }
         function resetMemberForm() { $('#memberForm')[0].reset(); $('#memberIdInput').val(''); $('#memberFormTitle').text('Tambah Member Baru'); $('#saveMemberBtn').text('Tambah Member'); $('#deleteMemberBtn').hide(); }
         function saveMember(e) {
             e.preventDefault();
@@ -2752,7 +2867,11 @@
             $('#ktaStoreName').text(settings.storeName); $('#ktaStoreContact').text(`${settings.storeAddress} • ${settings.storePhone}`);
             $('#ktaMemberName').text(m.name); $('#ktaMemberId').text(`ID: ${m.id}`);
             $('#ktaQrcodeImg').empty();
-            new QRCode(document.getElementById("ktaQrcodeImg"), { text: JSON.stringify({ memberId: m.id, name: m.name }), width: 160, height: 160, correctLevel : QRCode.CorrectLevel.H });
+            const qrData = JSON.stringify({
+                memberId: m.id, name: m.name, phone: m.phone, whatsapp: m.phone,
+                address: m.address, joinDate: m.joinDate, store: settings.storeName
+            });
+            new QRCode(document.getElementById("ktaQrcodeImg"), { text: qrData, width: 160, height: 160, correctLevel : QRCode.CorrectLevel.H });
             $('#downloadKtaPdfBtn').data('member', m); $('#ktaModal').css('display', 'flex');
         }
         function downloadKtaAsPdf() {
@@ -2764,7 +2883,7 @@
                 pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height); pdf.save(filename);
             }).catch(err => { showToast('Gagal mengunduh PDF KTA', 'error'); });
         }
-        function openManageStoreInfoModal() { if (currentUser.role === 'admin') { loadStoreInfo(); $('#manageStoreInfoModal').css('display', 'flex'); } }
+        function openManageStoreInfoModal() { loadStoreInfo(); $('#manageStoreInfoModal').css('display', 'flex'); }
         function loadStoreInfo() {
             $('#storeName').val(settings.storeName); $('#storeAddress').val(settings.storeAddress);
             $('#storePhone').val(settings.storePhone); $('#storeEmail').val(settings.storeEmail || '');
@@ -2777,11 +2896,12 @@
         }
         function updateStoreInfo() { $('#storeNameHeader').text(settings.storeName); document.title = settings.storeName || 'APLIKASI KASIR SUPERMARKET'; }
         function openControlPanel() {
-            if (currentUser.role !== 'admin') return;
             promptForPassword('panel', () => {
                 switchModalTab($('#controlPanelModal'), 'users');
-                loadUsersForManagement(); $('#memberDiscount').val(settings.memberDiscountPercent || 2);
+                loadUsersForManagement(); 
+                $('#memberDiscount').val(settings.memberDiscountPercent || 0);
                 $('#nonMemberDiscount').val(settings.nonMemberDiscountPercent || 0);
+                $('#taxPercent').val(settings.taxPercent || 0);
                 $('#controlPanelModal').css('display', 'flex');
             });
         }
@@ -2807,17 +2927,19 @@
                 showToast('Password login Anda berhasil diubah.', 'success'); $(this)[0].reset();
             }
         }
-        function saveDiscountSettings(e) {
+        function saveTaxDiscountSettings(e) {
             e.preventDefault();
-            const memberDiscount = parseFloat($('#memberDiscount').val()), nonMemberDiscount = parseFloat($('#nonMemberDiscount').val());
-            if (isNaN(memberDiscount) || isNaN(nonMemberDiscount) || memberDiscount < 0 || nonMemberDiscount < 0) return showToast('Nilai diskon tidak valid.', 'error');
-            settings.memberDiscountPercent = memberDiscount; settings.nonMemberDiscountPercent = nonMemberDiscount;
-            saveSettings(); showToast('Pengaturan diskon berhasil disimpan.', 'success');
+            const memberDiscount = parseFloat($('#memberDiscount').val()), nonMemberDiscount = parseFloat($('#nonMemberDiscount').val()),
+                  taxPercent = parseFloat($('#taxPercent').val());
+            if (isNaN(memberDiscount) || isNaN(nonMemberDiscount) || isNaN(taxPercent) || memberDiscount < 0 || nonMemberDiscount < 0 || taxPercent < 0) return showToast('Nilai tidak valid.', 'error');
+            settings.memberDiscountPercent = memberDiscount; settings.nonMemberDiscountPercent = nonMemberDiscount; settings.taxPercent = taxPercent;
+            saveSettings(); showToast('Pengaturan diskon & pajak berhasil disimpan.', 'success');
         }
         function loadUsersForManagement() {
             const $list = $('#usersList').empty();
             if (users.length === 0) return $list.html('<div class="empty-state"><i class="fas fa-users"></i><p>Tidak ada pengguna</p></div>');
-            users.forEach(user => $list.append(`<div class="order-item"><div class="order-item-info"><div class="order-item-name">${user.name} <span class="member-badge">${user.role}</span></div><div class="order-item-price">${user.username}</div></div><div class="order-item-qty gap-2"><i class="fas fa-edit edit-user" data-id="${user.id}" style="cursor:pointer; color: var(--info);"></i><i class="fas fa-trash delete-user" data-id="${user.id}" style="cursor:pointer; color: var(--danger);"></i></div></div>`));
+            const roleLabels = { admin: "Admin", store_manager: "Kepala Toko", supervisor: "Supervisor", cashier: "Kasir" };
+            users.forEach(user => $list.append(`<div class="order-item"><div class="order-item-info"><div class="order-item-name">${user.name} <span class="member-badge">${roleLabels[user.role] || user.role}</span></div><div class="order-item-price">${user.username}</div></div><div class="order-item-qty gap-2"><i class="fas fa-edit edit-user" data-id="${user.id}" style="cursor:pointer; color: var(--info);"></i><i class="fas fa-trash delete-user" data-id="${user.id}" style="cursor:pointer; color: var(--danger);"></i></div></div>`));
         }
         function resetUserForm() { $('#userForm')[0].reset(); $('#userIdInput').val(''); $('#userFormTitle').text('Tambah Pengguna'); $('#userUsername').prop('disabled', false); }
         function editUser(id) { const u = users.find(usr => usr.id === id); if(u) { $('#userFormTitle').text('Edit Pengguna'); $('#userIdInput').val(u.id); $('#userName').val(u.name); $('#userUsername').val(u.username).prop('disabled', true); $('#userRole').val(u.role); $('#userFormContainer').slideDown(); } }
@@ -2843,6 +2965,115 @@
             saveUsers(); loadUsersForManagement(); $('#userFormContainer').slideUp(resetUserForm);
             showToast(`Pengguna berhasil ${id ? 'diperbarui' : 'ditambahkan'}.`, 'success');
         }
+        
+        // [BARU] Role-Based Access Control (RBAC) Functions
+        const PERMISSIONS = {
+            productManagement: {
+                label: "Manajemen Produk",
+                items: {
+                    canAddProduct: "Boleh menambah produk baru",
+                    canEditProduct: "Boleh mengedit produk",
+                    canDeleteProduct: "Boleh menghapus produk",
+                }
+            },
+            stockManagement: {
+                label: "Manajemen Stok",
+                items: {
+                    canManageStock: "Boleh mengakses manajemen stok (masuk, opname, riwayat)",
+                    canProcessReturn: "Boleh memproses retur barang",
+                }
+            },
+            dataManagement: {
+                label: "Manajemen Data Lain",
+                items: {
+                    canManageCategories: "Boleh kelola kategori",
+                    canManageSuppliers: "Boleh kelola suplier",
+                    canManageMembers: "Boleh kelola member",
+                    canViewMemberStats: "Boleh melihat statistik member",
+                }
+            },
+            reporting: {
+                label: "Laporan & Histori",
+                items: {
+                    canViewReports: "Boleh melihat laporan penjualan & donasi",
+                    canViewHistory: "Boleh melihat histori transaksi",
+                }
+            },
+            admin: {
+                label: "Fitur Admin Penuh",
+                items: {
+                    canManageStoreInfo: "Boleh mengubah info toko",
+                    canAccessControlPanel: "Boleh mengakses kontrol panel (pengguna, keamanan)",
+                    canBackupRestore: "Boleh backup & restore data",
+                    canResetData: "Boleh reset semua data (Berbahaya!)",
+                }
+            }
+        };
+
+        function getAllPermissions(value) {
+            let allPerms = {};
+            Object.values(PERMISSIONS).forEach(group => {
+                Object.keys(group.items).forEach(key => allPerms[key] = value);
+            });
+            return allPerms;
+        }
+
+        function checkPermission(permissionKey) {
+            if (!currentUser) return false;
+            if (currentUser.role === 'admin') return true;
+            return settings.roles[currentUser.role]?.permissions[permissionKey] || false;
+        }
+
+        function openRoleManagementModal() {
+            const $tabsContainer = $('#roleTabsContainer').empty();
+            Object.entries(settings.roles).forEach(([roleId, roleData]) => {
+                if (roleData.isEditable) {
+                    $tabsContainer.append(`<div class="tab" data-tab="${roleId}">${roleData.label}</div>`);
+                }
+            });
+            $tabsContainer.find('.tab').first().addClass('active');
+            loadRolePermissions($tabsContainer.find('.tab.active').data('tab'));
+            
+            $tabsContainer.on('click', '.tab', function() {
+                $tabsContainer.find('.tab').removeClass('active');
+                $(this).addClass('active');
+                loadRolePermissions($(this).data('tab'));
+            });
+
+            $('#roleManagementModal').css('display', 'flex');
+        }
+
+        function loadRolePermissions(roleId) {
+            const $container = $('#rolePermissionsContainer').empty();
+            const currentPermissions = settings.roles[roleId].permissions;
+            let html = '';
+            Object.entries(PERMISSIONS).forEach(([groupId, groupData]) => {
+                html += `<div class="permission-group"><h5 class="permission-group-title">${groupData.label}</h5>`;
+                Object.entries(groupData.items).forEach(([permKey, permLabel]) => {
+                    const isChecked = currentPermissions[permKey] ? 'checked' : '';
+                    html += `<div class="form-check permission-item">
+                                <input type="checkbox" id="perm_${roleId}_${permKey}" data-perm-key="${permKey}" ${isChecked}>
+                                <label for="perm_${roleId}_${permKey}">${permLabel}</label>
+                             </div>`;
+                });
+                html += `</div>`;
+            });
+            $container.html(html);
+        }
+        
+        function saveRolePermissions() {
+            const activeRole = $('#roleTabsContainer .tab.active').data('tab');
+            if (!activeRole) return;
+            $('#rolePermissionsContainer .form-check input').each(function() {
+                const key = $(this).data('perm-key');
+                const value = $(this).is(':checked');
+                settings.roles[activeRole].permissions[key] = value;
+            });
+            saveSettings();
+            showToast(`Hak akses untuk role ${settings.roles[activeRole].label} berhasil disimpan.`, 'success');
+            $('#roleManagementModal').hide();
+        }
+
     </script>
 </body>
 </html>
