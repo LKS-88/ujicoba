@@ -2058,20 +2058,6 @@
                 }
             });
 
-            // === [PERBAIKAN] Event listener untuk tab manajemen stok ===
-            $('#stockManagementModal .tabs .tab').click(function() {
-                const tab = $(this).data('tab');
-                // Fungsi switchModalTab sudah dipanggil secara global, jadi kita hanya perlu load data
-                if (tab === 'stockIn') {
-                    loadProductsForStockIn();
-                    loadSuppliersForSelect();
-                } else if (tab === 'stockOpname') {
-                    loadProductsForStockOpname();
-                } else if (tab === 'stockHistory') {
-                    loadStockHistory();
-                }
-            });
-
             // Report, History, Receipt actions
             $('#generateReportBtn').click(generateReport);
             $('#historySearchInput').on('input', function() { loadTransactionHistory($(this).val()); });
@@ -2106,6 +2092,18 @@
             $('#printRecapBtn').click(() => printElement('#recapReportResults'));
             $('#downloadRecapPdfBtn').click(downloadRecapAsPdf);
             $('#exportRecapExcelBtn').click(exportRecapToExcel);
+            
+            // === [PERBAIKAN] Manajemen Stok: Menambahkan event listener untuk klik tab ===
+            $('#stockManagementModal .tabs .tab').on('click', function() {
+                const tab = $(this).data('tab');
+                if (tab === 'stockOpname') {
+                    loadProductsForStockOpname();
+                } else if (tab === 'stockHistory') {
+                    loadStockHistory();
+                } else if (tab === 'stockIn') {
+                    loadProductsForStockIn();
+                }
+            });
 
         });
 
@@ -2702,7 +2700,7 @@
         function openStockManagementModal() {
             switchModalTab($('#stockManagementModal'), 'stockIn');
             $('#stockInProductSearch').val(''); 
-            loadProductsForStockIn();
+            loadProductsForStockIn(); // Load products for the initial tab
             loadSuppliersForSelect();
             $('#stockManagementModal').css('display', 'flex');
         }
@@ -2746,12 +2744,11 @@
             $('#stockInProductSearch').val('');
             loadProductsForStockIn();
         }
-
+        
+        // === [PERBAIKAN] Manajemen Stok: Fungsi untuk memuat produk ke form Stok Masuk ===
         function loadProductsForStockIn() {
             const $select = $('#stockInProduct').empty();
-            // Sort products alphabetically for easier selection
-            const sortedProducts = [...products].sort((a, b) => a.name.localeCompare(b.name));
-            sortedProducts.forEach(p => {
+            products.forEach(p => {
                 $select.append(`<option value="${p.id}">${p.name} (Stok: ${p.stock})</option>`);
             });
         }
@@ -2784,7 +2781,7 @@
                 const loss = -diff * (product.costPrice || 0);
                 $row.find('.stock-diff').text(diff).css('color', diff < 0 ? 'var(--danger)' : 'var(--success)');
                 $row.find('.loss-value').text(formatCurrency(loss)).css('color', loss > 0 ? 'var(--danger)' : 'var(--success)');
-            });
+            }).trigger('input'); // Trigger once to calculate initial state
         }
         
         function generateLossReport() {
@@ -2878,15 +2875,6 @@
                         </div>
                     </div>
                 `);
-            });
-        }
-        
-        function loadSuppliersForSelect() {
-            const $select = $('#stockInSupplier');
-            // Clear existing suppliers but keep the default option
-            $select.find('option:not(:first)').remove();
-            suppliers.forEach(s => {
-                $select.append(`<option value="${s.id}">${s.name}</option>`);
             });
         }
 
@@ -3121,6 +3109,7 @@
                 `<div class="summary-row total-row"><span>Total:</span><span>${formatCurrency(currentOrder.total)}</span></div>`;
             $('#orderSummary').html(summaryHTML);
         }
+
         function updatePaymentTab() {
             $('#paymentTotal').text(formatCurrency(currentOrder.total));
             $('#paymentAmount').val('').trigger('input');
@@ -3273,188 +3262,181 @@
                 $('#reportResults').html(reportHTML);
             } else {
                  const filteredDonations = orders.filter(o => (o.donation || 0) > 0 && moment(o.date).isBetween(startDate, endDate));
-                 const filteredDonations = orders.filter(o => (o.donation || 0) > 0 && moment(o.date).isBetween(startDate, endDate, null, '[]'));
-                const totalDonations = filteredDonations.reduce((sum, o) => sum + o.donation, 0);
-                
-                let reportHTML = `
+                 const totalDonations = filteredDonations.reduce((sum, o) => sum + o.donation, 0);
+                 let reportHTML = `
                     <h4>Laporan Donasi LAZISNU (${startDate.format('D MMM YYYY')} - ${endDate.format('D MMM YYYY')})</h4>
                     <div class="summary-container">
-                        <div class="summary-row"><span>Total Donasi Terkumpul:</span> <strong>${formatCurrency(totalDonations)}</strong></div>
-                        <div class="summary-row"><span>Jumlah Transaksi Donasi:</span> <strong>${filteredDonations.length}</strong></div>
+                        <div class="summary-row total-row"><span>Total Donasi Terkumpul:</span> <strong>${formatCurrency(totalDonations)}</strong></div>
                     </div>
-                    <h5 class="mt-3">Rincian Transaksi Donasi</h5>
-                    <table class="data-table"><thead><tr><th>Tanggal</th><th>Kode Transaksi</th><th>Nama Pelanggan</th><th>Jumlah Donasi</th></tr></thead><tbody>
-                    ${filteredDonations.map(o => `<tr><td>${moment(o.date).format('DD/MM/YY')}</td><td>${o.id}</td><td>${o.customerName}</td><td>${formatCurrency(o.donation)}</td></tr>`).join('') || '<tr><td colspan="4">Tidak ada data donasi</td></tr>'}
+                    <h5 class="mt-3">Rincian Donasi</h5>
+                    <table class="data-table"><thead><tr><th>Tanggal</th><th>Kode Transaksi</th><th>Jumlah</th></tr></thead><tbody>
+                    ${filteredDonations.map(o => `<tr><td>${moment(o.date).format('DD/MM/YY HH:mm')}</td><td>${o.id}</td><td>${formatCurrency(o.donation)}</td></tr>`).join('') || '<tr><td colspan="3">Tidak ada data</td></tr>'}
                     </tbody></table>`;
                 $('#donationReportResults').html(reportHTML);
             }
         }
-
+        
         function openHistoryModal() {
             loadTransactionHistory();
-            $('#historyModal').css('display', 'flex').find('#historySearchInput').focus();
+            $('#historyModal').css('display', 'flex');
         }
 
         function loadTransactionHistory(searchTerm = '') {
-            const $results = $('#historyResults').empty();
             const lowerSearchTerm = searchTerm.toLowerCase();
-            const filtered = orders.filter(o => !searchTerm || o.id.toLowerCase().includes(lowerSearchTerm));
-            if (filtered.length === 0) return $results.html('<div class="empty-state"><i class="fas fa-history"></i><p>Belum ada riwayat transaksi</p></div>');
-            
-            filtered.slice(0, 100).forEach(o => {
-                const member = members.find(m => m.id === o.memberId);
-                $results.append(`
-                    <div class="order-item" style="padding: 12px; border: 1px solid #eee; border-radius: var(--rounded-sm); margin-bottom: 8px;">
-                        <div class="order-item-info">
-                            <div class="order-item-name">${o.id}</div>
-                            <div class="order-item-price">${moment(o.date).format('DD MMMM YYYY, HH:mm')}</div>
-                            <div class="order-item-price">Pelanggan: ${o.customerName} ${member ? '(Member)' : ''}</div>
-                            <div class="order-item-price">Total: <strong>${formatCurrency(o.total)}</strong></div>
-                        </div>
-                        <button class="btn btn-sm reprint-receipt" data-id="${o.id}"><i class="fas fa-print"></i> Cetak Ulang</button>
-                    </div>`);
+            const filteredOrders = orders.filter(o => !searchTerm || o.id.toLowerCase().includes(lowerSearchTerm));
+            const $results = $('#historyResults').empty();
+            if (filteredOrders.length === 0) {
+                return $results.html('<div class="empty-state"><i class="fas fa-history"></i><p>Belum ada riwayat transaksi</p></div>');
+            }
+            let historyHTML = `<table class="data-table"><thead><tr><th>Kode Trx</th><th>Tanggal</th><th>Total</th><th>Kasir</th><th>Aksi</th></tr></thead><tbody>`;
+            filteredOrders.slice(0, 100).forEach(order => { // Batasi hingga 100 transaksi terbaru untuk performa
+                historyHTML += `
+                    <tr>
+                        <td>${order.id}</td>
+                        <td>${moment(order.date).format('DD/MM/YY HH:mm')}</td>
+                        <td>${formatCurrency(order.total)}</td>
+                        <td>${order.cashier.name}</td>
+                        <td><button class="btn btn-sm btn-info reprint-receipt" data-id="${order.id}">Struk</button></td>
+                    </tr>
+                `;
             });
+            historyHTML += `</tbody></table>`;
+            $results.html(historyHTML);
+        }
+
+        function showReceiptModal(order) {
+            const receiptHTML = generateReceiptHTML(order);
+            $('#receiptModalBody').html(receiptHTML);
+            $('#receiptModal').css('display', 'flex');
         }
 
         // --- MEMBER MANAGEMENT ---
         function openManageMembersModal() {
             resetMemberForm();
             $('#memberFormContainer').hide();
-            loadMembers();
-            $('#manageMembersModal').css('display', 'flex').find('#manageMemberSearchInput').on('input', function() { loadMembers($(this).val()) });
+            loadMembersForManagement();
+            $('#manageMembersModal').css('display', 'flex');
         }
-        
-        function loadMembers(searchTerm = '') {
-            const $list = $('#membersList').empty();
+
+        function loadMembersForManagement(searchTerm = '') {
             const lowerSearchTerm = searchTerm.toLowerCase();
             const filtered = members.filter(m => !searchTerm || m.name.toLowerCase().includes(lowerSearchTerm) || m.id.toLowerCase().includes(lowerSearchTerm) || m.phone.includes(lowerSearchTerm));
+            const $list = $('#membersList').empty();
+            if (filtered.length === 0) return $list.html('<div class="empty-state"><i class="fas fa-users"></i><p>Belum ada member terdaftar</p></div>');
             
-            if (filtered.length === 0) return $list.html('<div class="empty-state"><p>Tidak ada member</p></div>');
-            
+            let tableHTML = `<table class="data-table"><thead><tr><th>Nama</th><th>ID Member</th><th>Total Belanja</th><th>Aksi</th></tr></thead><tbody>`;
             filtered.forEach(m => {
-                $list.append(`
-                    <div class="order-item">
-                        <div class="order-item-info">
-                            <div class="order-item-name">${m.name}<span class="member-badge">${m.id}</span></div>
-                            <div class="order-item-price">${m.phone} | <a href="#" class="whatsapp-link" onclick="window.open('https://wa.me/${m.phone}')">Kirim WA</a></div>
-                        </div>
-                        <div class="order-item-qty gap-2">
-                            <i class="fas fa-id-card kta-member" style="cursor:pointer; color: var(--success);" data-id="${m.id}" title="Lihat KTA"></i>
+                tableHTML += `
+                    <tr>
+                        <td>${m.name}<br><small>${m.phone}</small></td>
+                        <td>${m.id}</td>
+                        <td>${formatCurrency(m.totalSpent || 0)}</td>
+                        <td class="gap-2">
                             <i class="fas fa-edit edit-member" style="cursor:pointer; color: var(--info);" data-id="${m.id}" title="Edit"></i>
-                        </div>
-                    </div>`);
+                            <i class="fas fa-id-card kta-member" style="cursor:pointer; color: var(--success);" data-id="${m.id}" title="Cetak KTA"></i>
+                        </td>
+                    </tr>`;
             });
+            tableHTML += `</tbody></table>`;
+            $list.html(tableHTML);
         }
 
         function resetMemberForm() {
             $('#memberForm')[0].reset();
             $('#memberIdInput').val('');
             $('#memberFormTitle').text('Tambah Member Baru');
-            $('#deleteMemberBtn').hide();
+            $('#deleteMemberBtn').hide().data('id', '');
             $('#memberAdminFields').hide();
         }
 
         function saveMember(e) {
             e.preventDefault();
-            const id = $('#memberIdInput').val();
-            const name = $('#memberName').val().trim();
-            const phone = $('#memberPhone').val().trim().replace(/\D/g, ''); // Hapus karakter non-digit
-            const address = $('#memberAddress').val().trim();
+            const id = $('#memberIdInput').val(),
+                  name = $('#memberName').val().trim(),
+                  phone = $('#memberPhone').val().trim(),
+                  address = $('#memberAddress').val().trim();
+            if (!name || !phone) return showToast('Nama dan No. Telepon member wajib diisi.', 'error');
             
-            if (!name || !phone) return showToast('Nama dan nomor telepon wajib diisi', 'error');
-
             if (id) {
                 const index = members.findIndex(m => m.id === id);
                 if (index > -1) members[index] = { ...members[index], name, phone, address };
             } else {
-                members.unshift({ id: 'M' + moment().format('YYMMDDHHmmss'), name, phone, address, joinDate: new Date(), transactions: 0, totalSpent: 0 });
+                members.unshift({ id: 'M' + moment().format('YYMMDDHHmmss'), name, phone, address, transactions: 0, totalSpent: 0 });
             }
             saveMembers();
-            loadMembers();
-            $('#memberFormContainer').slideUp(resetMemberForm);
-            showToast(`Member berhasil ${id ? 'diperbarui' : 'disimpan'}`, 'success');
+            loadMembersForManagement();
+            $('#memberFormContainer').slideUp();
+            showToast(`Member berhasil ${id ? 'diperbarui' : 'disimpan'}.`, 'success');
         }
 
         function editMember(id) {
             const member = members.find(m => m.id === id);
             if (!member) return;
-            resetMemberForm();
             $('#memberFormTitle').text('Edit Member');
             $('#memberIdInput').val(member.id);
             $('#memberName').val(member.name);
             $('#memberPhone').val(member.phone);
-            $('#memberAddress').val(member.address);
-            
-            if(checkPermission('canDeleteMember')) {
-                $('#deleteMemberBtn').data('id', id).show();
-            }
-            
+            $('#memberAddress').val(member.address || '');
             $('#memberTransactions').val(member.transactions || 0);
             $('#memberTotalSpent').val(formatCurrency(member.totalSpent || 0));
             $('#memberAdminFields').show();
-            
-            $('#memberFormContainer').slideDown().find('#memberName').focus();
+            $('#deleteMemberBtn').show().data('id', member.id);
+            $('#memberFormContainer').slideDown();
         }
         
         function deleteMember(id) {
-             if (!checkPermission('canDeleteMember')) return;
-             promptForPassword('panel', () => {
-                showConfirmation('Hapus Member', 'Yakin ingin menghapus member ini? Tindakan ini tidak dapat dibatalkan.', () => {
+            promptForPassword('item', () => {
+                showConfirmation('Hapus Member', 'Yakin ingin menghapus member ini?', () => {
                     members = members.filter(m => m.id !== id);
                     saveMembers();
-                    loadMembers();
-                    $('#memberFormContainer').slideUp(resetMemberForm);
-                    showToast('Member berhasil dihapus', 'success');
+                    loadMembersForManagement();
+                    resetMemberForm();
+                    $('#memberFormContainer').slideUp();
+                    showToast('Member berhasil dihapus.', 'success');
                 }, 'danger');
-             });
+            });
         }
         
         function openKtaModal(memberId) {
             const member = members.find(m => m.id === memberId);
             if (!member) return;
             
-            $('#ktaStoreName').text(settings.storeName || 'SUPERMARKET');
-            $('#ktaStoreContact').text(`${settings.storeAddress || ''} | ${settings.storePhone || ''}`);
+            $('#ktaStoreName').text(settings.storeName);
+            $('#ktaStoreContact').text(`${settings.storeAddress} | ${settings.storePhone}`);
             $('#ktaMemberName').text(member.name);
             $('#ktaMemberId').text(`ID: ${member.id}`);
             
-            const qrcodeContainer = document.getElementById('ktaQrcodeImg');
-            qrcodeContainer.innerHTML = '';
-            new QRCode(qrcodeContainer, {
-                text: JSON.stringify({ memberId: member.id, name: member.name }),
-                width: 150,
-                height: 150,
-                colorDark : "#000000",
-                colorLight : "#ffffff",
-                correctLevel : QRCode.CorrectLevel.H
+            const $qrCodeContainer = $('#ktaQrcodeImg').empty();
+            new QRCode($qrCodeContainer[0], {
+                text: JSON.stringify({ id: member.id, name: member.name }),
+                width: 140,
+                height: 140,
+                colorDark: "#000000",
+                colorLight: "#ffffff",
+                correctLevel: QRCode.CorrectLevel.H
             });
-            
-            $('#ktaModalBody').data('member-id', member.id);
             $('#ktaModal').css('display', 'flex');
         }
 
         function downloadKtaAsPdf() {
-            const memberId = $('#ktaModalBody').data('member-id');
-            const member = members.find(m => m.id === memberId);
-            if(!member) return;
-            
             const element = document.getElementById('ktaCard');
-            const filename = `KTA_${member.name.replace(/\s/g, '_')}_${member.id}.pdf`;
-            showToast('Mengunduh PDF...', 'info');
-
+            const memberName = $('#ktaMemberName').text();
+            showToast('Mengunduh KTA...', 'info');
             html2canvas(element, { scale: 3, useCORS: true, backgroundColor: null }).then(canvas => {
                 const imgData = canvas.toDataURL('image/png');
-                const pdf = new jsPDF({
-                    orientation: 'portrait',
-                    unit: 'px',
-                    format: [canvas.width, canvas.height]
-                });
+                const pdf = new jsPDF({ orientation: 'portrait', unit: 'px', format: [canvas.width, canvas.height] });
                 pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
-                pdf.save(filename);
-            }).catch(err => { showToast('Gagal mengunduh PDF', 'error'); console.error(err); });
+                pdf.save(`KTA_${memberName.replace(/\s/g, '_')}.pdf`);
+            }).catch(err => { showToast('Gagal mengunduh KTA PDF.', 'error'); });
         }
-        
-        // --- STORE INFO & SETTINGS ---
+
+
+        // --- STORE INFO & CONTROL PANEL ---
+        function updateStoreInfo() {
+            $('#storeNameHeader').text(settings.storeName || 'SUPERMARKET');
+            document.title = `${settings.storeName || 'SUPERMARKET'} - APLIKASI KASIR`;
+        }
+
         function openManageStoreInfoModal() {
             $('#storeName').val(settings.storeName);
             $('#storeAddress').val(settings.storeAddress);
@@ -3464,73 +3446,63 @@
         }
 
         function saveStoreInfo() {
-            settings.storeName = $('#storeName').val().trim();
-            settings.storeAddress = $('#storeAddress').val().trim();
-            settings.storePhone = $('#storePhone').val().trim();
-            settings.storeEmail = $('#storeEmail').val().trim();
+            settings.storeName = $('#storeName').val();
+            settings.storeAddress = $('#storeAddress').val();
+            settings.storePhone = $('#storePhone').val();
+            settings.storeEmail = $('#storeEmail').val();
             saveSettings();
             updateStoreInfo();
             $('#manageStoreInfoModal').hide();
-            showToast('Info toko berhasil diperbarui', 'success');
+            showToast('Info toko berhasil diperbarui.', 'success');
         }
         
-        function updateStoreInfo() {
-            $('#storeNameHeader').text(settings.storeName);
-            document.title = `${settings.storeName} - APLIKASI KASIR`;
-        }
-
         function openControlPanel() {
             promptForPassword('panel', () => {
-                resetUserForm();
+                switchModalTab($('#controlPanelModal'), 'users');
                 $('#userFormContainer').hide();
                 loadUsers();
-                
-                $('#itemSecurityCode').val('');
-                $('#panelSecurityCode').val('');
-                $('#memberDiscount').val(settings.memberDiscountPercent || 0);
-                $('#nonMemberDiscount').val(settings.nonMemberDiscountPercent || 0);
-                $('#taxPercent').val(settings.taxPercent || 0);
-                $('#changeOwnPasswordForm')[0].reset();
-                
-                switchModalTab($('#controlPanelModal'), 'users');
+                $('#memberDiscount').val(settings.memberDiscountPercent);
+                $('#nonMemberDiscount').val(settings.nonMemberDiscountPercent);
+                $('#taxPercent').val(settings.taxPercent);
+                $('#itemSecurityCode, #panelSecurityCode, #currentPassword, #newPassword').val('');
                 $('#controlPanelModal').css('display', 'flex');
             });
         }
         
-        // --- USER & ROLE MANAGEMENT ---
         function loadUsers() {
             const $list = $('#usersList').empty();
+            let tableHTML = `<table class="data-table"><thead><tr><th>Nama</th><th>Username</th><th>Role</th><th>Aksi</th></tr></thead><tbody>`;
             users.forEach(u => {
-                 const roleLabel = settings.roles[u.role]?.label || u.role;
-                 $list.append(`
-                    <div class="order-item">
-                        <div class="order-item-info">
-                            <div class="order-item-name">${u.name} <span class="product-category">${roleLabel}</span></div>
-                            <div class="order-item-price">Username: ${u.username}</div>
-                        </div>
-                        <div class="order-item-qty gap-2">
-                            ${u.username.toLowerCase() !== 'admin' ? `
-                            <i class="fas fa-edit edit-user" style="cursor:pointer; color: var(--info);" data-id="${u.id}"></i>
-                            <i class="fas fa-trash delete-user" style="cursor:pointer; color: var(--danger);" data-id="${u.id}"></i>` : ''}
-                        </div>
-                    </div>`);
+                const canEdit = u.id !== currentUser.id;
+                tableHTML += `
+                    <tr>
+                        <td>${u.name}</td>
+                        <td>${u.username}</td>
+                        <td>${settings.roles[u.role]?.label || u.role}</td>
+                        <td>
+                            ${canEdit ? `<i class="fas fa-edit edit-user" style="cursor:pointer; color: var(--info);" data-id="${u.id}"></i>
+                            <i class="fas fa-trash delete-user" style="cursor:pointer; color: var(--danger); margin-left:8px;" data-id="${u.id}"></i>` : 'Akun Anda'}
+                        </td>
+                    </tr>`;
             });
+            tableHTML += `</tbody></table>`;
+            $list.html(tableHTML);
         }
-        
+
         function resetUserForm() {
             $('#userForm')[0].reset();
             $('#userIdInput').val('');
             $('#userFormTitle').text('Tambah Pengguna Baru');
         }
-        
+
         function saveUser(e) {
             e.preventDefault();
-            const id = $('#userIdInput').val(), name = $('#userName').val().trim(),
-                  username = $('#userUsername').val().trim(), password = $('#userPassword').val(),
+            const id = $('#userIdInput').val(),
+                  name = $('#userName').val().trim(),
+                  username = $('#userUsername').val().trim(),
+                  password = $('#userPassword').val(),
                   role = $('#userRole').val();
-            
-            if (!name || !username || (!id && !password)) return showToast('Nama, username, dan password wajib diisi untuk pengguna baru', 'error');
-            if (users.some(u => u.username.toLowerCase() === username.toLowerCase() && u.id !== id)) return showToast('Username sudah digunakan', 'error');
+            if (!name || !username || !role || (!id && !password)) return showToast('Semua field wajib diisi untuk pengguna baru.', 'error');
             
             if (id) {
                 const index = users.findIndex(u => u.id === id);
@@ -3539,348 +3511,357 @@
                     if (password) users[index].password = CryptoJS.SHA256(password).toString();
                 }
             } else {
+                if (users.some(u => u.username.toLowerCase() === username.toLowerCase())) return showToast('Username sudah digunakan.', 'error');
                 users.push({ id: 'U' + moment().format('x'), name, username, password: CryptoJS.SHA256(password).toString(), role });
             }
             saveUsers();
             loadUsers();
-            $('#userFormContainer').slideUp(resetUserForm);
-            showToast(`Pengguna berhasil ${id ? 'diperbarui' : 'disimpan'}`, 'success');
+            $('#userFormContainer').slideUp();
+            showToast(`Pengguna berhasil ${id ? 'diperbarui' : 'ditambahkan'}.`, 'success');
         }
 
         function editUser(id) {
             const user = users.find(u => u.id === id);
             if (!user) return;
-            resetUserForm();
             $('#userFormTitle').text('Edit Pengguna');
             $('#userIdInput').val(user.id);
             $('#userName').val(user.name);
             $('#userUsername').val(user.username);
             $('#userRole').val(user.role);
-            $('#userFormContainer').slideDown().find('#userName').focus();
+            $('#userPassword').val('').attr('placeholder', 'Kosongkan jika tidak ingin mengubah');
+            $('#userFormContainer').slideDown();
         }
 
         function deleteUser(id) {
+            if (users.length <= 1) return showToast('Tidak dapat menghapus satu-satunya pengguna.', 'error');
             showConfirmation('Hapus Pengguna', 'Yakin ingin menghapus pengguna ini?', () => {
                 users = users.filter(u => u.id !== id);
                 saveUsers();
                 loadUsers();
-                showToast('Pengguna berhasil dihapus', 'success');
-            });
-        }
-        
-        function changeSecurityCode(e) {
-            e.preventDefault();
-            const formId = $(this).attr('id');
-            const newPassword = (formId === 'itemSecurityForm') ? $('#itemSecurityCode').val() : $('#panelSecurityCode').val();
-            
-            if (newPassword.length < 4) return showToast('Password keamanan minimal 4 karakter', 'warning');
-            
-            if (formId === 'itemSecurityForm') settings.itemSecurityCode = CryptoJS.SHA256(newPassword).toString();
-            else settings.panelSecurityCode = CryptoJS.SHA256(newPassword).toString();
-            
-            saveSettings();
-            $(this).find('input').val('');
-            showToast('Password keamanan berhasil diubah', 'success');
-        }
-        
-        function changeOwnPassword(e) {
-             e.preventDefault();
-             const currentPass = $('#currentPassword').val();
-             const newPass = $('#newPassword').val();
-             
-             if (CryptoJS.SHA256(currentPass).toString() !== currentUser.password) return showToast('Password saat ini salah', 'error');
-             if (newPass.length < 6) return showToast('Password baru minimal 6 karakter', 'warning');
-             
-             currentUser.password = CryptoJS.SHA256(newPass).toString();
-             const userIndex = users.findIndex(u => u.id === currentUser.id);
-             if (userIndex > -1) users[userIndex].password = currentUser.password;
-             
-             saveUsers();
-             localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(currentUser));
-             showToast('Password Anda berhasil diubah', 'success');
-             $('#changeOwnPasswordForm')[0].reset();
+                showToast('Pengguna berhasil dihapus.', 'success');
+            }, 'danger');
         }
 
+        function changeSecurityCode(e) {
+            e.preventDefault();
+            const formId = $(e.target).attr('id');
+            if (formId === 'itemSecurityForm') {
+                const newPass = $('#itemSecurityCode').val();
+                if (newPass.length < 4) return showToast('Password keamanan minimal 4 karakter.', 'error');
+                settings.itemSecurityCode = CryptoJS.SHA256(newPass).toString();
+                showToast('Password keamanan item berhasil diubah.', 'success');
+                $('#itemSecurityCode').val('');
+            } else {
+                const newPass = $('#panelSecurityCode').val();
+                if (newPass.length < 4) return showToast('Password keamanan minimal 4 karakter.', 'error');
+                settings.panelSecurityCode = CryptoJS.SHA256(newPass).toString();
+                showToast('Password keamanan panel berhasil diubah.', 'success');
+                $('#panelSecurityCode').val('');
+            }
+            saveSettings();
+        }
+
+        function changeOwnPassword(e) {
+            e.preventDefault();
+            const currentPass = $('#currentPassword').val();
+            const newPass = $('#newPassword').val();
+            if (CryptoJS.SHA256(currentPass).toString() !== currentUser.password) {
+                return showToast('Password saat ini salah.', 'error');
+            }
+            if (newPass.length < 6) return showToast('Password baru minimal 6 karakter.', 'error');
+            
+            currentUser.password = CryptoJS.SHA256(newPass).toString();
+            const userIndex = users.findIndex(u => u.id === currentUser.id);
+            if(userIndex > -1) users[userIndex].password = currentUser.password;
+            
+            saveUsers();
+            localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(currentUser));
+            $('#changeOwnPasswordForm')[0].reset();
+            showToast('Password Anda berhasil diubah.', 'success');
+        }
+        
         function saveTaxDiscountSettings(e) {
             e.preventDefault();
             settings.memberDiscountPercent = parseFloat($('#memberDiscount').val()) || 0;
             settings.nonMemberDiscountPercent = parseFloat($('#nonMemberDiscount').val()) || 0;
             settings.taxPercent = parseFloat($('#taxPercent').val()) || 0;
             saveSettings();
-            showToast('Pengaturan diskon & pajak berhasil disimpan', 'success');
-        }
-        
-        // --- PERMISSION SYSTEM ---
-        function openRoleManagementModal() {
-            loadRolesAndPermissions();
-            $('#roleManagementModal').css('display', 'flex');
-        }
-        
-        function loadRolesAndPermissions() {
-            const $tabs = $('#roleTabsContainer').empty();
-            const $permissions = $('#rolePermissionsContainer').empty();
-
-            Object.entries(settings.roles).forEach(([roleId, roleData], index) => {
-                const activeClass = index === 0 ? 'active' : '';
-                $tabs.append(`<div class="tab ${activeClass}" data-role="${roleId}">${roleData.label}</div>`);
-            });
-
-            const renderPermissions = (roleId) => {
-                const roleData = settings.roles[roleId];
-                const permissions = roleData.permissions;
-                const isEditable = roleData.isEditable;
-                
-                const permissionGroups = {
-                    'Transaksi': { canProcessReturn: 'Proses Retur Barang' },
-                    'Manajemen Produk': { canAddProduct: 'Tambah Produk', canEditProduct: 'Edit Produk', canDeleteProduct: 'Hapus Produk', canManageCategories: 'Kelola Kategori', canManageStock: 'Manajemen Stok' },
-                    'Manajemen Lainnya': { canManageMembers: 'Kelola Member', canManageSuppliers: 'Kelola Suplier' },
-                    'Laporan & Histori': { canViewReports: 'Lihat Laporan', canViewHistory: 'Lihat Histori Transaksi' },
-                    'Pengaturan Sistem': { canManageStoreInfo: 'Ubah Info Toko', canAccessControlPanel: 'Akses Kontrol Panel (Pengguna & Keamanan)', canBackupRestore: 'Backup & Restore Data', canResetData: 'Reset Semua Data' }
-                };
-                
-                let html = '';
-                for (const groupName in permissionGroups) {
-                    html += `<div class="permission-group"><div class="permission-group-title">${groupName}</div>`;
-                    for (const permKey in permissionGroups[groupName]) {
-                        html += `<label class="permission-item">
-                                    <input type="checkbox" data-permission="${permKey}" ${permissions[permKey] ? 'checked' : ''} ${!isEditable ? 'disabled' : ''}>
-                                    ${permissionGroups[groupName][permKey]}
-                                 </label>`;
-                    }
-                    html += `</div>`;
-                }
-                $permissions.html(html);
-            };
-
-            $tabs.find('.tab').click(function() {
-                $tabs.find('.tab').removeClass('active');
-                $(this).addClass('active');
-                renderPermissions($(this).data('role'));
-            });
-            
-            $tabs.find('.tab:first').trigger('click');
+            showToast('Pengaturan diskon & pajak berhasil disimpan.', 'success');
         }
 
-        function saveRolePermissions() {
-            const activeRole = $('#roleTabsContainer .tab.active').data('role');
-            if (settings.roles[activeRole] && settings.roles[activeRole].isEditable) {
-                $('#rolePermissionsContainer input[type="checkbox"]').each(function() {
-                    const permissionKey = $(this).data('permission');
-                    settings.roles[activeRole].permissions[permissionKey] = $(this).is(':checked');
-                });
-                saveSettings();
-                showToast(`Hak akses untuk ${settings.roles[activeRole].label} berhasil disimpan`, 'success');
-            }
-        }
-        
+        // --- ROLE MANAGEMENT & PERMISSIONS ---
         function getAllPermissions(isAllowed) {
-            return { canAddProduct: isAllowed, canEditProduct: isAllowed, canDeleteProduct: isAllowed, canManageCategories: isAllowed, canManageStock: isAllowed, canManageMembers: isAllowed, canManageSuppliers: isAllowed, canProcessReturn: isAllowed, canViewReports: isAllowed, canViewHistory: isAllowed, canManageStoreInfo: isAllowed, canAccessControlPanel: isAllowed, canBackupRestore: isAllowed, canResetData: isAllowed, canDeleteMember: isAllowed };
+            return {
+                canAddProduct: isAllowed, canEditProduct: isAllowed, canDeleteProduct: isAllowed,
+                canManageCategories: isAllowed, canManageStock: isAllowed, canManageSuppliers: isAllowed,
+                canProcessReturn: isAllowed, canViewReports: isAllowed, canViewHistory: isAllowed,
+                canManageMembers: isAllowed, canManageStoreInfo: isAllowed, canAccessControlPanel: isAllowed,
+                canBackupRestore: isAllowed, canResetData: isAllowed
+            };
         }
-        
+
         function checkPermission(permissionKey) {
             if (!currentUser) return false;
             if (currentUser.role === 'admin') return true;
             return settings.roles[currentUser.role]?.permissions[permissionKey] || false;
         }
 
-        // --- BACKUP, RESTORE, RESET ---
-        function backupData() {
-            const data = {};
-            for (const key in STORAGE_KEYS) {
-                data[STORAGE_KEYS[key]] = JSON.parse(localStorage.getItem(STORAGE_KEYS[key]));
-            }
-            const encryptedData = CryptoJS.AES.encrypt(JSON.stringify(data), ENCRYPTION_KEY).toString();
-            const blob = new Blob([encryptedData], { type: "application/json" });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement("a");
-            a.href = url;
-            a.download = `LKS_Supermarket_Backup_${moment().format('YYYY-MM-DD')}.lksbackup`;
-            a.click();
-            URL.revokeObjectURL(url);
-            showToast('Backup data berhasil diunduh.', 'success');
-        }
-        
-        function restoreFromFile(file) {
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                try {
-                    const decrypted = CryptoJS.AES.decrypt(e.target.result, ENCRYPTION_KEY).toString(CryptoJS.enc.Utf8);
-                    if(!decrypted) throw new Error("Decryption failed");
-                    const data = JSON.parse(decrypted);
-                    showConfirmation('Restore Data', 'Data saat ini akan ditimpa. Lanjutkan?', () => {
-                        for (const key in data) {
-                            if (data[key]) localStorage.setItem(key, JSON.stringify(data[key]));
-                        }
-                        showToast('Data berhasil direstore. Aplikasi akan dimuat ulang.', 'success');
-                        setTimeout(() => location.reload(), 1500);
-                    }, 'warning');
-                } catch (error) {
-                    showToast('File backup tidak valid atau rusak.', 'error');
+        function openRoleManagementModal() {
+            const $tabs = $('#roleTabsContainer').empty();
+            let isFirst = true;
+            for (const roleId in settings.roles) {
+                const role = settings.roles[roleId];
+                if (role.isEditable) {
+                    $tabs.append(`<div class="tab ${isFirst ? 'active' : ''}" data-tab="${roleId}">${role.label}</div>`);
+                    isFirst = false;
                 }
+            }
+            $tabs.find('.tab').click(function() {
+                switchModalTab($('#roleManagementModal'), $(this).data('tab'));
+                loadPermissionsForRole($(this).data('tab'));
+            });
+            loadPermissionsForRole($tabs.find('.tab.active').data('tab'));
+            $('#roleManagementModal').css('display', 'flex');
+        }
+
+        function loadPermissionsForRole(roleId) {
+            const $container = $('#rolePermissionsContainer').empty();
+            const permissions = settings.roles[roleId].permissions;
+            const permissionMap = {
+                'Manajemen Produk': ['canAddProduct', 'canEditProduct', 'canDeleteProduct', 'canManageCategories'],
+                'Manajemen Inventaris': ['canManageStock', 'canManageSuppliers', 'canProcessReturn'],
+                'Laporan & Analitik': ['canViewReports', 'canViewHistory'],
+                'Manajemen Lainnya': ['canManageMembers', 'canManageStoreInfo'],
+                'Tingkat Lanjut (Berisiko)': ['canAccessControlPanel', 'canBackupRestore', 'canResetData']
             };
-            reader.readAsText(file);
+            const permissionLabels = {
+                canAddProduct: 'Menambah Produk', canEditProduct: 'Mengedit Produk', canDeleteProduct: 'Menghapus Produk',
+                canManageCategories: 'Kelola Kategori', canManageStock: 'Manajemen Stok', canManageSuppliers: 'Kelola Suplier',
+                canProcessReturn: 'Proses Retur', canViewReports: 'Lihat Laporan', canViewHistory: 'Lihat Histori Transaksi',
+                canManageMembers: 'Kelola Member', canManageStoreInfo: 'Kelola Info Toko', canAccessControlPanel: 'Akses Kontrol Panel',
+                canBackupRestore: 'Backup & Restore Data', canResetData: 'Reset Semua Data'
+            };
+            
+            let html = '';
+            for(const group in permissionMap) {
+                html += `<div class="permission-group"><div class="permission-group-title">${group}</div>`;
+                permissionMap[group].forEach(key => {
+                    html += `
+                        <div class="permission-item">
+                            <input type="checkbox" id="perm_${key}" data-key="${key}" ${permissions[key] ? 'checked' : ''}>
+                            <label for="perm_${key}">${permissionLabels[key]}</label>
+                        </div>`;
+                });
+                html += `</div>`;
+            }
+            $container.html(html);
         }
 
-        function resetAllData() {
-             showConfirmation('RESET SEMUA DATA', 'ANDA YAKIN? SEMUA DATA PRODUK, TRANSAKSI, PENGGUNA, DLL AKAN HILANG PERMANEN!', () => {
-                Object.values(STORAGE_KEYS).forEach(key => localStorage.removeItem(key));
-                showToast('Semua data telah direset. Aplikasi akan dimuat ulang.', 'success');
-                setTimeout(() => location.reload(), 1500);
-            }, 'danger');
-        }
-        
-        // --- UI UTILITIES & HELPERS ---
-        function formatCurrency(amount) {
-            return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(amount);
+        function saveRolePermissions() {
+            const roleId = $('#roleTabsContainer .tab.active').data('tab');
+            if (!roleId) return;
+
+            const newPermissions = {};
+            $('#rolePermissionsContainer input[type="checkbox"]').each(function() {
+                newPermissions[$(this).data('key')] = $(this).is(':checked');
+            });
+            
+            settings.roles[roleId].permissions = newPermissions;
+            saveSettings();
+            showToast(`Hak akses untuk ${settings.roles[roleId].label} berhasil disimpan.`, 'success');
+            $('#roleManagementModal').hide();
         }
 
+        // --- MODAL & UI HELPERS ---
         function showToast(message, type = 'info') {
             const $toast = $('#toast');
             $('#toast-message').text(message);
             $toast.removeClass('success error warning').addClass(type).addClass('show');
             setTimeout(() => $toast.removeClass('show'), 3000);
         }
-        
-        function setButtonLoading($btn, isLoading, originalText = '') {
-            if (isLoading) {
-                $btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Memproses...');
-            } else {
-                $btn.prop('disabled', false).html(originalText);
-            }
-        }
-        
-        function updateCurrentDate() {
-            $('#currentDate').text(moment().format('dddd, D MMMM YYYY'));
-        }
-        
-        function switchModalTab($modal, tabName) {
-            $modal.find('.tabs .tab').removeClass('active');
-            $modal.find(`.tabs .tab[data-tab="${tabName}"]`).addClass('active');
-            $modal.find('.tab-content').removeClass('active');
-            $modal.find(`#${tabName}Tab, #${tabName}ReportTab`).addClass('active');
-        }
-        
-        function showConfirmation(title, message, onConfirm, type = 'success') {
-            $('#confirmTitle').text(title);
-            $('#confirmMessage').text(message);
-            $('#confirmAction').removeClass('btn-success btn-danger').addClass(`btn-${type}`).off('click').on('click', () => {
-                $('#confirmationModal').hide();
-                onConfirm();
-            });
-            $('#confirmationModal').css('display', 'flex');
+
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(amount);
         }
 
-        function promptForPassword(type, onCorrect) {
-            const correctHash = (type === 'item') ? settings.itemSecurityCode : settings.panelSecurityCode;
-            const $modal = $('#passwordPromptModal');
-            $modal.css('display', 'flex').find('#passwordPromptInput').val('').focus();
+        function setButtonLoading($btn, isLoading, originalText = '') {
+            if (isLoading) {
+                $btn.prop('disabled', true).data('original-text', $btn.html()).html('<i class="fas fa-spinner fa-spin"></i> Memproses...');
+            } else {
+                $btn.prop('disabled', false).html(originalText || $btn.data('original-text'));
+            }
+        }
+
+        function switchModalTab($modal, tabId) {
+            $modal.find('.tabs .tab').removeClass('active');
+            $modal.find(`.tabs .tab[data-tab="${tabId}"]`).addClass('active');
+            $modal.find('.tab-content').removeClass('active').hide();
+            $modal.find(`#${tabId}Tab, [data-tab-content="${tabId}"]`).addClass('active').show();
+        }
+        
+        function showConfirmation(title, message, callback, btnClass = 'success') {
+            const $modal = $('#confirmationModal');
+            $modal.find('#confirmTitle').text(title);
+            $modal.find('#confirmMessage').text(message);
+            const $actionBtn = $modal.find('#confirmAction');
+            $actionBtn.removeClass('btn-success btn-danger').addClass('btn-' + btnClass).text('Lanjutkan');
             
-            $('#passwordPromptForm').off('submit').on('submit', function(e) {
+            $actionBtn.off('click').on('click', function() {
+                callback();
+                $modal.hide();
+            });
+            $modal.css('display', 'flex');
+        }
+
+        function promptForPassword(type, callback) {
+            const $modal = $('#passwordPromptModal');
+            const title = type === 'panel' ? 'Akses Panel Kontrol' : 'Aksi Keamanan';
+            const message = type === 'panel' ? 'Masukkan password keamanan panel.' : 'Masukkan password keamanan item.';
+            
+            $modal.find('#passwordPromptTitle').text(title);
+            $modal.find('#passwordPromptMessage').text(message);
+            $modal.find('#passwordPromptInput').val('');
+            
+            const $form = $modal.find('#passwordPromptForm');
+            $form.off('submit').on('submit', function(e) {
                 e.preventDefault();
                 const inputPass = $('#passwordPromptInput').val();
+                const correctHash = type === 'panel' ? settings.panelSecurityCode : settings.itemSecurityCode;
                 if (CryptoJS.SHA256(inputPass).toString() === correctHash) {
                     $modal.hide();
-                    onCorrect();
+                    callback();
                 } else {
                     showToast('Password keamanan salah.', 'error');
                 }
             });
+            $modal.css('display', 'flex').find('#passwordPromptInput').focus();
         }
         
         function generateCaptcha() {
-            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
             captchaText = '';
-            for (let i = 0; i < 5; i++) captchaText += chars.charAt(Math.floor(Math.random() * chars.length));
+            for (let i = 0; i < 5; i++) {
+                captchaText += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
             const canvas = document.getElementById('captchaCanvas');
             const ctx = canvas.getContext('2d');
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.fillStyle = '#f0f2f5';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
-            // Add noise lines
-            for(let i=0; i<5; i++) {
-                ctx.strokeStyle = `rgb(${Math.random()*200}, ${Math.random()*200}, ${Math.random()*200})`;
-                ctx.beginPath();
-                ctx.moveTo(Math.random()*canvas.width, Math.random()*canvas.height);
-                ctx.lineTo(Math.random()*canvas.width, Math.random()*canvas.height);
-                ctx.stroke();
-            }
-            ctx.font = 'bold 24px Poppins';
-            ctx.fillStyle = '#343a40';
+            ctx.font = '24px Poppins';
+            ctx.fillStyle = '#6c757d';
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
             ctx.fillText(captchaText, canvas.width / 2, canvas.height / 2);
         }
 
+        function updateCurrentDate() {
+            $('#currentDate').text(moment().format('dddd, D MMMM YYYY, HH:mm'));
+        }
+
+        // --- BACKUP, RESTORE, RESET ---
+        function backupData() {
+            const dataToBackup = {};
+            Object.values(STORAGE_KEYS).forEach(key => {
+                const item = localStorage.getItem(key);
+                if (item !== null) {
+                    dataToBackup[key] = JSON.parse(item);
+                }
+            });
+            const jsonData = JSON.stringify(dataToBackup);
+            const encryptedData = CryptoJS.AES.encrypt(jsonData, ENCRYPTION_KEY).toString();
+            const blob = new Blob([encryptedData], { type: 'application/octet-stream' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `backup_supermarket_${moment().format('YYYYMMDD')}.lksbackup`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showToast('Backup data berhasil diunduh.', 'success');
+        }
+
+        function restoreFromFile(file) {
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const decrypted = CryptoJS.AES.decrypt(e.target.result, ENCRYPTION_KEY).toString(CryptoJS.enc.Utf8);
+                    const restoredData = JSON.parse(decrypted);
+                    Object.keys(restoredData).forEach(key => {
+                        localStorage.setItem(key, JSON.stringify(restoredData[key]));
+                    });
+                    showConfirmation('Restore Berhasil', 'Data berhasil dipulihkan. Aplikasi akan dimuat ulang.', () => location.reload());
+                } catch (error) {
+                    showToast('Gagal memulihkan data. File mungkin rusak atau password salah.', 'error');
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        function resetAllData() {
+            showConfirmation('Reset Semua Data?', 'TINDAKAN INI TIDAK DAPAT DIBATALKAN! Yakin ingin menghapus semua produk, transaksi, dan pengaturan?', () => {
+                Object.values(STORAGE_KEYS).forEach(key => localStorage.removeItem(key));
+                localStorage.removeItem(STORAGE_KEYS.USER);
+                showConfirmation('Reset Selesai', 'Semua data telah dihapus. Aplikasi akan dimuat ulang ke pengaturan awal.', () => location.reload());
+            }, 'danger');
+        }
+        
+        // --- PRINT & PDF HELPERS ---
+        function downloadReceiptAsPdf() {
+            const element = document.getElementById('receiptContent');
+            const orderId = $(element).find('.receipt-info span:contains("No. Trx:")').next().text();
+            showToast('Mengunduh Struk PDF...', 'info');
+            html2canvas(element, { scale: 3 }).then(canvas => {
+                const imgData = canvas.toDataURL('image/png');
+                const pdf = new jsPDF('p', 'mm', [80, 200]); // Thermal printer paper size
+                const imgProps= pdf.getImageProperties(imgData);
+                const pdfWidth = pdf.internal.pageSize.getWidth();
+                const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+                pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+                pdf.save(`Struk_${orderId}.pdf`);
+            }).catch(err => { showToast('Gagal mengunduh PDF.', 'error'); });
+        }
+
         function printElement(selector) {
-            const content = $(selector).html();
-            const $printContainer = $('#print-container');
-            $printContainer.html(content).show();
+            const printContent = $(selector).clone();
+            const $printContainer = $('#print-container').empty().append(printContent);
             window.print();
-            $printContainer.hide().empty();
+            $printContainer.empty();
         }
-
-        function printStockReport() {
-            const activeTab = $('#stockManagementModal .tabs .tab.active').data('tab');
-            if (activeTab === 'stockOpname') printElement('#stockOpnamePrintArea');
-            else if (activeTab === 'stockHistory') printElement('#stockHistoryPrintArea');
-        }
-
+        
         function downloadStockReportAsPdf() {
-            const activeTab = $('#stockManagementModal .tabs .tab.active').data('tab');
-            let elementId, filename;
-            if(activeTab === 'stockOpname') { elementId = 'stockOpnamePrintArea'; filename = 'Laporan_Stok_Opname.pdf'; }
-            else if (activeTab === 'stockHistory') { elementId = 'stockHistoryPrintArea'; filename = 'Riwayat_Stok.pdf'; }
-            else return;
-            
-            const element = document.getElementById(elementId);
-            showToast('Mengunduh PDF...', 'info');
+            const element = document.getElementById('stockOpnamePrintArea');
+            showToast('Mengunduh Laporan PDF...', 'info');
             html2canvas(element, { scale: 2 }).then(canvas => {
                 const imgData = canvas.toDataURL('image/png');
                 const pdf = new jsPDF('p', 'mm', 'a4');
+                const imgProps = pdf.getImageProperties(imgData);
                 const pdfWidth = pdf.internal.pageSize.getWidth();
-                const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-                pdf.addImage(imgData, 'PNG', 10, 10, pdfWidth - 20, pdfHeight - (pdfHeight > 270 ? 20 : 0));
-                pdf.save(filename);
-            });
+                const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+                pdf.addImage(imgData, 'PNG', 10, 10, pdfWidth - 20, pdfHeight);
+                pdf.save(`Laporan_Kerugian_Stok_${moment().format('YYYYMMDD')}.pdf`);
+            }).catch(err => { showToast('Gagal mengunduh PDF.', 'error'); });
         }
         
-        function downloadReceiptAsPdf() {
-            const orderId = $('#receiptContent .receipt-info span:contains("No. Trx:")').next().text();
-            const element = document.getElementById('receiptContent');
-            const filename = `Struk_${orderId || moment().format('YYYYMMDD')}.pdf`;
-            showToast('Mengunduh PDF...', 'info');
+        function printStockReport() {
+            printElement('#stockOpnamePrintArea');
+        }
 
-            html2canvas(element, { scale: 3 }).then(canvas => {
-                const imgData = canvas.toDataURL('image/png');
-                const pdf = new jsPDF({
-                    orientation: 'portrait',
-                    unit: 'px',
-                    format: [canvas.width + 20, canvas.height + 20]
-                });
-                pdf.addImage(imgData, 'PNG', 10, 10, canvas.width, canvas.height);
-                pdf.save(filename);
-            });
-        }
+        // --- SAVE DATA TO LOCALSTORAGE ---
+        function saveProducts() { localStorage.setItem(STORAGE_KEYS.PRODUCTS, JSON.stringify(products)); }
+        function saveCategories() { localStorage.setItem(STORAGE_KEYS.CATEGORIES, JSON.stringify(categories)); }
+        function saveOrders() { localStorage.setItem(STORAGE_KEYS.ORDERS, JSON.stringify(orders)); }
+        function saveSettings() { localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(settings)); }
+        function saveUsers() { localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(users)); }
+        function saveMembers() { localStorage.setItem(STORAGE_KEYS.MEMBERS, JSON.stringify(members)); }
+        function saveSuppliers() { localStorage.setItem(STORAGE_KEYS.SUPPLIERS, JSON.stringify(suppliers)); }
+        function saveStockHistory() { localStorage.setItem(STORAGE_KEYS.STOCK_HISTORY, JSON.stringify(stockHistory)); }
+        function saveReturns() { localStorage.setItem(STORAGE_KEYS.RETURNS, JSON.stringify(returns)); }
+        function saveShifts() { localStorage.setItem(STORAGE_KEYS.SHIFTS, JSON.stringify(shifts)); }
         
-        function showReceiptModal(order) {
-            $('#receiptModalBody').html(generateReceiptHTML(order));
-            $('#receiptModal').css('display', 'flex');
-        }
-        
-        // --- DATA PERSISTENCE ---
-        function saveData(key, data) { localStorage.setItem(key, JSON.stringify(data)); }
-        function saveProducts() { saveData(STORAGE_KEYS.PRODUCTS, products); }
-        function saveCategories() { saveData(STORAGE_KEYS.CATEGORIES, categories); }
-        function saveOrders() { saveData(STORAGE_KEYS.ORDERS, orders); }
-        function saveSettings() { saveData(STORAGE_KEYS.SETTINGS, settings); }
-        function saveUsers() { saveData(STORAGE_KEYS.USERS, users); }
-        function saveMembers() { saveData(STORAGE_KEYS.MEMBERS, members); }
-        function saveSuppliers() { saveData(STORAGE_KEYS.SUPPLIERS, suppliers); }
-        function saveStockHistory() { saveData(STORAGE_KEYS.STOCK_HISTORY, stockHistory); }
-        function saveReturns() { saveData(STORAGE_KEYS.RETURNS, returns); }
-        function saveShifts() { saveData(STORAGE_KEYS.SHIFTS, shifts); }
-
     </script>
 </body>
 </html>
+            
