@@ -2058,6 +2058,20 @@
                 }
             });
 
+            // === [PERBAIKAN] Event listener untuk tab manajemen stok ===
+            $('#stockManagementModal .tabs .tab').click(function() {
+                const tab = $(this).data('tab');
+                // Fungsi switchModalTab sudah dipanggil secara global, jadi kita hanya perlu load data
+                if (tab === 'stockIn') {
+                    loadProductsForStockIn();
+                    loadSuppliersForSelect();
+                } else if (tab === 'stockOpname') {
+                    loadProductsForStockOpname();
+                } else if (tab === 'stockHistory') {
+                    loadStockHistory();
+                }
+            });
+
             // Report, History, Receipt actions
             $('#generateReportBtn').click(generateReport);
             $('#historySearchInput').on('input', function() { loadTransactionHistory($(this).val()); });
@@ -2733,6 +2747,15 @@
             loadProductsForStockIn();
         }
 
+        function loadProductsForStockIn() {
+            const $select = $('#stockInProduct').empty();
+            // Sort products alphabetically for easier selection
+            const sortedProducts = [...products].sort((a, b) => a.name.localeCompare(b.name));
+            sortedProducts.forEach(p => {
+                $select.append(`<option value="${p.id}">${p.name} (Stok: ${p.stock})</option>`);
+            });
+        }
+
         function loadProductsForStockOpname(searchTerm = '') {
             $('#stockOpnameSummary').hide().empty();
             $('#printStockReportBtn, #downloadStockReportBtn').hide();
@@ -2855,6 +2878,15 @@
                         </div>
                     </div>
                 `);
+            });
+        }
+        
+        function loadSuppliersForSelect() {
+            const $select = $('#stockInSupplier');
+            // Clear existing suppliers but keep the default option
+            $select.find('option:not(:first)').remove();
+            suppliers.forEach(s => {
+                $select.append(`<option value="${s.id}">${s.name}</option>`);
             });
         }
 
@@ -3089,24 +3121,6 @@
                 `<div class="summary-row total-row"><span>Total:</span><span>${formatCurrency(currentOrder.total)}</span></div>`;
             $('#orderSummary').html(summaryHTML);
         }
-function updateOrderSummary() {
-            let discountText = '', taxText = '';
-            if (currentOrder.discount > 0) {
-                const percent = currentOrder.memberId ? (settings.memberDiscountPercent ?? 0) : (settings.nonMemberDiscountPercent ?? 0);
-                discountText = `Diskon (${percent}%):`;
-            }
-            if (currentOrder.tax > 0) {
-                taxText = `Pajak (${settings.taxPercent || 0}%):`;
-            }
-            const summaryHTML = currentOrder.items.map(item => `<div class="summary-row"><span>${item.product.name} (${item.quantity}x)</span><span>${formatCurrency(item.product.price * item.quantity)}</span></div>`).join('') +
-                `<div class="summary-row" style="border-top: 1px dashed #ddd; margin-top: 8px; padding-top: 8px;"><span>Subtotal:</span><span>${formatCurrency(currentOrder.subtotal)}</span></div>` +
-                (currentOrder.discount > 0 ? `<div class="summary-row"><span>${discountText}</span><span>-${formatCurrency(currentOrder.discount)}</span></div>` : '') +
-                (currentOrder.tax > 0 ? `<div class="summary-row"><span>${taxText}</span><span>${formatCurrency(currentOrder.tax)}</span></div>` : '') +
-                (currentOrder.donation > 0 ? `<div class="summary-row"><span>Donasi LAZISNU:</span><span>${formatCurrency(currentOrder.donation)}</span></div>` : '') +
-                `<div class="summary-row total-row"><span>Total:</span><span>${formatCurrency(currentOrder.total)}</span></div>`;
-            $('#orderSummary').html(summaryHTML);
-        }
-
         function updatePaymentTab() {
             $('#paymentTotal').text(formatCurrency(currentOrder.total));
             $('#paymentAmount').val('').trigger('input');
@@ -3259,81 +3273,79 @@ function updateOrderSummary() {
                 $('#reportResults').html(reportHTML);
             } else {
                  const filteredDonations = orders.filter(o => (o.donation || 0) > 0 && moment(o.date).isBetween(startDate, endDate));
-                 const totalDonations = filteredDonations.reduce((sum, o) => sum + o.donation, 0);
-                 let reportHTML = `
+                 const filteredDonations = orders.filter(o => (o.donation || 0) > 0 && moment(o.date).isBetween(startDate, endDate, null, '[]'));
+                const totalDonations = filteredDonations.reduce((sum, o) => sum + o.donation, 0);
+                
+                let reportHTML = `
                     <h4>Laporan Donasi LAZISNU (${startDate.format('D MMM YYYY')} - ${endDate.format('D MMM YYYY')})</h4>
                     <div class="summary-container">
-                        <div class="summary-row total-row"><span>Total Donasi Terkumpul:</span> <strong>${formatCurrency(totalDonations)}</strong></div>
+                        <div class="summary-row"><span>Total Donasi Terkumpul:</span> <strong>${formatCurrency(totalDonations)}</strong></div>
+                        <div class="summary-row"><span>Jumlah Transaksi Donasi:</span> <strong>${filteredDonations.length}</strong></div>
                     </div>
-                    <h5 class="mt-3">Rincian Donasi</h5>
-                    <table class="data-table"><thead><tr><th>Tanggal</th><th>Kode Transaksi</th><th>Jumlah</th></tr></thead><tbody>
-                    ${filteredDonations.map(o => `<tr><td>${moment(o.date).format('DD/MM/YY HH:mm')}</td><td>${o.id}</td><td>${formatCurrency(o.donation)}</td></tr>`).join('') || '<tr><td colspan="3">Tidak ada data</td></tr>'}
+                    <h5 class="mt-3">Rincian Transaksi Donasi</h5>
+                    <table class="data-table"><thead><tr><th>Tanggal</th><th>Kode Transaksi</th><th>Nama Pelanggan</th><th>Jumlah Donasi</th></tr></thead><tbody>
+                    ${filteredDonations.map(o => `<tr><td>${moment(o.date).format('DD/MM/YY')}</td><td>${o.id}</td><td>${o.customerName}</td><td>${formatCurrency(o.donation)}</td></tr>`).join('') || '<tr><td colspan="4">Tidak ada data donasi</td></tr>'}
                     </tbody></table>`;
                 $('#donationReportResults').html(reportHTML);
             }
         }
-        
+
         function openHistoryModal() {
             loadTransactionHistory();
-            $('#historyModal').css('display', 'flex');
+            $('#historyModal').css('display', 'flex').find('#historySearchInput').focus();
         }
-        
+
         function loadTransactionHistory(searchTerm = '') {
             const $results = $('#historyResults').empty();
             const lowerSearchTerm = searchTerm.toLowerCase();
             const filtered = orders.filter(o => !searchTerm || o.id.toLowerCase().includes(lowerSearchTerm));
+            if (filtered.length === 0) return $results.html('<div class="empty-state"><i class="fas fa-history"></i><p>Belum ada riwayat transaksi</p></div>');
             
-            if (filtered.length === 0) return $results.html('<div class="empty-state"><p>Tidak ada histori transaksi.</p></div>');
-            
-            filtered.slice(0, 100).forEach(order => {
-                 $results.append(`
-                    <div class="order-item">
+            filtered.slice(0, 100).forEach(o => {
+                const member = members.find(m => m.id === o.memberId);
+                $results.append(`
+                    <div class="order-item" style="padding: 12px; border: 1px solid #eee; border-radius: var(--rounded-sm); margin-bottom: 8px;">
                         <div class="order-item-info">
-                            <div class="order-item-name">${order.id} <span style="font-weight:400; font-size: 0.8rem;">(${order.customerName})</span></div>
-                            <div class="order-item-price">${moment(order.date).format('DD MMM YYYY, HH:mm')}</div>
+                            <div class="order-item-name">${o.id}</div>
+                            <div class="order-item-price">${moment(o.date).format('DD MMMM YYYY, HH:mm')}</div>
+                            <div class="order-item-price">Pelanggan: ${o.customerName} ${member ? '(Member)' : ''}</div>
+                            <div class="order-item-price">Total: <strong>${formatCurrency(o.total)}</strong></div>
                         </div>
-                        <div class="d-flex align-center gap-2">
-                             <strong>${formatCurrency(order.total)}</strong>
-                             <button class="btn btn-sm btn-info reprint-receipt" data-id="${order.id}"><i class="fas fa-print"></i></button>
-                        </div>
+                        <button class="btn btn-sm reprint-receipt" data-id="${o.id}"><i class="fas fa-print"></i> Cetak Ulang</button>
                     </div>`);
             });
-        }
-        
-        function showReceiptModal(order) {
-            $('#receiptModalBody').html(generateReceiptHTML(order));
-            $('#receiptModal').css('display', 'flex');
         }
 
         // --- MEMBER MANAGEMENT ---
         function openManageMembersModal() {
-            loadMembersForManagement();
+            resetMemberForm();
             $('#memberFormContainer').hide();
-            $('#manageMembersModal').css('display', 'flex');
+            loadMembers();
+            $('#manageMembersModal').css('display', 'flex').find('#manageMemberSearchInput').on('input', function() { loadMembers($(this).val()) });
         }
         
-        function loadMembersForManagement(searchTerm = '') {
+        function loadMembers(searchTerm = '') {
             const $list = $('#membersList').empty();
             const lowerSearchTerm = searchTerm.toLowerCase();
             const filtered = members.filter(m => !searchTerm || m.name.toLowerCase().includes(lowerSearchTerm) || m.id.toLowerCase().includes(lowerSearchTerm) || m.phone.includes(lowerSearchTerm));
-
-            if (filtered.length === 0) return $list.html('<div class="empty-state"><i class="fas fa-users"></i><p>Belum ada member terdaftar.</p></div>');
+            
+            if (filtered.length === 0) return $list.html('<div class="empty-state"><p>Tidak ada member</p></div>');
             
             filtered.forEach(m => {
-                 $list.append(`
+                $list.append(`
                     <div class="order-item">
                         <div class="order-item-info">
-                            <div class="order-item-name">${m.name} <small>(${m.id})</small></div>
-                            <div class="order-item-price">${m.phone} | Total Belanja: ${formatCurrency(m.totalSpent || 0)}</div>
+                            <div class="order-item-name">${m.name}<span class="member-badge">${m.id}</span></div>
+                            <div class="order-item-price">${m.phone} | <a href="#" class="whatsapp-link" onclick="window.open('https://wa.me/${m.phone}')">Kirim WA</a></div>
                         </div>
                         <div class="order-item-qty gap-2">
-                             <i class="fas fa-id-card kta-member" style="cursor:pointer; color: var(--success);" data-id="${m.id}" title="Lihat KTA"></i>
-                             <i class="fas fa-edit edit-member" style="cursor:pointer; color: var(--info);" data-id="${m.id}" title="Edit"></i>
+                            <i class="fas fa-id-card kta-member" style="cursor:pointer; color: var(--success);" data-id="${m.id}" title="Lihat KTA"></i>
+                            <i class="fas fa-edit edit-member" style="cursor:pointer; color: var(--info);" data-id="${m.id}" title="Edit"></i>
                         </div>
                     </div>`);
             });
         }
-        
+
         function resetMemberForm() {
             $('#memberForm')[0].reset();
             $('#memberIdInput').val('');
@@ -3346,97 +3358,102 @@ function updateOrderSummary() {
             e.preventDefault();
             const id = $('#memberIdInput').val();
             const name = $('#memberName').val().trim();
-            const phone = $('#memberPhone').val().trim();
+            const phone = $('#memberPhone').val().trim().replace(/\D/g, ''); // Hapus karakter non-digit
             const address = $('#memberAddress').val().trim();
+            
             if (!name || !phone) return showToast('Nama dan nomor telepon wajib diisi', 'error');
 
             if (id) {
                 const index = members.findIndex(m => m.id === id);
-                if (index > -1) {
-                    members[index] = { ...members[index], name, phone, address };
-                    showToast('Data member berhasil diperbarui', 'success');
-                }
+                if (index > -1) members[index] = { ...members[index], name, phone, address };
             } else {
-                const newMember = {
-                    id: 'M' + moment().format('YYMMDDHHmmss'),
-                    name, phone, address,
-                    joinDate: new Date().toISOString(),
-                    transactions: 0,
-                    totalSpent: 0
-                };
-                members.unshift(newMember);
-                showToast('Member baru berhasil ditambahkan', 'success');
+                members.unshift({ id: 'M' + moment().format('YYMMDDHHmmss'), name, phone, address, joinDate: new Date(), transactions: 0, totalSpent: 0 });
             }
             saveMembers();
-            loadMembersForManagement();
-            $('#memberFormContainer').slideUp();
+            loadMembers();
+            $('#memberFormContainer').slideUp(resetMemberForm);
+            showToast(`Member berhasil ${id ? 'diperbarui' : 'disimpan'}`, 'success');
         }
-        
+
         function editMember(id) {
             const member = members.find(m => m.id === id);
             if (!member) return;
             resetMemberForm();
-            $('#memberFormTitle').text('Edit Data Member');
+            $('#memberFormTitle').text('Edit Member');
             $('#memberIdInput').val(member.id);
             $('#memberName').val(member.name);
             $('#memberPhone').val(member.phone);
-            $('#memberAddress').val(member.address || '');
+            $('#memberAddress').val(member.address);
             
-            if(checkPermission('canAccessControlPanel')){
-                $('#memberAdminFields').show();
-                $('#memberTransactions').val(member.transactions || 0);
-                $('#memberTotalSpent').val(formatCurrency(member.totalSpent || 0));
+            if(checkPermission('canDeleteMember')) {
+                $('#deleteMemberBtn').data('id', id).show();
             }
             
-            $('#deleteMemberBtn').data('id', id).show();
+            $('#memberTransactions').val(member.transactions || 0);
+            $('#memberTotalSpent').val(formatCurrency(member.totalSpent || 0));
+            $('#memberAdminFields').show();
+            
             $('#memberFormContainer').slideDown().find('#memberName').focus();
         }
-
+        
         function deleteMember(id) {
-            showConfirmation('Hapus Member', 'Yakin ingin menghapus member ini? Tindakan ini tidak dapat dibatalkan.', () => {
-                members = members.filter(m => m.id !== id);
-                saveMembers();
-                loadMembersForManagement();
-                $('#memberFormContainer').slideUp();
-                showToast('Member berhasil dihapus', 'success');
-            }, 'danger');
+             if (!checkPermission('canDeleteMember')) return;
+             promptForPassword('panel', () => {
+                showConfirmation('Hapus Member', 'Yakin ingin menghapus member ini? Tindakan ini tidak dapat dibatalkan.', () => {
+                    members = members.filter(m => m.id !== id);
+                    saveMembers();
+                    loadMembers();
+                    $('#memberFormContainer').slideUp(resetMemberForm);
+                    showToast('Member berhasil dihapus', 'success');
+                }, 'danger');
+             });
         }
-
+        
         function openKtaModal(memberId) {
             const member = members.find(m => m.id === memberId);
             if (!member) return;
-
-            $('#ktaStoreName').text(settings.storeName);
-            $('#ktaStoreContact').text(`${settings.storeAddress}, ${settings.storePhone}`);
+            
+            $('#ktaStoreName').text(settings.storeName || 'SUPERMARKET');
+            $('#ktaStoreContact').text(`${settings.storeAddress || ''} | ${settings.storePhone || ''}`);
             $('#ktaMemberName').text(member.name);
             $('#ktaMemberId').text(`ID: ${member.id}`);
-
-            const $qrcodeContainer = $('#ktaQrcodeImg').empty();
-            new QRCode($qrcodeContainer[0], {
+            
+            const qrcodeContainer = document.getElementById('ktaQrcodeImg');
+            qrcodeContainer.innerHTML = '';
+            new QRCode(qrcodeContainer, {
                 text: JSON.stringify({ memberId: member.id, name: member.name }),
                 width: 150,
                 height: 150,
-                colorDark: "#000000",
-                colorLight: "#ffffff",
-                correctLevel: QRCode.CorrectLevel.H
+                colorDark : "#000000",
+                colorLight : "#ffffff",
+                correctLevel : QRCode.CorrectLevel.H
             });
-            $('#ktaModal').data('member-id', memberId).css('display', 'flex');
+            
+            $('#ktaModalBody').data('member-id', member.id);
+            $('#ktaModal').css('display', 'flex');
         }
 
         function downloadKtaAsPdf() {
-             const element = document.getElementById('ktaCard');
-             const memberId = $('#ktaModal').data('member-id');
-             const filename = `KTA_${memberId}.pdf`;
-             showToast('Mengunduh PDF...', 'info');
-             html2canvas(element, { scale: 3, useCORS: true }).then(canvas => {
+            const memberId = $('#ktaModalBody').data('member-id');
+            const member = members.find(m => m.id === memberId);
+            if(!member) return;
+            
+            const element = document.getElementById('ktaCard');
+            const filename = `KTA_${member.name.replace(/\s/g, '_')}_${member.id}.pdf`;
+            showToast('Mengunduh PDF...', 'info');
+
+            html2canvas(element, { scale: 3, useCORS: true, backgroundColor: null }).then(canvas => {
                 const imgData = canvas.toDataURL('image/png');
-                const pdf = new jsPDF({ orientation: 'portrait', unit: 'px', format: [$(element).width(), $(element).height()] });
-                pdf.addImage(imgData, 'PNG', 0, 0, $(element).width(), $(element).height());
+                const pdf = new jsPDF({
+                    orientation: 'portrait',
+                    unit: 'px',
+                    format: [canvas.width, canvas.height]
+                });
+                pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
                 pdf.save(filename);
             }).catch(err => { showToast('Gagal mengunduh PDF', 'error'); console.error(err); });
         }
-
-
+        
         // --- STORE INFO & SETTINGS ---
         function openManageStoreInfoModal() {
             $('#storeName').val(settings.storeName);
@@ -3445,365 +3462,286 @@ function updateOrderSummary() {
             $('#storeEmail').val(settings.storeEmail);
             $('#manageStoreInfoModal').css('display', 'flex');
         }
-        
-        function updateStoreInfo() {
-            $('#storeNameHeader').text(settings.storeName || 'SUPERMARKET');
-            document.title = (settings.storeName || 'SUPERMARKET') + ' KASIR';
-        }
 
         function saveStoreInfo() {
-            settings.storeName = $('#storeName').val();
-            settings.storeAddress = $('#storeAddress').val();
-            settings.storePhone = $('#storePhone').val();
-            settings.storeEmail = $('#storeEmail').val();
+            settings.storeName = $('#storeName').val().trim();
+            settings.storeAddress = $('#storeAddress').val().trim();
+            settings.storePhone = $('#storePhone').val().trim();
+            settings.storeEmail = $('#storeEmail').val().trim();
             saveSettings();
             updateStoreInfo();
             $('#manageStoreInfoModal').hide();
-            showToast('Informasi toko berhasil diperbarui', 'success');
+            showToast('Info toko berhasil diperbarui', 'success');
         }
         
+        function updateStoreInfo() {
+            $('#storeNameHeader').text(settings.storeName);
+            document.title = `${settings.storeName} - APLIKASI KASIR`;
+        }
+
         function openControlPanel() {
             promptForPassword('panel', () => {
-                switchModalTab($('#controlPanelModal'), 'users');
-                loadUsersForManagement();
+                resetUserForm();
                 $('#userFormContainer').hide();
-                $('#itemSecurityCode, #panelSecurityCode, #currentPassword, #newPassword').val('');
+                loadUsers();
+                
+                $('#itemSecurityCode').val('');
+                $('#panelSecurityCode').val('');
                 $('#memberDiscount').val(settings.memberDiscountPercent || 0);
                 $('#nonMemberDiscount').val(settings.nonMemberDiscountPercent || 0);
                 $('#taxPercent').val(settings.taxPercent || 0);
+                $('#changeOwnPasswordForm')[0].reset();
+                
+                switchModalTab($('#controlPanelModal'), 'users');
                 $('#controlPanelModal').css('display', 'flex');
             });
         }
         
-        // --- USER MANAGEMENT ---
-        function loadUsersForManagement() {
+        // --- USER & ROLE MANAGEMENT ---
+        function loadUsers() {
             const $list = $('#usersList').empty();
             users.forEach(u => {
-                const roleLabel = settings.roles[u.role]?.label || u.role;
-                const isDefaultAdmin = u.username === 'Admin';
-                $list.append(`
+                 const roleLabel = settings.roles[u.role]?.label || u.role;
+                 $list.append(`
                     <div class="order-item">
                         <div class="order-item-info">
-                            <div class="order-item-name">${u.name} <span class="member-badge">${roleLabel}</span></div>
+                            <div class="order-item-name">${u.name} <span class="product-category">${roleLabel}</span></div>
                             <div class="order-item-price">Username: ${u.username}</div>
                         </div>
                         <div class="order-item-qty gap-2">
-                             <i class="fas fa-edit edit-user" style="cursor:pointer; color: var(--info);" data-id="${u.id}"></i>
-                             ${!isDefaultAdmin ? `<i class="fas fa-trash delete-user" style="cursor:pointer; color: var(--danger);" data-id="${u.id}"></i>` : ''}
+                            ${u.username.toLowerCase() !== 'admin' ? `
+                            <i class="fas fa-edit edit-user" style="cursor:pointer; color: var(--info);" data-id="${u.id}"></i>
+                            <i class="fas fa-trash delete-user" style="cursor:pointer; color: var(--danger);" data-id="${u.id}"></i>` : ''}
                         </div>
                     </div>`);
             });
         }
-
+        
         function resetUserForm() {
             $('#userForm')[0].reset();
             $('#userIdInput').val('');
-            $('#userFormTitle').text('Tambah Pengguna');
-            $('#userUsername').prop('disabled', false);
+            $('#userFormTitle').text('Tambah Pengguna Baru');
         }
-
+        
         function saveUser(e) {
             e.preventDefault();
-            const id = $('#userIdInput').val();
-            const name = $('#userName').val().trim(), username = $('#userUsername').val().trim(),
-                  password = $('#userPassword').val(), role = $('#userRole').val();
-            if(!name || !username || !role) return showToast('Semua field wajib diisi (kecuali password).', 'error');
-
+            const id = $('#userIdInput').val(), name = $('#userName').val().trim(),
+                  username = $('#userUsername').val().trim(), password = $('#userPassword').val(),
+                  role = $('#userRole').val();
+            
+            if (!name || !username || (!id && !password)) return showToast('Nama, username, dan password wajib diisi untuk pengguna baru', 'error');
+            if (users.some(u => u.username.toLowerCase() === username.toLowerCase() && u.id !== id)) return showToast('Username sudah digunakan', 'error');
+            
             if (id) {
                 const index = users.findIndex(u => u.id === id);
-                if(index > -1){
-                    users[index] = {...users[index], name, role};
-                    if(password) users[index].password = CryptoJS.SHA256(password).toString();
+                if (index > -1) {
+                    users[index] = { ...users[index], name, username, role };
+                    if (password) users[index].password = CryptoJS.SHA256(password).toString();
                 }
             } else {
-                if(!password) return showToast('Password wajib diisi untuk pengguna baru.', 'error');
-                if(users.some(u => u.username.toLowerCase() === username.toLowerCase())) return showToast('Username sudah digunakan.', 'error');
                 users.push({ id: 'U' + moment().format('x'), name, username, password: CryptoJS.SHA256(password).toString(), role });
             }
             saveUsers();
-            loadUsersForManagement();
-            $('#userFormContainer').slideUp();
-            showToast(`Pengguna berhasil ${id ? 'diperbarui' : 'disimpan'}.`, 'success');
+            loadUsers();
+            $('#userFormContainer').slideUp(resetUserForm);
+            showToast(`Pengguna berhasil ${id ? 'diperbarui' : 'disimpan'}`, 'success');
         }
 
         function editUser(id) {
             const user = users.find(u => u.id === id);
-            if(!user) return;
+            if (!user) return;
             resetUserForm();
             $('#userFormTitle').text('Edit Pengguna');
             $('#userIdInput').val(user.id);
             $('#userName').val(user.name);
-            $('#userUsername').val(user.username).prop('disabled', true);
+            $('#userUsername').val(user.username);
             $('#userRole').val(user.role);
-            $('#userFormContainer').slideDown();
+            $('#userFormContainer').slideDown().find('#userName').focus();
         }
 
         function deleteUser(id) {
-            if (currentUser.id === id) return showToast('Anda tidak dapat menghapus diri sendiri.', 'error');
             showConfirmation('Hapus Pengguna', 'Yakin ingin menghapus pengguna ini?', () => {
                 users = users.filter(u => u.id !== id);
                 saveUsers();
-                loadUsersForManagement();
-                showToast('Pengguna berhasil dihapus.', 'success');
-            }, 'danger');
+                loadUsers();
+                showToast('Pengguna berhasil dihapus', 'success');
+            });
         }
         
         function changeSecurityCode(e) {
             e.preventDefault();
             const formId = $(this).attr('id');
             const newPassword = (formId === 'itemSecurityForm') ? $('#itemSecurityCode').val() : $('#panelSecurityCode').val();
-            const key = (formId === 'itemSecurityForm') ? 'itemSecurityCode' : 'panelSecurityCode';
             
-            settings[key] = CryptoJS.SHA256(newPassword).toString();
+            if (newPassword.length < 4) return showToast('Password keamanan minimal 4 karakter', 'warning');
+            
+            if (formId === 'itemSecurityForm') settings.itemSecurityCode = CryptoJS.SHA256(newPassword).toString();
+            else settings.panelSecurityCode = CryptoJS.SHA256(newPassword).toString();
+            
             saveSettings();
             $(this).find('input').val('');
-            showToast('Password keamanan berhasil diubah.', 'success');
-        }
-
-        function changeOwnPassword(e) {
-            e.preventDefault();
-            const currentPass = $('#currentPassword').val();
-            const newPass = $('#newPassword').val();
-            
-            if (CryptoJS.SHA256(currentPass).toString() !== currentUser.password) {
-                return showToast('Password saat ini salah.', 'error');
-            }
-            
-            const userIndex = users.findIndex(u => u.id === currentUser.id);
-            if (userIndex > -1) {
-                users[userIndex].password = CryptoJS.SHA256(newPass).toString();
-                currentUser.password = users[userIndex].password;
-                saveUsers();
-                localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(currentUser));
-                showToast('Password login Anda berhasil diubah.', 'success');
-                $('#changeOwnPasswordForm')[0].reset();
-            }
+            showToast('Password keamanan berhasil diubah', 'success');
         }
         
+        function changeOwnPassword(e) {
+             e.preventDefault();
+             const currentPass = $('#currentPassword').val();
+             const newPass = $('#newPassword').val();
+             
+             if (CryptoJS.SHA256(currentPass).toString() !== currentUser.password) return showToast('Password saat ini salah', 'error');
+             if (newPass.length < 6) return showToast('Password baru minimal 6 karakter', 'warning');
+             
+             currentUser.password = CryptoJS.SHA256(newPass).toString();
+             const userIndex = users.findIndex(u => u.id === currentUser.id);
+             if (userIndex > -1) users[userIndex].password = currentUser.password;
+             
+             saveUsers();
+             localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(currentUser));
+             showToast('Password Anda berhasil diubah', 'success');
+             $('#changeOwnPasswordForm')[0].reset();
+        }
+
         function saveTaxDiscountSettings(e) {
             e.preventDefault();
             settings.memberDiscountPercent = parseFloat($('#memberDiscount').val()) || 0;
             settings.nonMemberDiscountPercent = parseFloat($('#nonMemberDiscount').val()) || 0;
             settings.taxPercent = parseFloat($('#taxPercent').val()) || 0;
             saveSettings();
-            showToast('Pengaturan diskon & pajak berhasil disimpan.', 'success');
+            showToast('Pengaturan diskon & pajak berhasil disimpan', 'success');
         }
         
-        // --- ROLE MANAGEMENT & PERMISSIONS ---
-        function getAllPermissions(isAllowed = false) {
-            return {
-                canAddProduct: isAllowed, canEditProduct: isAllowed, canDeleteProduct: isAllowed,
-                canManageCategories: isAllowed, canManageStock: isAllowed, canManageSuppliers: isAllowed,
-                canProcessReturn: isAllowed, canViewReports: isAllowed, canViewHistory: isAllowed,
-                canManageMembers: isAllowed, canManageStoreInfo: isAllowed, canAccessControlPanel: isAllowed,
-                canBackupRestore: isAllowed, canResetData: isAllowed
-            };
-        }
-        
-        function checkPermission(permissionKey) {
-            if (!currentUser || !currentUser.role) return false;
-            // Admin always has all permissions
-            if (currentUser.role === 'admin') return true;
-            return settings.roles[currentUser.role]?.permissions?.[permissionKey] || false;
-        }
-
+        // --- PERMISSION SYSTEM ---
         function openRoleManagementModal() {
+            loadRolesAndPermissions();
+            $('#roleManagementModal').css('display', 'flex');
+        }
+        
+        function loadRolesAndPermissions() {
             const $tabs = $('#roleTabsContainer').empty();
-            Object.entries(settings.roles).forEach(([key, value]) => {
-                $tabs.append(`<div class="tab" data-role="${key}">${value.label}</div>`);
+            const $permissions = $('#rolePermissionsContainer').empty();
+
+            Object.entries(settings.roles).forEach(([roleId, roleData], index) => {
+                const activeClass = index === 0 ? 'active' : '';
+                $tabs.append(`<div class="tab ${activeClass}" data-role="${roleId}">${roleData.label}</div>`);
             });
-            
-            $tabs.find('.tab').first().addClass('active');
-            loadPermissionsForRole($tabs.find('.tab').first().data('role'));
+
+            const renderPermissions = (roleId) => {
+                const roleData = settings.roles[roleId];
+                const permissions = roleData.permissions;
+                const isEditable = roleData.isEditable;
+                
+                const permissionGroups = {
+                    'Transaksi': { canProcessReturn: 'Proses Retur Barang' },
+                    'Manajemen Produk': { canAddProduct: 'Tambah Produk', canEditProduct: 'Edit Produk', canDeleteProduct: 'Hapus Produk', canManageCategories: 'Kelola Kategori', canManageStock: 'Manajemen Stok' },
+                    'Manajemen Lainnya': { canManageMembers: 'Kelola Member', canManageSuppliers: 'Kelola Suplier' },
+                    'Laporan & Histori': { canViewReports: 'Lihat Laporan', canViewHistory: 'Lihat Histori Transaksi' },
+                    'Pengaturan Sistem': { canManageStoreInfo: 'Ubah Info Toko', canAccessControlPanel: 'Akses Kontrol Panel (Pengguna & Keamanan)', canBackupRestore: 'Backup & Restore Data', canResetData: 'Reset Semua Data' }
+                };
+                
+                let html = '';
+                for (const groupName in permissionGroups) {
+                    html += `<div class="permission-group"><div class="permission-group-title">${groupName}</div>`;
+                    for (const permKey in permissionGroups[groupName]) {
+                        html += `<label class="permission-item">
+                                    <input type="checkbox" data-permission="${permKey}" ${permissions[permKey] ? 'checked' : ''} ${!isEditable ? 'disabled' : ''}>
+                                    ${permissionGroups[groupName][permKey]}
+                                 </label>`;
+                    }
+                    html += `</div>`;
+                }
+                $permissions.html(html);
+            };
 
             $tabs.find('.tab').click(function() {
                 $tabs.find('.tab').removeClass('active');
                 $(this).addClass('active');
-                loadPermissionsForRole($(this).data('role'));
+                renderPermissions($(this).data('role'));
             });
             
-            $('#roleManagementModal').css('display', 'flex');
+            $tabs.find('.tab:first').trigger('click');
         }
-        
-        function loadPermissionsForRole(roleKey) {
-            const role = settings.roles[roleKey];
-            const $container = $('#rolePermissionsContainer').empty();
-            if (!role) return;
 
-            const isEditable = role.isEditable;
-            $('#saveRolePermissionsBtn').toggle(isEditable);
-            
-            const permissionLabels = {
-                productManagement: {
-                    label: "Manajemen Produk",
-                    permissions: { canAddProduct: "Tambah Produk", canEditProduct: "Edit Produk", canDeleteProduct: "Hapus Produk", canManageCategories: "Kelola Kategori" }
-                },
-                inventoryManagement: {
-                    label: "Manajemen Inventaris",
-                    permissions: { canManageStock: "Manajemen Stok", canManageSuppliers: "Kelola Suplier", canProcessReturn: "Proses Retur" }
-                },
-                reporting: {
-                    label: "Laporan & Histori",
-                    permissions: { canViewReports: "Lihat Laporan", canViewHistory: "Lihat Histori Transaksi" }
-                },
-                customerManagement: {
-                    label: "Manajemen Pelanggan",
-                    permissions: { canManageMembers: "Kelola Member" }
-                },
-                storeManagement: {
-                    label: "Manajemen Toko",
-                    permissions: { canManageStoreInfo: "Kelola Info Toko", canAccessControlPanel: "Akses Kontrol Panel (Pengguna & Pengaturan)" }
-                },
-                dataManagement: {
-                    label: "Manajemen Data (Berisiko Tinggi)",
-                    permissions: { canBackupRestore: "Backup & Restore Data", canResetData: "Reset Semua Data" }
-                },
-            };
-
-            for(const group in permissionLabels){
-                let groupHTML = `<div class="permission-group"><div class="permission-group-title">${permissionLabels[group].label}</div>`;
-                for(const pKey in permissionLabels[group].permissions){
-                    const pLabel = permissionLabels[group].permissions[pKey];
-                    const isChecked = role.permissions[pKey] ? 'checked' : '';
-                    const isDisabled = !isEditable ? 'disabled' : '';
-                    groupHTML += `<div class="permission-item"><label class="form-check"><input type="checkbox" data-permission="${pKey}" ${isChecked} ${isDisabled}> ${pLabel}</label></div>`;
-                }
-                groupHTML += `</div>`;
-                $container.append(groupHTML);
-            }
-        }
-        
         function saveRolePermissions() {
-            const roleKey = $('#roleTabsContainer .tab.active').data('role');
-            if (!settings.roles[roleKey] || !settings.roles[roleKey].isEditable) return;
-
-            $('#rolePermissionsContainer input[type="checkbox"]').each(function() {
-                const pKey = $(this).data('permission');
-                settings.roles[roleKey].permissions[pKey] = $(this).is(':checked');
-            });
-
-            saveSettings();
-            showToast(`Hak akses untuk role ${settings.roles[roleKey].label} berhasil disimpan.`, 'success');
-            configureUIAccess(); // Re-check UI access for current user if their role was changed
+            const activeRole = $('#roleTabsContainer .tab.active').data('role');
+            if (settings.roles[activeRole] && settings.roles[activeRole].isEditable) {
+                $('#rolePermissionsContainer input[type="checkbox"]').each(function() {
+                    const permissionKey = $(this).data('permission');
+                    settings.roles[activeRole].permissions[permissionKey] = $(this).is(':checked');
+                });
+                saveSettings();
+                showToast(`Hak akses untuk ${settings.roles[activeRole].label} berhasil disimpan`, 'success');
+            }
+        }
+        
+        function getAllPermissions(isAllowed) {
+            return { canAddProduct: isAllowed, canEditProduct: isAllowed, canDeleteProduct: isAllowed, canManageCategories: isAllowed, canManageStock: isAllowed, canManageMembers: isAllowed, canManageSuppliers: isAllowed, canProcessReturn: isAllowed, canViewReports: isAllowed, canViewHistory: isAllowed, canManageStoreInfo: isAllowed, canAccessControlPanel: isAllowed, canBackupRestore: isAllowed, canResetData: isAllowed, canDeleteMember: isAllowed };
+        }
+        
+        function checkPermission(permissionKey) {
+            if (!currentUser) return false;
+            if (currentUser.role === 'admin') return true;
+            return settings.roles[currentUser.role]?.permissions[permissionKey] || false;
         }
 
-        // --- BACKUP, RESTORE & DATA MANAGEMENT ---
+        // --- BACKUP, RESTORE, RESET ---
         function backupData() {
-            try {
-                const dataToBackup = {};
-                for (const key in STORAGE_KEYS) {
-                    dataToBackup[STORAGE_KEYS[key]] = JSON.parse(localStorage.getItem(STORAGE_KEYS[key]));
-                }
-                
-                const encryptedData = CryptoJS.AES.encrypt(JSON.stringify(dataToBackup), ENCRYPTION_KEY).toString();
-                const blob = new Blob([encryptedData], { type: 'application/octet-stream' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `backup-supermarket-${moment().format('YYYYMMDD')}.lksbackup`;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
-                showToast('Backup data berhasil diunduh', 'success');
-            } catch (e) {
-                showToast('Gagal melakukan backup data.', 'error');
-                console.error(e);
+            const data = {};
+            for (const key in STORAGE_KEYS) {
+                data[STORAGE_KEYS[key]] = JSON.parse(localStorage.getItem(STORAGE_KEYS[key]));
             }
+            const encryptedData = CryptoJS.AES.encrypt(JSON.stringify(data), ENCRYPTION_KEY).toString();
+            const blob = new Blob([encryptedData], { type: "application/json" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = `LKS_Supermarket_Backup_${moment().format('YYYY-MM-DD')}.lksbackup`;
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast('Backup data berhasil diunduh.', 'success');
         }
         
         function restoreFromFile(file) {
             if (!file) return;
             const reader = new FileReader();
             reader.onload = function(e) {
-                showConfirmation('Restore Data', 'Ini akan menimpa semua data saat ini. Lanjutkan?', () => {
-                    try {
-                        const decrypted = CryptoJS.AES.decrypt(e.target.result, ENCRYPTION_KEY).toString(CryptoJS.enc.Utf8);
-                        const restoredData = JSON.parse(decrypted);
-                        for (const key in restoredData) {
-                            if (Object.values(STORAGE_KEYS).includes(key)) {
-                                localStorage.setItem(key, JSON.stringify(restoredData[key]));
-                            }
+                try {
+                    const decrypted = CryptoJS.AES.decrypt(e.target.result, ENCRYPTION_KEY).toString(CryptoJS.enc.Utf8);
+                    if(!decrypted) throw new Error("Decryption failed");
+                    const data = JSON.parse(decrypted);
+                    showConfirmation('Restore Data', 'Data saat ini akan ditimpa. Lanjutkan?', () => {
+                        for (const key in data) {
+                            if (data[key]) localStorage.setItem(key, JSON.stringify(data[key]));
                         }
-                        showToast('Data berhasil dipulihkan. Aplikasi akan dimuat ulang.', 'success');
-                        setTimeout(() => window.location.reload(), 2000);
-                    } catch (err) {
-                        showToast('Gagal memulihkan data. File mungkin rusak atau kunci enkripsi salah.', 'error');
-                        console.error(err);
-                    }
-                });
+                        showToast('Data berhasil direstore. Aplikasi akan dimuat ulang.', 'success');
+                        setTimeout(() => location.reload(), 1500);
+                    }, 'warning');
+                } catch (error) {
+                    showToast('File backup tidak valid atau rusak.', 'error');
+                }
             };
             reader.readAsText(file);
         }
 
         function resetAllData() {
-             showConfirmation('RESET SEMUA DATA', 'ANDA YAKIN? Semua produk, transaksi, dan pengaturan akan hilang selamanya!', () => {
-                for (const key in STORAGE_KEYS) {
-                    localStorage.removeItem(STORAGE_KEYS[key]);
-                }
-                initializeData();
-                showToast('Semua data berhasil direset. Aplikasi akan dimuat ulang.', 'success');
-                setTimeout(() => window.location.reload(), 2000);
+             showConfirmation('RESET SEMUA DATA', 'ANDA YAKIN? SEMUA DATA PRODUK, TRANSAKSI, PENGGUNA, DLL AKAN HILANG PERMANEN!', () => {
+                Object.values(STORAGE_KEYS).forEach(key => localStorage.removeItem(key));
+                showToast('Semua data telah direset. Aplikasi akan dimuat ulang.', 'success');
+                setTimeout(() => location.reload(), 1500);
             }, 'danger');
         }
-
-        // --- UI & UTILITY HELPERS ---
-        function promptForPassword(type, callback) {
-            const requiredPassword = (type === 'item') ? settings.itemSecurityCode : settings.panelSecurityCode;
-            const $modal = $('#passwordPromptModal');
-            $modal.css('display', 'flex').find('#passwordPromptInput').val('').focus();
-
-            const handleSubmit = (e) => {
-                e.preventDefault();
-                const enteredPassword = $('#passwordPromptInput').val();
-                if (CryptoJS.SHA256(enteredPassword).toString() === requiredPassword) {
-                    $modal.hide();
-                    $('#passwordPromptForm').off('submit', handleSubmit); // Unbind to prevent multiple calls
-                    callback();
-                } else {
-                    showToast('Password keamanan salah', 'error');
-                }
-            };
-            
-            $('#passwordPromptForm').off('submit').on('submit', handleSubmit);
-        }
-
-        function showConfirmation(title, message, callback, type = 'success') {
-            const $modal = $('#confirmationModal');
-            $modal.find('#confirmTitle').text(title);
-            $modal.find('#confirmMessage').text(message);
-            $modal.find('#confirmAction').removeClass('btn-success btn-danger').addClass(`btn-${type}`);
-            
-            $modal.find('#confirmAction').off('click').on('click', () => {
-                $modal.hide();
-                callback();
-            });
-            
-            $modal.css('display', 'flex');
-        }
-
-        function switchModalTab($modal, tabId) {
-            $modal.find('.tabs .tab').removeClass('active');
-            $modal.find(`.tabs .tab[data-tab="${tabId}"]`).addClass('active');
-            $modal.find('.tab-content').removeClass('active');
-            $modal.find(`#${tabId}Tab, #${tabId}ReportTab, #${tabId}Recap`).addClass('active');
-        }
         
-        function updateCurrentDate() {
-            $('#currentDate').text(moment().format('dddd, D MMMM YYYY'));
-        }
-
+        // --- UI UTILITIES & HELPERS ---
         function formatCurrency(amount) {
             return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(amount);
         }
-        
+
         function showToast(message, type = 'info') {
             const $toast = $('#toast');
             $('#toast-message').text(message);
-            $toast.removeClass('success error warning info').addClass(type).addClass('show');
+            $toast.removeClass('success error warning').addClass(type).addClass('show');
             setTimeout(() => $toast.removeClass('show'), 3000);
         }
-
+        
         function setButtonLoading($btn, isLoading, originalText = '') {
             if (isLoading) {
                 $btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Memproses...');
@@ -3812,94 +3750,137 @@ function updateOrderSummary() {
             }
         }
         
+        function updateCurrentDate() {
+            $('#currentDate').text(moment().format('dddd, D MMMM YYYY'));
+        }
+        
+        function switchModalTab($modal, tabName) {
+            $modal.find('.tabs .tab').removeClass('active');
+            $modal.find(`.tabs .tab[data-tab="${tabName}"]`).addClass('active');
+            $modal.find('.tab-content').removeClass('active');
+            $modal.find(`#${tabName}Tab, #${tabName}ReportTab`).addClass('active');
+        }
+        
+        function showConfirmation(title, message, onConfirm, type = 'success') {
+            $('#confirmTitle').text(title);
+            $('#confirmMessage').text(message);
+            $('#confirmAction').removeClass('btn-success btn-danger').addClass(`btn-${type}`).off('click').on('click', () => {
+                $('#confirmationModal').hide();
+                onConfirm();
+            });
+            $('#confirmationModal').css('display', 'flex');
+        }
+
+        function promptForPassword(type, onCorrect) {
+            const correctHash = (type === 'item') ? settings.itemSecurityCode : settings.panelSecurityCode;
+            const $modal = $('#passwordPromptModal');
+            $modal.css('display', 'flex').find('#passwordPromptInput').val('').focus();
+            
+            $('#passwordPromptForm').off('submit').on('submit', function(e) {
+                e.preventDefault();
+                const inputPass = $('#passwordPromptInput').val();
+                if (CryptoJS.SHA256(inputPass).toString() === correctHash) {
+                    $modal.hide();
+                    onCorrect();
+                } else {
+                    showToast('Password keamanan salah.', 'error');
+                }
+            });
+        }
+        
         function generateCaptcha() {
-            const canvas = document.getElementById('captchaCanvas');
-            const ctx = canvas.getContext('2d');
             const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
             captchaText = '';
-            for (let i = 0; i < 6; i++) {
-                captchaText += chars.charAt(Math.floor(Math.random() * chars.length));
-            }
-
+            for (let i = 0; i < 5; i++) captchaText += chars.charAt(Math.floor(Math.random() * chars.length));
+            const canvas = document.getElementById('captchaCanvas');
+            const ctx = canvas.getContext('2d');
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.fillStyle = '#f0f2f5';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
-            
-            ctx.font = '24px Poppins';
-            ctx.fillStyle = '#333';
+            // Add noise lines
+            for(let i=0; i<5; i++) {
+                ctx.strokeStyle = `rgb(${Math.random()*200}, ${Math.random()*200}, ${Math.random()*200})`;
+                ctx.beginPath();
+                ctx.moveTo(Math.random()*canvas.width, Math.random()*canvas.height);
+                ctx.lineTo(Math.random()*canvas.width, Math.random()*canvas.height);
+                ctx.stroke();
+            }
+            ctx.font = 'bold 24px Poppins';
+            ctx.fillStyle = '#343a40';
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
             ctx.fillText(captchaText, canvas.width / 2, canvas.height / 2);
-            
-            for(let i=0; i<3; i++){
-                ctx.beginPath();
-                ctx.moveTo(Math.random() * canvas.width, Math.random() * canvas.height);
-                ctx.lineTo(Math.random() * canvas.width, Math.random() * canvas.height);
-                ctx.strokeStyle = '#aaa';
-                ctx.stroke();
-            }
-        }
-        
-        function printElement(selector) {
-            const printContents = $(selector).html();
-            const $printContainer = $('#print-container').html(printContents);
-            window.print();
         }
 
-        function downloadReceiptAsPdf() {
-             const element = document.getElementById('receiptContent');
-             const orderId = $(element).find('.receipt-info span').eq(3).text();
-             const filename = `struk_${orderId}.pdf`;
-             showToast('Mengunduh PDF...', 'info');
-             html2canvas(element, { scale: 3, useCORS: true }).then(canvas => {
-                const imgData = canvas.toDataURL('image/png');
-                const pdf = new jsPDF({ orientation: 'portrait', unit: 'px', format: [$(element).width(), $(element).height() * 1.1] });
-                pdf.addImage(imgData, 'PNG', 0, 0, $(element).width(), $(element).height());
-                pdf.save(filename);
-            }).catch(err => { showToast('Gagal mengunduh PDF', 'error'); });
+        function printElement(selector) {
+            const content = $(selector).html();
+            const $printContainer = $('#print-container');
+            $printContainer.html(content).show();
+            window.print();
+            $printContainer.hide().empty();
         }
-        
+
         function printStockReport() {
-            const activeTab = $('#stockManagementModal .tab.active').data('tab');
+            const activeTab = $('#stockManagementModal .tabs .tab.active').data('tab');
             if (activeTab === 'stockOpname') printElement('#stockOpnamePrintArea');
             else if (activeTab === 'stockHistory') printElement('#stockHistoryPrintArea');
         }
 
         function downloadStockReportAsPdf() {
-            const activeTab = $('#stockManagementModal .tab.active').data('tab');
+            const activeTab = $('#stockManagementModal .tabs .tab.active').data('tab');
             let elementId, filename;
-            if (activeTab === 'stockOpname') {
-                elementId = 'stockOpnamePrintArea';
-                filename = 'Laporan_Stok_Opname.pdf';
-            } else if (activeTab === 'stockHistory') {
-                elementId = 'stockHistoryPrintArea';
-                filename = 'Riwayat_Stok.pdf';
-            } else return;
+            if(activeTab === 'stockOpname') { elementId = 'stockOpnamePrintArea'; filename = 'Laporan_Stok_Opname.pdf'; }
+            else if (activeTab === 'stockHistory') { elementId = 'stockHistoryPrintArea'; filename = 'Riwayat_Stok.pdf'; }
+            else return;
             
             const element = document.getElementById(elementId);
             showToast('Mengunduh PDF...', 'info');
-             html2canvas(element, { scale: 2, useCORS: true }).then(canvas => {
+            html2canvas(element, { scale: 2 }).then(canvas => {
                 const imgData = canvas.toDataURL('image/png');
                 const pdf = new jsPDF('p', 'mm', 'a4');
-                const imgProps = pdf.getImageProperties(imgData);
                 const pdfWidth = pdf.internal.pageSize.getWidth();
-                const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+                const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
                 pdf.addImage(imgData, 'PNG', 10, 10, pdfWidth - 20, pdfHeight - (pdfHeight > 270 ? 20 : 0));
                 pdf.save(filename);
-            }).catch(err => { showToast('Gagal mengunduh PDF', 'error'); });
+            });
         }
         
-        // --- LOCAL STORAGE WRAPPERS ---
-        function saveProducts() { localStorage.setItem(STORAGE_KEYS.PRODUCTS, JSON.stringify(products)); }
-        function saveCategories() { localStorage.setItem(STORAGE_KEYS.CATEGORIES, JSON.stringify(categories)); }
-        function saveOrders() { localStorage.setItem(STORAGE_KEYS.ORDERS, JSON.stringify(orders)); }
-        function saveSettings() { localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(settings)); }
-        function saveUsers() { localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(users)); }
-        function saveMembers() { localStorage.setItem(STORAGE_KEYS.MEMBERS, JSON.stringify(members)); }
-        function saveSuppliers() { localStorage.setItem(STORAGE_KEYS.SUPPLIERS, JSON.stringify(suppliers)); }
-        function saveStockHistory() { localStorage.setItem(STORAGE_KEYS.STOCK_HISTORY, JSON.stringify(stockHistory)); }
-        function saveReturns() { localStorage.setItem(STORAGE_KEYS.RETURNS, JSON.stringify(returns)); }
-        function saveShifts() { localStorage.setItem(STORAGE_KEYS.SHIFTS, JSON.stringify(shifts)); }
+        function downloadReceiptAsPdf() {
+            const orderId = $('#receiptContent .receipt-info span:contains("No. Trx:")').next().text();
+            const element = document.getElementById('receiptContent');
+            const filename = `Struk_${orderId || moment().format('YYYYMMDD')}.pdf`;
+            showToast('Mengunduh PDF...', 'info');
+
+            html2canvas(element, { scale: 3 }).then(canvas => {
+                const imgData = canvas.toDataURL('image/png');
+                const pdf = new jsPDF({
+                    orientation: 'portrait',
+                    unit: 'px',
+                    format: [canvas.width + 20, canvas.height + 20]
+                });
+                pdf.addImage(imgData, 'PNG', 10, 10, canvas.width, canvas.height);
+                pdf.save(filename);
+            });
+        }
+        
+        function showReceiptModal(order) {
+            $('#receiptModalBody').html(generateReceiptHTML(order));
+            $('#receiptModal').css('display', 'flex');
+        }
+        
+        // --- DATA PERSISTENCE ---
+        function saveData(key, data) { localStorage.setItem(key, JSON.stringify(data)); }
+        function saveProducts() { saveData(STORAGE_KEYS.PRODUCTS, products); }
+        function saveCategories() { saveData(STORAGE_KEYS.CATEGORIES, categories); }
+        function saveOrders() { saveData(STORAGE_KEYS.ORDERS, orders); }
+        function saveSettings() { saveData(STORAGE_KEYS.SETTINGS, settings); }
+        function saveUsers() { saveData(STORAGE_KEYS.USERS, users); }
+        function saveMembers() { saveData(STORAGE_KEYS.MEMBERS, members); }
+        function saveSuppliers() { saveData(STORAGE_KEYS.SUPPLIERS, suppliers); }
+        function saveStockHistory() { saveData(STORAGE_KEYS.STOCK_HISTORY, stockHistory); }
+        function saveReturns() { saveData(STORAGE_KEYS.RETURNS, returns); }
+        function saveShifts() { saveData(STORAGE_KEYS.SHIFTS, shifts); }
+
     </script>
 </body>
 </html>
