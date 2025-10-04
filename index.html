@@ -475,8 +475,8 @@
                 e.preventDefault();
                 
                 if (validateForm()) {
-                    // Kirim data ke email dan WhatsApp
-                    sendData();
+                    // Kirim data ke WhatsApp
+                    sendWhatsApp();
                     
                     // Tampilkan notifikasi sukses
                     document.getElementById('overlay').style.display = 'block';
@@ -484,72 +484,41 @@
                 }
             });
             
-            // Fungsi untuk mengirim data
-            function sendData() {
-                const formData = new FormData(form);
-                const data = {};
+            // Fungsi untuk mengirim data ke WhatsApp
+            function sendWhatsApp() {
+                // Ambil semua data dari form
+                const nama = document.getElementById('nama').value;
+                const nik = document.getElementById('nik').value;
+                const alamat = document.getElementById('alamat').value;
+                const whatsapp = document.getElementById('whatsapp').value;
+                const email = document.getElementById('email').value || 'Tidak diisi';
+                const namaUsaha = document.getElementById('nama_usaha').value;
+                const alamatUsaha = document.getElementById('alamat_usaha').value;
+                const kategoriUsaha = document.getElementById('kategori_usaha').value;
+                const idPermohonan = document.getElementById('id_permohonan').value;
+                const tanggalPendaftaran = document.getElementById('tanggal_pendaftaran').value;
                 
-                for (let [key, value] of formData.entries()) {
-                    data[key] = value;
-                }
-                
-                // Kirim ke email (simulasi)
-                sendEmail(data);
-                
-                // Kirim ke WhatsApp
-                sendWhatsApp(data);
-            }
-            
-            function sendEmail(data) {
-                // Simulasi pengiriman email
-                const emailBody = `
-                    Data Pendaftaran Mitra ANEKAMARKET:
-                    
-                    Nama: ${data.nama}
-                    NIK: ${data.nik}
-                    Alamat: ${data.alamat}
-                    WhatsApp: ${data.whatsapp}
-                    Email: ${data.email || 'Tidak diisi'}
-                    Nama Usaha: ${data.nama_usaha}
-                    Alamat Usaha: ${data.alamat_usaha}
-                    Kategori Usaha: ${data.kategori_usaha}
-                    ID Permohonan: ${data.id_permohonan}
-                    Tanggal Pendaftaran: ${data.tanggal_pendaftaran}
-                `;
-                
-                console.log('Data dikirim ke email: anekamarketsitubondo@gmail.com');
-                console.log('Isi email:', emailBody);
-                
-                // Dalam implementasi nyata, Anda akan menggunakan API email service
-                // fetch('https://your-email-api.com/send', {
-                //     method: 'POST',
-                //     headers: { 'Content-Type': 'application/json' },
-                //     body: JSON.stringify({
-                //         to: 'anekamarketsitubondo@gmail.com',
-                //         subject: 'Pendaftaran Mitra ANEKAMARKET Baru',
-                //         body: emailBody
-                //     })
-                // });
-            }
-            
-            function sendWhatsApp(data) {
                 // Format pesan WhatsApp
-                const message = `
-Halo, saya ${data.nama} ingin mendaftar sebagai Mitra ANEKAMARKET.
+                const message = `*PENDAFTARAN MITRA ANEKAMARKET*
 
-Berikut data saya:
-- NIK: ${data.nik}
-- Alamat: ${data.alamat}
-- WhatsApp: ${data.whatsapp}
-- Email: ${data.email || 'Tidak diisi'}
-- Nama Usaha: ${data.nama_usaha}
-- Alamat Usaha: ${data.alamat_usaha}
-- Kategori Usaha: ${data.kategori_usaha}
-- ID Permohonan: ${data.id_permohonan}
-- Tanggal Pendaftaran: ${data.tanggal_pendaftaran}
+*Data Pribadi:*
+• Nama: ${nama}
+• NIK: ${nik}
+• Alamat: ${alamat}
+• WhatsApp: ${whatsapp}
+• Email: ${email}
 
-Terima kasih.
-                `;
+*Data Usaha:*
+• Nama Usaha: ${namaUsaha}
+• Alamat Usaha: ${alamatUsaha}
+• Kategori Usaha: ${kategoriUsaha}
+
+*Data Sistem:*
+• ID Permohonan: ${idPermohonan}
+• Tanggal Pendaftaran: ${tanggalPendaftaran}
+
+_Semua data di atas telah diverifikasi dan sesuai dengan dokumen asli._
+Terima kasih telah bergabung dengan ANEKAMARKET!`;
                 
                 // Encode pesan untuk URL
                 const encodedMessage = encodeURIComponent(message);
@@ -557,8 +526,8 @@ Terima kasih.
                 // Buat URL WhatsApp
                 const whatsappURL = `https://wa.me/6285647709114?text=${encodedMessage}`;
                 
-                // Buka WhatsApp di tab baru (simulasi pengiriman)
-                // window.open(whatsappURL, '_blank');
+                // Buka WhatsApp di tab baru
+                window.open(whatsappURL, '_blank');
                 
                 console.log('Data dikirim ke WhatsApp: 085647709114');
                 console.log('Pesan WhatsApp:', message);
