@@ -375,6 +375,63 @@
         
         persetujuanCheckbox.addEventListener('change', validateForm);
         
+        // Fungsi untuk mengirim data ke WhatsApp
+        function sendToWhatsApp(formData) {
+            const data = Object.fromEntries(formData);
+            
+            // Format pesan WhatsApp
+            const whatsappMessage = `*PENDAFTARAN MITRA ANEKAMARKET*
+            
+*Data Pribadi:*
+📝 Nama: ${data.nama}
+🆔 NIK: ${data.nik}
+🏠 Alamat: ${data.alamat}
+📱 WhatsApp: ${data.whatsapp}
+📧 Email: ${data.email || 'Tidak diisi'}
+
+*Data Usaha:*
+🏢 Nama Usaha: ${data.nama_usaha}
+📍 Alamat Usaha: ${data.alamat_usaha}
+📊 Kategori Usaha: ${data.kategori_usaha || 'Tidak dipilih'}
+
+*Informasi Pendaftaran:*
+🆔 ID Permohonan: ${data.id_permohonan}
+📅 Tanggal Pendaftaran: ${data.tanggal_pendaftaran}
+
+_Data ini dikirim melalui formulir pendaftaran online_`;
+            
+            // Encode pesan untuk URL
+            const encodedMessage = encodeURIComponent(whatsappMessage);
+            
+            // Nomor WhatsApp tujuan (085647709114)
+            const phoneNumber = '085647709114';
+            
+            // Buat URL WhatsApp
+            const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
+            
+            // Buka WhatsApp di tab baru
+            window.open(whatsappUrl, '_blank');
+            
+            return true;
+        }
+        
+        // Fungsi untuk mengirim data ke email (simulasi)
+        function sendToEmail(formData) {
+            const data = Object.fromEntries(formData);
+            
+            // Simulasi pengiriman email
+            console.log('Data dikirim ke email: anekamarketsitubondo@gmail.com');
+            console.log(data);
+            
+            // Di implementasi nyata, Anda bisa menggunakan:
+            // 1. EmailJS
+            // 2. Formspree
+            // 3. PHP mail() function
+            // 4. Layanan email API lainnya
+            
+            return true;
+        }
+        
         // Kirim form
         form.addEventListener('submit', async function(e) {
             e.preventDefault();
@@ -390,31 +447,12 @@
             try {
                 // Kumpulkan data form
                 const formData = new FormData(form);
-                const data = Object.fromEntries(formData);
                 
-                // Kirim data ke email menggunakan EmailJS atau layanan serupa
-                // Untuk implementasi nyata, Anda perlu mendaftar di EmailJS atau layanan email API lainnya
-                // dan mengganti kode di bawah ini dengan implementasi yang sesuai
+                // Kirim data ke email (simulasi)
+                await sendToEmail(formData);
                 
-                // Simulasi pengiriman email
-                console.log('Data dikirim ke email: anekamarketsitubondo@gmail.com');
-                console.log(data);
-                
-                // Simulasi pengiriman WhatsApp
-                const whatsappMessage = `Halo, berikut data pendaftaran mitra ANEKAMARKET:
-Nama: ${data.nama}
-NIK: ${data.nik}
-Alamat: ${data.alamat}
-WhatsApp: ${data.whatsapp}
-Email: ${data.email || 'Tidak diisi'}
-Nama Usaha: ${data.nama_usaha}
-Alamat Usaha: ${data.alamat_usaha}
-Kategori Usaha: ${data.kategori_usaha || 'Tidak dipilih'}
-ID Permohonan: ${data.id_permohonan}
-Tanggal Pendaftaran: ${data.tanggal_pendaftaran}`;
-                
-                console.log('Data dikirim ke WhatsApp: 085647709114');
-                console.log(whatsappMessage);
+                // Kirim data ke WhatsApp
+                await sendToWhatsApp(formData);
                 
                 // Simulasi delay pengiriman
                 await new Promise(resolve => setTimeout(resolve, 2000));
