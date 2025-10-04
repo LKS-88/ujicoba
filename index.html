@@ -140,6 +140,33 @@
             background-color: #2980b9;
         }
         
+        .error {
+            color: #e74c3c;
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-left-color: #3498db;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
         @media (max-width: 600px) {
             .container {
                 padding: 15px;
@@ -155,36 +182,43 @@
             <div class="form-group">
                 <label for="nama" class="required">Nama (sesuai KTP)</label>
                 <input type="text" id="nama" name="nama" required>
+                <div class="error" id="nama-error">Nama harus diisi</div>
             </div>
             
             <div class="form-group">
                 <label for="nik" class="required">NIK (Nomor KTP)</label>
                 <input type="text" id="nik" name="nik" required maxlength="16" pattern="[0-9]{16}">
+                <div class="error" id="nik-error">NIK harus 16 digit angka</div>
             </div>
             
             <div class="form-group">
                 <label for="alamat" class="required">Alamat (sesuai KTP)</label>
                 <input type="text" id="alamat" name="alamat" required>
+                <div class="error" id="alamat-error">Alamat harus diisi</div>
             </div>
             
             <div class="form-group">
                 <label for="whatsapp" class="required">Nomor WhatsApp</label>
                 <input type="text" id="whatsapp" name="whatsapp" required maxlength="15" pattern="08[0-9]{8,13}" placeholder="08xxxxxxxxx">
+                <div class="error" id="whatsapp-error">Nomor WhatsApp harus diawali dengan 08 dan minimal 10 digit</div>
             </div>
             
             <div class="form-group">
                 <label for="email">Email</label>
                 <input type="email" id="email" name="email" pattern="[a-z0-9._%+-]+@gmail\.com$" placeholder="contoh@gmail.com">
+                <div class="error" id="email-error">Format email harus @gmail.com</div>
             </div>
             
             <div class="form-group">
                 <label for="nama_usaha" class="required">Nama Usaha</label>
                 <input type="text" id="nama_usaha" name="nama_usaha" required placeholder="Contoh: Cafe Bintang">
+                <div class="error" id="nama_usaha-error">Nama usaha harus diisi</div>
             </div>
             
             <div class="form-group">
                 <label for="alamat_usaha" class="required">Alamat Usaha</label>
                 <input type="text" id="alamat_usaha" name="alamat_usaha" required placeholder="Contoh: Jl. Cinta Desa Hati Kecamatan Jantung">
+                <div class="error" id="alamat_usaha-error">Alamat usaha harus diisi</div>
             </div>
             
             <div class="form-group">
@@ -212,6 +246,11 @@
             <div class="checkbox-container">
                 <input type="checkbox" id="persetujuan" name="persetujuan">
                 <label for="persetujuan">Saya menyetujui untuk mengirim data tersebut</label>
+            </div>
+            
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p>Mengirim data...</p>
             </div>
             
             <div class="button-container">
@@ -260,42 +299,109 @@
         const form = document.getElementById('registrationForm');
         const persetujuanCheckbox = document.getElementById('persetujuan');
         const submitBtn = document.getElementById('submitBtn');
+        const loading = document.getElementById('loading');
         
+        // Fungsi untuk menampilkan error
+        function showError(fieldId, message) {
+            const errorElement = document.getElementById(fieldId + '-error');
+            errorElement.textContent = message;
+            errorElement.style.display = 'block';
+        }
+        
+        // Fungsi untuk menyembunyikan error
+        function hideError(fieldId) {
+            const errorElement = document.getElementById(fieldId + '-error');
+            errorElement.style.display = 'none';
+        }
+        
+        // Validasi field individual
+        function validateField(field) {
+            const fieldId = field.id;
+            const value = field.value.trim();
+            
+            hideError(fieldId);
+            
+            if (field.hasAttribute('required') && !value) {
+                showError(fieldId, 'Field ini harus diisi');
+                return false;
+            }
+            
+            if (fieldId === 'nik' && value && !/^[0-9]{16}$/.test(value)) {
+                showError(fieldId, 'NIK harus 16 digit angka');
+                return false;
+            }
+            
+            if (fieldId === 'whatsapp' && value && !/^08[0-9]{8,13}$/.test(value)) {
+                showError(fieldId, 'Nomor WhatsApp harus diawali dengan 08 dan minimal 10 digit');
+                return false;
+            }
+            
+            if (fieldId === 'email' && value && !/^[a-z0-9._%+-]+@gmail\.com$/.test(value)) {
+                showError(fieldId, 'Format email harus @gmail.com');
+                return false;
+            }
+            
+            return true;
+        }
+        
+        // Validasi semua field
         function validateForm() {
             const requiredFields = form.querySelectorAll('[required]');
-            let allFilled = true;
+            let allValid = true;
             
             requiredFields.forEach(field => {
-                if (!field.value.trim()) {
-                    allFilled = false;
+                if (!validateField(field)) {
+                    allValid = false;
                 }
             });
             
-            // Aktifkan tombol kirim jika semua field wajib terisi dan checkbox dicentang
-            submitBtn.disabled = !(allFilled && persetujuanCheckbox.checked);
+            // Validasi field opsional yang sudah diisi
+            const emailField = document.getElementById('email');
+            if (emailField.value.trim() && !validateField(emailField)) {
+                allValid = false;
+            }
+            
+            // Aktifkan tombol kirim jika semua field valid dan checkbox dicentang
+            submitBtn.disabled = !(allValid && persetujuanCheckbox.checked);
+            
+            return allValid;
         }
         
         // Tambahkan event listener untuk semua input dan checkbox
-        form.addEventListener('input', validateForm);
+        form.addEventListener('input', function(e) {
+            validateField(e.target);
+            validateForm();
+        });
+        
         persetujuanCheckbox.addEventListener('change', validateForm);
         
         // Kirim form
-        form.addEventListener('submit', function(e) {
+        form.addEventListener('submit', async function(e) {
             e.preventDefault();
             
-            // Tampilkan notifikasi
-            document.getElementById('notification').style.display = 'flex';
+            if (!validateForm()) {
+                return;
+            }
             
-            // Kirim data ke email (simulasi)
-            const formData = new FormData(form);
-            const data = Object.fromEntries(formData);
+            // Tampilkan loading
+            loading.style.display = 'block';
+            submitBtn.disabled = true;
             
-            // Simulasi pengiriman email
-            console.log('Data dikirim ke email: anekamarketsitubondo@gmail.com');
-            console.log(data);
-            
-            // Simulasi pengiriman WhatsApp
-            const whatsappMessage = `Halo, berikut data pendaftaran mitra ANEKAMARKET:
+            try {
+                // Kumpulkan data form
+                const formData = new FormData(form);
+                const data = Object.fromEntries(formData);
+                
+                // Kirim data ke email menggunakan EmailJS atau layanan serupa
+                // Untuk implementasi nyata, Anda perlu mendaftar di EmailJS atau layanan email API lainnya
+                // dan mengganti kode di bawah ini dengan implementasi yang sesuai
+                
+                // Simulasi pengiriman email
+                console.log('Data dikirim ke email: anekamarketsitubondo@gmail.com');
+                console.log(data);
+                
+                // Simulasi pengiriman WhatsApp
+                const whatsappMessage = `Halo, berikut data pendaftaran mitra ANEKAMARKET:
 Nama: ${data.nama}
 NIK: ${data.nik}
 Alamat: ${data.alamat}
@@ -306,9 +412,25 @@ Alamat Usaha: ${data.alamat_usaha}
 Kategori Usaha: ${data.kategori_usaha || 'Tidak dipilih'}
 ID Permohonan: ${data.id_permohonan}
 Tanggal Pendaftaran: ${data.tanggal_pendaftaran}`;
-            
-            console.log('Data dikirim ke WhatsApp: 085647709114');
-            console.log(whatsappMessage);
+                
+                console.log('Data dikirim ke WhatsApp: 085647709114');
+                console.log(whatsappMessage);
+                
+                // Simulasi delay pengiriman
+                await new Promise(resolve => setTimeout(resolve, 2000));
+                
+                // Sembunyikan loading
+                loading.style.display = 'none';
+                
+                // Tampilkan notifikasi sukses
+                document.getElementById('notification').style.display = 'flex';
+                
+            } catch (error) {
+                console.error('Error mengirim data:', error);
+                loading.style.display = 'none';
+                submitBtn.disabled = false;
+                alert('Terjadi kesalahan saat mengirim data. Silakan coba lagi.');
+            }
         });
         
         // Tombol OK di notifikasi
