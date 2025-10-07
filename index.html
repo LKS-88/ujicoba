@@ -1454,11 +1454,14 @@
                         <div class="ride-status">
                             <i class="fas fa-check-circle"></i>
                             <div>
-                                <h3 style="margin:0;">Pemesanan Anda Segera Diproses!</h3>
-                                <p>Anda akan diarahkan ke WhatsApp untuk mengirim detail pesanan kepada admin kami. Mohon tunggu sebentar.</p>
+                                <h3 style="margin:0;">Pemesanan Berhasil!</h3>
+                                <p>Anda akan diarahkan ke WhatsApp. Struk transaksi Anda akan diunduh secara otomatis. Klik 'Selesai' untuk mengirim salinan pesanan ke Admin.</p>
                             </div>
                         </div>
-                        <button type="button" class="btn btn-primary" id="newOrderBtn" style="margin-top: 2rem;"><i class="fas fa-plus"></i> Buat Pesanan Baru</button>
+                         <div style="display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 2rem;">
+                            <button type="button" class="btn btn-primary" id="finishOrderBtn"><i class="fas fa-check"></i> Selesai</button>
+                            <button type="button" class="btn btn-outline" id="newOrderBtn"><i class="fas fa-plus"></i> Buat Pesanan Baru</button>
+                        </div>
                     </div>
                 </form>
             </div>
@@ -1658,6 +1661,7 @@
     </footer>
     
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     
     <script>
         'use strict';
@@ -1666,6 +1670,7 @@
 
             // --- KONSTANTA & VARIABEL GLOBAL ---
             const WHATSAPP_NUMBER = '6285647709114'; // Nomor WA Admin untuk menerima pesanan
+            const ADMIN_WHATSAPP_NUMBER = '6287865614222'; // Nomor WA Admin untuk histori
             const HARGA_PER_KM = 1500; // Harga per kilometer Rp 1.500
             const bgMusic = document.getElementById('bgMusic');
             const buttonSound = document.getElementById('buttonSound');
@@ -1677,6 +1682,7 @@
             let destinationCoords = null;
             let calculatedDistance = null; // Dalam KM (number)
             let map, pickupMarker;
+            let lastOrderData = null; // Menyimpan data pesanan terakhir untuk tombol 'Selesai' dan PDF
 
             // --- DATA DRIVER SEMENTARA (Sesuai Permintaan) ---
             const driversData = [
@@ -1690,7 +1696,7 @@
                     nama: 'Driver 2', 
                     nomer_whatsapp: '085647709114', 
                     jenis_kendaraan: 'Yamaha NMAX', 
-                    gambar_profil: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iI2EwYTVhZCI+PHBhdGggZD0iTTEyIDJDNi40OCAyIDIgNi40OCAyIDEyczQuNDggMTAgMTAgMTAgMTAtNC40OCAxMC0xMFMxNy41MiAyIDEyIDJ6bTAgM2MxLjY2IDAgMyAxLjM0IDMgM3MtMS4zNCAzLTMgMy0zLTEuMzQtMy0zIDEuMzQtMyAzLTN6bTAgMTRjLTIuNjcgMC04IDQuMjUgLTggNnYyaDE2di0yYzAtMS47NS01LjMzLTYtOC02eiIvPjwvc3ZnPg==' 
+                    gambar_profil: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iI2EwYTVhZCI+PHBhdGggZD0iTTEyIDJDNi40OCAyIDIgNi40OCAyIDEyczQuNDggMTAgMTAgMTAgMTAtNC40OCAxMC0xMFMxNy41MiAyIDEyIDJ6bTAgM2MxLjY2IDAgMyAxLjM0IDMgM3MtMS4zNCAzLTMgMy0zLTEuMzQtMy0zIDEuMzQtMyAzLTN6bTAgMTRjLTIuNjcgMC04IDQuMjUgLTggNnYyaDE2di0yYzAtMS43NS01LjMzLTYtOC02eiIvPjwvc3ZnPg==' 
                 },
                 { 
                     nama: 'Driver 3', 
@@ -1833,13 +1839,19 @@
                         const data = Object.fromEntries(formData.entries());
                         const pickupCoordsArray = data.pickupCoords.split(',');
                         
-                        const googleMapsLink = `https://www.google.com/maps/search/?api=1&query=${pickupCoordsArray[0]},${pickupCoordsArray[1]}`;
+                        // Buat Kode Pesanan Unik
+                        const orderCode = generateOrderCode(data.name, data.distance, data.estimatedPrice);
                         
-                        // Format harga ke Rupiah
+                        // Simpan data untuk PDF dan tombol 'Selesai'
+                        lastOrderData = { ...data, orderCode, orderDate: new Date() };
+                        
+                        const googleMapsLink = `https://www.google.com/maps?q=${pickupCoordsArray[0]},${pickupCoordsArray[1]}`;
+                        
                         const formattedPrice = formatRupiah(data.estimatedPrice);
                         const distanceText = data.distance ? `${data.distance} km` : 'Tidak terhitung';
 
                         let message = `*PESANAN BARU NOS*\n\n` +
+                            `*Kode Pesanan:* ${orderCode}\n\n` +
                             `*Nama:* ${data.name}\n` +
                             `*No. WhatsApp:* ${data.phone}\n` +
                             `*Lokasi Jemput:* ${data.pickupLocation}\n` +
@@ -1851,8 +1863,13 @@
                             `*Titik Jemput (Google Maps):*\n${googleMapsLink}\n\n` +
                             `*Catatan:* ${data.notes || '-'}`;
 
-                        sendWhatsAppMessage(message);
+                        sendWhatsAppMessage(WHATSAPP_NUMBER, message);
                         navigateToStep(3);
+                        
+                        // Unduh PDF secara otomatis setelah beberapa saat
+                        setTimeout(() => {
+                            generateAndDownloadPDF(lastOrderData);
+                        }, 1000);
                     }
                 });
 
@@ -1861,6 +1878,7 @@
                     pickupCoords = null;
                     destinationCoords = null;
                     calculatedDistance = null;
+                    lastOrderData = null;
                     form.querySelectorAll('.selected').forEach(el => el.classList.remove('selected'));
                     // Reset hidden inputs
                     document.getElementById('pickupCoords').value = '';
@@ -1871,6 +1889,32 @@
 
                     navigateToStep(1);
                 });
+                
+                document.getElementById('finishOrderBtn').addEventListener('click', () => {
+                    if (lastOrderData) {
+                        const formattedDate = lastOrderData.orderDate.toLocaleString('id-ID', { dateStyle: 'full', timeStyle: 'short'});
+                        let historyMessage = `*SALINAN PESANAN (HISTORI ADMIN)*\n\n` +
+                            `*Kode Pesanan:* ${lastOrderData.orderCode}\n` +
+                            `*Waktu Pesan:* ${formattedDate}\n\n` +
+                            `*Nama:* ${lastOrderData.name}\n` +
+                            `*No. WhatsApp:* ${lastOrderData.phone}\n` +
+                            `*Lokasi Jemput:* ${lastOrderData.pickupLocation}\n` +
+                            `*Tujuan:* ${lastOrderData.destination}\n` +
+                            `*Kendaraan:* ${lastOrderData.selectedVehicle}\n` +
+                            `*Driver Pilihan:* ${lastOrderData.selectedDriver || 'Sistem'}\n` +
+                            `*Estimasi Jarak:* ${lastOrderData.distance} km\n` +
+                            `*Estimasi Harga:* ${formatRupiah(lastOrderData.estimatedPrice)}\n`+
+                            `*Catatan:* ${lastOrderData.notes || '-'}`;
+                            
+                        sendWhatsAppMessage(ADMIN_WHATSAPP_NUMBER, historyMessage);
+                        alert('Salinan pesanan telah dikirim ke Admin. Terima kasih!');
+                    } else {
+                        alert('Tidak ada data pesanan untuk dikirim.');
+                    }
+                    // Reset form setelah selesai
+                    document.getElementById('newOrderBtn').click();
+                });
+
 
                 function navigateToStep(stepNumber) {
                     steps.forEach(step => step.classList.toggle('active', parseInt(step.dataset.step) === stepNumber));
@@ -1884,7 +1928,6 @@
                 }
             }
             
-            // FUNGSI BARU: Mempopulasi pilihan driver
             function populateDriverOptions() {
                 const container = document.getElementById('driverOptionsContainer');
                 if (!container) return;
@@ -1901,7 +1944,6 @@
                 });
                 container.innerHTML = html;
 
-                // Tambah event listener untuk memilih driver
                 container.addEventListener('click', e => {
                     const selectedOption = e.target.closest('.driver-option');
                     if (selectedOption) {
@@ -1909,7 +1951,6 @@
                         const driverName = selectedOption.dataset.name;
                         const hiddenInput = document.getElementById('selectedDriver');
 
-                        // Toggle selection
                         if (selectedOption.classList.contains('selected')) {
                             selectedOption.classList.remove('selected');
                             hiddenInput.value = '';
@@ -1929,7 +1970,7 @@
                         if (this.disabled) return;
                         const driverInfo = this.dataset.driver;
                         const message = `Halo NOS, saya ingin memesan ojek dengan driver *${driverInfo}*. Mohon info ketersediaannya.`;
-                        sendWhatsAppMessage(message);
+                        sendWhatsAppMessage(WHATSAPP_NUMBER, message);
                     });
                 });
             }
@@ -1963,7 +2004,7 @@
                         formData.forEach((value, key) => {
                             message += `*${key}:* ${value}\n`;
                         });
-                        sendWhatsAppMessage(message);
+                        sendWhatsAppMessage(WHATSAPP_NUMBER, message);
                         alert('Pendaftaran Anda akan diproses. Terima kasih!');
                         form.reset();
                         form.querySelectorAll('.selected').forEach(el => el.classList.remove('selected'));
@@ -1982,7 +2023,7 @@
                         const message = `*Pesan dari Website NOS*\n\n` +
                                         `*Nama:* ${data.Nama}\n` +
                                         `*Pesan:* ${data.Pesan}`;
-                        sendWhatsAppMessage(message);
+                        sendWhatsAppMessage(WHATSAPP_NUMBER, message);
                          alert('Pesan Anda telah terkirim via WhatsApp. Terima kasih!');
                         form.reset();
                     }
@@ -1996,7 +2037,7 @@
                     if(validateForm(form)) {
                         const email = form.querySelector('input[type="email"]').value;
                         const message = `*Berlangganan Newsletter NOS*\n\nEmail: ${email}`;
-                        sendWhatsAppMessage(message);
+                        sendWhatsAppMessage(WHATSAPP_NUMBER, message);
                         alert('Terima kasih telah berlangganan!');
                         form.reset();
                     }
@@ -2139,27 +2180,22 @@
                 const destinationInput = document.getElementById('destination');
 
                 try {
-                    // Jika koordinat penjemputan belum ada (pengguna input manual), geocode alamatnya
                     if (!pickupCoords || document.getElementById('pickupCoords').value === '') {
                         pickupCoords = await geocodeAddress(pickupInput.value);
                          document.getElementById('pickupCoords').value = `${pickupCoords.lat},${pickupCoords.lon}`;
                     }
                     
-                    // Geocode alamat tujuan
                     destinationCoords = await geocodeAddress(destinationInput.value);
-
-                    // Hitung jarak
                     calculatedDistance = haversineDistance(pickupCoords, destinationCoords);
                     document.getElementById('distance').value = calculatedDistance;
                     
-                    // Hitung estimasi harga
-                    const estimatedPrice = Math.max(5000, calculatedDistance * HARGA_PER_KM); // Harga minimum 5000
-                    document.getElementById('estimatedPrice').value = Math.round(estimatedPrice / 1000) * 1000; // Pembulatan ke ribuan terdekat
+                    const estimatedPrice = Math.max(5000, calculatedDistance * HARGA_PER_KM);
+                    document.getElementById('estimatedPrice').value = Math.round(estimatedPrice / 1000) * 1000;
                     
-                    return true; // Semua berhasil
+                    return true;
                 } catch (error) {
                     alert(`Validasi alamat gagal: ${error.message}. Mohon periksa kembali alamat penjemputan dan tujuan.`);
-                    return false; // Ada yang gagal
+                    return false;
                 }
             }
             
@@ -2195,7 +2231,6 @@
                  return isValid;
             }
             
-            // FUNGSI HELPER BARU: Format Angka ke Rupiah
             function formatRupiah(angka, prefix) {
                 let number_string = String(angka).replace(/[^,\d]/g, '').toString(),
                 split = number_string.split(','),
@@ -2212,9 +2247,9 @@
                 return prefix == undefined ? 'Rp ' + rupiah : (rupiah ? 'Rp ' + rupiah : '');
             }
 
-            function sendWhatsAppMessage(message) {
+            function sendWhatsAppMessage(number, message) {
                 const encodedMessage = encodeURIComponent(message);
-                const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodedMessage}`;
+                const url = `https://wa.me/${number}?text=${encodedMessage}`;
                 window.open(url, '_blank');
                 playButtonSound();
             }
@@ -2223,6 +2258,88 @@
                 buttonSound.currentTime = 0;
                 buttonSound.play().catch(e => {});
             }
+            
+            // --- FUNGSI BARU ---
+            
+            function generateOrderCode(name, distance, price) {
+                // 1. Inisial Nama (contoh: Adi Wijaya -> AW)
+                const nameParts = name.trim().split(/\s+/);
+                const initials = (nameParts.length > 1 ? nameParts[0].charAt(0) + nameParts[nameParts.length - 1].charAt(0) : name.substring(0, 2)).toUpperCase();
+                
+                // 2. Jarak sebelum koma
+                const distancePart = Math.floor(distance);
+                
+                // 3. Estimasi harga
+                const pricePart = Math.round(price);
+
+                // 4. Tanggal, bulan, jam, menit
+                const now = new Date();
+                const datePart = String(now.getDate()).padStart(2, '0') + String(now.getMonth() + 1).padStart(2, '0');
+                const timePart = String(now.getHours()).padStart(2, '0') + String(now.getMinutes()).padStart(2, '0');
+                
+                // Gabungkan sesuai format: AW-1717000-07101731
+                return `${initials}-${distancePart}${pricePart}-${datePart}${timePart}`;
+            }
+            
+            function generateAndDownloadPDF(data) {
+                try {
+                    const { jsPDF } = window.jspdf;
+                    const doc = new jsPDF();
+                    
+                    doc.setFont('helvetica', 'bold');
+                    doc.setFontSize(20);
+                    doc.text('Struk Transaksi NOS', 105, 20, { align: 'center' });
+
+                    doc.setFont('helvetica', 'normal');
+                    doc.setFontSize(12);
+                    
+                    const formattedDate = data.orderDate.toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' });
+                    const formattedTime = data.orderDate.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+
+                    doc.text(`Kode Pesanan: ${data.orderCode}`, 14, 40);
+                    doc.text(`Tanggal: ${formattedDate}, ${formattedTime}`, 14, 47);
+                    
+                    doc.setLineWidth(0.5);
+                    doc.line(14, 55, 196, 55);
+
+                    let yPos = 65;
+                    const writeDetail = (label, value) => {
+                        if (value) {
+                            doc.setFont('helvetica', 'bold');
+                            doc.text(label, 14, yPos);
+                            doc.setFont('helvetica', 'normal');
+                            
+                            // Word wrapping for long values
+                            const splitValue = doc.splitTextToSize(value.toString(), 120); // 120 is max width
+                            doc.text(splitValue, 60, yPos);
+                            yPos += (splitValue.length * 5) + 3; // Adjust yPos based on number of lines
+                        }
+                    };
+
+                    writeDetail('Nama Pelanggan:', data.name);
+                    writeDetail('Nomor WhatsApp:', data.phone);
+                    writeDetail('Lokasi Jemput:', data.pickupLocation);
+                    writeDetail('Tujuan:', data.destination);
+                    writeDetail('Kendaraan:', data.selectedVehicle);
+                    writeDetail('Driver Pilihan:', data.selectedDriver || 'Sistem');
+                    writeDetail('Estimasi Jarak:', `${data.distance} km`);
+                    writeDetail('Estimasi Harga:', formatRupiah(data.estimatedPrice));
+                    writeDetail('Catatan:', data.notes || '-');
+
+                    doc.setLineWidth(0.5);
+                    doc.line(14, yPos + 2, 196, yPos + 2);
+                    doc.setFontSize(10);
+                    doc.setTextColor(150);
+                    doc.text('Terima kasih telah menggunakan layanan NOS!', 105, yPos + 12, { align: 'center' });
+                    doc.text('Network Ojek Situbondo © 2025', 105, yPos + 17, { align: 'center' });
+
+                    doc.save(`struk-nos-${data.orderCode}.pdf`);
+                } catch (e) {
+                    console.error("Gagal membuat PDF:", e);
+                    alert("Gagal membuat struk PDF. Pastikan koneksi internet Anda stabil.");
+                }
+            }
+
         });
     </script>
 </body>
