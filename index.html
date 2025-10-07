@@ -1686,6 +1686,7 @@
     
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
     
     <script>
         'use strict';
@@ -1738,7 +1739,7 @@
             ];
             
             // --- LOGO BARU (Base64 untuk PDF) ---
-            const logoBase64 = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOEAAADhCAMAAAAJbSJIAAAAhFBMVEX////rABn/yMnqAADqAAD/+/v85+f/9/f73d32t7n/8fH2urr97u796urwTE7/zMzrABj97+/wS1L0q6z609T4x8j5zM3sExbsFxfuLS/tICPuMDL62tr1sbP0pqj2ubr50NDvP0L84+PzpqfsHR7vREj85ubtJinvQELuNzj1rK018dZIAAAD8klEQVR4nO3d63aqPBSG4QC9gChq1VoVb9Ra6/v/H7fIu5OQhGBCzpy95+uHkDPJnCQh2D8eAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD+j1hKS2Np/BtbDbyMpcVS+iR/iT3F2uJp/Q3/EuOIpfVf/Bv6YLG0/o5/Q4IYl9buY9/QfLRYWs+i19A8pFtau49fQ1M8jKVo/T38GpoiwCgW1u7jl9AUKUaxuPYufg1N0Wi0mFp7h76GplgYxWLaO/Q1NMWhUSyuPUvfQ1MMjGKR7Z16GprgcBQLa++i19AUp0YxqfY+eg1NMSiKxfT36Gtoxj1FsdW0n41oRqEolrC/jWgG8SimsZ9NaAbHKRa39rOJzVGIYkn72YQWKIpixvtZhLpYpPjp/U6iIxRFMX/AZxPKo5hig4d9JqEhilms7zMJZVEsxn2fSyiDYonlPZ9JqI9iiRU9n0koiiL7D3yTSShDopjm0YQ+KIq53ucS+qIoFqf4TKLfFEVx0v+k3hTFUf6zCU1RNHyfSyg/ReEcY/yZRCUoik1P+kxivBRFsX7qSGLNKIpO8JtESxRFMcb/SKJpFMXq+E0iQ6IodvoZRKsURbHj/GWiWBSFW/xdotUURSf8btE2imI3/D7RLApC9c/OaU/5P8V3e+d/0T+d+p/if5t/5k3+6b2/Fv//8r/mBf8w1X8V/5V/9i7/VNt/xX8V/vEt/1TbX8V/Df/xLf+k2l/Ffy3/8S3/pMtfxX89//Et/6TDX8V//e9v+Sdd/iv+63t/yTPv8F/f+1v+yRPv8L/h9T+SfvK6a/mv7/0lT7zT/+a+/vWXvPEM/119/+svfeIZ/rv7/tdf+oZn+O/u+19/6Rmf4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b+qNf/k0t/5s6P+/Tfw0f60s9v+Sbf+VnQ3807G//+k37/L9A/D3/0L375t7/z7wF+qPjp/X+E+9R+VwBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/Nl+A7bWwW2k0lKMAAAAAElFTkSuQmCC';
+            const logoBase64 = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOEAAADhCAMAAAAJbSJIAAAAhFBMVEX////rABn/yMnqAADqAAD/+/v85+f/9/f73d32t7n/8fH2urr97u796urwTE7/zMzrABj97+/wS1L0q6z609T4x8j5zM3sExbsFxfuLS/tICPuMDL62tr1sbP0pqj2ubr50NDvP0L84+PzpqfsHR7vREj85ubtJinvQELuNzj1rK018dZIAAAD8klEQVR4nO3d63aqPBSG4QC9gChq1VoVb9Ra6/v/H7fIu5OQhGBCzpy95+uHkDPJnCQh2D8eAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD+j1hKS2Np/BtbDbyMpcVS+iR/iT3F2uJp/Q3/EuOIpfVf/Bv6YLG0/o5/Q4IYl9buY9/QfLRYWs+i19A8pFtau49fQ1M8jKVo/T38GpoiwCgW1u7jl9AUKUaxuPYufg1N0Wi0mFp7h76GplgYxWLaO/Q1NMWhUSyuPUvfQ1MMjGKR7Z16GprgcBQLa++i19AUp0YxqfY+eg1NMSiKxfT36Gtoxj1FsdW0n41oRqEolrC/jWgG8SimsZ9NaAbHKRa39rOJzVGIYkn72YQWKIpixvtZhLpYpPjp/U6iIxRFMX/AZxPKo5hig4d9JqEhilms7zMJZVEsxn2fSyiDYonlPZ9JqI9iiRU9n0koiiL7D3yTSShDopjm0YQ+KIq53ucS+qIoFqf4TKLfFEVx0v+k3hTFUf6zCU1RNHyfSyg/ReEcY/yZRCUoik1P+kxivBRFsX7qSGLNKIpO8JtESxRFMcb/SKJpFMXq+E0iQ6IodvoZRKsURbHj/GWiWBSFW/xdotUURSf8btE2imI3/D7RLApC9c/OaU/5P8V3e+d/0T+d+p/if5t/5k3+6b2/Fv//8r/mBf8w1X8V/5V/9i7/VNt/xX8V/vEt/1TbX8V/Df/xLf+k2l/Ffy3/8S3/pMtfxX89//Et/6TDX8V//e9v+Sdd/iv+63t/yTPv8F/f+1v+yRPv8L/h9T+SfvK6a/mv7/0lT7zT/+a+/vWXvPEM/119/+svfeIZ/rv7/tdf+oZn+O/u+19/6Rmf4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b+qNf/k0t/5s6P+/Tfw0f60s9v+Sbf+VnQ3807G//+k37/L9A/D3/0L375t7/z7wF+qPjp/X+E+9R+VwBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/Nl+A7bWwW2k0lKMAAAAAElFTkSuQmCC';
 
 
             // --- INISIALISASI ---
@@ -1871,7 +1872,7 @@
                         
                         lastOrderData = { ...data, selectedDriver, orderCode, orderDate: new Date() };
                         
-                        const googleMapsLink = `https://www.google.com/maps/search/?api=1&query=${pickupCoordsArray[0]},${pickupCoordsArray[1]}`;
+                        const googleMapsLink = `https://www.google.com/maps?q=${pickupCoordsArray[0]},${pickupCoordsArray[1]}`;
                         
                         const formattedPrice = formatRupiah(data.estimatedPrice);
                         const distanceText = data.distance ? `${data.distance} km` : 'Tidak terhitung';
@@ -1897,9 +1898,10 @@
                         sendWhatsAppMessage(WHATSAPP_NUMBER, message);
                         navigateToStep(3);
                         
+                        // PERBAIKAN: Menambah delay untuk memastikan UI update sebelum download
                         setTimeout(() => {
                             generateAndDownloadPDF(lastOrderData);
-                        }, 1000);
+                        }, 1500); 
                     }
                 });
 
@@ -1934,19 +1936,30 @@
                         if (lastOrderData.selectedDriver) {
                            driverText = `${lastOrderData.selectedDriver.nama} (${lastOrderData.selectedDriver.no_polisi})`;
                         }
+                        
+                        // PERBAIKAN: Salinan admin dibuat lebih lengkap dan rapi
+                        const pickupCoordsArray = lastOrderData.pickupCoords.split(',');
+                        const googleMapsLink = `https://www.google.com/maps?q=${pickupCoordsArray[0]},${pickupCoordsArray[1]}`;
 
-                        let historyMessage = `*SALINAN PESANAN (HISTORI ADMIN)*\n\n` +
-                            `*Kode Pesanan:* ${lastOrderData.orderCode}\n` +
+                        let historyMessage = `*SALINAN PESANAN LENGKAP (NOS ADMIN)*\n` +
+                            `================================\n\n` +
+                            `*Kode Pesanan:* \`${lastOrderData.orderCode}\`\n` +
                             `*Waktu Pesan:* ${formattedDate}\n\n` +
+                            `*--- DATA PELANGGAN ---*\n` +
                             `*Nama:* ${lastOrderData.name}\n` +
-                            `*No. WhatsApp:* ${lastOrderData.phone}\n` +
+                            `*No. WhatsApp:* \`+${lastOrderData.phone.replace(/^0/, '62')}\`\n\n` +
+                            `*--- DETAIL PERJALANAN ---*\n` +
                             `*Lokasi Jemput:* ${lastOrderData.pickupLocation}\n` +
                             `*Tujuan:* ${lastOrderData.destination}\n` +
                             `*Kendaraan:* ${lastOrderData.selectedVehicle}\n` +
                             `*Driver Pilihan:* ${driverText}\n` +
+                            `*Link Titik Jemput:* ${googleMapsLink}\n\n` +
+                            `*--- BIAYA & CATATAN ---*\n` +
                             `*Estimasi Jarak:* ${lastOrderData.distance} km\n` +
-                            `*Estimasi Harga:* ${formatRupiah(lastOrderData.estimatedPrice)}\n`+
-                            `*Catatan:* ${lastOrderData.notes || '-'}`;
+                            `*Estimasi Harga:* *${formatRupiah(lastOrderData.estimatedPrice)}*\n`+
+                            `*Catatan Pelanggan:* ${lastOrderData.notes || '-'}\n\n` +
+                            `================================\n` +
+                            `_Pesan ini dibuat otomatis oleh sistem._`;
                             
                         sendWhatsAppMessage(ADMIN_WHATSAPP_NUMBER, historyMessage);
                     }
@@ -1966,13 +1979,15 @@
                         return;
                     }
                     if (lastOrderData && lastOrderData.selectedDriver) {
-                        const ratingMessage = `*PENILAIAN DRIVER BARU*\n\n` +
-                            `*Kode Pesanan:* ${lastOrderData.orderCode}\n` +
+                        // PERBAIKAN: Pesan rating dibuat lebih informatif
+                        const ratingMessage = `*PENILAIAN DRIVER BARU (NOS ADMIN)*\n\n` +
+                            `*Kode Pesanan:* \`${lastOrderData.orderCode}\`\n` +
                             `*Driver:* ${lastOrderData.selectedDriver.nama}\n` +
-                            `*Penilaian:* ${rating} Bintang ⭐`;
+                            `*Pelanggan:* ${lastOrderData.name}\n` +
+                            `*Penilaian:* ${'⭐'.repeat(rating)} (${rating} Bintang)`;
                         
                         sendWhatsAppMessage(ADMIN_WHATSAPP_NUMBER, ratingMessage);
-                        finishOrderAction();
+                        finishOrderAction(); // Kirim juga salinan lengkap pesanan
                         
                         alert('Terima kasih atas penilaian Anda! Salinan pesanan juga telah dikirim ke Admin.');
 
@@ -2369,88 +2384,149 @@
                 const nameParts = name.trim().split(/\s+/);
                 const initials = (nameParts.length > 1 ? nameParts[0].charAt(0) + nameParts[nameParts.length - 1].charAt(0) : name.substring(0, 2)).toUpperCase();
                 const distancePart = Math.floor(distance);
-                const pricePart = Math.round(price);
+                const pricePart = Math.round(price / 1000); // Ambil ribuan saja
                 const now = new Date();
                 const datePart = String(now.getDate()).padStart(2, '0') + String(now.getMonth() + 1).padStart(2, '0');
                 const timePart = String(now.getHours()).padStart(2, '0') + String(now.getMinutes()).padStart(2, '0');
-                return `${initials}-${distancePart}${pricePart}-${datePart}${timePart}`;
+                return `NOS-${initials}${datePart}-${timePart}${pricePart}`;
             }
             
+            // PERBAIKAN: Fungsi PDF disempurnakan dengan desain profesional dan QR code
             function generateAndDownloadPDF(data) {
                 try {
                     const { jsPDF } = window.jspdf;
                     const doc = new jsPDF();
                     
-                    // Add Logo
-                    doc.addImage(logoBase64, 'PNG', 14, 12, 25, 25);
-
-                    // Header
-                    doc.setFont('helvetica', 'bold');
-                    doc.setFontSize(20);
-                    doc.text('Struk Transaksi Digital', 105, 22, { align: 'center' });
-                    doc.setFont('helvetica', 'normal');
-                    doc.setFontSize(12);
-                    doc.text('Nompak Ojek Situbondo (NOS)', 105, 30, { align: 'center' });
-
-                    // Order Info
+                    // --- DATA ---
                     const formattedDate = data.orderDate.toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' });
                     const formattedTime = data.orderDate.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+                    const driverName = data.selectedDriver ? `${data.selectedDriver.nama} (${data.selectedDriver.no_polisi})` : 'Sistem';
 
-                    doc.setFontSize(10);
-                    doc.text(`Kode Pesanan: ${data.orderCode}`, 14, 45);
-                    doc.text(`Tanggal: ${formattedDate}, Pukul ${formattedTime} WIB`, 196, 45, { align: 'right' });
+                    // --- QR CODE ---
+                    const qrData = `Kode: ${data.orderCode}\nPelanggan: ${data.name}\nDriver: ${driverName}\nHarga: ${formatRupiah(data.estimatedPrice)}\nTanggal: ${formattedDate}`;
+                    const qr = qrcode(0, 'M');
+                    qr.addData(qrData);
+                    qr.make();
+                    const qrImg = qr.createDataURL(4);
                     
-                    doc.setLineWidth(0.5);
-                    doc.line(14, 50, 196, 50);
+                    // --- DESAIN STRUK ---
+                    // Latar belakang header
+                    doc.setFillColor(26, 54, 93); // Warna var(--primary)
+                    doc.rect(0, 0, 210, 40, 'F');
 
-                    let yPos = 58;
-                    const writeDetail = (label, value) => {
-                        if (value) {
-                            doc.setFont('helvetica', 'bold');
-                            doc.text(label, 14, yPos);
-                            doc.setFont('helvetica', 'normal');
-                            const splitValue = doc.splitTextToSize(value.toString(), 120);
-                            doc.text(splitValue, 70, yPos);
-                            yPos += (splitValue.length * 5) + 4;
-                        }
-                    };
+                    // Logo
+                    doc.addImage(logoBase64, 'PNG', 15, 8, 24, 24);
 
-                    writeDetail('Nama Pelanggan:', data.name);
-                    writeDetail('Nomor WhatsApp:', data.phone);
-                    writeDetail('Lokasi Jemput:', data.pickupLocation);
-                    writeDetail('Tujuan:', data.destination);
-                    writeDetail('Kendaraan:', data.selectedVehicle);
+                    // Judul Header
+                    doc.setFont('helvetica', 'bold');
+                    doc.setFontSize(22);
+                    doc.setTextColor(255, 255, 255);
+                    doc.text('BUKTI PEMESANAN', 105, 20, { align: 'center' });
+                    doc.setFontSize(12);
+                    doc.setFont('helvetica', 'normal');
+                    doc.text('Nompak Ojek Situbondo (NOS)', 105, 28, { align: 'center' });
+
+                    // Informasi Utama
+                    let yPos = 50;
+                    doc.setFontSize(11);
+                    doc.setTextColor(26, 32, 44); // Warna var(--dark)
+                    doc.setFont('helvetica', 'bold');
+                    doc.text('Kode Pesanan:', 15, yPos);
+                    doc.setFont('helvetica', 'normal');
+                    doc.text(data.orderCode, 55, yPos);
                     
-                    if (data.selectedDriver) {
-                        writeDetail('Driver Pilihan:', `${data.selectedDriver.nama} (${data.selectedDriver.no_polisi})`);
-                    } else {
-                        writeDetail('Driver Pilihan:', 'Sistem');
-                    }
-                    
-                    writeDetail('Catatan:', data.notes || '-');
-                    
+                    doc.setFont('helvetica', 'bold');
+                    doc.text('Tanggal:', 120, yPos);
+                    doc.setFont('helvetica', 'normal');
+                    doc.text(`${formattedDate}, ${formattedTime} WIB`, 140, yPos);
+
+                    yPos += 7;
                     doc.setLineWidth(0.2);
-                    doc.line(14, yPos, 196, yPos);
+                    doc.line(15, yPos, 195, yPos);
+                    yPos += 10;
+
+                    // Detail Kolom
+                    doc.setFontSize(10);
+                    const col1 = 15;
+                    const col2 = 110;
+
+                    // Kolom Kiri: Info Pelanggan
+                    doc.setFont('helvetica', 'bold');
+                    doc.text('INFORMASI PELANGGAN', col1, yPos);
+                    yPos += 6;
+                    doc.setFont('helvetica', 'normal');
+                    doc.text(`Nama: ${data.name}`, col1, yPos);
+                    yPos += 6;
+                    doc.text(`WhatsApp: ${data.phone}`, col1, yPos);
+                    yPos += 12;
+
+                    // Kolom Kanan: Info Driver
+                    doc.setFont('helvetica', 'bold');
+                    doc.text('INFORMASI DRIVER', col2, yPos - 18);
+                    doc.setFont('helvetica', 'normal');
+                    doc.text(`Nama: ${driverName}`, col2, yPos - 12);
+                    yPos -= 6;
+                    doc.text(`Kendaraan: ${data.selectedVehicle}`, col2, yPos);
+
+
+                    // Detail Perjalanan
+                    yPos += 12;
+                    doc.setDrawColor(224, 224, 224);
+                    doc.setLineWidth(0.5);
+                    doc.rect(15, yPos - 5, 180, 50, 'S'); // Kotak pembungkus
+
+                    yPos += 2;
+                    doc.setFont('helvetica', 'bold');
+                    doc.text('DETAIL PERJALANAN', 105, yPos, { align: 'center' });
                     yPos += 8;
 
-                    doc.setFontSize(14);
-                    doc.setFont('helvetica', 'bold');
-                    writeDetail('Estimasi Jarak:', `${data.distance} km`);
-                    writeDetail('Estimasi Harga:', formatRupiah(data.estimatedPrice));
+                    doc.setFont('helvetica', 'normal');
+                    const splitJemput = doc.splitTextToSize(`Jemput: ${data.pickupLocation}`, 170);
+                    doc.text(splitJemput, 20, yPos);
+                    yPos += (splitJemput.length * 5) + 2;
+
+                    const splitTujuan = doc.splitTextToSize(`Tujuan: ${data.destination}`, 170);
+                    doc.text(splitTujuan, 20, yPos);
+                    yPos += (splitTujuan.length * 5) + 2;
                     
+                    const splitCatatan = doc.splitTextToSize(`Catatan: ${data.notes || '-'}`, 170);
+                    doc.text(splitCatatan, 20, yPos);
+                    yPos += (splitCatatan.length * 5) + 15;
+
+
+                    // Rincian Biaya & QR Code
+                    doc.setFont('helvetica', 'bold');
+                    doc.setFontSize(10);
+                    doc.text('Estimasi Jarak:', 15, yPos);
+                    doc.setFont('helvetica', 'normal');
+                    doc.text(`${data.distance} km`, 75, yPos);
+
+                    doc.setFont('helvetica', 'bold');
+                    doc.setFontSize(16);
+                    doc.text('TOTAL BIAYA:', 15, yPos + 10);
+                    doc.setFontSize(16);
+                    doc.text(formatRupiah(data.estimatedPrice), 75, yPos + 10);
+
+                    // Add QR Code
+                    doc.addImage(qrImg, 'JPEG', 150, yPos - 5, 45, 45);
+
                     // Footer
-                    yPos = 270;
+                    const finalY = 265;
                     doc.setLineWidth(0.5);
-                    doc.line(14, yPos, 196, yPos);
+                    doc.line(15, finalY, 195, finalY);
                     doc.setFontSize(10);
                     doc.setTextColor(150);
-                    doc.text('Terima kasih telah menggunakan layanan NOS!', 105, yPos + 10, { align: 'center' });
-                    doc.text('Nompak Ojek Situbondo © 2025', 105, yPos + 15, { align: 'center' });
+                    doc.text('Terima kasih telah menggunakan layanan NOS!', 105, finalY + 10, { align: 'center' });
+                    doc.setFontSize(9);
+                    doc.text('Struk ini valid dan dibuat secara otomatis oleh sistem.', 105, finalY + 15, { align: 'center' });
+                    doc.setFont('helvetica', 'bold');
+                    doc.text('Dikembangkan oleh: www.anekamarket.my.id', 105, finalY + 20, { align: 'center' });
+
 
                     doc.save(`struk-nos-${data.orderCode}.pdf`);
                 } catch (e) {
                     console.error("Gagal membuat PDF:", e);
-                    alert("Gagal membuat struk PDF. Pastikan koneksi internet Anda stabil.");
+                    alert("Gagal membuat struk PDF. Pastikan koneksi internet Anda stabil dan coba lagi.");
                 }
             }
         });
