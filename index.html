@@ -1695,7 +1695,6 @@
             const ADMIN_WHATSAPP_NUMBER = '6287865614222'; // Nomor WA Admin untuk histori dan rating
             const HARGA_PER_KM = 1500; // Harga per kilometer Rp 1.500
             
-            // PERBAIKAN: Variabel musik latar yang tidak digunakan telah dihapus
             const buttonSound = document.getElementById('buttonSound');
             const ratingSound = document.getElementById('ratingSound');
             
@@ -1735,7 +1734,7 @@
             ];
             
             // --- LOGO BARU (Base64 untuk PDF) ---
-            const logoBase64 = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOEAAADhCAMAAAAJbSJIAAAAhFBMVEX////rABn/yMnqAADqAAD/+/v85+f/9/f73d32t7n/8fH2urr97u796urwTE7/zMzrABj97+/wS1L0q6z609T4x8j5zM3sExbsFxfuLS/tICPuMDL62tr1sbP0pqj2ubr50NDvP0L84+PzpqfsHR7vREj85ubtJinvQELuNzj1rK018dZIAAAD8klEQVR4nO3d63aqPBSG4QC9gChq1VoVb9Ra6/v/H7fIu5OQhGBCzpy95+uHkDPJnCQh2D8eAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD+j1hKS2Np/BtbDbyMpcVS+iR/iT3F2uJp/Q3/EuOIpfVf/Bv6YLG0/o5/Q4IYl9buY9/QfLRYWs+i19A8pFtau49fQ1M8jKVo/T38GpoiwCgW1u7jl9AUKUaxuPYufg1N0Wi0mFp7h76GplgYxWLaO/Q1NMWhUSyuPUvfQ1MMjGKR7Z16GprgcBQLa++i19AUp0YxqfY+eg1NMSiKxfT36Gtoxj1FsdW0n41oRqEolrC/jWgG8SimsZ9NaAbHKRa39rOJzVGIYkn72YQWKIpixvtZhLpYpPjp/U6iIxRFMX/AZxPKo5hig4d9JqEhilms7zMJZVEsxn2fSyiDYonlPZ9JqI9iiRU9n0koiiL7D3yTSShDopjm0YQ+KIq53ucS+qIoFqf4TKLfFEVx0v+k3hTFUf6zCU1RNHyfSyg/ReEcY/yZRCUoik1P+kxivBRFsX7qSGLNKIpO8JtESxRFMcb/SKJpFMXq+E0iQ6IodvoZRKsURbHj/GWiWBSFW/xdotUURSf8btE2imI3/D7RLApC9c/OaU/5P8V3e+d/0T+d+p/if5t/5k3+6b2/Fv//8r/mBf8w1X8V/5V/9i7/VNt/xX8V/vEt/1TbX8V/Df/xLf+k2l/Ffy3/8S3/pMtfxX89//Et/6TDX8V//e9v+Sdd/iv+63t/yTPv8F/f+1v+yRPv8L/h9T+SfvK6a/mv7/0lT7zT/+a+/vWXvPEM/119/+svfeIZ/rv7/tdf+oZn+O/u+19/6Rmf4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b+qNf/k0t/5s6P+/Tfw0f60s9v+Sbf+VnQ3807G//+k37/L9A/D3/0L375t7/z7wF+qPjp/X+E+9R+VwBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/Nl+A7bWwW2k0lKMAAAAAElFTkSuQmCC';
+            const logoBase64 = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOEAAADhCAMAAAAJbSJIAAAAhFBMVEX////rABn/yMnqAADqAAD/+/v85+f/9/f73d32t7n/8fH2urr97u796urwTE7/zMzrABj97+/wS1L0q6z609T4x8j5zM3sExbsFxfuLS/tICPuMDL62tr1sbP0pqj2ubr50NDvP0L84+PzpqfsHR7vREj85ubtJinvQELuNzj1rK018dZIAAAD8klEQVR4nO3d63aqPBSG4QC9gChq1VoVb9Ra6/v/H7fIu5OQhGBCzpy95+uHkDPJnCQh2D8eAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD+j1hKS2Np/BtbDbyMpcVS+iR/iT3F2uJp/Q3/EuOIpfVf/Bv6YLG0/o5/Q4IYl9buY9/QfLRYWs+i19A8pFtau49fQ1M8jKVo/T38GpoiwCgW1u7jl9AUKUaxuPYufg1N0Wi0mFp7h76GplgYxWLaO/Q1NMWhUSyuPUvfQ1MMjGKR7Z16GprgcBQLa++i19AUp0YxqfY+eg1NMSiKxfT36Gtoxj1FsdW0n41oRqEolrC/jWgG8SimsZ9NaAbHKRa39rOJzVGIYkn72YQWKIpixvtZhLpYpPjp/U6iIxRFMX/AZxPKo5hig4d9JqEhilms7zMJZVEsxn2fSyiDYonlPZ9JqI9iiRU9n0koiiL7D3yTSShDopjm0YQ+KIq53ucS+qIoFqf4TKLfFEVx0v+k3hTFUf6zCU1RNHyfSyg/ReEcY/yZRCUoik1P+kxivBRFsX7qSGLNKIpO8JtESxRFMcb/SKJpFMXq+E0iQ6IodvoZRKsURbHj/GWiWBSFW/xdotUURSf8btE2imI3/D7RLApC9c/OaU/5P8V3e+d/0T+d+p/if5t/5k3+6b2/Fv//8r/mBf8w1X8V/5V/9i7/VNt/xX8V/vEt/1TbX8V/Df/xLf+k2l/Ffy3/8S3/pMtfxX89//Et/6TDX8V//e9v+Sdd/iv+63t/yTPv8F/f+1v+yRPv8L/h9T+SfvK6a/mv7/0lT7zT/+a+/vWXvPEM/119/+svfeIZ/rv7/tdf+oZn+O/u+19/6Rmf4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b+qNf/k0t/5s6P+/Tfw0f60s9v+Sbf+VnQ3807G//+k37/L9A/D3/0L375t7/z7wF+qPjp/X+E+9R+VwBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/Nl+A7bWwW2k0lKMAAAAAElFTkSuQmCC';
 
 
             // --- INISIALISASI ---
@@ -1867,7 +1866,8 @@
                         
                         lastOrderData = { ...data, selectedDriver, orderCode, orderDate: new Date() };
                         
-                        const googleMapsLink = `https://www.google.com/maps/search/?api=1&query=${pickupCoordsArray[0]},${pickupCoordsArray[1]}`;
+                        // --- PERBAIKAN: Menggunakan format link Google Maps yang valid ---
+                        const googleMapsLink = `https://www.google.com/maps?q=${pickupCoordsArray[0]},${pickupCoordsArray[1]}`;
                         
                         const formattedPrice = formatRupiah(data.estimatedPrice);
                         const distanceText = data.distance ? `${data.distance} km` : 'Tidak terhitung';
@@ -1890,12 +1890,18 @@
                             `*Titik Jemput (Google Maps):*\n${googleMapsLink}\n\n` +
                             `*Catatan:* ${data.notes || '-'}`;
 
-                        sendWhatsAppMessage(WHATSAPP_NUMBER, message);
+                        // --- PERBAIKAN LOGIKA UNDUH & KIRIM WA ---
+                        // 1. Pindah ke step 3 untuk memberikan feedback visual ke pengguna
                         navigateToStep(3);
+
+                        // 2. Langsung generate dan unduh PDF. Ini adalah hasil langsung dari klik pengguna,
+                        //    sehingga kemungkinan besar tidak akan diblokir browser.
+                        generateAndDownloadPDF(lastOrderData);
                         
+                        // 3. Beri jeda singkat sebelum membuka WhatsApp agar browser sempat memproses unduhan.
                         setTimeout(() => {
-                            generateAndDownloadPDF(lastOrderData);
-                        }, 1500); 
+                           sendWhatsAppMessage(WHATSAPP_NUMBER, message);
+                        }, 500);
                     }
                 });
 
@@ -1922,7 +1928,6 @@
                     navigateToStep(1);
                 });
                 
-                // PERBAIKAN: Fungsi pengiriman laporan ke admin disempurnakan
                 const finishOrderAndSendAdminCopy = (rating = null) => {
                     if (lastOrderData) {
                         const formattedDate = lastOrderData.orderDate.toLocaleString('id-ID', { dateStyle: 'full', timeStyle: 'short'});
@@ -1932,7 +1937,8 @@
                         }
                         
                         const pickupCoordsArray = lastOrderData.pickupCoords.split(',');
-                        const googleMapsLink = `https://www.google.com/maps/search/?api=1&query=${pickupCoordsArray[0]},${pickupCoordsArray[1]}`;
+                        // --- PERBAIKAN: Menggunakan format link Google Maps yang valid ---
+                        const googleMapsLink = `https://www.google.com/maps?q=${pickupCoordsArray[0]},${pickupCoordsArray[1]}`;
 
                         let historyMessage = `*SALINAN PESANAN LENGKAP (NOS ADMIN)*\n` +
                             `================================\n\n` +
@@ -1952,7 +1958,6 @@
                             `*Estimasi Harga:* *${formatRupiah(lastOrderData.estimatedPrice)}*\n`+
                             `*Catatan Pelanggan:* ${lastOrderData.notes || '-'}\n`;
                             
-                        // PERBAIKAN: Menambahkan bagian rating jika ada
                         if (rating && lastOrderData.selectedDriver) {
                             historyMessage += `\n*--- PENILAIAN DRIVER ---*\n` +
                                               `*Driver:* ${lastOrderData.selectedDriver.nama}\n` +
@@ -1977,12 +1982,10 @@
                     }
                 };
 
-                // PERBAIKAN: Tombol "Selesai" hanya memanggil satu fungsi
                 document.getElementById('finishOrderBtn').addEventListener('click', () => {
                     finishOrderAndSendAdminCopy();
                 });
                 
-                // PERBAIKAN: Tombol "Kirim Penilaian" hanya memanggil satu fungsi
                 document.getElementById('submitRatingBtn').addEventListener('click', () => {
                     const rating = document.getElementById('driverRating').value;
                     if (!rating) {
@@ -2369,9 +2372,6 @@
                 buttonSound.play().catch(e => {});
             }
             
-            // --- FUNGSI BARU & FUNGSI YANG DIPERBAIKI ---
-            
-            // PERBAIKAN: Kode order dibuat lebih unik dengan menyertakan jarak dan harga
             function generateOrderCode(name, distance, price) {
                 const nameParts = name.trim().split(/\s+/);
                 const initials = (nameParts.length > 1 ? nameParts[0].charAt(0) + nameParts[nameParts.length - 1].charAt(0) : name.substring(0, 2)).toUpperCase();
@@ -2383,10 +2383,8 @@
                 return `NOS-${initials}${datePart}-${timePart}-${distancePart}K${pricePart}`;
             }
             
-            // PERBAIKAN: Fungsi PDF disempurnakan dengan penanganan error
             function generateAndDownloadPDF(data) {
                 try {
-                    // Cek ketersediaan library
                     if (typeof window.jspdf === 'undefined' || typeof qrcode === 'undefined') {
                         throw new Error("Library PDF atau QRCode gagal dimuat.");
                     }
