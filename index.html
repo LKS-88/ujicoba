@@ -1130,6 +1130,48 @@
         .vehicle-name { font-weight: 600; }
         .vehicle-price { color: var(--accent); font-weight: 700; }
 
+        /* --- STYLE BARU UNTUK PEMILIHAN DRIVER --- */
+        .driver-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+        .driver-option {
+            padding: 1.5rem 1rem;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .driver-option:hover {
+            border-color: var(--accent);
+            transform: translateY(-5px);
+        }
+        .driver-option.selected {
+            border-color: var(--accent);
+            background-color: rgba(230, 126, 34, 0.05);
+            box-shadow: 0 0 0 2px rgba(230, 126, 34, 0.1);
+        }
+        .driver-option img {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 1rem;
+            border: 2px solid var(--light);
+        }
+        .driver-option-name {
+            font-weight: 600;
+            font-size: 1rem;
+        }
+        .driver-option-vehicle {
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+        /* --- AKHIR STYLE BARU --- */
+
         .ride-status {
             padding: 1.5rem;
             border-radius: 8px;
@@ -1339,7 +1381,7 @@
                             <div class="step-number">1</div><div class="step-label">Lokasi</div>
                         </div>
                         <div class="progress-step" id="step2">
-                            <div class="step-number">2</div><div class="step-label">Kendaraan</div>
+                            <div class="step-number">2</div><div class="step-label">Detail</div>
                         </div>
                         <div class="progress-step" id="step3">
                             <div class="step-number">3</div><div class="step-label">Selesai</div>
@@ -1361,6 +1403,7 @@
                         </div>
                         <input type="hidden" id="pickupCoords" name="pickupCoords">
                         <input type="hidden" id="distance" name="distance">
+                        <input type="hidden" id="estimatedPrice" name="estimatedPrice">
                         <button type="button" class="btn btn-primary" data-next="2"><i class="fas fa-arrow-right"></i> Lanjut</button>
                     </div>
 
@@ -1390,6 +1433,12 @@
                                 </div>
                             </div>
                             <input type="hidden" id="selectedVehicle" name="selectedVehicle" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Pilih Driver (Opsional)</label>
+                            <div class="driver-options" id="driverOptionsContainer">
+                                </div>
+                            <input type="hidden" id="selectedDriver" name="selectedDriver">
                         </div>
                         <div class="form-group">
                             <label for="notes">Catatan untuk Driver (Opsional)</label>
@@ -1604,7 +1653,7 @@
             </div>
         </div>
         <div class="copyright">
-            &copy; 2025 NOS - Network Ojek Situbondo. Didukung oleh Lentera Karya.
+            © 2025 NOS - Network Ojek Situbondo. Didukung oleh Lentera Karya.
         </div>
     </footer>
     
@@ -1616,7 +1665,8 @@
         document.addEventListener('DOMContentLoaded', () => {
 
             // --- KONSTANTA & VARIABEL GLOBAL ---
-            const WHATSAPP_NUMBER = '6285647709114'; // Nomor WA Driver/Admin
+            const WHATSAPP_NUMBER = '6285647709114'; // Nomor WA Admin untuk menerima pesanan
+            const HARGA_PER_KM = 1500; // Harga per kilometer Rp 1.500
             const bgMusic = document.getElementById('bgMusic');
             const buttonSound = document.getElementById('buttonSound');
             let isMusicPlaying = false;
@@ -1625,9 +1675,36 @@
             // Variabel untuk menyimpan data lokasi
             let pickupCoords = null;
             let destinationCoords = null;
-            let calculatedDistance = null;
+            let calculatedDistance = null; // Dalam KM (number)
             let map, pickupMarker;
 
+            // --- DATA DRIVER SEMENTARA (Sesuai Permintaan) ---
+            const driversData = [
+                { 
+                    nama: 'Driver 1', 
+                    nomer_whatsapp: '085647709114', 
+                    jenis_kendaraan: 'Honda Beat', 
+                    gambar_profil: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iI2EwYTVhZCI+PHBhdGggZD0iTTEyIDJDNi40OCAyIDIgNi40OCAyIDEyczQuNDggMTAgMTAgMTAgMTAtNC40OCAxMC0xMFMxNy41MiAyIDEyIDJ6bTAgM2MxLjY2IDAgMyAxLjM0IDMgM3MtMS4zNCAzLTMgMy0zLTEuMzQtMy0zIDEuMzQtMyAzLTN6bTAgMTRjLTIuNjcgMC04IDQuMjUgLTggNnYyaDE2di0yYzAtMS43NS01LjMzLTYtOC02eiIvPjwvc3ZnPg==' // Icon default
+                },
+                { 
+                    nama: 'Driver 2', 
+                    nomer_whatsapp: '085647709114', 
+                    jenis_kendaraan: 'Yamaha NMAX', 
+                    gambar_profil: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iI2EwYTVhZCI+PHBhdGggZD0iTTEyIDJDNi40OCAyIDIgNi40OCAyIDEyczQuNDggMTAgMTAgMTAgMTAtNC40OCAxMC0xMFMxNy41MiAyIDEyIDJ6bTAgM2MxLjY2IDAgMyAxLjM0IDMgM3MtMS4zNCAzLTMgMy0zLTEuMzQtMy0zIDEuMzQtMyAzLTN6bTAgMTRjLTIuNjcgMC04IDQuMjUgLTggNnYyaDE2di0yYzAtMS47NS01LjMzLTYtOC02eiIvPjwvc3ZnPg==' 
+                },
+                { 
+                    nama: 'Driver 3', 
+                    nomer_whatsapp: '085647709114', 
+                    jenis_kendaraan: 'Suzuki Address', 
+                    gambar_profil: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iI2EwYTVhZCI+PHBhdGggZD0iTTEyIDJDNi40OCAyIDIgNi40OCAyIDEyczQuNDggMTAgMTAgMTAgMTAtNC40OCAxMC0xMFMxNy41MiAyIDEyIDJ6bTAgM2MxLjY2IDAgMyAxLjM0IDMgM3MtMS4zNCAzLTMgMy0zLTEuMzQtMy0zIDEuMzQtMyAzLTN6bTAgMTRjLTIuNjcgMC04IDQuMjUgLTggNnYyaDE2di0yYzAtMS43NS01LjMzLTYtOC02eiIvPjwvc3ZnPg==' 
+                },
+                { 
+                    nama: 'Driver 4', 
+                    nomer_whatsapp: '085647709114', 
+                    jenis_kendaraan: 'Honda Vario', 
+                    gambar_profil: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iI2EwYTVhZCI+PHBhdGggZD0iTTEyIDJDNi40OCAyIDIgNi40OCAyIDEyczQuNDggMTAgMTAgMTAgMTAtNC40OCAxMC0xMFMxNy41MiAyIDEyIDJ6bTAgM2MxLjY2IDAgMyAxLjM0IDMgM3MtMS4zNCAzLTMgMy0zLTEuMzQtMy0zIDEuMzQtMyAzLTN6bTAgMTRjLTIuNjcgMC04IDQuMjUgLTggNnYyaDE2di0yYzAtMS43NS01LjMzLTYtOC02eiIvPjwvc3ZnPg=='
+                }
+            ];
 
             // --- INISIALISASI ---
             initNavbar();
@@ -1635,6 +1712,7 @@
             initParticles();
             initMap();
             initOrderForm();
+            populateDriverOptions(); // Panggil fungsi untuk mengisi pilihan driver
             initDriverOrderButtons();
             initRegistrationForm();
             initContactForm();
@@ -1702,7 +1780,7 @@
                     const situbondoCoords = [-7.7058, 113.9947];
                     map = L.map('map').setView(situbondoCoords, 13);
                     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                        attribution: '&copy; OpenStreetMap'
+                        attribution: '© OpenStreetMap'
                     }).addTo(map);
                     L.marker(situbondoCoords).addTo(map).bindPopup('Pusat Operasi NOS Situbondo').openPopup();
                 } catch (e) {
@@ -1720,8 +1798,8 @@
                 currentLocationBtn.addEventListener('click', getUserLocation);
 
                 form.addEventListener('click', async e => {
-                    if (e.target.matches('[data-next]')) {
-                        const nextButton = e.target;
+                    if (e.target.closest('[data-next]')) {
+                        const nextButton = e.target.closest('[data-next]');
                         const currentStep = nextButton.closest('.form-step');
                         
                         nextButton.disabled = true;
@@ -1735,8 +1813,8 @@
                         nextButton.disabled = false;
                         nextButton.innerHTML = '<i class="fas fa-arrow-right"></i> Lanjut';
 
-                    } else if (e.target.matches('[data-back]')) {
-                        navigateToStep(parseInt(e.target.dataset.back));
+                    } else if (e.target.closest('[data-back]')) {
+                        navigateToStep(parseInt(e.target.closest('[data-back]').dataset.back));
                     }
                 });
                 
@@ -1755,15 +1833,21 @@
                         const data = Object.fromEntries(formData.entries());
                         const pickupCoordsArray = data.pickupCoords.split(',');
                         
-                        const googleMapsLink = `https://maps.google.com/?q=${pickupCoordsArray[0]},${pickupCoordsArray[1]}`;
+                        const googleMapsLink = `https://www.google.com/maps/search/?api=1&query=${pickupCoordsArray[0]},${pickupCoordsArray[1]}`;
+                        
+                        // Format harga ke Rupiah
+                        const formattedPrice = formatRupiah(data.estimatedPrice);
+                        const distanceText = data.distance ? `${data.distance} km` : 'Tidak terhitung';
 
                         let message = `*PESANAN BARU NOS*\n\n` +
                             `*Nama:* ${data.name}\n` +
                             `*No. WhatsApp:* ${data.phone}\n` +
                             `*Lokasi Jemput:* ${data.pickupLocation}\n` +
-                            `*Tujuan:* ${data.destination}\n` +
-                            `*Kendaraan:* ${data.selectedVehicle}\n\n` +
-                            `*Estimasi Jarak:* ${data.distance || 'Tidak terhitung'}\n` +
+                            `*Tujuan:* ${data.destination}\n\n` +
+                            `*Kendaraan:* ${data.selectedVehicle}\n` +
+                            `*Driver Pilihan:* ${data.selectedDriver || 'Bebas (sistem yang memilih)'}\n\n` +
+                            `*Estimasi Jarak:* ${distanceText}\n` +
+                            `*Estimasi Harga:* *${formattedPrice}*\n\n` +
                             `*Titik Jemput (Google Maps):*\n${googleMapsLink}\n\n` +
                             `*Catatan:* ${data.notes || '-'}`;
 
@@ -1778,19 +1862,66 @@
                     destinationCoords = null;
                     calculatedDistance = null;
                     form.querySelectorAll('.selected').forEach(el => el.classList.remove('selected'));
+                    // Reset hidden inputs
+                    document.getElementById('pickupCoords').value = '';
+                    document.getElementById('distance').value = '';
+                    document.getElementById('estimatedPrice').value = '';
+                    document.getElementById('selectedDriver').value = '';
+                    document.getElementById('selectedVehicle').value = '';
+
                     navigateToStep(1);
                 });
 
                 function navigateToStep(stepNumber) {
                     steps.forEach(step => step.classList.toggle('active', parseInt(step.dataset.step) === stepNumber));
                     progressSteps.forEach((step, index) => {
-                        step.classList.remove('active', 'completed');
-                        if (index < stepNumber - 1) step.classList.add('completed');
-                        if (index === stepNumber - 1) step.classList.add('active');
+                        const progressStepDiv = step.closest('.progress-step');
+                        progressStepDiv.classList.remove('active', 'completed');
+                        if (index < stepNumber - 1) progressStepDiv.classList.add('completed');
+                        if (index === stepNumber - 1) progressStepDiv.classList.add('active');
                     });
                     playButtonSound();
                 }
             }
+            
+            // FUNGSI BARU: Mempopulasi pilihan driver
+            function populateDriverOptions() {
+                const container = document.getElementById('driverOptionsContainer');
+                if (!container) return;
+
+                let html = '';
+                driversData.forEach(driver => {
+                    html += `
+                        <div class="driver-option" data-name="${driver.nama}">
+                            <img src="${driver.gambar_profil}" alt="Foto ${driver.nama}">
+                            <div class="driver-option-name">${driver.nama}</div>
+                            <div class="driver-option-vehicle">${driver.jenis_kendaraan}</div>
+                        </div>
+                    `;
+                });
+                container.innerHTML = html;
+
+                // Tambah event listener untuk memilih driver
+                container.addEventListener('click', e => {
+                    const selectedOption = e.target.closest('.driver-option');
+                    if (selectedOption) {
+                        const allOptions = container.querySelectorAll('.driver-option');
+                        const driverName = selectedOption.dataset.name;
+                        const hiddenInput = document.getElementById('selectedDriver');
+
+                        // Toggle selection
+                        if (selectedOption.classList.contains('selected')) {
+                            selectedOption.classList.remove('selected');
+                            hiddenInput.value = '';
+                        } else {
+                            allOptions.forEach(opt => opt.classList.remove('selected'));
+                            selectedOption.classList.add('selected');
+                            hiddenInput.value = driverName;
+                        }
+                    }
+                });
+            }
+
 
             function initDriverOrderButtons() {
                 document.querySelectorAll('.order-btn').forEach(button => {
@@ -1988,7 +2119,7 @@
                     return x * Math.PI / 180;
                 }
 
-                const R = 6371; // km
+                const R = 6371; // Radius bumi dalam km
                 const dLat = toRad(coords2.lat - coords1.lat);
                 const dLon = toRad(coords2.lon - coords1.lon);
                 const lat1 = toRad(coords1.lat);
@@ -1998,7 +2129,7 @@
                     Math.sin(dLon / 2) * Math.sin(dLon / 2) * Math.cos(lat1) * Math.cos(lat2);
                 const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
                 const d = R * c;
-                return d.toFixed(2) + ' km'; // Jarak dalam km dengan 2 desimal
+                return parseFloat(d.toFixed(2)); // Mengembalikan jarak sebagai angka (number)
             }
 
             async function validateAndProcessStep1(step) {
@@ -2020,6 +2151,10 @@
                     // Hitung jarak
                     calculatedDistance = haversineDistance(pickupCoords, destinationCoords);
                     document.getElementById('distance').value = calculatedDistance;
+                    
+                    // Hitung estimasi harga
+                    const estimatedPrice = Math.max(5000, calculatedDistance * HARGA_PER_KM); // Harga minimum 5000
+                    document.getElementById('estimatedPrice').value = Math.round(estimatedPrice / 1000) * 1000; // Pembulatan ke ribuan terdekat
                     
                     return true; // Semua berhasil
                 } catch (error) {
@@ -2058,6 +2193,23 @@
                 });
                  if (!isValid) alert('Mohon isi semua kolom yang ditandai *.');
                  return isValid;
+            }
+            
+            // FUNGSI HELPER BARU: Format Angka ke Rupiah
+            function formatRupiah(angka, prefix) {
+                let number_string = String(angka).replace(/[^,\d]/g, '').toString(),
+                split = number_string.split(','),
+                sisa = split[0].length % 3,
+                rupiah = split[0].substr(0, sisa),
+                ribuan = split[0].substr(sisa).match(/\d{3}/gi);
+
+                if (ribuan) {
+                    let separator = sisa ? '.' : '';
+                    rupiah += separator + ribuan.join('.');
+                }
+
+                rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
+                return prefix == undefined ? 'Rp ' + rupiah : (rupiah ? 'Rp ' + rupiah : '');
             }
 
             function sendWhatsAppMessage(message) {
