@@ -66,41 +66,6 @@
             color: var(--dark);
         }
         
-        /* Loading Screen */
-        .loading-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, var(--primary), var(--dark));
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            z-index: 9999;
-            transition: opacity 0.8s ease-out;
-        }
-        
-        .loading-screen.hidden {
-            opacity: 0;
-            pointer-events: none;
-        }
-        
-        .loading-spinner {
-            width: 60px;
-            height: 60px;
-            border: 4px solid rgba(255, 255, 255, 0.1);
-            border-top-color: var(--gold);
-            border-radius: 50%;
-            animation: spin 1.2s cubic-bezier(0.5, 0.1, 0.5, 0.9) infinite;
-            margin-bottom: 25px;
-        }
-        
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-        
         /* Premium Particle Animation */
         .particles {
             position: absolute;
@@ -667,13 +632,6 @@
             background-color: var(--accent);
             color: white;
             transform: translateY(-3px);
-        }
-        
-        /* Testimonial Button Section */
-        .testimonial-button-section {
-            padding: var(--section-padding);
-            text-align: center;
-            background-color: var(--light);
         }
         
         /* Contact Section */
@@ -1297,10 +1255,6 @@
     </style>
 </head>
 <body>
-    <div class="loading-screen">
-        <div class="loading-spinner"></div>
-        <h2 style="color: white; font-family: 'Playfair Display', serif;">NOS - Network Ojek Situbondo</h2>
-    </div>
     
     <audio id="bgMusic" loop>
         <source src="https://github.com/LenteraKarya/jualan-kita/blob/main/assets/audio/Musik%20website.mp3?raw=true" type="audio/mpeg">
@@ -1343,7 +1297,6 @@
                 <li><a href="#order">Pesan Ojek</a></li>
                 <li><a href="#services">Layanan</a></li>
                 <li><a href="#drivers">Driver Kami</a></li>
-                <li><a href="#testimonials">Testimoni</a></li>
                 <li><a href="#contact">Kontak</a></li>
                 <li><a href="#register">Daftar Driver</a></li>
             </ul>
@@ -1566,16 +1519,6 @@
             </div>
         </section>
         
-        <section class="testimonial-button-section" id="testimonials">
-            <div class="container">
-                <h2 class="section-title">Apa Kata Pelanggan Kami?</h2>
-                <p class="section-intro">Dengarkan pengalaman langsung dari pelanggan yang telah menggunakan layanan NOS.</p>
-                <a href="https://lenterakarya.github.io/testimoni-homestay/" target="_blank" class="btn btn-primary" style="padding: 1.2rem 3rem; font-size: 1.1rem;">
-                    <i class="fas fa-comments"></i> Lihat Semua Testimoni
-                </a>
-            </div>
-        </section>
-        
         <section class="contact" id="contact">
             <h2 class="section-title">Hubungi Kami</h2>
             <p class="section-intro">Kami siap membantu Anda 24/7. Hubungi kami untuk pertanyaan, masukan, atau bantuan.</p>
@@ -1665,8 +1608,6 @@
     
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
     
-    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_API_KEY&libraries=places&callback=initAutocomplete" async defer></script>
-    
     <script>
         'use strict';
 
@@ -1680,7 +1621,6 @@
             let userInteracted = false;
 
             // --- INISIALISASI ---
-            initLoadingScreen();
             initNavbar();
             initMobileMenu();
             initParticles();
@@ -1694,14 +1634,6 @@
             initSmoothScroll();
 
             // --- FUNGSI-FUNGSI ---
-
-            function initLoadingScreen() {
-                window.addEventListener('load', () => {
-                    setTimeout(() => {
-                        document.querySelector('.loading-screen').classList.add('hidden');
-                    }, 800);
-                });
-            }
             
             function initNavbar() {
                 const navbar = document.getElementById('navbar');
@@ -1768,7 +1700,7 @@
                     L.marker(situbondoCoords).addTo(map).bindPopup('NOS Situbondo').openPopup();
                 } catch (e) {
                     console.error("Gagal memuat peta Leaflet:", e);
-                    document.getElementById('map').innerHTML = '<p style="text-align:center; padding-top: 50px;">Peta tidak dapat dimuat.</p>';
+                    document.getElementById('map').innerHTML = '<p style="text-align:center; padding-top: 50px;">Peta tidak dapat dimuat. Mohon masukkan lokasi secara manual.</p>';
                 }
             }
 
@@ -1993,29 +1925,6 @@
                 buttonSound.play().catch(e => {}); // Ignore error if sound cannot be played
             }
         });
-        
-        // --- GOOGLE PLACES AUTOCOMPLETE ---
-        // Diletakkan di luar karena callback global
-        function initAutocomplete() {
-            // Cek jika Google Maps API berhasil dimuat
-            if (typeof google === 'undefined' || typeof google.maps === 'undefined') {
-                console.warn("Google Maps API tidak dapat dimuat. Pastikan API Key Anda valid.");
-                return;
-            }
-            
-            const options = {
-                componentRestrictions: { country: "id" }, // Batasi pencarian ke Indonesia
-                fields: ["address_components", "geometry", "icon", "name"],
-            };
-
-            try {
-                 new google.maps.places.Autocomplete(document.getElementById('pickupLocation'), options);
-                 new google.maps.places.Autocomplete(document.getElementById('destination'), options);
-                 new google.maps.places.Autocomplete(document.getElementById('headerSearchInput'), options);
-            } catch(e) {
-                 console.error("Gagal menginisialisasi Google Places Autocomplete:", e);
-            }
-        }
     </script>
 </body>
 </html>
