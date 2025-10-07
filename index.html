@@ -1,4 +1,4 @@
-  <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
@@ -1333,16 +1333,16 @@
                             <i class="fas fa-check-circle"></i>
                             <div>
                                 <h3 style="margin:0;">Pemesanan Berhasil!</h3>
-                                <p>Struk sedang diunduh. Silakan kirim pesanan via WhatsApp. Setelah perjalanan selesai, klik 'Selesaikan Pesanan' untuk memberi nilai.</p>
+                                <p>Klik tombol WhatsApp untuk mengirim pesanan ke admin. Struk akan diunduh secara otomatis setelah Anda mengirim pesan.</p>
                             </div>
                         </div>
 
                         <div id="initialActions">
                             <div id="orderActionButtons" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem; margin-top: 1rem;">
-                                <button type="button" class="btn btn-success" id="sendWaBtn"><i class="fab fa-whatsapp"></i> Kirim via WhatsApp</button>
+                                <button type="button" class="btn btn-success" id="sendWaBtn"><i class="fab fa-whatsapp"></i> Kirim & Unduh Struk</button>
                             </div>
                             <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem; margin-top: 2rem;">
-                                <button type="button" class="btn btn-success" id="proceedToFinishBtn"><i class="fas fa-flag-checkered"></i> Selesaikan Pesanan</button>
+                                <button type="button" class="btn btn-primary" id="proceedToFinishBtn"><i class="fas fa-flag-checkered"></i> Selesaikan Pesanan</button>
                             </div>
                         </div>
                         
@@ -1616,7 +1616,7 @@
                 }
             ];
             
-            const logoBase64 = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOEAAADhCAMAAAAJbSJIAAAAhFBMVEX////rABn/yMnqAADqAAD/+/v85+f/9/f73d32t7n/8fH2urr97u796urwTE7/zMzrABj97+/wS1L0q6z609T4x8j5zM3sExbsFxfuLS/tICPuMDL62tr1sbP0pqj2ubr50NDvP0L84+PzpqfsHR7vREj85ubtJinvQELuNzj1rK018dZIAAAD8klEQVR4nO3d63aqPBSG4QC9gChq1VoVb9Ra6/v/H7fIu5OQhGBCzpy95+uHkDPJnCQh2D8eAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD+j1hKS2Np/BtbDbyMpcVS+iR/iT3F2uJp/Q3/EuOIpfVf/Bv6YLG0/o5/Q4IYl9buY9/QfLRYWs+i19A8pFtau49fQ1M8jKVo/T38GpoiwCgW1u7jl9AUKUaxuPYufg1N0Wi0mFp7h76GplgYxWLaO/Q1NMWhUSyuPUvfQ1MMjGKR7Z16GprgcBQLa++i19AUp0YxqfY+eg1NMSiKxfT36Gtoxj1FsdW0n41oRqEolrC/jWgG8SimsZ9NaAbHKRa39rOJzVGIYkn72YQWKIpixvtZhLpYpPjp/U6iIxRFMX/AZxPKo5hig4d9JqEhilms7zMJZVEsxn2fSyiDYonlPZ9JqI9iiRU9n0koiiL7D3yTSShDopjm0YQ+KIq53ucS+qIoFqf4TKLfFEVx0v+k3hTFUf6zCU1RNHyfSyg/ReEcY/yZRCUoik1P+kxivBRFsX7qSGLNKIpO8JtESxRFMcb/SKJpFMXq+E0iQ6IodvoZRKsURbHj/GWiWBSFW/xdotUURSf8btE2imI3/D7RLApC9c/OaU/5P8V3e+d/0T+d+p/if5t/5k3+6b2/Fv//8r/mBf8w1X8V/5V/9i7/VNt/xX8V/vEt/1TbX8V/Df/xLf+k2l/Ffy3/8S3/pMtfxX89//Et/6TDX8V//e9v+Sdd/iv+63t/yTPv8F/f+1v+yRPv8L/h9T+SfvK6a/mv7/0lT7zT/+a+/vWXvPEM/119/+svfeIZ/rv7/tdf+oZn+O/u+19/6Rmf4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b+qNf/k0t/5s6P+/Tfw0f60s9v+Sbf+VnQ3807G//+k37/L9A/D3/0L375t7/z7wF+qPjp/X+E+9R+VwBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/Nl+A7bWwW2k0lKMAAAAAElFTkSuQmCC';
+            const logoBase64 = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOEAAADhCAMAAAAJbSJIAAAAhFBMVEX////rABn/yMnqAADqAAD/+/v85+f/9/f73d32t7n/8fH2urr97u796urwTE7/zMzrABj97+/wS1L0q6z609T4x8j5zM3sExbsFxfuLS/tICPuMDL62tr1sbP0pqj2ubr50NDvP0L84+PzpqfsHR7vREj85ubtJinvQELuNzj1rK018dZIAAAD8klEQVR4nO3d63aqPBSG4QC9gChq1VoVb9Ra6/v/H7fIu5OQhGBCzpy95+uHkDPJnCQh2D8eAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD+j1hKS2Np/BtbDbyMpcVS+iR/iT3F2uJp/Q3/EuOIpfVf/Bv6YLG0/o5/Q4IYl9buY9/QfLRYWs+i19A8pFtau49fQ1M8jKVo/T38GpoiwCgW1u7jl9AUKUaxuPYufg1N0Wi0mFp7h76GplgYxWLaO/Q1NMWhUSyuPUvfQ1MMjGKR7Z16GprgcBQLa++i19AUp0YxqfY+eg1NMSiKxfT36Gtoxj1FsdW0n41oRqEolrC/jWgG8SimsZ9NaAbHKRa39rOJzVGIYkn72YQWKIpixvtZhLpYpPjp/U6iIxRFMX/AZxPKo5hig4d9JqEhilms7zMJZVEsxn2fSyiDYonlPZ9JqI9iiRU9n0koiiL7D3yTSShDopjm0YQ+KIq53ucS+qIoFqf4TKLfFEVx0v+k3hTFUf6zCU1RNHyfSyg/ReEcY/yZRCUoik1P+kxivBRFsX7qSGLNKIpO8JtESxRFMcb/SKJpFMXq+E0iQ6IodvoZRKsURbHj/GWiWBSFW/xdotUURSf8btE2imI3/D7RLApC9c/OaU/5P8V3e+d/0T+d+p/if5t/5k3+6b2/Fv//8r/mBf8w1X8V/5V/9i7/VNt/xX8V/vEt/1TbX8V/Df/xLf+k2l/Ffy3/8S3/pMtfxX89//Et/6TDX8V//e9v+Sdd/iv+63t/yTPv8F/f+1v+yRPv8L/h9T+SfvK6a/mv7/0lT7zT/+a+/vWXvPEM/119/+svfeIZ/rv7/tdf+oZn+O/u+19/6Rmf4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b+qNf/k0t/5s6P+/Tfw0f60s9v+Sbf+VnQ3807G//+k37/L9A/D3/0L375t7/z7wF+qPjp/X+E+9R+VwBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/Nl+A7bWwW2k0lKMAAAAAElFTkSuQmCC';
 
 
             // --- INISIALISASI ---
@@ -1733,8 +1733,9 @@
                         form.querySelector('#selectedVehicle').value = this.dataset.value;
                     });
                 });
-
-                form.addEventListener('submit', async (e) => {
+                
+                // [REVISED] Form submission logic is simplified. It now only prepares the data and moves to the final step.
+                form.addEventListener('submit', (e) => {
                     e.preventDefault();
                     const submitBtn = document.getElementById('submitOrderBtn');
                     
@@ -1748,9 +1749,10 @@
                         const orderCode = generateOrderCode(data.name, data.distance, data.estimatedPrice);
                         const selectedDriver = driversData.find(d => d.id === data.selectedDriver);
                         
+                        // Save order data globally to be used by other buttons
                         lastOrderData = { ...data, selectedDriver, orderCode, orderDate: new Date() };
                         
-                        await generateAndDownloadPDF(lastOrderData);
+                        // The PDF generation is MOVED from here to the WhatsApp button click event.
                         
                         navigateToStep(3);
                         
@@ -1759,12 +1761,16 @@
                     }
                 });
                 
-                document.getElementById('sendWaBtn').addEventListener('click', () => {
+                // [REVISED] The 'Send to WA' button now handles both sending the message AND generating the PDF.
+                document.getElementById('sendWaBtn').addEventListener('click', async () => {
                     if (lastOrderData) {
+                        const sendWaBtn = document.getElementById('sendWaBtn');
+                        const originalBtnText = sendWaBtn.innerHTML;
+                        
                         const data = lastOrderData;
                         const pickupCoordsArray = data.pickupCoords.split(',');
-                        // [FIXED] Format link Google Maps yang benar agar bisa dibuka di aplikasi
-                        const googleMapsLink = `https://www.google.com/maps/search/?api=1&query=${pickupCoordsArray[0]},${pickupCoordsArray[1]}`;
+                        // [FIXED] Correct and more universal Google Maps link format.
+                        const googleMapsLink = `https://www.google.com/maps?q=${pickupCoordsArray[0]},${pickupCoordsArray[1]}`;
                         const formattedPrice = formatRupiah(data.estimatedPrice);
                         const distanceText = data.distance ? `${data.distance} km` : 'Tidak terhitung';
                         let driverText = 'Bebas (sistem yang memilih)';
@@ -1783,7 +1789,20 @@
                             `*Estimasi Harga:* *${formattedPrice}*\n\n` +
                             `*Titik Jemput (Google Maps):*\n${googleMapsLink}\n\n` +
                             `*Catatan:* ${data.notes || '-'}`;
+                        
+                        // Action 1: Send the message via WhatsApp
                         sendWhatsAppMessage(WHATSAPP_NUMBER, message);
+
+                        // Action 2: Generate and Download the PDF receipt
+                        sendWaBtn.disabled = true;
+                        sendWaBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Membuat Struk...';
+                        
+                        // A small delay to ensure the WhatsApp tab has time to open before the download starts.
+                        await new Promise(resolve => setTimeout(resolve, 1000));
+                        await generateAndDownloadPDF(lastOrderData);
+
+                        sendWaBtn.disabled = false;
+                        sendWaBtn.innerHTML = '<i class="fab fa-whatsapp"></i> Kirim Ulang & Unduh';
                     }
                 });
 
@@ -1819,6 +1838,11 @@
                         star.classList.remove('selected', 'fas');
                         star.classList.add('far');
                     });
+                    
+                    // Reset the 'Send WA' button to its original state
+                    const sendWaBtn = document.getElementById('sendWaBtn');
+                    sendWaBtn.innerHTML = '<i class="fab fa-whatsapp"></i> Kirim & Unduh Struk';
+                    sendWaBtn.disabled = false;
 
                     navigateToStep(1);
                 });
@@ -1832,8 +1856,8 @@
                         }
                         
                         const pickupCoordsArray = lastOrderData.pickupCoords.split(',');
-                        // [FIXED] Format link Google Maps yang benar
-                        const googleMapsLink = `https://www.google.com/maps/search/?api=1&query=${pickupCoordsArray[0]},${pickupCoordsArray[1]}`;
+                        // [FIXED] Correct Google Maps link for the admin copy as well.
+                        const googleMapsLink = `https://www.google.com/maps?q=${pickupCoordsArray[0]},${pickupCoordsArray[1]}`;
 
                         let historyMessage = `*SALINAN PESANAN LENGKAP (NOS ADMIN)*\n` +
                             `================================\n\n` +
@@ -1941,7 +1965,8 @@
                 if (stepNumber === 3) {
                     document.getElementById('initialActions').style.display = 'block';
                     document.getElementById('finalActions').style.display = 'none';
-                    document.getElementById('successMessage').querySelector('p').textContent = "Struk telah diunduh. Silakan kirim pesanan via WhatsApp. Setelah perjalanan selesai, klik 'Selesaikan Pesanan' untuk memberi nilai.";
+                    // [REVISED] Updated text for clarity on the new workflow.
+                    document.getElementById('successMessage').querySelector('p').textContent = "Klik tombol WhatsApp untuk mengirim pesanan ke admin. Struk akan diunduh secara otomatis setelah Anda mengirim pesan.";
                 }
                  if (stepNumber === 1){
                     document.getElementById('finalActions').style.display = 'none';
@@ -2221,11 +2246,8 @@
                 return `NOS-${initials}${datePart}-${timePart}-${Math.floor(distance)}K${Math.round(price/1000)}`;
             }
             
-            // [REVISED & SIMPLIFIED] Fungsi generateAndDownloadPDF dibuat lebih andal.
-            // Menghilangkan pembungkus 'new Promise' yang tidak perlu karena fungsi ini sudah 'async'.
             async function generateAndDownloadPDF(data) {
                 try {
-                    // Periksa apakah library jsPDF dan qrcode sudah dimuat
                     if (typeof window.jspdf === 'undefined' || typeof qrcode === 'undefined') {
                         throw new Error("Library PDF atau QRCode gagal dimuat. Pastikan koneksi internet Anda stabil.");
                     }
@@ -2235,13 +2257,11 @@
                     const formattedTime = data.orderDate.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
                     const driverName = data.selectedDriver ? `${data.selectedDriver.nama} (${data.selectedDriver.no_polisi})` : 'Sistem';
 
-                    // Buat QRCode
                     const qr = qrcode(0, 'M');
                     qr.addData(`Kode: ${data.orderCode}\nPelanggan: ${data.name}\nHarga: ${formatRupiah(data.estimatedPrice)}`);
                     qr.make();
                     const qrImg = qr.createDataURL(4);
                     
-                    // Header Dokumen
                     doc.setFillColor(26, 54, 93);
                     doc.rect(0, 0, 210, 40, 'F');
                     doc.addImage(logoBase64, 'PNG', 15, 8, 24, 24);
@@ -2253,7 +2273,6 @@
                     doc.setFont('helvetica', 'normal');
                     doc.text('Nompak Ojek Situbondo (NOS)', 105, 28, { align: 'center' });
 
-                    // Detail Pesanan
                     let yPos = 50;
                     doc.setFontSize(11);
                     doc.setTextColor(26, 32, 44);
@@ -2273,7 +2292,6 @@
                     yPos += 10;
                     doc.setFontSize(10);
 
-                    // Info Pelanggan & Driver
                     doc.setFont('helvetica', 'bold');
                     doc.text('INFORMASI PELANGGAN', 15, yPos);
                     yPos += 6;
@@ -2294,7 +2312,6 @@
                     doc.rect(15, yPos, 180, 50, 'S'); 
                     yPos += 7;
 
-                    // Detail Perjalanan
                     doc.setFont('helvetica', 'bold');
                     doc.text('DETAIL PERJALANAN', 105, yPos, { align: 'center' });
                     yPos += 8;
@@ -2308,7 +2325,6 @@
                     doc.text(splitTujuan, 20, yPos);
                     yPos += (splitTujuan.length * 5) + 15;
 
-                    // Total Biaya & QRCode
                     doc.setFont('helvetica', 'bold');
                     doc.setFontSize(10);
                     doc.text('Estimasi Jarak:', 15, yPos);
@@ -2322,7 +2338,6 @@
 
                     doc.addImage(qrImg, 'JPEG', 150, yPos - 5, 45, 45);
 
-                    // Footer Dokumen
                     const finalY = 265;
                     doc.setLineWidth(0.5);
                     doc.line(15, finalY, 195, finalY);
@@ -2332,16 +2347,14 @@
                     doc.setFontSize(9);
                     doc.text('Struk ini valid dan dibuat secara otomatis oleh sistem.', 105, finalY + 15, { align: 'center' });
 
-                    // Simpan dan unduh PDF
                     doc.save(`struk-nos-${data.orderCode}.pdf`);
 
                 } catch (e) {
                     console.error("Gagal membuat PDF:", e);
-                    // Beri pesan yang lebih informatif kepada pengguna
-                    alert("Gagal membuat struk PDF secara otomatis: " + e.message + "\n\nMohon periksa koneksi internet Anda dan nonaktifkan pemblokir pop-up (pop-up blocker) pada browser. Silakan screenshot halaman ini sebagai bukti dan lanjutkan kirim pesanan ke driver.");
+                    alert("Gagal membuat struk PDF: " + e.message + "\n\nPastikan koneksi internet Anda stabil dan tidak ada pemblokir pop-up yang aktif. Pesanan Anda sudah terkirim, Anda bisa melanjutkan tanpa struk.");
                 }
             }
         });
     </script>
 </body>
-</html>                                                                                                 
+</html>
