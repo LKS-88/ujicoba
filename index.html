@@ -3,545 +3,298 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Formulir Pendaftaran Mitra ANEKAMARKET</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <title>Kebijakan Privasi - AnekaMarket.my.id</title>
     <style>
-        :root {
-            --primary-color: #0D47A1;
-            --secondary-color: #1976D2;
-            --accent-color: #FFC107;
-            --dark-color: #1a1a1a;
-            --gray-color: #757575;
-            --light-gray-bg: #f8f9fa;
-            --white-color: #ffffff;
-            --success-color: #28a745;
-            --error-color: #dc3545;
-            --border-radius: 8px;
-            --box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        }
-
+        /* Reset dan gaya dasar */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-
+        
         body {
-            background: linear-gradient(135deg, #f4f7fa 0%, #d6e4f3 100%);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            color: var(--dark-color);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             line-height: 1.6;
+            color: #333;
+            background-color: #f9f9f9;
         }
-
+        
+        /* Container utama */
         .container {
-            max-width: 800px;
-            width: 100%;
-            background-color: var(--white-color);
-            border-radius: var(--border-radius);
-            box-shadow: var(--box-shadow);
-            overflow: hidden;
-            margin: 20px 0;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
         }
-
-        .header {
-            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
-            color: var(--white-color);
-            padding: 25px 30px;
-            text-align: center;
+        
+        /* Header */
+        header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
-
-        .header h1 {
-            font-size: 1.8rem;
-            margin-bottom: 10px;
-        }
-
-        .header p {
-            opacity: 0.9;
-            font-size: 1rem;
-        }
-
-        .logo-container {
+        
+        .header-content {
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            justify-content: center;
-            margin-bottom: 15px;
         }
-
-        .logo-img {
-            max-width: 180px;
-            height: auto;
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
         }
-
-        .form-container {
-            padding: 30px;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-row {
-            display: flex;
-            gap: 20px;
-        }
-
-        .form-row .form-group {
-            flex: 1;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 500;
-            color: var(--dark-color);
-        }
-
-        .required::after {
-            content: " *";
-            color: var(--error-color);
-        }
-
-        input, select, textarea {
-            width: 100%;
-            padding: 12px 15px;
-            border: 1px solid #ddd;
-            border-radius: var(--border-radius);
-            font-size: 1rem;
-            transition: border-color 0.3s;
-        }
-
-        input:focus, select:focus, textarea:focus {
-            border-color: var(--primary-color);
-            outline: none;
-            box-shadow: 0 0 0 2px rgba(13, 71, 161, 0.2);
-        }
-
-        input[readonly] {
-            background-color: var(--light-gray-bg);
-            cursor: not-allowed;
-            color: var(--gray-color);
-        }
-
-        .checkbox-group {
-            display: flex;
-            align-items: center;
-            margin: 25px 0;
-            padding: 15px;
-            background-color: var(--light-gray-bg);
-            border-radius: var(--border-radius);
-        }
-
-        .checkbox-group input {
-            width: auto;
-            margin-right: 10px;
-        }
-
-        .checkbox-group label {
-            margin-bottom: 0;
-            font-size: 0.95rem;
-        }
-
-        .btn {
-            display: inline-block;
-            padding: 14px 28px;
-            border-radius: 50px;
+        
+        .logo a {
+            color: white;
             text-decoration: none;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            cursor: pointer;
-            border: none;
-            font-size: 1rem;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+        
+        nav ul li {
+            margin-left: 1.5rem;
+        }
+        
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        nav ul li a:hover {
+            color: #3498db;
+        }
+        
+        /* Konten utama */
+        main {
+            padding: 2rem 0;
+            background-color: white;
+            margin: 2rem auto;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.05);
+        }
+        
+        .privacy-content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 1.5rem;
+            font-size: 2.2rem;
+        }
+        
+        h2 {
+            color: #3498db;
+            margin: 1.5rem 0 1rem;
+            font-size: 1.5rem;
+        }
+        
+        p {
+            margin-bottom: 1rem;
+        }
+        
+        ul {
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .last-updated {
+            font-style: italic;
+            color: #7f8c8d;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 1rem;
+        }
+        
+        /* Footer */
+        footer {
+            background-color: #2c3e50;
+            color: white;
+            padding: 2rem 0;
+            margin-top: 2rem;
+        }
+        
+        .footer-content {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+        
+        .footer-section {
+            flex: 1;
+            min-width: 250px;
+            margin-bottom: 1.5rem;
+        }
+        
+        .footer-section h3 {
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+        
+        .footer-section p, .footer-section a {
+            color: #ecf0f1;
+            text-decoration: none;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+        
+        .footer-section a:hover {
+            color: #3498db;
+        }
+        
+        .copyright {
             text-align: center;
-            width: 100%;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            margin-top: 1rem;
         }
-
-        .btn-primary {
-            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
-            color: var(--white-color);
-            box-shadow: 0 5px 15px rgba(25, 118, 210, 0.4);
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(25, 118, 210, 0.5);
-        }
-
-        .btn-primary:disabled {
-            background: var(--gray-color);
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
-        }
-
-        .btn-success {
-            background-color: var(--success-color);
-            color: var(--white-color);
-        }
-
-        .btn-success:hover {
-            background-color: #218838;
-            transform: translateY(-3px);
-        }
-
-        .notification {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: var(--white-color);
-            padding: 40px;
-            border-radius: var(--border-radius);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            text-align: center;
-            z-index: 1000;
-            display: none;
-            max-width: 400px;
-            width: 90%;
-        }
-
-        .notification h2 {
-            color: var(--success-color);
-            margin-bottom: 15px;
-        }
-
-        .notification p {
-            margin-bottom: 25px;
-            font-size: 1.1rem;
-        }
-
-        .overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            z-index: 999;
-            display: none;
-        }
-
-        .error-message {
-            color: var(--error-color);
-            font-size: 0.85rem;
-            margin-top: 5px;
-            display: none;
-        }
-
+        
+        /* Responsif */
         @media (max-width: 768px) {
-            .form-row {
+            .header-content {
                 flex-direction: column;
-                gap: 0;
+                text-align: center;
             }
             
-            .header h1 {
-                font-size: 1.5rem;
+            nav ul {
+                margin-top: 1rem;
+                justify-content: center;
             }
             
-            .form-container {
-                padding: 20px;
+            nav ul li {
+                margin: 0 0.75rem;
+            }
+            
+            .footer-content {
+                flex-direction: column;
             }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <div class="logo-container">
-                <img src="https://raw.githubusercontent.com/anekamarket/aplikasi-situbondo/refs/heads/main/naikkelas.png" alt="ANEKAMARKET Logo" class="logo-img">
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <a href="https://www.anekamarket.my.id">AnekaMarket.my.id</a>
+                </div>
+                <nav>
+                    <ul>
+                        <li><a href="https://www.anekamarket.my.id">Beranda</a></li>
+                        <li><a href="https://www.anekamarket.my.id/tentang">Tentang</a></li>
+                        <li><a href="https://www.anekamarket.my.id/kontak">Kontak</a></li>
+                    </ul>
+                </nav>
             </div>
-            <h1>Formulir Pendaftaran Mitra ANEKAMARKET</h1>
-            <p>Bergabunglah dengan komunitas bisnis terdepan di Situbondo</p>
         </div>
-        
-        <div class="form-container">
-            <form id="registrationForm">
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="nama" class="required">Nama (sesuai KTP)</label>
-                        <input type="text" id="nama" name="nama" placeholder="Masukkan nama lengkap sesuai KTP" required>
-                        <div class="error-message" id="nama-error">Nama harus diisi</div>
-                    </div>
-                    <div class="form-group">
-                        <label for="nik" class="required">NIK (Nomor KTP)</label>
-                        <input type="text" id="nik" name="nik" placeholder="Masukkan 16 digit NIK" required maxlength="16">
-                        <div class="error-message" id="nik-error">NIK harus 16 digit angka</div>
-                    </div>
-                </div>
+    </header>
+
+    <main>
+        <div class="container">
+            <div class="privacy-content">
+                <h1>Kebijakan Privasi</h1>
+                <p class="last-updated">Terakhir diperbarui: 1 Januari 2024</p>
                 
-                <div class="form-group">
-                    <label for="alamat" class="required">Alamat (sesuai KTP)</label>
-                    <textarea id="alamat" name="alamat" rows="3" placeholder="Masukkan alamat lengkap sesuai KTP" required></textarea>
-                    <div class="error-message" id="alamat-error">Alamat harus diisi</div>
-                </div>
+                <p>Selamat datang di AnekaMarket.my.id. Kami berkomitmen untuk melindungi privasi dan keamanan data pribadi Anda. Kebijakan Privasi ini menjelaskan bagaimana kami mengumpulkan, menggunakan, dan melindungi informasi yang Anda berikan kepada kami.</p>
                 
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="whatsapp" class="required">Nomor WhatsApp</label>
-                        <input type="tel" id="whatsapp" name="whatsapp" placeholder="08XXXXXXXXX" required pattern="08[0-9]{8,}">
-                        <div class="error-message" id="whatsapp-error">Nomor WhatsApp harus dimulai dengan 08 dan minimal 10 digit</div>
-                    </div>
-                    <div class="form-group">
-                        <label for="email">Email</label>
-                        <input type="email" id="email" name="email" placeholder="contoh@gmail.com">
-                        <div class="error-message" id="email-error">Format email tidak valid</div>
-                    </div>
-                </div>
+                <h2>Informasi yang Kami Kumpulkan</h2>
+                <p>Kami dapat mengumpulkan informasi berikut:</p>
+                <ul>
+                    <li>Informasi pribadi seperti nama, alamat email, dan nomor telepon yang Anda berikan saat mendaftar atau melakukan pembelian</li>
+                    <li>Informasi transaksi termasuk detail pembelian dan riwayat pesanan</li>
+                    <li>Data teknis seperti alamat IP, jenis perangkat, dan informasi browser</li>
+                    <li>Informasi penggunaan termasuk halaman yang dikunjungi dan interaksi dengan situs kami</li>
+                </ul>
                 
-                <div class="form-group">
-                    <label for="nama_usaha" class="required">Nama Usaha</label>
-                    <input type="text" id="nama_usaha" name="nama_usaha" placeholder="Contoh: Cafe Bintang" required>
-                    <div class="error-message" id="nama_usaha-error">Nama usaha harus diisi</div>
-                </div>
+                <h2>Bagaimana Kami Menggunakan Informasi Anda</h2>
+                <p>Kami menggunakan informasi yang kami kumpulkan untuk:</p>
+                <ul>
+                    <li>Memproses pesanan dan transaksi Anda</li>
+                    <li>Menyediakan, mengoperasikan, dan memelihara layanan kami</li>
+                    <li>Meningkatkan, mempersonalisasi, dan memperluas pengalaman pengguna</li>
+                    <li>Mengembangkan produk, layanan, fitur, dan fungsionalitas baru</li>
+                    <li>Berkomunikasi dengan Anda, baik secara langsung atau melalui salah satu mitra kami</li>
+                    <li>Mengirim email promosi dan pembaruan</li>
+                    <li>Menemukan dan mencegah penipuan</li>
+                </ul>
                 
-                <div class="form-group">
-                    <label for="alamat_usaha" class="required">Alamat Usaha</label>
-                    <textarea id="alamat_usaha" name="alamat_usaha" rows="3" placeholder="Contoh: Jl. Cinta Desa Hati Kecamatan Jantung" required></textarea>
-                    <div class="error-message" id="alamat_usaha-error">Alamat usaha harus diisi</div>
-                </div>
+                <h2>Berbagi Informasi</h2>
+                <p>Kami tidak menjual, memperdagangkan, atau mentransfer informasi pribadi Anda kepada pihak ketiga, kecuali dalam situasi berikut:</p>
+                <ul>
+                    <li>Dengan penyedia layanan yang membantu kami mengoperasikan situs web atau melayani pengguna kami</li>
+                    <li>Ketika diperlukan oleh hukum atau untuk menanggapi proses hukum yang sah</li>
+                    <li>Untuk melindungi hak, properti, atau keselamatan kami, pengguna kami, atau orang lain</li>
+                    <li>Dalam kaitannya dengan merger, penjualan, atau akuisisi perusahaan</li>
+                </ul>
                 
-                <div class="form-group">
-                    <label for="kategori_usaha" class="required">Kategori Usaha</label>
-                    <select id="kategori_usaha" name="kategori_usaha" required>
-                        <option value="">Pilih Kategori Usaha</option>
-                        <option value="UMKM">UMKM</option>
-                        <option value="Jasa Service HP">Jasa Service HP</option>
-                        <option value="Kuliner">Kuliner</option>
-                        <option value="Retail">Retail</option>
-                        <option value="Pertanian">Pertanian</option>
-                        <option value="Perikanan">Perikanan</option>
-                        <option value="Kerajinan">Kerajinan</option>
-                        <option value="Lainnya">Lainnya</option>
-                    </select>
-                    <div class="error-message" id="kategori_usaha-error">Kategori usaha harus dipilih</div>
-                </div>
+                <h2>Keamanan Data</h2>
+                <p>Kami menerapkan langkah-langkah keamanan yang wajar untuk melindungi informasi pribadi Anda dari akses, penggunaan, atau pengungkapan yang tidak sah. Namun, tidak ada metode transmisi melalui internet atau metode penyimpanan elektronik yang 100% aman.</p>
                 
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="id_permohonan">ID Permohonan</label>
-                        <input type="text" id="id_permohonan" name="id_permohonan" readonly>
-                    </div>
-                    <div class="form-group">
-                        <label for="tanggal_pendaftaran">Tanggal Pendaftaran</label>
-                        <input type="text" id="tanggal_pendaftaran" name="tanggal_pendaftaran" readonly>
-                    </div>
-                </div>
+                <h2>Cookie dan Teknologi Pelacakan</h2>
+                <p>Kami menggunakan cookie dan teknologi pelacakan serupa untuk melacak aktivitas di layanan kami dan menyimpan informasi tertentu. Cookie adalah file dengan sejumlah kecil data yang mungkin termasuk pengidentifikasi unik anonim.</p>
                 
-                <div class="checkbox-group">
-                    <input type="checkbox" id="agree" name="agree">
-                    <label for="agree">Saya menyetujui untuk mengirim data tersebut</label>
-                </div>
+                <h2>Hak Anda</h2>
+                <p>Anda memiliki hak untuk:</p>
+                <ul>
+                    <li>Mengakses informasi pribadi yang kami simpan tentang Anda</li>
+                    <li>Memperbarui atau memperbaiki informasi pribadi Anda</li>
+                    <li>Meminta penghapusan informasi pribadi Anda</li>
+                    <li>Menolak pemrosesan informasi pribadi Anda</li>
+                    <li>Meminta transfer data yang telah kami kumpulkan ke organisasi lain, atau langsung kepada Anda</li>
+                </ul>
                 
-                <button type="submit" class="btn btn-primary" id="submitBtn" disabled>Kirim Data</button>
-            </form>
+                <h2>Tautan ke Situs Lain</h2>
+                <p>Layanan kami mungkin berisi tautan ke situs web lain yang tidak dioperasikan oleh kami. Jika Anda mengklik tautan pihak ketiga, Anda akan diarahkan ke situs pihak ketiga tersebut. Kami sangat menyarankan Anda untuk meninjau Kebijakan Privasi setiap situs yang Anda kunjungi.</p>
+                
+                <h2>Perubahan pada Kebijakan Privasi</h2>
+                <p>Kami dapat memperbarui Kebijakan Privasi kami dari waktu ke waktu. Kami akan memberi tahu Anda tentang perubahan apa pun dengan memposting Kebijakan Privasi baru di halaman ini dan memperbarui tanggal "Terakhir Diperbarui" di bagian atas.</p>
+                
+                <h2>Kontak Kami</h2>
+                <p>Jika Anda memiliki pertanyaan tentang Kebijakan Privasi ini, silakan hubungi kami:</p>
+                <ul>
+                    <li>Email: privacy@anekamarket.my.id</li>
+                    <li>Melalui halaman kontak di website kami</li>
+                </ul>
+            </div>
         </div>
-    </div>
-    
-    <div class="overlay" id="overlay"></div>
-    
-    <div class="notification" id="successNotification">
-        <h2>Terima Kasih!</h2>
-        <p>Terima kasih telah bergabung dan menjadi Mitra ANEKAMARKET</p>
-        <button class="btn btn-success" id="okButton">OK</button>
-    </div>
+    </main>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Generate ID Permohonan
-            function generateIdPermohonan() {
-                const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-                let result = 'AM-';
-                for (let i = 0; i < 6; i++) {
-                    result += chars.charAt(Math.floor(Math.random() * chars.length));
-                }
-                return result;
-            }
-            
-            // Set tanggal pendaftaran
-            function setTanggalPendaftaran() {
-                const now = new Date();
-                const options = { 
-                    day: '2-digit', 
-                    month: '2-digit', 
-                    year: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit'
-                };
-                return now.toLocaleDateString('id-ID', options) + ' WIB';
-            }
-            
-            // Inisialisasi form
-            document.getElementById('id_permohonan').value = generateIdPermohonan();
-            document.getElementById('tanggal_pendaftaran').value = setTanggalPendaftaran();
-            
-            // Validasi form
-            const form = document.getElementById('registrationForm');
-            const requiredFields = form.querySelectorAll('[required]');
-            const checkbox = document.getElementById('agree');
-            const submitBtn = document.getElementById('submitBtn');
-            
-            // Validasi real-time
-            form.addEventListener('input', function() {
-                validateForm();
-            });
-            
-            // Validasi checkbox
-            checkbox.addEventListener('change', function() {
-                validateForm();
-            });
-            
-            function validateForm() {
-                let allValid = true;
-                
-                // Validasi field wajib
-                requiredFields.forEach(field => {
-                    const errorElement = document.getElementById(`${field.id}-error`);
-                    
-                    if (field.type === 'text' || field.type === 'textarea') {
-                        if (field.value.trim() === '') {
-                            showError(field, errorElement, 'Field ini harus diisi');
-                            allValid = false;
-                        } else {
-                            hideError(field, errorElement);
-                        }
-                    }
-                    
-                    if (field.id === 'nik') {
-                        if (field.value.length !== 16 || isNaN(field.value)) {
-                            showError(field, errorElement, 'NIK harus 16 digit angka');
-                            allValid = false;
-                        } else {
-                            hideError(field, errorElement);
-                        }
-                    }
-                    
-                    if (field.id === 'whatsapp') {
-                        const pattern = /^08[0-9]{8,}$/;
-                        if (!pattern.test(field.value)) {
-                            showError(field, errorElement, 'Nomor WhatsApp harus dimulai dengan 08 dan minimal 10 digit');
-                            allValid = false;
-                        } else {
-                            hideError(field, errorElement);
-                        }
-                    }
-                    
-                    if (field.id === 'email' && field.value !== '') {
-                        const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                        if (!pattern.test(field.value)) {
-                            showError(field, errorElement, 'Format email tidak valid');
-                            allValid = false;
-                        } else {
-                            hideError(field, errorElement);
-                        }
-                    }
-                    
-                    if (field.tagName === 'SELECT' && field.value === '') {
-                        showError(field, errorElement, 'Field ini harus dipilih');
-                        allValid = false;
-                    } else if (field.tagName === 'SELECT' && field.value !== '') {
-                        hideError(field, errorElement);
-                    }
-                });
-                
-                // Cek apakah checkbox dicentang
-                if (!checkbox.checked) {
-                    allValid = false;
-                }
-                
-                // Aktifkan atau nonaktifkan tombol submit
-                submitBtn.disabled = !allValid;
-                
-                return allValid;
-            }
-            
-            function showError(field, errorElement, message) {
-                field.style.borderColor = 'var(--error-color)';
-                errorElement.textContent = message;
-                errorElement.style.display = 'block';
-            }
-            
-            function hideError(field, errorElement) {
-                field.style.borderColor = '#ddd';
-                errorElement.style.display = 'none';
-            }
-            
-            // Submit form
-            form.addEventListener('submit', function(e) {
-                e.preventDefault();
-                
-                if (validateForm()) {
-                    // Kirim data ke WhatsApp
-                    sendWhatsApp();
-                    
-                    // Tampilkan notifikasi sukses
-                    document.getElementById('overlay').style.display = 'block';
-                    document.getElementById('successNotification').style.display = 'block';
-                }
-            });
-            
-            // Fungsi untuk mengirim data ke WhatsApp
-            function sendWhatsApp() {
-                // Ambil semua data dari form
-                const nama = document.getElementById('nama').value;
-                const nik = document.getElementById('nik').value;
-                const alamat = document.getElementById('alamat').value;
-                const whatsapp = document.getElementById('whatsapp').value;
-                const email = document.getElementById('email').value || 'Tidak diisi';
-                const namaUsaha = document.getElementById('nama_usaha').value;
-                const alamatUsaha = document.getElementById('alamat_usaha').value;
-                const kategoriUsaha = document.getElementById('kategori_usaha').value;
-                const idPermohonan = document.getElementById('id_permohonan').value;
-                const tanggalPendaftaran = document.getElementById('tanggal_pendaftaran').value;
-                
-                // Format pesan WhatsApp
-                const message = `*PENDAFTARAN MITRA ANEKAMARKET*
-
-*Data Pribadi:*
-• Nama: ${nama}
-• NIK: ${nik}
-• Alamat: ${alamat}
-• WhatsApp: ${whatsapp}
-• Email: ${email}
-
-*Data Usaha:*
-• Nama Usaha: ${namaUsaha}
-• Alamat Usaha: ${alamatUsaha}
-• Kategori Usaha: ${kategoriUsaha}
-
-*Data Sistem:*
-• ID Permohonan: ${idPermohonan}
-• Tanggal Pendaftaran: ${tanggalPendaftaran}
-
-_Semua data di atas telah diverifikasi dan sesuai dengan dokumen asli._
-Terima kasih telah bergabung dengan ANEKAMARKET!`;
-                
-                // Encode pesan untuk URL
-                const encodedMessage = encodeURIComponent(message);
-                
-                // Buat URL WhatsApp
-                const whatsappURL = `https://wa.me/6285647709114?text=${encodedMessage}`;
-                
-                // Buka WhatsApp di tab baru
-                window.open(whatsappURL, '_blank');
-                
-                console.log('Data dikirim ke WhatsApp: 085647709114');
-                console.log('Pesan WhatsApp:', message);
-            }
-            
-            // Tombol OK di notifikasi
-            document.getElementById('okButton').addEventListener('click', function() {
-                document.getElementById('overlay').style.display = 'none';
-                document.getElementById('successNotification').style.display = 'none';
-                
-                // Redirect ke anekamarket.my.id
-                window.location.href = 'https://www.anekamarket.my.id';
-            });
-        });
-    </script>
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Tentang AnekaMarket</h3>
+                    <p>AnekaMarket.my.id adalah platform belanja online yang menyediakan berbagai produk berkualitas dengan harga terjangkau.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Tautan Cepat</h3>
+                    <a href="https://www.anekamarket.my.id">Beranda</a>
+                    <a href="https://www.anekamarket.my.id/produk">Produk</a>
+                    <a href="https://www.anekamarket.my.id/tentang">Tentang Kami</a>
+                    <a href="https://www.anekamarket.my.id/kontak">Kontak</a>
+                </div>
+                <div class="footer-section">
+                    <h3>Informasi Legal</h3>
+                    <a href="kebijakan-privasi.html">Kebijakan Privasi</a>
+                    <a href="syarat-ketentuan.html">Syarat & Ketentuan</a>
+                    <a href="kebijakan-pengembalian.html">Kebijakan Pengembalian</a>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2024 AnekaMarket.my.id. Hak Cipta Dilindungi.</p>
+            </div>
+        </div>
+    </footer>
 </body>
 </html>
