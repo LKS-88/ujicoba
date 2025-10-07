@@ -633,6 +633,18 @@
             color: white;
             transform: translateY(-3px);
         }
+
+        .btn-success {
+            background-color: var(--success);
+            color: white;
+            box-shadow: 0 5px 15px rgba(56, 161, 105, 0.3);
+        }
+
+        .btn-success:hover {
+            background-color: #2f855a;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(56, 161, 105, 0.4);
+        }
         
         /* Contact Section */
         .contact-container {
@@ -1464,9 +1476,15 @@
                             <i class="fas fa-check-circle"></i>
                             <div>
                                 <h3 style="margin:0;">Pemesanan Berhasil!</h3>
-                                <p>Anda akan diarahkan ke WhatsApp. Struk transaksi Anda akan diunduh secara otomatis.</p>
+                                <p>Silakan unduh struk Anda dan kirim pesanan melalui WhatsApp kepada admin kami.</p>
                             </div>
                         </div>
+
+                        <div id="orderActionButtons" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem; margin-top: 1rem;">
+                            <button type="button" class="btn btn-primary" id="downloadPdfBtn"><i class="fas fa-file-pdf"></i> Unduh Struk</button>
+                            <button type="button" class="btn btn-success" id="sendWaBtn"><i class="fab fa-whatsapp"></i> Kirim via WhatsApp</button>
+                        </div>
+                        
                         <div id="ratingSection" style="display: none; text-align: center; margin-top: 2rem;">
                             <h3 style="margin-bottom: 1.5rem;">Beri Penilaian untuk Driver Anda</h3>
                             <div class="star-rating">
@@ -1734,7 +1752,7 @@
             ];
             
             // --- LOGO BARU (Base64 untuk PDF) ---
-            const logoBase64 = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOEAAADhCAMAAAAJbSJIAAAAhFBMVEX////rABn/yMnqAADqAAD/+/v85+f/9/f73d32t7n/8fH2urr97u796urwTE7/zMzrABj97+/wS1L0q6z609T4x8j5zM3sExbsFxfuLS/tICPuMDL62tr1sbP0pqj2ubr50NDvP0L84+PzpqfsHR7vREj85ubtJinvQELuNzj1rK018dZIAAAD8klEQVR4nO3d63aqPBSG4QC9gChq1VoVb9Ra6/v/H7fIu5OQhGBCzpy95+uHkDPJnCQh2D8eAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD+j1hKS2Np/BtbDbyMpcVS+iR/iT3F2uJp/Q3/EuOIpfVf/Bv6YLG0/o5/Q4IYl9buY9/QfLRYWs+i19A8pFtau49fQ1M8jKVo/T38GpoiwCgW1u7jl9AUKUaxuPYufg1N0Wi0mFp7h76GplgYxWLaO/Q1NMWhUSyuPUvfQ1MMjGKR7Z16GprgcBQLa++i19AUp0YxqfY+eg1NMSiKxfT36Gtoxj1FsdW0n41oRqEolrC/jWgG8SimsZ9NaAbHKRa39rOJzVGIYkn72YQWKIpixvtZhLpYpPjp/U6iIxRFMX/AZxPKo5hig4d9JqEhilms7zMJZVEsxn2fSyiDYonlPZ9JqI9iiRU9n0koiiL7D3yTSShDopjm0YQ+KIq53ucS+qIoFqf4TKLfFEVx0v+k3hTFUf6zCU1RNHyfSyg/ReEcY/yZRCUoik1P+kxivBRFsX7qSGLNKIpO8JtESxRFMcb/SKJpFMXq+E0iQ6IodvoZRKsURbHj/GWiWBSFW/xdotUURSf8btE2imI3/D7RLApC9c/OaU/5P8V3e+d/0T+d+p/if5t/5k3+6b2/Fv//8r/mBf8w1X8V/5V/9i7/VNt/xX8V/vEt/1TbX8V/Df/xLf+k2l/Ffy3/8S3/pMtfxX89//Et/6TDX8V//e9v+Sdd/iv+63t/yTPv8F/f+1v+yRPv8L/h9T+SfvK6a/mv7/0lT7zT/+a+/vWXvPEM/119/+svfeIZ/rv7/tdf+oZn+O/u+19/6Rmf4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b+qNf/k0t/5s6P+/Tfw0f60s9v+Sbf+VnQ3807G//+k37/L9A/D3/0L375t7/z7wF+qPjp/X+E+9R+VwBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/Nl+A7bWwW2k0lKMAAAAAElFTkSuQmCC';
+            const logoBase64 = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOEAAADhCAMAAAAJbSJIAAAAhFBMVEX////rABn/yMnqAADqAAD/+/v85+f/9/f73d32t7n/8fH2urr97u796urwTE7/zMzrABj97+/wS1L0q6z609T4x8j5zM3sExbsFxfuLS/tICPuMDL62tr1sbP0pqj2ubr50NDvP0L84+PzpqfsHR7vREj85ubtJinvQELuNzj1rK018dZIAAAD8klEQVR4nO3d63aqPBSG4QC9gChq1VoVb9Ra6/v/H7fIu5OQhGBCzpy95+uHkDPJnCQh2D8eAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD+j1hKS2Np/BtbDbyMpcVS+iR/iT3F2uJp/Q3/EuOIpfVf/Bv6YLG0/o5/Q4IYl9buY9/QfLRYWs+i19A8pFtau49fQ1M8jKVo/T38GpoiwCgW1u7jl9AUKUaxuPYufg1N0Wi0mFp7h76GplgYxWLaO/Q1NMWhUSyuPUvfQ1MMjGKR7Z16GprgcBQLa++i19AUp0YxqfY+eg1NMSiKxfT36Gtoxj1FsdW0n41oRqEolrC/jWgG8SimsZ9NaAbHKRa39rOJzVGIYkn72YQWKIpixvtZhLpYpPjp/U6iIxRFMX/AZxPKo5hig4d9JqEhilms7zMJZVEsxn2fSyiDYonlPZ9JqI9iiRU9n0koiiL7D3yTSShDopjm0YQ+KIq53ucS+qIoFqf4TKLfFEVx0v+k3hTFUf6zCU1RNHyfSyg/ReEcY/yZRCUoik1P+kxivBRFsX7qSGLNKIpO8JtESxRFMcb/SKJpFMXq+E0iQ6IodvoZRKsURbHj/GWiWBSFW/xdotUURSf8btE2imI3/D7RLApC9c/OaU/5P8V3e+d/0T+d+p/if5t/5k3+6b2/Fv//8r/mBf8w1X8V/5V/9i7/VNt/xX8V/vEt/1TbX8V/Df/xLf+k2l/Ffy3/8S3/pMtfxX89//Et/6TDX8V//e9v+Sdd/iv+63t/yTPv8F/f+1v+yRPv8L/h9T+SfvK6a/mv7/0lT7zT/+a+/vWXvPEM/119/+svfeIZ/rv7/tdf+oZn+O/u+19/6Rmf4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b+qNf/k0t/5s6P+/Tfw0f60s9v+Sbf+VnQ3807G//+k37/L9A/D3/0L375t7/z7wF+qPjp/X+E+9R+VwBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/Nl+A7bWwW2k0lKMAAAAAElFTkSuQmCC';
 
 
             // --- INISIALISASI ---
@@ -1859,26 +1877,44 @@
                     if (validateStep(form.querySelector('.form-step[data-step="2"]'))) {
                         const formData = new FormData(form);
                         const data = Object.fromEntries(formData.entries());
-                        const pickupCoordsArray = data.pickupCoords.split(',');
                         
                         const orderCode = generateOrderCode(data.name, data.distance, data.estimatedPrice);
                         const selectedDriver = driversData.find(d => d.id === data.selectedDriver);
                         
+                        // Simpan data pesanan terakhir untuk digunakan di Langkah 3
                         lastOrderData = { ...data, selectedDriver, orderCode, orderDate: new Date() };
                         
-                        // --- PERBAIKAN: Menggunakan format link Google Maps yang valid ---
+                        // Pindah ke Langkah 3 untuk menampilkan tombol aksi
+                        navigateToStep(3);
+                    }
+                });
+
+                // --- REVISED: Event listeners untuk tombol aksi di Langkah 3 ---
+                document.getElementById('downloadPdfBtn').addEventListener('click', () => {
+                    if (lastOrderData) {
+                        generateAndDownloadPDF(lastOrderData);
+                    } else {
+                        alert('Data pesanan tidak ditemukan untuk membuat PDF.');
+                    }
+                });
+
+                document.getElementById('sendWaBtn').addEventListener('click', () => {
+                    if (lastOrderData) {
+                        const data = lastOrderData;
+                        const pickupCoordsArray = data.pickupCoords.split(',');
+                        // --- FIXED: Menggunakan format link Google Maps yang valid ---
                         const googleMapsLink = `https://www.google.com/maps?q=${pickupCoordsArray[0]},${pickupCoordsArray[1]}`;
                         
                         const formattedPrice = formatRupiah(data.estimatedPrice);
                         const distanceText = data.distance ? `${data.distance} km` : 'Tidak terhitung';
 
                         let driverText = 'Bebas (sistem yang memilih)';
-                        if(selectedDriver) {
-                            driverText = `${selectedDriver.nama} (${selectedDriver.jenis_kendaraan} - ${selectedDriver.no_polisi})`;
+                        if(data.selectedDriver) {
+                            driverText = `${data.selectedDriver.nama} (${data.selectedDriver.jenis_kendaraan} - ${data.selectedDriver.no_polisi})`;
                         }
 
                         let message = `*PESANAN BARU NOS*\n\n` +
-                            `*Kode Pesanan:* ${orderCode}\n\n` +
+                            `*Kode Pesanan:* ${data.orderCode}\n\n` +
                             `*Nama:* ${data.name}\n` +
                             `*No. WhatsApp:* ${data.phone}\n` +
                             `*Lokasi Jemput:* ${data.pickupLocation}\n` +
@@ -1889,21 +1925,13 @@
                             `*Estimasi Harga:* *${formattedPrice}*\n\n` +
                             `*Titik Jemput (Google Maps):*\n${googleMapsLink}\n\n` +
                             `*Catatan:* ${data.notes || '-'}`;
-
-                        // --- PERBAIKAN LOGIKA UNDUH & KIRIM WA ---
-                        // 1. Pindah ke step 3 untuk memberikan feedback visual ke pengguna
-                        navigateToStep(3);
-
-                        // 2. Langsung generate dan unduh PDF. Ini adalah hasil langsung dari klik pengguna,
-                        //    sehingga kemungkinan besar tidak akan diblokir browser.
-                        generateAndDownloadPDF(lastOrderData);
                         
-                        // 3. Beri jeda singkat sebelum membuka WhatsApp agar browser sempat memproses unduhan.
-                        setTimeout(() => {
-                           sendWhatsAppMessage(WHATSAPP_NUMBER, message);
-                        }, 500);
+                        sendWhatsAppMessage(WHATSAPP_NUMBER, message);
+                    } else {
+                        alert('Data pesanan tidak ditemukan untuk dikirim ke WhatsApp.');
                     }
                 });
+
 
                 document.getElementById('newOrderBtn').addEventListener('click', () => {
                     form.reset();
@@ -1937,7 +1965,7 @@
                         }
                         
                         const pickupCoordsArray = lastOrderData.pickupCoords.split(',');
-                        // --- PERBAIKAN: Menggunakan format link Google Maps yang valid ---
+                        // --- FIXED: Menggunakan format link Google Maps yang valid ---
                         const googleMapsLink = `https://www.google.com/maps?q=${pickupCoordsArray[0]},${pickupCoordsArray[1]}`;
 
                         let historyMessage = `*SALINAN PESANAN LENGKAP (NOS ADMIN)*\n` +
@@ -2036,20 +2064,28 @@
                     if (index === stepNumber - 1) progressStepDiv.classList.add('active');
                 });
 
+                // --- REVISED: UI Logic for Step 3 ---
                 if (stepNumber === 3) {
+                    const orderActionButtons = document.getElementById('orderActionButtons');
                     const ratingSection = document.getElementById('ratingSection');
                     const finishBtn = document.getElementById('finishOrderBtn');
                     const newOrderBtn = document.getElementById('newOrderBtn');
                     
-                    finishBtn.style.display = 'none';
+                    // Show initial action buttons, hide others
+                    orderActionButtons.style.display = 'flex';
                     newOrderBtn.style.display = 'inline-flex';
+                    ratingSection.style.display = 'none';
+                    finishBtn.style.display = 'none';
+                    document.getElementById('submitRatingBtn').style.display = 'none';
 
-                    if (lastOrderData && lastOrderData.selectedDriver) {
-                        ratingSection.style.display = 'block';
-                    } else {
-                        ratingSection.style.display = 'none';
-                        finishBtn.style.display = 'inline-flex';
-                    }
+                    // Logic for showing rating section later (this could be triggered by another event,
+                    // but for now, we leave it for the "Selesai" flow)
+                    // if (lastOrderData && lastOrderData.selectedDriver) {
+                    //     ratingSection.style.display = 'block';
+                    // } else {
+                    //     ratingSection.style.display = 'none';
+                    //     finishBtn.style.display = 'inline-flex';
+                    // }
                 }
                 playButtonSound();
             }
