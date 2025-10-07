@@ -3,20 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, minimum-scale=1.0">
-    <meta name="description" content="NOS (Network Ojek Situbondo) - Layanan ojek online profesional di Situbondo dengan driver berpengalaman dan tarif terjangkau.">
-    <meta name="keywords" content="ojek online, transportasi, ojek, situbondo, angkutan, nos, network ojek situbondo">
-    <meta name="author" content="NOS - Network Ojek Situbondo">
-    <meta property="og:title" content="NOS | Network Ojek Situbondo">
+    <meta name="description" content="NOS (Nompak Ojek Situbondo) - Layanan ojek online profesional di Situbondo dengan driver berpengalaman dan tarif terjangkau.">
+    <meta name="keywords" content="ojek online, transportasi, ojek, situbondo, angkutan, nos, nompak ojek situbondo">
+    <meta name="author" content="NOS - Nompak Ojek Situbondo">
+    <meta property="og:title" content="NOS | Nompak Ojek Situbondo">
     <meta property="og:description" content="Layanan ojek online profesional di Situbondo dengan driver berpengalaman dan tarif terjangkau.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://lenterakarya.github.io/nos-ojek/">
-    <meta property="og:image" content="https://raw.githubusercontent.com/LenteraKarya/jualan-kita/main/assets/images/logo-jualan-kita.png">
-    <title>NOS | Network Ojek Situbondo</title>
+    <meta property="og:image" content="https://raw.githubusercontent.com/anekamarket/aplikasi-usaha/refs/heads/main/logo-nos.png">
+    <title>NOS | Nompak Ojek Situbondo</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="icon" href="https://raw.githubusercontent.com/LenteraKarya/jualan-kita/main/assets/images/logo-jualan-kita.png" type="image/png">
+    <link rel="icon" href="https://raw.githubusercontent.com/anekamarket/aplikasi-usaha/refs/heads/main/logo-nos.png" type="image/png">
     
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
 
@@ -1185,6 +1185,17 @@
         
         .ride-status i { font-size: 1.5rem; margin-right: 1rem; }
         
+        /* --- STAR RATING --- */
+        .star-rating {
+            font-size: 2.5rem;
+            color: #d4af37;
+            cursor: pointer;
+        }
+        .star-rating .fa-star:hover,
+        .star-rating .fa-star.selected {
+            font-weight: 900;
+        }
+        
         /* Registration Form */
         .registration-section {
             background: white;
@@ -1302,14 +1313,15 @@
         <source src="https://github.com/LenteraKarya/jualan-kita/blob/main/assets/audio/Musik%20website.mp3?raw=true" type="audio/mpeg">
     </audio>
     <audio id="buttonSound" src="https://github.com/LenteraKarya/homestay/blob/main/assets/audio/audiotombol.mp3?raw=true"></audio>
-    
+    <audio id="ratingSound" src="https://voca.ro/1BjrRUnRSEqJ"></audio>
+
     <div class="particles" id="particles"></div>
     
     <header id="home">
         <div class="header-overlay"></div>
         <div class="header-content">
             <div class="logo">
-                <img src="https://raw.githubusercontent.com/LenteraKarya/jualan-kita/main/assets/images/logo-jualan-kita.png" alt="NOS Logo">
+                <img src="https://raw.githubusercontent.com/anekamarket/aplikasi-usaha/refs/heads/main/logo-nos.png" alt="NOS Logo">
                 <span>NOS</span>
             </div>
             <p class="tagline">Transportasi Nyaman, Tarif Terjangkau</p>
@@ -1330,7 +1342,7 @@
     <nav id="navbar">
         <div class="nav-container">
             <a href="#home" class="nav-logo">
-                <img src="https://raw.githubusercontent.com/LenteraKarya/jualan-kita/main/assets/images/logo-jualan-kita.png" alt="NOS Logo">
+                <img src="https://raw.githubusercontent.com/anekamarket/aplikasi-usaha/refs/heads/main/logo-nos.png" alt="NOS Logo">
                 <span>NOS</span>
             </a>
             
@@ -1451,15 +1463,27 @@
                     </div>
 
                     <div class="form-step" data-step="3">
-                        <div class="ride-status">
+                        <div class="ride-status" id="successMessage">
                             <i class="fas fa-check-circle"></i>
                             <div>
                                 <h3 style="margin:0;">Pemesanan Berhasil!</h3>
-                                <p>Anda akan diarahkan ke WhatsApp. Struk transaksi Anda akan diunduh secara otomatis. Klik 'Selesai' untuk mengirim salinan pesanan ke Admin.</p>
+                                <p>Anda akan diarahkan ke WhatsApp. Struk transaksi Anda akan diunduh secara otomatis.</p>
                             </div>
                         </div>
-                         <div style="display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 2rem;">
-                            <button type="button" class="btn btn-primary" id="finishOrderBtn"><i class="fas fa-check"></i> Selesai</button>
+                        <div id="ratingSection" style="display: none; text-align: center; margin-top: 2rem;">
+                            <h3 style="margin-bottom: 1.5rem;">Beri Penilaian untuk Driver Anda</h3>
+                            <div class="star-rating">
+                                <i class="far fa-star" data-value="1"></i>
+                                <i class="far fa-star" data-value="2"></i>
+                                <i class="far fa-star" data-value="3"></i>
+                                <i class="far fa-star" data-value="4"></i>
+                                <i class="far fa-star" data-value="5"></i>
+                            </div>
+                            <input type="hidden" id="driverRating" name="driverRating">
+                        </div>
+                        <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem; margin-top: 2rem;">
+                            <button type="button" class="btn btn-primary" id="submitRatingBtn" style="display: none;"><i class="fas fa-paper-plane"></i> Kirim Penilaian & Selesai</button>
+                            <button type="button" class="btn btn-primary" id="finishOrderBtn" style="display: none;"><i class="fas fa-check"></i> Selesai (Tanpa Driver)</button>
                             <button type="button" class="btn btn-outline" id="newOrderBtn"><i class="fas fa-plus"></i> Buat Pesanan Baru</button>
                         </div>
                     </div>
@@ -1480,11 +1504,11 @@
                     </div>
                     <div class="driver-specs">
                         <div class="spec-item"><span class="spec-label">Kendaraan:</span><span class="spec-value">Honda Beat</span></div>
-                        <div class="spec-item"><span class="spec-label">Layanan:</span><span class="spec-value">Semua</span></div>
+                        <div class="spec-item"><span class="spec-label">No. Polisi:</span><span class="spec-value">P 1234 AB</span></div>
                         <div class="spec-item"><span class="spec-label">Pengalaman:</span><span class="spec-value">5 Tahun</span></div>
                         <div class="spec-item"><span class="spec-label">Wilayah:</span><span class="spec-value">Situbondo Kota</span></div>
                     </div>
-                    <button class="btn btn-primary btn-small order-btn" data-driver="Budi Santoso (Honda Beat)">Pesan Sekarang</button>
+                    <button class="btn btn-primary btn-small order-btn" data-driver-id="budi_s">Pesan Sekarang</button>
                 </div>
                 <div class="driver-card">
                     <img src="https://github.com/LenteraKarya/NOS/blob/main/assets/images/driver2.jpeg?raw=true" alt="Ani Wijaya" class="driver-avatar" loading="lazy">
@@ -1495,11 +1519,11 @@
                     </div>
                     <div class="driver-specs">
                          <div class="spec-item"><span class="spec-label">Kendaraan:</span><span class="spec-value">Yamaha NMax</span></div>
-                        <div class="spec-item"><span class="spec-label">Layanan:</span><span class="spec-value">Premium</span></div>
+                         <div class="spec-item"><span class="spec-label">No. Polisi:</span><span class="spec-value">P 5678 CD</span></div>
                         <div class="spec-item"><span class="spec-label">Pengalaman:</span><span class="spec-value">3 Tahun</span></div>
                         <div class="spec-item"><span class="spec-label">Wilayah:</span><span class="spec-value">Panarukan</span></div>
                     </div>
-                    <button class="btn btn-primary btn-small order-btn" data-driver="Ani Wijaya (Yamaha NMax)">Pesan Sekarang</button>
+                    <button class="btn btn-primary btn-small order-btn" data-driver-id="ani_w">Pesan Sekarang</button>
                 </div>
                 <div class="driver-card">
                     <img src="https://github.com/LenteraKarya/NOS/blob/main/assets/images/driver3.jpeg?raw=true" alt="Joko Prasetyo" class="driver-avatar" loading="lazy">
@@ -1510,7 +1534,7 @@
                     </div>
                      <div class="driver-specs">
                         <div class="spec-item"><span class="spec-label">Kendaraan:</span><span class="spec-value">Honda CB150</span></div>
-                        <div class="spec-item"><span class="spec-label">Layanan:</span><span class="spec-value">Barang</span></div>
+                        <div class="spec-item"><span class="spec-label">No. Polisi:</span><span class="spec-value">P 9012 EF</span></div>
                         <div class="spec-item"><span class="spec-label">Pengalaman:</span><span class="spec-value">7 Tahun</span></div>
                         <div class="spec-item"><span class="spec-label">Wilayah:</span><span class="spec-value">Semua</span></div>
                     </div>
@@ -1624,10 +1648,10 @@
         <div class="footer-container">
             <div class="footer-col footer-about">
                 <div class="footer-logo">
-                    <img src="https://raw.githubusercontent.com/LenteraKarya/jualan-kita/main/assets/images/logo-jualan-kita.png" alt="NOS Logo">
+                    <img src="https://raw.githubusercontent.com/anekamarket/aplikasi-usaha/refs/heads/main/logo-nos.png" alt="NOS Logo">
                     <span>NOS</span>
                 </div>
-                <p>Network Ojek Situbondo (NOS) adalah layanan ojek online profesional di Situbondo dengan driver berpengalaman dan tarif terjangkau.</p>
+                <p>Nompak Ojek Situbondo (NOS) adalah layanan ojek online profesional di Situbondo dengan driver berpengalaman dan tarif terjangkau.</p>
             </div>
             <div class="footer-col">
                 <h3>Tautan Cepat</h3>
@@ -1656,7 +1680,7 @@
             </div>
         </div>
         <div class="copyright">
-            © 2025 NOS - Network Ojek Situbondo. Didukung oleh Lentera Karya.
+            © 2025 NOS - Nompak Ojek Situbondo. Didukung oleh Lentera Karya.
         </div>
     </footer>
     
@@ -1670,10 +1694,11 @@
 
             // --- KONSTANTA & VARIABEL GLOBAL ---
             const WHATSAPP_NUMBER = '6285647709114'; // Nomor WA Admin untuk menerima pesanan
-            const ADMIN_WHATSAPP_NUMBER = '6287865614222'; // Nomor WA Admin untuk histori
+            const ADMIN_WHATSAPP_NUMBER = '6287865614222'; // Nomor WA Admin untuk histori dan rating
             const HARGA_PER_KM = 1500; // Harga per kilometer Rp 1.500
             const bgMusic = document.getElementById('bgMusic');
             const buttonSound = document.getElementById('buttonSound');
+            const ratingSound = document.getElementById('ratingSound');
             let isMusicPlaying = false;
             let userInteracted = false;
             
@@ -1684,33 +1709,37 @@
             let map, pickupMarker;
             let lastOrderData = null; // Menyimpan data pesanan terakhir untuk tombol 'Selesai' dan PDF
 
-            // --- DATA DRIVER SEMENTARA (Sesuai Permintaan) ---
+            // --- DATA DRIVER (SINKRON DENGAN TAMPILAN) ---
             const driversData = [
-                { 
-                    nama: 'Driver 1', 
-                    nomer_whatsapp: '085647709114', 
-                    jenis_kendaraan: 'Honda Beat', 
-                    gambar_profil: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iI2EwYTVhZCI+PHBhdGggZD0iTTEyIDJDNi40OCAyIDIgNi40OCAyIDEyczQuNDggMTAgMTAgMTAgMTAtNC40OCAxMC0xMFMxNy41MiAyIDEyIDJ6bTAgM2MxLjY2IDAgMyAxLjM0IDMgM3MtMS4zNCAzLTMgMy0zLTEuMzQtMy0zIDEuMzQtMyAzLTN6bTAgMTRjLTIuNjcgMC04IDQuMjUgLTggNnYyaDE2di0yYzAtMS43NS01LjMzLTYtOC02eiIvPjwvc3ZnPg==' // Icon default
+                {
+                    id: 'budi_s',
+                    nama: 'Budi Santoso',
+                    no_polisi: 'P 1234 AB',
+                    jenis_kendaraan: 'Honda Beat',
+                    gambar_profil: 'https://github.com/LenteraKarya/NOS/blob/main/assets/images/driver1.jpeg?raw=true',
+                    status: 'aktif'
                 },
-                { 
-                    nama: 'Driver 2', 
-                    nomer_whatsapp: '085647709114', 
-                    jenis_kendaraan: 'Yamaha NMAX', 
-                    gambar_profil: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iI2EwYTVhZCI+PHBhdGggZD0iTTEyIDJDNi40OCAyIDIgNi40OCAyIDEyczQuNDggMTAgMTAgMTAgMTAtNC40OCAxMC0xMFMxNy41MiAyIDEyIDJ6bTAgM2MxLjY2IDAgMyAxLjM0IDMgM3MtMS4zNCAzLTMgMy0zLTEuMzQtMy0zIDEuMzQtMyAzLTN6bTAgMTRjLTIuNjcgMC04IDQuMjUgLTggNnYyaDE2di0yYzAtMS43NS01LjMzLTYtOC02eiIvPjwvc3ZnPg==' 
+                {
+                    id: 'ani_w',
+                    nama: 'Ani Wijaya',
+                    no_polisi: 'P 5678 CD',
+                    jenis_kendaraan: 'Yamaha NMax',
+                    gambar_profil: 'https://github.com/LenteraKarya/NOS/blob/main/assets/images/driver2.jpeg?raw=true',
+                    status: 'aktif'
                 },
-                { 
-                    nama: 'Driver 3', 
-                    nomer_whatsapp: '085647709114', 
-                    jenis_kendaraan: 'Suzuki Address', 
-                    gambar_profil: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iI2EwYTVhZCI+PHBhdGggZD0iTTEyIDJDNi40OCAyIDIgNi40OCAyIDEyczQuNDggMTAgMTAgMTAgMTAtNC40OCAxMC0xMFMxNy41MiAyIDEyIDJ6bTAgM2MxLjY2IDAgMyAxLjM0IDMgM3MtMS4zNCAzLTMgMy0zLTEuMzQtMy0zIDEuMzQtMyAzLTN6bTAgMTRjLTIuNjcgMC04IDQuMjUgLTggNnYyaDE2di0yYzAtMS43NS01LjMzLTYtOC02eiIvPjwvc3ZnPg==' 
-                },
-                { 
-                    nama: 'Driver 4', 
-                    nomer_whatsapp: '085647709114', 
-                    jenis_kendaraan: 'Honda Vario', 
-                    gambar_profil: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iI2EwYTVhZCI+PHBhdGggZD0iTTEyIDJDNi40OCAyIDIgNi40OCAyIDEyczQuNDggMTAgMTAgMTAgMTAtNC40OCAxMC0xMFMxNy41MiAyIDEyIDJ6bTAgM2MxLjY2IDAgMyAxLjM0IDMgM3MtMS4zNCAzLTMgMy0zLTEuMzQtMy0zIDEuMzQtMyAzLTN6bTAgMTRjLTIuNjcgMC04IDQuMjUgLTggNnYyaDE2di0yYzAtMS43NS01LjMzLTYtOC02eiIvPjwvc3ZnPg=='
+                {
+                    id: 'joko_p',
+                    nama: 'Joko Prasetyo',
+                    no_polisi: 'P 9012 EF',
+                    jenis_kendaraan: 'Honda CB150',
+                    gambar_profil: 'https://github.com/LenteraKarya/NOS/blob/main/assets/images/driver3.jpeg?raw=true',
+                    status: 'nonaktif'
                 }
             ];
+            
+            // --- LOGO BARU (Base64 untuk PDF) ---
+            const logoBase64 = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOEAAADhCAMAAAAJbSJIAAAAhFBMVEX////rABn/yMnqAADqAAD/+/v85+f/9/f73d32t7n/8fH2urr97u796urwTE7/zMzrABj97+/wS1L0q6z609T4x8j5zM3sExbsFxfuLS/tICPuMDL62tr1sbP0pqj2ubr50NDvP0L84+PzpqfsHR7vREj85ubtJinvQELuNzj1rK018dZIAAAD8klEQVR4nO3d63aqPBSG4QC9gChq1VoVb9Ra6/v/H7fIu5OQhGBCzpy95+uHkDPJnCQh2D8eAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD+j1hKS2Np/BtbDbyMpcVS+iR/iT3F2uJp/Q3/EuOIpfVf/Bv6YLG0/o5/Q4IYl9buY9/QfLRYWs+i19A8pFtau49fQ1M8jKVo/T38GpoiwCgW1u7jl9AUKUaxuPYufg1N0Wi0mFp7h76GplgYxWLaO/Q1NMWhUSyuPUvfQ1MMjGKR7Z16GprgcBQLa++i19AUp0YxqfY+eg1NMSiKxfT36Gtoxj1FsdW0n41oRqEolrC/jWgG8SimsZ9NaAbHKRa39rOJzVGIYkn72YQWKIpixvtZhLpYpPjp/U6iIxRFMX/AZxPKo5hig4d9JqEhilms7zMJZVEsxn2fSyiDYonlPZ9JqI9iiRU9n0koiiL7D3yTSShDopjm0YQ+KIq53ucS+qIoFqf4TKLfFEVx0v+k3hTFUf6zCU1RNHyfSyg/ReEcY/yZRCUoik1P+kxivBRFsX7qSGLNKIpO8JtESxRFMcb/SKJpFMXq+E0iQ6IodvoZRKsURbHj/GWiWBSFW/xdotUURSf8btE2imI3/D7RLApC9c/OaU/5P8V3e+d/0T+d+p/if5t/5k3+6b2/Fv//8r/mBf8w1X8V/5V/9i7/VNt/xX8V/vEt/1TbX8V/Df/xLf+k2l/Ffy3/8S3/pMtfxX89//Et/6TDX8V//e9v+Sdd/iv+63t/yTPv8F/f+1v+yRPv8L/h9T+SfvK6a/mv7/0lT7zT/+a+/vWXvPEM/119/+svfeIZ/rv7/tdf+oZn+O/u+19/6Rmf4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b+qNf/k0t/5s6P+/Tfw0f60s9v+Sbf+VnQ3807G//+k37/L9A/D3/0L375t7/z7wF+qPjp/X+E+9R+VwBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/Nl+A7bWwW2k0lKMAAAAAElFTkSuQmCC';
+
 
             // --- INISIALISASI ---
             initNavbar();
@@ -1718,7 +1747,7 @@
             initParticles();
             initMap();
             initOrderForm();
-            populateDriverOptions(); // Panggil fungsi untuk mengisi pilihan driver
+            populateDriverOptions();
             initDriverOrderButtons();
             initRegistrationForm();
             initContactForm();
@@ -1797,8 +1826,6 @@
 
             function initOrderForm() {
                 const form = document.getElementById('orderForm');
-                const steps = form.querySelectorAll('.form-step');
-                const progressSteps = document.querySelectorAll('.progress-step');
                 const currentLocationBtn = document.getElementById('currentLocationBtn');
 
                 currentLocationBtn.addEventListener('click', getUserLocation);
@@ -1839,16 +1866,20 @@
                         const data = Object.fromEntries(formData.entries());
                         const pickupCoordsArray = data.pickupCoords.split(',');
                         
-                        // Buat Kode Pesanan Unik
                         const orderCode = generateOrderCode(data.name, data.distance, data.estimatedPrice);
+                        const selectedDriver = driversData.find(d => d.id === data.selectedDriver);
                         
-                        // Simpan data untuk PDF dan tombol 'Selesai'
-                        lastOrderData = { ...data, orderCode, orderDate: new Date() };
+                        lastOrderData = { ...data, selectedDriver, orderCode, orderDate: new Date() };
                         
-                        const googleMapsLink = `https://www.google.com/maps?q=${pickupCoordsArray[0]},${pickupCoordsArray[1]}`;
+                        const googleMapsLink = `https://www.google.com/maps/search/?api=1&query=${pickupCoordsArray[0]},${pickupCoordsArray[1]}`;
                         
                         const formattedPrice = formatRupiah(data.estimatedPrice);
                         const distanceText = data.distance ? `${data.distance} km` : 'Tidak terhitung';
+
+                        let driverText = 'Bebas (sistem yang memilih)';
+                        if(selectedDriver) {
+                            driverText = `${selectedDriver.nama} (${selectedDriver.jenis_kendaraan} - ${selectedDriver.no_polisi})`;
+                        }
 
                         let message = `*PESANAN BARU NOS*\n\n` +
                             `*Kode Pesanan:* ${orderCode}\n\n` +
@@ -1857,7 +1888,7 @@
                             `*Lokasi Jemput:* ${data.pickupLocation}\n` +
                             `*Tujuan:* ${data.destination}\n\n` +
                             `*Kendaraan:* ${data.selectedVehicle}\n` +
-                            `*Driver Pilihan:* ${data.selectedDriver || 'Bebas (sistem yang memilih)'}\n\n` +
+                            `*Driver Pilihan:* ${driverText}\n\n` +
                             `*Estimasi Jarak:* ${distanceText}\n` +
                             `*Estimasi Harga:* *${formattedPrice}*\n\n` +
                             `*Titik Jemput (Google Maps):*\n${googleMapsLink}\n\n` +
@@ -1866,7 +1897,6 @@
                         sendWhatsAppMessage(WHATSAPP_NUMBER, message);
                         navigateToStep(3);
                         
-                        // Unduh PDF secara otomatis setelah beberapa saat
                         setTimeout(() => {
                             generateAndDownloadPDF(lastOrderData);
                         }, 1000);
@@ -1880,19 +1910,31 @@
                     calculatedDistance = null;
                     lastOrderData = null;
                     form.querySelectorAll('.selected').forEach(el => el.classList.remove('selected'));
-                    // Reset hidden inputs
                     document.getElementById('pickupCoords').value = '';
                     document.getElementById('distance').value = '';
                     document.getElementById('estimatedPrice').value = '';
                     document.getElementById('selectedDriver').value = '';
                     document.getElementById('selectedVehicle').value = '';
+                    
+                    // Reset rating stars
+                    const stars = document.querySelectorAll('.star-rating .fa-star');
+                    stars.forEach(star => {
+                        star.classList.remove('selected');
+                        star.classList.replace('fas', 'far');
+                    });
+                    document.getElementById('driverRating').value = '';
 
                     navigateToStep(1);
                 });
                 
-                document.getElementById('finishOrderBtn').addEventListener('click', () => {
+                const finishOrderAction = () => {
                     if (lastOrderData) {
                         const formattedDate = lastOrderData.orderDate.toLocaleString('id-ID', { dateStyle: 'full', timeStyle: 'short'});
+                        let driverText = 'Sistem';
+                        if (lastOrderData.selectedDriver) {
+                           driverText = `${lastOrderData.selectedDriver.nama} (${lastOrderData.selectedDriver.no_polisi})`;
+                        }
+
                         let historyMessage = `*SALINAN PESANAN (HISTORI ADMIN)*\n\n` +
                             `*Kode Pesanan:* ${lastOrderData.orderCode}\n` +
                             `*Waktu Pesan:* ${formattedDate}\n\n` +
@@ -1901,31 +1943,99 @@
                             `*Lokasi Jemput:* ${lastOrderData.pickupLocation}\n` +
                             `*Tujuan:* ${lastOrderData.destination}\n` +
                             `*Kendaraan:* ${lastOrderData.selectedVehicle}\n` +
-                            `*Driver Pilihan:* ${lastOrderData.selectedDriver || 'Sistem'}\n` +
+                            `*Driver Pilihan:* ${driverText}\n` +
                             `*Estimasi Jarak:* ${lastOrderData.distance} km\n` +
                             `*Estimasi Harga:* ${formatRupiah(lastOrderData.estimatedPrice)}\n`+
                             `*Catatan:* ${lastOrderData.notes || '-'}`;
                             
                         sendWhatsAppMessage(ADMIN_WHATSAPP_NUMBER, historyMessage);
-                        alert('Salinan pesanan telah dikirim ke Admin. Terima kasih!');
-                    } else {
-                        alert('Tidak ada data pesanan untuk dikirim.');
                     }
-                    // Reset form setelah selesai
-                    document.getElementById('newOrderBtn').click();
+                };
+
+                document.getElementById('finishOrderBtn').addEventListener('click', () => {
+                    finishOrderAction();
+                    alert('Salinan pesanan telah dikirim ke Admin. Terima kasih!');
+                    document.getElementById('finishOrderBtn').style.display = 'none';
+                    document.getElementById('newOrderBtn').style.display = 'inline-flex';
+                });
+                
+                document.getElementById('submitRatingBtn').addEventListener('click', () => {
+                    const rating = document.getElementById('driverRating').value;
+                    if (!rating) {
+                        alert("Mohon berikan nilai bintang terlebih dahulu.");
+                        return;
+                    }
+                    if (lastOrderData && lastOrderData.selectedDriver) {
+                        const ratingMessage = `*PENILAIAN DRIVER BARU*\n\n` +
+                            `*Kode Pesanan:* ${lastOrderData.orderCode}\n` +
+                            `*Driver:* ${lastOrderData.selectedDriver.nama}\n` +
+                            `*Penilaian:* ${rating} Bintang ⭐`;
+                        
+                        sendWhatsAppMessage(ADMIN_WHATSAPP_NUMBER, ratingMessage);
+                        finishOrderAction();
+                        
+                        alert('Terima kasih atas penilaian Anda! Salinan pesanan juga telah dikirim ke Admin.');
+
+                        document.getElementById('ratingSection').style.display = 'none';
+                        document.getElementById('submitRatingBtn').style.display = 'none';
+                        document.getElementById('successMessage').querySelector('p').textContent = "Terima kasih atas penilaian Anda! Pesanan selesai.";
+                    }
                 });
 
-
-                function navigateToStep(stepNumber) {
-                    steps.forEach(step => step.classList.toggle('active', parseInt(step.dataset.step) === stepNumber));
-                    progressSteps.forEach((step, index) => {
-                        const progressStepDiv = step.closest('.progress-step');
-                        progressStepDiv.classList.remove('active', 'completed');
-                        if (index < stepNumber - 1) progressStepDiv.classList.add('completed');
-                        if (index === stepNumber - 1) progressStepDiv.classList.add('active');
+                // Rating stars logic
+                const stars = document.querySelectorAll('.star-rating .fa-star');
+                stars.forEach(star => {
+                    star.addEventListener('mouseover', e => {
+                        const rating = e.target.dataset.value;
+                        stars.forEach(s => {
+                            s.classList.toggle('fas', s.dataset.value <= rating);
+                            s.classList.toggle('far', s.dataset.value > rating);
+                        });
                     });
-                    playButtonSound();
+                    star.addEventListener('mouseout', () => {
+                        const currentRating = document.getElementById('driverRating').value;
+                        stars.forEach(s => {
+                            s.classList.toggle('fas', s.dataset.value <= currentRating);
+                            s.classList.toggle('far', s.dataset.value > currentRating);
+                        });
+                    });
+                    star.addEventListener('click', e => {
+                        const rating = e.target.dataset.value;
+                        document.getElementById('driverRating').value = rating;
+                        document.getElementById('submitRatingBtn').style.display = 'inline-flex';
+                    });
+                });
+            }
+
+            function navigateToStep(stepNumber) {
+                const steps = document.querySelectorAll('.form-step');
+                const progressSteps = document.querySelectorAll('.progress-step');
+                
+                steps.forEach(step => step.classList.toggle('active', parseInt(step.dataset.step) === stepNumber));
+                progressSteps.forEach((step, index) => {
+                    const progressStepDiv = step.closest('.progress-step');
+                    progressStepDiv.classList.remove('active', 'completed');
+                    if (index < stepNumber - 1) progressStepDiv.classList.add('completed');
+                    if (index === stepNumber - 1) progressStepDiv.classList.add('active');
+                });
+
+                if (stepNumber === 3) {
+                    const ratingSection = document.getElementById('ratingSection');
+                    const finishBtn = document.getElementById('finishOrderBtn');
+                    const newOrderBtn = document.getElementById('newOrderBtn');
+                    
+                    finishBtn.style.display = 'none';
+                    newOrderBtn.style.display = 'inline-flex';
+
+                    if (lastOrderData && lastOrderData.selectedDriver) {
+                        ratingSection.style.display = 'block';
+                        ratingSound.play().catch(e => console.error("Audio rating gagal diputar:", e));
+                    } else {
+                        ratingSection.style.display = 'none';
+                        finishBtn.style.display = 'inline-flex';
+                    }
                 }
+                playButtonSound();
             }
             
             function populateDriverOptions() {
@@ -1933,9 +2043,9 @@
                 if (!container) return;
 
                 let html = '';
-                driversData.forEach(driver => {
+                driversData.filter(d => d.status === 'aktif').forEach(driver => {
                     html += `
-                        <div class="driver-option" data-name="${driver.nama}">
+                        <div class="driver-option" data-id="${driver.id}">
                             <img src="${driver.gambar_profil}" alt="Foto ${driver.nama}">
                             <div class="driver-option-name">${driver.nama}</div>
                             <div class="driver-option-vehicle">${driver.jenis_kendaraan}</div>
@@ -1948,7 +2058,7 @@
                     const selectedOption = e.target.closest('.driver-option');
                     if (selectedOption) {
                         const allOptions = container.querySelectorAll('.driver-option');
-                        const driverName = selectedOption.dataset.name;
+                        const driverId = selectedOption.dataset.id;
                         const hiddenInput = document.getElementById('selectedDriver');
 
                         if (selectedOption.classList.contains('selected')) {
@@ -1957,20 +2067,22 @@
                         } else {
                             allOptions.forEach(opt => opt.classList.remove('selected'));
                             selectedOption.classList.add('selected');
-                            hiddenInput.value = driverName;
+                            hiddenInput.value = driverId;
                         }
                     }
                 });
             }
 
-
             function initDriverOrderButtons() {
                 document.querySelectorAll('.order-btn').forEach(button => {
                     button.addEventListener('click', function() {
                         if (this.disabled) return;
-                        const driverInfo = this.dataset.driver;
-                        const message = `Halo NOS, saya ingin memesan ojek dengan driver *${driverInfo}*. Mohon info ketersediaannya.`;
-                        sendWhatsAppMessage(WHATSAPP_NUMBER, message);
+                        const driverId = this.dataset.driverId;
+                        const driver = driversData.find(d => d.id === driverId);
+                        if (driver) {
+                            const message = `Halo NOS, saya ingin memesan ojek dengan driver *${driver.nama} (${driver.jenis_kendaraan} - ${driver.no_polisi})*. Mohon info ketersediaannya.`;
+                            sendWhatsAppMessage(WHATSAPP_NUMBER, message);
+                        }
                     });
                 });
             }
@@ -2231,20 +2343,12 @@
                  return isValid;
             }
             
-            function formatRupiah(angka, prefix) {
-                let number_string = String(angka).replace(/[^,\d]/g, '').toString(),
-                split = number_string.split(','),
-                sisa = split[0].length % 3,
-                rupiah = split[0].substr(0, sisa),
-                ribuan = split[0].substr(sisa).match(/\d{3}/gi);
-
-                if (ribuan) {
-                    let separator = sisa ? '.' : '';
-                    rupiah += separator + ribuan.join('.');
-                }
-
-                rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
-                return prefix == undefined ? 'Rp ' + rupiah : (rupiah ? 'Rp ' + rupiah : '');
+            function formatRupiah(angka) {
+                return new Intl.NumberFormat('id-ID', {
+                    style: 'currency',
+                    currency: 'IDR',
+                    minimumFractionDigits: 0
+                }).format(angka);
             }
 
             function sendWhatsAppMessage(number, message) {
@@ -2262,22 +2366,13 @@
             // --- FUNGSI BARU ---
             
             function generateOrderCode(name, distance, price) {
-                // 1. Inisial Nama (contoh: Adi Wijaya -> AW)
                 const nameParts = name.trim().split(/\s+/);
                 const initials = (nameParts.length > 1 ? nameParts[0].charAt(0) + nameParts[nameParts.length - 1].charAt(0) : name.substring(0, 2)).toUpperCase();
-                
-                // 2. Jarak sebelum koma
                 const distancePart = Math.floor(distance);
-                
-                // 3. Estimasi harga
                 const pricePart = Math.round(price);
-
-                // 4. Tanggal, bulan, jam, menit
                 const now = new Date();
                 const datePart = String(now.getDate()).padStart(2, '0') + String(now.getMonth() + 1).padStart(2, '0');
                 const timePart = String(now.getHours()).padStart(2, '0') + String(now.getMinutes()).padStart(2, '0');
-                
-                // Gabungkan sesuai format: AW-1717000-07101731
                 return `${initials}-${distancePart}${pricePart}-${datePart}${timePart}`;
             }
             
@@ -2286,33 +2381,37 @@
                     const { jsPDF } = window.jspdf;
                     const doc = new jsPDF();
                     
+                    // Add Logo
+                    doc.addImage(logoBase64, 'PNG', 14, 12, 25, 25);
+
+                    // Header
                     doc.setFont('helvetica', 'bold');
                     doc.setFontSize(20);
-                    doc.text('Struk Transaksi NOS', 105, 20, { align: 'center' });
-
+                    doc.text('Struk Transaksi Digital', 105, 22, { align: 'center' });
                     doc.setFont('helvetica', 'normal');
                     doc.setFontSize(12);
-                    
+                    doc.text('Nompak Ojek Situbondo (NOS)', 105, 30, { align: 'center' });
+
+                    // Order Info
                     const formattedDate = data.orderDate.toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' });
                     const formattedTime = data.orderDate.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
 
-                    doc.text(`Kode Pesanan: ${data.orderCode}`, 14, 40);
-                    doc.text(`Tanggal: ${formattedDate}, ${formattedTime}`, 14, 47);
+                    doc.setFontSize(10);
+                    doc.text(`Kode Pesanan: ${data.orderCode}`, 14, 45);
+                    doc.text(`Tanggal: ${formattedDate}, Pukul ${formattedTime} WIB`, 196, 45, { align: 'right' });
                     
                     doc.setLineWidth(0.5);
-                    doc.line(14, 55, 196, 55);
+                    doc.line(14, 50, 196, 50);
 
-                    let yPos = 65;
+                    let yPos = 58;
                     const writeDetail = (label, value) => {
                         if (value) {
                             doc.setFont('helvetica', 'bold');
                             doc.text(label, 14, yPos);
                             doc.setFont('helvetica', 'normal');
-                            
-                            // Word wrapping for long values
-                            const splitValue = doc.splitTextToSize(value.toString(), 120); // 120 is max width
-                            doc.text(splitValue, 60, yPos);
-                            yPos += (splitValue.length * 5) + 3; // Adjust yPos based on number of lines
+                            const splitValue = doc.splitTextToSize(value.toString(), 120);
+                            doc.text(splitValue, 70, yPos);
+                            yPos += (splitValue.length * 5) + 4;
                         }
                     };
 
@@ -2321,17 +2420,32 @@
                     writeDetail('Lokasi Jemput:', data.pickupLocation);
                     writeDetail('Tujuan:', data.destination);
                     writeDetail('Kendaraan:', data.selectedVehicle);
-                    writeDetail('Driver Pilihan:', data.selectedDriver || 'Sistem');
+                    
+                    if (data.selectedDriver) {
+                        writeDetail('Driver Pilihan:', `${data.selectedDriver.nama} (${data.selectedDriver.no_polisi})`);
+                    } else {
+                        writeDetail('Driver Pilihan:', 'Sistem');
+                    }
+                    
+                    writeDetail('Catatan:', data.notes || '-');
+                    
+                    doc.setLineWidth(0.2);
+                    doc.line(14, yPos, 196, yPos);
+                    yPos += 8;
+
+                    doc.setFontSize(14);
+                    doc.setFont('helvetica', 'bold');
                     writeDetail('Estimasi Jarak:', `${data.distance} km`);
                     writeDetail('Estimasi Harga:', formatRupiah(data.estimatedPrice));
-                    writeDetail('Catatan:', data.notes || '-');
-
+                    
+                    // Footer
+                    yPos = 270;
                     doc.setLineWidth(0.5);
-                    doc.line(14, yPos + 2, 196, yPos + 2);
+                    doc.line(14, yPos, 196, yPos);
                     doc.setFontSize(10);
                     doc.setTextColor(150);
-                    doc.text('Terima kasih telah menggunakan layanan NOS!', 105, yPos + 12, { align: 'center' });
-                    doc.text('Network Ojek Situbondo © 2025', 105, yPos + 17, { align: 'center' });
+                    doc.text('Terima kasih telah menggunakan layanan NOS!', 105, yPos + 10, { align: 'center' });
+                    doc.text('Nompak Ojek Situbondo © 2025', 105, yPos + 15, { align: 'center' });
 
                     doc.save(`struk-nos-${data.orderCode}.pdf`);
                 } catch (e) {
@@ -2339,7 +2453,6 @@
                     alert("Gagal membuat struk PDF. Pastikan koneksi internet Anda stabil.");
                 }
             }
-
         });
     </script>
 </body>
