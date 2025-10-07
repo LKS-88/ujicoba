@@ -1352,13 +1352,15 @@
                         </div>
                         <div class="form-group">
                             <label for="pickupLocation">Lokasi Penjemputan *</label>
-                            <input type="text" id="pickupLocation" name="pickupLocation" required autocomplete="street-address">
+                            <input type="text" id="pickupLocation" name="pickupLocation" required autocomplete="street-address" placeholder="Contoh: Alun-alun Situbondo">
                             <button type="button" class="location-btn" id="currentLocationBtn"><i class="fas fa-map-marker-alt"></i> Gunakan Lokasi Saya</button>
                         </div>
                         <div class="form-group">
                             <label for="destination">Tujuan *</label>
-                            <input type="text" id="destination" name="destination" required>
+                            <input type="text" id="destination" name="destination" required placeholder="Contoh: Pelabuhan Panarukan">
                         </div>
+                        <input type="hidden" id="pickupCoords" name="pickupCoords">
+                        <input type="hidden" id="distance" name="distance">
                         <button type="button" class="btn btn-primary" data-next="2"><i class="fas fa-arrow-right"></i> Lanjut</button>
                     </div>
 
@@ -1561,7 +1563,7 @@
     </div>
     
     <div class="contact-bar">
-        <a href="https://wa.me/6287865614222" class="contact-btn whatsapp" target="_blank" aria-label="Hubungi via WhatsApp"><i class="fab fa-whatsapp"></i></a>
+        <a href="https://wa.me/6285647709114" class="contact-btn whatsapp" target="_blank" aria-label="Hubungi via WhatsApp"><i class="fab fa-whatsapp"></i></a>
         <a href="tel:+6287865614222" class="contact-btn phone" aria-label="Telepon Kami"><i class="fas fa-phone"></i></a>
         <a href="#order" class="contact-btn order" aria-label="Pesan Cepat"><i class="fas fa-motorcycle"></i></a>
     </div>
@@ -1614,11 +1616,18 @@
         document.addEventListener('DOMContentLoaded', () => {
 
             // --- KONSTANTA & VARIABEL GLOBAL ---
-            const WHATSAPP_NUMBER = '6287865614222'; // Ganti dengan nomor WA admin
+            const WHATSAPP_NUMBER = '6285647709114'; // Nomor WA Driver/Admin
             const bgMusic = document.getElementById('bgMusic');
             const buttonSound = document.getElementById('buttonSound');
             let isMusicPlaying = false;
             let userInteracted = false;
+            
+            // Variabel untuk menyimpan data lokasi
+            let pickupCoords = null;
+            let destinationCoords = null;
+            let calculatedDistance = null;
+            let map, pickupMarker;
+
 
             // --- INISIALISASI ---
             initNavbar();
@@ -1654,7 +1663,6 @@
                     playButtonSound();
                 });
                 
-                // Menutup menu saat link di-klik atau klik di luar area
                 document.addEventListener('click', (e) => {
                     if (navLinks.classList.contains('active') && !navLinks.contains(e.target)) {
                          navLinks.classList.remove('active');
@@ -1671,7 +1679,6 @@
                 const particlesContainer = document.getElementById('particles');
                 if (!particlesContainer) return;
                 
-                // Kurangi partikel di mobile untuk performa lebih baik
                 const particleCount = window.innerWidth < 768 ? 20 : 40;
                 
                 for (let i = 0; i < particleCount; i++) {
@@ -1693,11 +1700,11 @@
             function initMap() {
                 try {
                     const situbondoCoords = [-7.7058, 113.9947];
-                    const map = L.map('map').setView(situbondoCoords, 13);
+                    map = L.map('map').setView(situbondoCoords, 13);
                     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                         attribution: '&copy; OpenStreetMap'
                     }).addTo(map);
-                    L.marker(situbondoCoords).addTo(map).bindPopup('NOS Situbondo').openPopup();
+                    L.marker(situbondoCoords).addTo(map).bindPopup('Pusat Operasi NOS Situbondo').openPopup();
                 } catch (e) {
                     console.error("Gagal memuat peta Leaflet:", e);
                     document.getElementById('map').innerHTML = '<p style="text-align:center; padding-top: 50px;">Peta tidak dapat dimuat. Mohon masukkan lokasi secara manual.</p>';
@@ -1708,19 +1715,31 @@
                 const form = document.getElementById('orderForm');
                 const steps = form.querySelectorAll('.form-step');
                 const progressSteps = document.querySelectorAll('.progress-step');
+                const currentLocationBtn = document.getElementById('currentLocationBtn');
 
-                form.addEventListener('click', e => {
+                currentLocationBtn.addEventListener('click', getUserLocation);
+
+                form.addEventListener('click', async e => {
                     if (e.target.matches('[data-next]')) {
-                        const currentStep = e.target.closest('.form-step');
-                        if (validateStep(currentStep)) {
-                            navigateToStep(parseInt(e.target.dataset.next));
+                        const nextButton = e.target;
+                        const currentStep = nextButton.closest('.form-step');
+                        
+                        nextButton.disabled = true;
+                        nextButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memproses...';
+
+                        const validationResult = await validateAndProcessStep1(currentStep);
+                        if (validationResult) {
+                            navigateToStep(parseInt(nextButton.dataset.next));
                         }
+                        
+                        nextButton.disabled = false;
+                        nextButton.innerHTML = '<i class="fas fa-arrow-right"></i> Lanjut';
+
                     } else if (e.target.matches('[data-back]')) {
                         navigateToStep(parseInt(e.target.dataset.back));
                     }
                 });
                 
-                // Vehicle selection
                 form.querySelectorAll('.vehicle-option').forEach(opt => {
                     opt.addEventListener('click', function() {
                         form.querySelectorAll('.vehicle-option').forEach(el => el.classList.remove('selected'));
@@ -1734,22 +1753,30 @@
                     if (validateStep(form.querySelector('.form-step[data-step="2"]'))) {
                         const formData = new FormData(form);
                         const data = Object.fromEntries(formData.entries());
+                        const pickupCoordsArray = data.pickupCoords.split(',');
+                        
+                        const googleMapsLink = `https://maps.google.com/?q=${pickupCoordsArray[0]},${pickupCoordsArray[1]}`;
 
-                        const message = `Halo NOS, saya ingin memesan ojek:\n\n` +
+                        let message = `*PESANAN BARU NOS*\n\n` +
                             `*Nama:* ${data.name}\n` +
                             `*No. WhatsApp:* ${data.phone}\n` +
                             `*Lokasi Jemput:* ${data.pickupLocation}\n` +
                             `*Tujuan:* ${data.destination}\n` +
-                            `*Kendaraan:* ${data.selectedVehicle}\n` +
+                            `*Kendaraan:* ${data.selectedVehicle}\n\n` +
+                            `*Estimasi Jarak:* ${data.distance || 'Tidak terhitung'}\n` +
+                            `*Titik Jemput (Google Maps):*\n${googleMapsLink}\n\n` +
                             `*Catatan:* ${data.notes || '-'}`;
 
                         sendWhatsAppMessage(message);
-                        navigateToStep(3); // Go to confirmation
+                        navigateToStep(3);
                     }
                 });
 
                 document.getElementById('newOrderBtn').addEventListener('click', () => {
                     form.reset();
+                    pickupCoords = null;
+                    destinationCoords = null;
+                    calculatedDistance = null;
                     form.querySelectorAll('.selected').forEach(el => el.classList.remove('selected'));
                     navigateToStep(1);
                 });
@@ -1779,7 +1806,6 @@
             function initRegistrationForm() {
                 const form = document.getElementById('driverRegistrationForm');
                 
-                // Option button logic
                 form.querySelectorAll('.option-group').forEach(group => {
                     group.addEventListener('click', (e) => {
                         if(e.target.classList.contains('option-btn')) {
@@ -1790,7 +1816,6 @@
                             e.target.classList.add('selected');
                             hiddenInput.value = e.target.dataset.value;
                             
-                            // Handle conditional fields visibility
                             document.querySelectorAll(`.conditional-field[data-condition="${hiddenInputId}"]`).forEach(field => {
                                 field.classList.toggle('active', field.dataset.conditionValue === hiddenInput.value);
                             });
@@ -1869,7 +1894,7 @@
                             e.preventDefault();
                             const target = document.querySelector(href);
                             if (target) {
-                                const offsetTop = target.offsetTop - 80; // offset for sticky nav
+                                const offsetTop = target.offsetTop - 80;
                                 window.scrollTo({ top: offsetTop, behavior: 'smooth' });
                             }
                         }
@@ -1877,20 +1902,143 @@
                 });
             }
 
-            // --- FUNGSI HELPER ---
+            // --- FUNGSI HELPER & GPS ---
+
+            function getUserLocation() {
+                const btn = document.getElementById('currentLocationBtn');
+                const originalText = btn.innerHTML;
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mencari...';
+
+                if (!navigator.geolocation) {
+                    alert('Geolocation tidak didukung oleh browser Anda.');
+                    btn.disabled = false;
+                    btn.innerHTML = originalText;
+                    return;
+                }
+
+                navigator.geolocation.getCurrentPosition(
+                    async (position) => {
+                        const { latitude, longitude } = position.coords;
+                        pickupCoords = { lat: latitude, lon: longitude };
+                        
+                        document.getElementById('pickupCoords').value = `${latitude},${longitude}`;
+                        
+                        if(map) {
+                            map.setView([latitude, longitude], 16);
+                            if (pickupMarker) map.removeLayer(pickupMarker);
+                            pickupMarker = L.marker([latitude, longitude]).addTo(map).bindPopup('Lokasi Jemput Anda').openPopup();
+                        }
+                        
+                        try {
+                            const address = await reverseGeocode(latitude, longitude);
+                            document.getElementById('pickupLocation').value = address;
+                        } catch (error) {
+                            console.error('Error reverse geocoding:', error);
+                            alert('Gagal mendapatkan nama alamat dari lokasi Anda. Silakan isi manual.');
+                        } finally {
+                             btn.disabled = false;
+                             btn.innerHTML = originalText;
+                        }
+                    },
+                    (error) => {
+                        let message = 'Gagal mendapatkan lokasi Anda. ';
+                        switch(error.code) {
+                            case error.PERMISSION_DENIED:
+                                message += "Anda menolak permintaan izin lokasi.";
+                                break;
+                            case error.POSITION_UNAVAILABLE:
+                                message += "Informasi lokasi tidak tersedia.";
+                                break;
+                            case error.TIMEOUT:
+                                message += "Permintaan lokasi timed out.";
+                                break;
+                            default:
+                                message += "Terjadi kesalahan tidak diketahui.";
+                                break;
+                        }
+                        alert(message);
+                        btn.disabled = false;
+                        btn.innerHTML = originalText;
+                    }
+                );
+            }
+
+            async function reverseGeocode(lat, lon) {
+                const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`;
+                const response = await fetch(url);
+                if (!response.ok) throw new Error('Network response was not ok.');
+                const data = await response.json();
+                return data.display_name || 'Alamat tidak ditemukan';
+            }
+
+            async function geocodeAddress(address) {
+                const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(address)}&format=json&limit=1&countrycodes=id`; // Prioritaskan Indonesia
+                const response = await fetch(url);
+                if (!response.ok) throw new Error('Network response was not ok.');
+                const data = await response.json();
+                if (data.length > 0) {
+                    return { lat: parseFloat(data[0].lat), lon: parseFloat(data[0].lon) };
+                }
+                throw new Error('Alamat tidak ditemukan.');
+            }
+            
+            function haversineDistance(coords1, coords2) {
+                function toRad(x) {
+                    return x * Math.PI / 180;
+                }
+
+                const R = 6371; // km
+                const dLat = toRad(coords2.lat - coords1.lat);
+                const dLon = toRad(coords2.lon - coords1.lon);
+                const lat1 = toRad(coords1.lat);
+                const lat2 = toRad(coords2.lat);
+
+                const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                    Math.sin(dLon / 2) * Math.sin(dLon / 2) * Math.cos(lat1) * Math.cos(lat2);
+                const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+                const d = R * c;
+                return d.toFixed(2) + ' km'; // Jarak dalam km dengan 2 desimal
+            }
+
+            async function validateAndProcessStep1(step) {
+                if (!validateStep(step)) return false;
+
+                const pickupInput = document.getElementById('pickupLocation');
+                const destinationInput = document.getElementById('destination');
+
+                try {
+                    // Jika koordinat penjemputan belum ada (pengguna input manual), geocode alamatnya
+                    if (!pickupCoords || document.getElementById('pickupCoords').value === '') {
+                        pickupCoords = await geocodeAddress(pickupInput.value);
+                         document.getElementById('pickupCoords').value = `${pickupCoords.lat},${pickupCoords.lon}`;
+                    }
+                    
+                    // Geocode alamat tujuan
+                    destinationCoords = await geocodeAddress(destinationInput.value);
+
+                    // Hitung jarak
+                    calculatedDistance = haversineDistance(pickupCoords, destinationCoords);
+                    document.getElementById('distance').value = calculatedDistance;
+                    
+                    return true; // Semua berhasil
+                } catch (error) {
+                    alert(`Validasi alamat gagal: ${error.message}. Mohon periksa kembali alamat penjemputan dan tujuan.`);
+                    return false; // Ada yang gagal
+                }
+            }
             
             function validateStep(step) {
                 const fields = step.querySelectorAll('input[required], textarea[required]');
                 let isValid = true;
                 fields.forEach(field => {
+                    const associatedLabel = field.closest('.form-group')?.querySelector('label');
                     if (!field.value.trim() || (field.type === 'hidden' && !field.value) || (field.type === 'tel' && !field.checkValidity())) {
                         field.classList.add('invalid');
-                        const associatedLabel = field.closest('.form-group')?.querySelector('label');
                         if (associatedLabel) associatedLabel.style.color = 'var(--danger)';
                         isValid = false;
                     } else {
                         field.classList.remove('invalid');
-                        const associatedLabel = field.closest('.form-group')?.querySelector('label');
                         if (associatedLabel) associatedLabel.style.color = '';
                     }
                 });
@@ -1902,7 +2050,6 @@
                 const fields = form.querySelectorAll('input[required], textarea[required]');
                  let isValid = true;
                  fields.forEach(field => {
-                    // Bersihkan style error sebelumnya
                     field.classList.remove('invalid');
                     if (!field.value.trim()) {
                         field.classList.add('invalid');
@@ -1922,7 +2069,7 @@
 
             function playButtonSound() {
                 buttonSound.currentTime = 0;
-                buttonSound.play().catch(e => {}); // Ignore error if sound cannot be played
+                buttonSound.play().catch(e => {});
             }
         });
     </script>
