@@ -1309,9 +1309,6 @@
 </head>
 <body>
     
-    <audio id="bgMusic" loop>
-        <source src="https://github.com/LenteraKarya/jualan-kita/blob/main/assets/audio/Musik%20website.mp3?raw=true" type="audio/mpeg">
-    </audio>
     <audio id="buttonSound" src="https://github.com/LenteraKarya/homestay/blob/main/assets/audio/audiotombol.mp3?raw=true"></audio>
     <audio id="ratingSound" src="https://voca.ro/1BjrRUnRSEqJ"></audio>
 
@@ -1697,11 +1694,10 @@
             const WHATSAPP_NUMBER = '6285647709114'; // Nomor WA Admin untuk menerima pesanan
             const ADMIN_WHATSAPP_NUMBER = '6287865614222'; // Nomor WA Admin untuk histori dan rating
             const HARGA_PER_KM = 1500; // Harga per kilometer Rp 1.500
-            const bgMusic = document.getElementById('bgMusic');
+            
+            // PERBAIKAN: Variabel musik latar yang tidak digunakan telah dihapus
             const buttonSound = document.getElementById('buttonSound');
             const ratingSound = document.getElementById('ratingSound');
-            let isMusicPlaying = false;
-            let userInteracted = false;
             
             // Variabel untuk menyimpan data lokasi
             let pickupCoords = null;
@@ -1739,7 +1735,7 @@
             ];
             
             // --- LOGO BARU (Base64 untuk PDF) ---
-            const logoBase64 = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOEAAADhCAMAAAAJbSJIAAAAhFBMVEX////rABn/yMnqAADqAAD/+/v85+f/9/f73d32t7n/8fH2urr97u796urwTE7/zMzrABj97+/wS1L0q6z609T4x8j5zM3sExbsFxfuLS/tICPuMDL62tr1sbP0pqj2ubr50NDvP0L84+PzpqfsHR7vREj85ubtJinvQELuNzj1rK018dZIAAAD8klEQVR4nO3d63aqPBSG4QC9gChq1VoVb9Ra6/v/H7fIu5OQhGBCzpy95+uHkDPJnCQh2D8eAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD+j1hKS2Np/BtbDbyMpcVS+iR/iT3F2uJp/Q3/EuOIpfVf/Bv6YLG0/o5/Q4IYl9buY9/QfLRYWs+i19A8pFtau49fQ1M8jKVo/T38GpoiwCgW1u7jl9AUKUaxuPYufg1N0Wi0mFp7h76GplgYxWLaO/Q1NMWhUSyuPUvfQ1MMjGKR7Z16GprgcBQLa++i19AUp0YxqfY+eg1NMSiKxfT36Gtoxj1FsdW0n41oRqEolrC/jWgG8SimsZ9NaAbHKRa39rOJzVGIYkn72YQWKIpixvtZhLpYpPjp/U6iIxRFMX/AZxPKo5hig4d9JqEhilms7zMJZVEsxn2fSyiDYonlPZ9JqI9iiRU9n0koiiL7D3yTSShDopjm0YQ+KIq53ucS+qIoFqf4TKLfFEVx0v+k3hTFUf6zCU1RNHyfSyg/ReEcY/yZRCUoik1P+kxivBRFsX7qSGLNKIpO8JtESxRFMcb/SKJpFMXq+E0iQ6IodvoZRKsURbHj/GWiWBSFW/xdotUURSf8btE2imI3/D7RLApC9c/OaU/5P8V3e+d/0T+d+p/if5t/5k3+6b2/Fv//8r/mBf8w1X8V/5V/9i7/VNt/xX8V/vEt/1TbX8V/Df/xLf+k2l/Ffy3/8S3/pMtfxX89//Et/6TDX8V//e9v+Sdd/iv+63t/yTPv8F/f+1v+yRPv8L/h9T+SfvK6a/mv7/0lT7zT/+a+/vWXvPEM/119/+svfeIZ/rv7/tdf+oZn+O/u+19/6Rmf4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b+qNf/k0t/5s6P+/Tfw0f60s9v+Sbf+VnQ3807G//+k37/L9A/D3/0L375t7/z7wF+qPjp/X+E+9R+VwBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/Nl+A7bWwW2k0lKMAAAAAElFTkSuQmCC';
+            const logoBase64 = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOEAAADhCAMAAAAJbSJIAAAAhFBMVEX////rABn/yMnqAADqAAD/+/v85+f/9/f73d32t7n/8fH2urr97u796urwTE7/zMzrABj97+/wS1L0q6z609T4x8j5zM3sExbsFxfuLS/tICPuMDL62tr1sbP0pqj2ubr50NDvP0L84+PzpqfsHR7vREj85ubtJinvQELuNzj1rK018dZIAAAD8klEQVR4nO3d63aqPBSG4QC9gChq1VoVb9Ra6/v/H7fIu5OQhGBCzpy95+uHkDPJnCQh2D8eAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD+j1hKS2Np/BtbDbyMpcVS+iR/iT3F2uJp/Q3/EuOIpfVf/Bv6YLG0/o5/Q4IYl9buY9/QfLRYWs+i19A8pFtau49fQ1M8jKVo/T38GpoiwCgW1u7jl9AUKUaxuPYufg1N0Wi0mFp7h76GplgYxWLaO/Q1NMWhUSyuPUvfQ1MMjGKR7Z16GprgcBQLa++i19AUp0YxqfY+eg1NMSiKxfT36Gtoxj1FsdW0n41oRqEolrC/jWgG8SimsZ9NaAbHKRa39rOJzVGIYkn72YQWKIpixvtZhLpYpPjp/U6iIxRFMX/AZxPKo5hig4d9JqEhilms7zMJZVEsxn2fSyiDYonlPZ9JqI9iiRU9n0koiiL7D3yTSShDopjm0YQ+KIq53ucS+qIoFqf4TKLfFEVx0v+k3hTFUf6zCU1RNHyfSyg/ReEcY/yZRCUoik1P+kxivBRFsX7qSGLNKIpO8JtESxRFMcb/SKJpFMXq+E0iQ6IodvoZRKsURbHj/GWiWBSFW/xdotUURSf8btE2imI3/D7RLApC9c/OaU/5P8V3e+d/0T+d+p/if5t/5k3+6b2/Fv//8r/mBf8w1X8V/5V/9i7/VNt/xX8V/vEt/1TbX8V/Df/xLf+k2l/Ffy3/8S3/pMtfxX89//Et/6TDX8V//e9v+Sdd/iv+63t/yTPv8F/f+1v+yRPv8L/h9T+SfvK6a/mv7/0lT7zT/+a+/vWXvPEM/119/+svfeIZ/rv7/tdf+oZn+O/u+19/6Rmf4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b+qNf/k0t/5s6P+/Tfw0f60s9v+Sbf+VnQ3807G//+k37/L9A/D3/0L375t7/z7wF+qPjp/X+E+9R+VwBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/Nl+A7bWwW2k0lKMAAAAAElFTkSuQmCC';
 
 
             // --- INISIALISASI ---
@@ -1753,7 +1749,6 @@
             initRegistrationForm();
             initContactForm();
             initNewsletterForm();
-            initAudio();
             initSmoothScroll();
 
             // --- FUNGSI-FUNGSI ---
@@ -1872,7 +1867,7 @@
                         
                         lastOrderData = { ...data, selectedDriver, orderCode, orderDate: new Date() };
                         
-                        const googleMapsLink = `https://www.google.com/maps?q=${pickupCoordsArray[0]},${pickupCoordsArray[1]}`;
+                        const googleMapsLink = `https://www.google.com/maps/search/?api=1&query=${pickupCoordsArray[0]},${pickupCoordsArray[1]}`;
                         
                         const formattedPrice = formatRupiah(data.estimatedPrice);
                         const distanceText = data.distance ? `${data.distance} km` : 'Tidak terhitung';
@@ -1898,7 +1893,6 @@
                         sendWhatsAppMessage(WHATSAPP_NUMBER, message);
                         navigateToStep(3);
                         
-                        // PERBAIKAN: Menambah delay untuk memastikan UI update sebelum download
                         setTimeout(() => {
                             generateAndDownloadPDF(lastOrderData);
                         }, 1500); 
@@ -1918,7 +1912,6 @@
                     document.getElementById('selectedDriver').value = '';
                     document.getElementById('selectedVehicle').value = '';
                     
-                    // Reset rating stars
                     const stars = document.querySelectorAll('.star-rating .fa-star');
                     stars.forEach(star => {
                         star.classList.remove('selected');
@@ -1929,7 +1922,8 @@
                     navigateToStep(1);
                 });
                 
-                const finishOrderAction = () => {
+                // PERBAIKAN: Fungsi pengiriman laporan ke admin disempurnakan
+                const finishOrderAndSendAdminCopy = (rating = null) => {
                     if (lastOrderData) {
                         const formattedDate = lastOrderData.orderDate.toLocaleString('id-ID', { dateStyle: 'full', timeStyle: 'short'});
                         let driverText = 'Sistem';
@@ -1937,9 +1931,8 @@
                            driverText = `${lastOrderData.selectedDriver.nama} (${lastOrderData.selectedDriver.no_polisi})`;
                         }
                         
-                        // PERBAIKAN: Salinan admin dibuat lebih lengkap dan rapi
                         const pickupCoordsArray = lastOrderData.pickupCoords.split(',');
-                        const googleMapsLink = `https://www.google.com/maps?q=${pickupCoordsArray[0]},${pickupCoordsArray[1]}`;
+                        const googleMapsLink = `https://www.google.com/maps/search/?api=1&query=${pickupCoordsArray[0]},${pickupCoordsArray[1]}`;
 
                         let historyMessage = `*SALINAN PESANAN LENGKAP (NOS ADMIN)*\n` +
                             `================================\n\n` +
@@ -1957,21 +1950,39 @@
                             `*--- BIAYA & CATATAN ---*\n` +
                             `*Estimasi Jarak:* ${lastOrderData.distance} km\n` +
                             `*Estimasi Harga:* *${formatRupiah(lastOrderData.estimatedPrice)}*\n`+
-                            `*Catatan Pelanggan:* ${lastOrderData.notes || '-'}\n\n` +
-                            `================================\n` +
-                            `_Pesan ini dibuat otomatis oleh sistem._`;
+                            `*Catatan Pelanggan:* ${lastOrderData.notes || '-'}\n`;
+                            
+                        // PERBAIKAN: Menambahkan bagian rating jika ada
+                        if (rating && lastOrderData.selectedDriver) {
+                            historyMessage += `\n*--- PENILAIAN DRIVER ---*\n` +
+                                              `*Driver:* ${lastOrderData.selectedDriver.nama}\n` +
+                                              `*Penilaian:* ${'⭐'.repeat(rating)} (${rating} Bintang)\n`;
+                        }
+
+                        historyMessage += `\n================================\n` +
+                                          `_Pesan ini dibuat otomatis oleh sistem._`;
                             
                         sendWhatsAppMessage(ADMIN_WHATSAPP_NUMBER, historyMessage);
+                        
+                        alert('Salinan pesanan telah dikirim ke Admin. Terima kasih!');
+                        
+                        // Update UI
+                        if (rating) {
+                            document.getElementById('ratingSection').style.display = 'none';
+                            document.getElementById('submitRatingBtn').style.display = 'none';
+                            document.getElementById('successMessage').querySelector('p').textContent = "Terima kasih atas penilaian Anda! Pesanan selesai.";
+                        } else {
+                            document.getElementById('finishOrderBtn').style.display = 'none';
+                        }
                     }
                 };
 
+                // PERBAIKAN: Tombol "Selesai" hanya memanggil satu fungsi
                 document.getElementById('finishOrderBtn').addEventListener('click', () => {
-                    finishOrderAction();
-                    alert('Salinan pesanan telah dikirim ke Admin. Terima kasih!');
-                    document.getElementById('finishOrderBtn').style.display = 'none';
-                    document.getElementById('newOrderBtn').style.display = 'inline-flex';
+                    finishOrderAndSendAdminCopy();
                 });
                 
+                // PERBAIKAN: Tombol "Kirim Penilaian" hanya memanggil satu fungsi
                 document.getElementById('submitRatingBtn').addEventListener('click', () => {
                     const rating = document.getElementById('driverRating').value;
                     if (!rating) {
@@ -1979,25 +1990,10 @@
                         return;
                     }
                     if (lastOrderData && lastOrderData.selectedDriver) {
-                        // PERBAIKAN: Pesan rating dibuat lebih informatif
-                        const ratingMessage = `*PENILAIAN DRIVER BARU (NOS ADMIN)*\n\n` +
-                            `*Kode Pesanan:* \`${lastOrderData.orderCode}\`\n` +
-                            `*Driver:* ${lastOrderData.selectedDriver.nama}\n` +
-                            `*Pelanggan:* ${lastOrderData.name}\n` +
-                            `*Penilaian:* ${'⭐'.repeat(rating)} (${rating} Bintang)`;
-                        
-                        sendWhatsAppMessage(ADMIN_WHATSAPP_NUMBER, ratingMessage);
-                        finishOrderAction(); // Kirim juga salinan lengkap pesanan
-                        
-                        alert('Terima kasih atas penilaian Anda! Salinan pesanan juga telah dikirim ke Admin.');
-
-                        document.getElementById('ratingSection').style.display = 'none';
-                        document.getElementById('submitRatingBtn').style.display = 'none';
-                        document.getElementById('successMessage').querySelector('p').textContent = "Terima kasih atas penilaian Anda! Pesanan selesai.";
+                        finishOrderAndSendAdminCopy(rating);
                     }
                 });
 
-                // Rating stars logic
                 const stars = document.querySelectorAll('.star-rating .fa-star');
                 stars.forEach(star => {
                     star.addEventListener('mouseover', e => {
@@ -2005,6 +2001,7 @@
                         stars.forEach(s => {
                             s.classList.toggle('fas', s.dataset.value <= rating);
                             s.classList.toggle('far', s.dataset.value > rating);
+                            s.classList.toggle('selected', s.dataset.value <= rating);
                         });
                     });
                     star.addEventListener('mouseout', () => {
@@ -2012,12 +2009,14 @@
                         stars.forEach(s => {
                             s.classList.toggle('fas', s.dataset.value <= currentRating);
                             s.classList.toggle('far', s.dataset.value > currentRating);
+                             s.classList.toggle('selected', s.dataset.value <= currentRating);
                         });
                     });
                     star.addEventListener('click', e => {
                         const rating = e.target.dataset.value;
                         document.getElementById('driverRating').value = rating;
                         document.getElementById('submitRatingBtn').style.display = 'inline-flex';
+                        ratingSound.play().catch(e => console.error("Audio rating gagal diputar:", e));
                     });
                 });
             }
@@ -2044,7 +2043,6 @@
 
                     if (lastOrderData && lastOrderData.selectedDriver) {
                         ratingSection.style.display = 'block';
-                        ratingSound.play().catch(e => console.error("Audio rating gagal diputar:", e));
                     } else {
                         ratingSection.style.display = 'none';
                         finishBtn.style.display = 'inline-flex';
@@ -2171,20 +2169,6 @@
                  });
             }
 
-            function initAudio() {
-                bgMusic.volume = 0.3;
-                document.body.addEventListener('click', handleFirstInteraction, { once: true });
-                document.body.addEventListener('scroll', handleFirstInteraction, { once: true });
-            }
-            
-            function handleFirstInteraction() {
-                if (userInteracted) return;
-                userInteracted = true;
-                if (bgMusic.paused && !isMusicPlaying) {
-                    bgMusic.play().then(() => { isMusicPlaying = true; }).catch(e => console.log("Autoplay musik dicegah oleh browser."));
-                }
-            }
-
             function initSmoothScroll() {
                 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
                     anchor.addEventListener('click', function(e) {
@@ -2308,11 +2292,11 @@
 
                 try {
                     if (!pickupCoords || document.getElementById('pickupCoords').value === '') {
-                        pickupCoords = await geocodeAddress(pickupInput.value);
+                        pickupCoords = await geocodeAddress(pickupInput.value + ', Situbondo');
                          document.getElementById('pickupCoords').value = `${pickupCoords.lat},${pickupCoords.lon}`;
                     }
                     
-                    destinationCoords = await geocodeAddress(destinationInput.value);
+                    destinationCoords = await geocodeAddress(destinationInput.value + ', Situbondo');
                     calculatedDistance = haversineDistance(pickupCoords, destinationCoords);
                     document.getElementById('distance').value = calculatedDistance;
                     
@@ -2321,7 +2305,7 @@
                     
                     return true;
                 } catch (error) {
-                    alert(`Validasi alamat gagal: ${error.message}. Mohon periksa kembali alamat penjemputan dan tujuan.`);
+                    alert(`Validasi alamat gagal: ${error.message}. Mohon periksa kembali alamat penjemputan dan tujuan, pastikan lebih spesifik.`);
                     return false;
                 }
             }
@@ -2369,7 +2353,14 @@
             function sendWhatsAppMessage(number, message) {
                 const encodedMessage = encodeURIComponent(message);
                 const url = `https://wa.me/${number}?text=${encodedMessage}`;
-                window.open(url, '_blank');
+                try {
+                    const newWindow = window.open(url, '_blank');
+                    if (!newWindow) {
+                        alert("Gagal membuka WhatsApp. Mohon nonaktifkan pemblokir pop-up pada browser Anda.");
+                    }
+                } catch (e) {
+                    alert("Terjadi kesalahan saat mencoba membuka WhatsApp: " + e.message);
+                }
                 playButtonSound();
             }
 
@@ -2378,46 +2369,46 @@
                 buttonSound.play().catch(e => {});
             }
             
-            // --- FUNGSI BARU ---
+            // --- FUNGSI BARU & FUNGSI YANG DIPERBAIKI ---
             
+            // PERBAIKAN: Kode order dibuat lebih unik dengan menyertakan jarak dan harga
             function generateOrderCode(name, distance, price) {
                 const nameParts = name.trim().split(/\s+/);
                 const initials = (nameParts.length > 1 ? nameParts[0].charAt(0) + nameParts[nameParts.length - 1].charAt(0) : name.substring(0, 2)).toUpperCase();
                 const distancePart = Math.floor(distance);
-                const pricePart = Math.round(price / 1000); // Ambil ribuan saja
+                const pricePart = Math.round(price / 1000);
                 const now = new Date();
                 const datePart = String(now.getDate()).padStart(2, '0') + String(now.getMonth() + 1).padStart(2, '0');
                 const timePart = String(now.getHours()).padStart(2, '0') + String(now.getMinutes()).padStart(2, '0');
-                return `NOS-${initials}${datePart}-${timePart}${pricePart}`;
+                return `NOS-${initials}${datePart}-${timePart}-${distancePart}K${pricePart}`;
             }
             
-            // PERBAIKAN: Fungsi PDF disempurnakan dengan desain profesional dan QR code
+            // PERBAIKAN: Fungsi PDF disempurnakan dengan penanganan error
             function generateAndDownloadPDF(data) {
                 try {
+                    // Cek ketersediaan library
+                    if (typeof window.jspdf === 'undefined' || typeof qrcode === 'undefined') {
+                        throw new Error("Library PDF atau QRCode gagal dimuat.");
+                    }
+
                     const { jsPDF } = window.jspdf;
                     const doc = new jsPDF();
                     
-                    // --- DATA ---
                     const formattedDate = data.orderDate.toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' });
                     const formattedTime = data.orderDate.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
                     const driverName = data.selectedDriver ? `${data.selectedDriver.nama} (${data.selectedDriver.no_polisi})` : 'Sistem';
 
-                    // --- QR CODE ---
                     const qrData = `Kode: ${data.orderCode}\nPelanggan: ${data.name}\nDriver: ${driverName}\nHarga: ${formatRupiah(data.estimatedPrice)}\nTanggal: ${formattedDate}`;
                     const qr = qrcode(0, 'M');
                     qr.addData(qrData);
                     qr.make();
                     const qrImg = qr.createDataURL(4);
                     
-                    // --- DESAIN STRUK ---
-                    // Latar belakang header
-                    doc.setFillColor(26, 54, 93); // Warna var(--primary)
+                    doc.setFillColor(26, 54, 93);
                     doc.rect(0, 0, 210, 40, 'F');
 
-                    // Logo
                     doc.addImage(logoBase64, 'PNG', 15, 8, 24, 24);
 
-                    // Judul Header
                     doc.setFont('helvetica', 'bold');
                     doc.setFontSize(22);
                     doc.setTextColor(255, 255, 255);
@@ -2426,10 +2417,9 @@
                     doc.setFont('helvetica', 'normal');
                     doc.text('Nompak Ojek Situbondo (NOS)', 105, 28, { align: 'center' });
 
-                    // Informasi Utama
                     let yPos = 50;
                     doc.setFontSize(11);
-                    doc.setTextColor(26, 32, 44); // Warna var(--dark)
+                    doc.setTextColor(26, 32, 44);
                     doc.setFont('helvetica', 'bold');
                     doc.text('Kode Pesanan:', 15, yPos);
                     doc.setFont('helvetica', 'normal');
@@ -2445,12 +2435,10 @@
                     doc.line(15, yPos, 195, yPos);
                     yPos += 10;
 
-                    // Detail Kolom
                     doc.setFontSize(10);
                     const col1 = 15;
                     const col2 = 110;
 
-                    // Kolom Kiri: Info Pelanggan
                     doc.setFont('helvetica', 'bold');
                     doc.text('INFORMASI PELANGGAN', col1, yPos);
                     yPos += 6;
@@ -2460,7 +2448,6 @@
                     doc.text(`WhatsApp: ${data.phone}`, col1, yPos);
                     yPos += 12;
 
-                    // Kolom Kanan: Info Driver
                     doc.setFont('helvetica', 'bold');
                     doc.text('INFORMASI DRIVER', col2, yPos - 18);
                     doc.setFont('helvetica', 'normal');
@@ -2469,11 +2456,10 @@
                     doc.text(`Kendaraan: ${data.selectedVehicle}`, col2, yPos);
 
 
-                    // Detail Perjalanan
                     yPos += 12;
                     doc.setDrawColor(224, 224, 224);
                     doc.setLineWidth(0.5);
-                    doc.rect(15, yPos - 5, 180, 50, 'S'); // Kotak pembungkus
+                    doc.rect(15, yPos - 5, 180, 50, 'S'); 
 
                     yPos += 2;
                     doc.setFont('helvetica', 'bold');
@@ -2493,8 +2479,6 @@
                     doc.text(splitCatatan, 20, yPos);
                     yPos += (splitCatatan.length * 5) + 15;
 
-
-                    // Rincian Biaya & QR Code
                     doc.setFont('helvetica', 'bold');
                     doc.setFontSize(10);
                     doc.text('Estimasi Jarak:', 15, yPos);
@@ -2507,10 +2491,8 @@
                     doc.setFontSize(16);
                     doc.text(formatRupiah(data.estimatedPrice), 75, yPos + 10);
 
-                    // Add QR Code
                     doc.addImage(qrImg, 'JPEG', 150, yPos - 5, 45, 45);
 
-                    // Footer
                     const finalY = 265;
                     doc.setLineWidth(0.5);
                     doc.line(15, finalY, 195, finalY);
@@ -2526,7 +2508,7 @@
                     doc.save(`struk-nos-${data.orderCode}.pdf`);
                 } catch (e) {
                     console.error("Gagal membuat PDF:", e);
-                    alert("Gagal membuat struk PDF. Pastikan koneksi internet Anda stabil dan coba lagi.");
+                    alert("Gagal membuat struk PDF secara otomatis. Silakan screenshot halaman ini sebagai bukti. Error: " + e.message);
                 }
             }
         });
