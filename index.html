@@ -629,7 +629,7 @@
             <h3><i class="fas fa-paste"></i> Edit dari Script yang Ada</h3>
             <div class="form-group full-width">
                 <label for="gen-importer">Tempel (paste) script produk di sini untuk mengedit:</label>
-                <textarea id="gen-importer" rows="4" placeholder='Contoh: { "id": "AWF-2025-2575", ... } atau [ { "id": "AWF-2025-2575", ... } ]' style="font-family: monospace; font-size: 0.9rem;"></textarea>
+                <textarea id="gen-importer" rows="4" placeholder='Contoh: { "id": "ACA-2025-8899", ... } atau [ { "id": "ACA-2025-8899", ... } ]' style="font-family: monospace; font-size: 0.9rem;"></textarea>
                 <button type="button" id="importScriptBtn" class="btn-add-item"><i class="fas fa-upload"></i> Muat Data ke Form</button>
             </div>
             <hr style="grid-column: 1 / -1; border: 0; border-top: 1px solid #eee; margin: 20px 0;">
@@ -638,11 +638,11 @@
                 <h3><i class="fas fa-info-circle"></i> Informasi Dasar</h3>
                 <div class="form-group">
                     <label for="gen-id">ID Unik</label>
-                    <input type="text" id="gen-id" placeholder="e.g., AWF-2025-2575" required>
+                    <input type="text" id="gen-id" placeholder="e.g., ACA-2025-8899" required>
                 </div>
                 <div class="form-group">
                     <label for="gen-code">Kode Produk</label>
-                    <input type="text" id="gen-code" placeholder="e.g., AWF-2025-2575" required>
+                    <input type="text" id="gen-code" placeholder="e.g., ACA-2025-8899" required>
                 </div>
                 <div class="form-group">
                     <label for="gen-title">Judul Produk</label>
@@ -705,7 +705,7 @@
                 <h3><i class="fas fa-store"></i> Info Penjual & Kontak</h3>
                 <div class="form-group">
                     <label for="gen-seller-name">Nama Gerai/Penjual</label>
-                    <input type="text" id="gen-seller-name" placeholder="e.g., Ardiwillis Farm" required>
+                    <input type="text" id="gen-seller-name" placeholder="e.g., Chacha  Farm" required>
                 </div>
                 <div class="form-group">
                     <label for="gen-seller-link">Link Halaman Gerai</label>
@@ -713,11 +713,11 @@
                 </div>
                 <div class="form-group">
                     <label for="gen-contact-whatsapp">Nomor WhatsApp</label>
-                    <input type="tel" id="gen-contact-whatsapp" placeholder="e.g., 6285258544543" required>
+                    <input type="tel" id="gen-contact-whatsapp" placeholder="e.g., 6281234567890" required>
                 </div>
                 <div class="form-group">
                     <label for="gen-contact-phone">Nomor Telepon</label>
-                    <input type="tel" id="gen-contact-phone" placeholder="e.g., +6285258544543" required>
+                    <input type="tel" id="gen-contact-phone" placeholder="e.g., +6281234567890" required>
                 </div>
 
                 <div class="full-width">
@@ -1196,7 +1196,7 @@
             };
 
             addPriceVariationBtn.addEventListener('click', () => addDynamicItem(priceVariationsContainer, '', '', 'Nama Variasi (e.g., Ecer)', 'Harga (e.g., 8000)'));
-            addSpecBtn.addEventListener('click', () => addDynamicItem(specsContainer, '', '', 'Label (e.g., Kode Produk)', 'Value (e.g., AWF-2025-2575)'));
+            addSpecBtn.addEventListener('click', () => addDynamicItem(specsContainer, '', '', 'Label (e.g., Kode Produk)', 'Value (e.g., ACA-2025-8899)'));
 
             function getProductDataFromForm() {
                 const product = {};
@@ -1330,10 +1330,10 @@
                     (productData.priceVariations || []).forEach(v => addDynamicItem(priceVariationsContainer, v.name, v.price, 'Nama Variasi (e.g., Ecer)', 'Harga (e.g., 8000)'));
 
                     specsContainer.innerHTML = '';
-                    (productData.details?.specs || []).forEach(s => addDynamicItem(specsContainer, s.label, s.value, 'Label (e.g., Kode Produk)', 'Value (e.g., AWF-2025-2575)'));
-
+                    (productData.details?.specs || []).forEach(s => addDynamicItem(specsContainer, s.label, s.value, 'Label (e.g., Kode Produk)', 'Value (e.g., ACA-2025-8899)'));
+                                                                                                  
                     alert('Data produk berhasil dimuat ke dalam form!');
-                    playButtonSound();
+                    playButtonSound();                                    
 
                 } catch (error) {
                     alert(`Gagal memuat data. Pastikan script JSON yang Anda tempel valid.\n\nDetail Kesalahan: ${error.message}`);
