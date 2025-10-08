@@ -629,7 +629,7 @@
             <h3><i class="fas fa-paste"></i> Edit dari Script yang Ada</h3>
             <div class="form-group full-width">
                 <label for="gen-importer">Tempel (paste) script produk di sini untuk mengedit:</label>
-                <textarea id="gen-importer" rows="4" placeholder='Contoh: { "id": "AWF-2025-2575", ... }' style="font-family: monospace; font-size: 0.9rem;"></textarea>
+                <textarea id="gen-importer" rows="4" placeholder='Contoh: { "id": "AWF-2025-2575", ... } atau [ { "id": "AWF-2025-2575", ... } ]' style="font-family: monospace; font-size: 0.9rem;"></textarea>
                 <button type="button" id="importScriptBtn" class="btn-add-item"><i class="fas fa-upload"></i> Muat Data ke Form</button>
             </div>
             <hr style="grid-column: 1 / -1; border: 0; border-top: 1px solid #eee; margin: 20px 0;">
@@ -1184,9 +1184,13 @@
                 item.className = 'dynamic-list-item';
                 item.innerHTML = `
                     <input type="text" class="dynamic-name" placeholder="${placeholder1}" value="${name}" required>
-                    <input type="text" class="dynamic-value" placeholder="${placeholder2}" value="${value}" required>
+                    <input type="number" class="dynamic-value" placeholder="${placeholder2}" value="${value}" required>
                     <button type="button" class="btn-remove-item"><i class="fas fa-trash"></i></button>
                 `;
+                // Ganti tipe input untuk spesifikasi menjadi teks
+                if (container === specsContainer) {
+                    item.querySelector('.dynamic-value').type = 'text';
+                }
                 container.appendChild(item);
                 item.querySelector('.btn-remove-item').addEventListener('click', () => item.remove());
             };
@@ -1234,7 +1238,6 @@
             generatorForm.addEventListener('submit', (e) => {
                 e.preventDefault();
                 const product = getProductDataFromForm();
-                // Menggunakan JSON.stringify tanpa spasi tambahan untuk hasil satu baris (minified)
                 const jsonString = JSON.stringify(product); 
                 outputElement.textContent = jsonString;
                 outputContainer.style.display = 'block';
@@ -1243,62 +1246,113 @@
                 playButtonSound();
             });
             
+            // [ --- KODE YANG DIPERBAIKI DAN DISEMPURNAKAN --- ]
             importScriptBtn.addEventListener('click', () => {
-                // [PERBAIKAN] Membersihkan input dari karakter non-standar (seperti spasi aneh) dan trailing comma
-                let scriptText = genImporter.value
-                    .replace(/[\u00A0\u200B-\u200D\uFEFF]/g, ' ') // Hapus zero-width spaces & non-breaking spaces
-                    .trim()
-                    .replace(/,\s*$/, ''); // Hapus trailing comma jika ada di akhir
+                let scriptText = genImporter.value.trim();
 
-                if (!scriptText) { 
-                    alert("Area teks kosong. Silakan tempel script produk."); 
-                    return; 
+                if (!scriptText) {
+                    alert("Area teks kosong. Silakan tempel script produk.");
+                    return;
                 }
-                
+
                 try {
-                    const productData = JSON.parse(scriptText);
+                    // Cerdas: Coba deteksi jika pengguna menempelkan seluruh array produk atau variabel
+                    // dan coba ekstrak objek JSON pertama yang valid.
+                    if (!scriptText.startsWith('{') && !scriptText.startsWith('[')) {
+                        const jsonStart = scriptText.indexOf('{');
+                        const jsonStartArray = scriptText.indexOf('[');
+                        
+                        let startIndex = -1;
+                        if (jsonStart !== -1 && jsonStartArray !== -1) {
+                            startIndex = Math.min(jsonStart, jsonStartArray);
+                        } else if (jsonStart !== -1) {
+                            startIndex = jsonStart;
+                        } else {
+                            startIndex = jsonStartArray;
+                        }
+
+                        if (startIndex !== -1) {
+                            scriptText = scriptText.substring(startIndex);
+                        }
+                    }
+                    
+                    // Menghapus trailing comma yang sering menyebabkan error JSON.parse
+                    scriptText = scriptText.replace(/,\s*([}\]])/g, "$1");
+
+                    let rawData = JSON.parse(scriptText);
+                    let productData;
+
+                    // Cerdas: Jika data yang dipaste adalah array, ambil objek pertama.
+                    if (Array.isArray(rawData)) {
+                        if (rawData.length > 0) {
+                            productData = rawData[0];
+                            alert('Dideteksi input berupa array. Data dari produk pertama dalam daftar telah dimuat.');
+                        } else {
+                            alert('Array yang Anda tempel kosong. Tidak ada data untuk dimuat.');
+                            return;
+                        }
+                    } else {
+                        productData = rawData;
+                    }
+                    
+                    if (typeof productData !== 'object' || productData === null) {
+                        throw new Error("Data yang valid tidak ditemukan dalam teks yang Anda tempel.");
+                    }
+
+                    // --- Proses memuat data ke form (dengan optional chaining untuk keamanan) ---
                     document.getElementById('gen-id').value = productData.id || '';
+                    document.getElementById('gen-code').value = productData.code || productData.id || '';
+                    document.getElementById('gen-title').value = productData.title || '';
                     document.getElementById('gen-category').value = productData.category || 'food';
                     document.getElementById('gen-type').value = productData.type || 'all';
-                    document.getElementById('gen-seller-name').value = productData.seller?.name || '';
-                    document.getElementById('gen-seller-link').value = productData.seller?.link || '';
+                    document.getElementById('gen-mainImage').value = productData.mainImage || '';
+                    
+                    document.getElementById('gen-price').value = productData.price ?? '';
+                    document.getElementById('gen-originalPrice').value = productData.originalPrice ?? '';
+                    document.getElementById('gen-discount').value = productData.discount || '';
+                    
                     document.getElementById('gen-badge-text').value = productData.badge?.text || '';
                     document.getElementById('gen-badge-type').value = productData.badge?.type || 'promo';
-                    document.getElementById('gen-mainImage').value = productData.mainImage || '';
-                    document.getElementById('gen-title').value = productData.title || '';
-                    document.getElementById('gen-code').value = productData.code || '';
-                    document.getElementById('gen-price').value = productData.price || 0;
-                    document.getElementById('gen-originalPrice').value = productData.originalPrice || '';
-                    document.getElementById('gen-discount').value = productData.discount || '';
-                    document.getElementById('gen-units').value = productData.units?.join(', ') || '';
-                    document.getElementById('gen-defaultUnit').value = productData.defaultUnit || '';
-                    document.getElementById('gen-description').value = productData.details?.description || '';
-                    document.getElementById('gen-images').value = productData.details?.images?.join(',\n') || '';
+                    
+                    document.getElementById('gen-seller-name').value = productData.seller?.name || '';
+                    document.getElementById('gen-seller-link').value = productData.seller?.link || '';
+                    
                     document.getElementById('gen-contact-whatsapp').value = productData.contact?.whatsapp || '';
                     document.getElementById('gen-contact-phone').value = productData.contact?.phone || '';
+
+                    document.getElementById('gen-units').value = productData.units?.join(', ') || '';
+                    document.getElementById('gen-defaultUnit').value = productData.defaultUnit || '';
                     
+                    document.getElementById('gen-description').value = productData.details?.description || '';
+                    document.getElementById('gen-images').value = productData.details?.images?.join(',\n') || '';
+
                     priceVariationsContainer.innerHTML = '';
-                    productData.priceVariations?.forEach(v => addDynamicItem(priceVariationsContainer, v.name, v.price, 'Nama Variasi', 'Harga'));
-                    
+                    (productData.priceVariations || []).forEach(v => addDynamicItem(priceVariationsContainer, v.name, v.price, 'Nama Variasi (e.g., Ecer)', 'Harga (e.g., 8000)'));
+
                     specsContainer.innerHTML = '';
-                    productData.details?.specs?.forEach(s => addDynamicItem(specsContainer, s.label, s.value, 'Label', 'Value'));
-                    
+                    (productData.details?.specs || []).forEach(s => addDynamicItem(specsContainer, s.label, s.value, 'Label (e.g., Kode Produk)', 'Value (e.g., AWF-2025-2575)'));
+
                     alert('Data produk berhasil dimuat ke dalam form!');
                     playButtonSound();
+
                 } catch (error) {
-                    alert('Gagal memuat data. Pastikan script JSON yang Anda tempel valid dan hanya berisi satu objek produk.');
-                    console.error('JSON Parse Error:', error);
+                    alert(`Gagal memuat data. Pastikan script JSON yang Anda tempel valid.\n\nDetail Kesalahan: ${error.message}`);
+                    console.error('JSON Parse/Import Error:', error);
                 }
             });
 
             previewProductBtn.addEventListener('click', () => {
-                const productData = getProductDataFromForm();
-                previewTarget.innerHTML = createProductCardHTML(productData);
-                generatorPreviewContainer.style.display = 'block';
-                outputContainer.style.display = 'none';
-                initCardEventListeners(previewTarget); // Aktifkan fungsionalitas pada kartu preview
-                generatorPreviewContainer.scrollIntoView({ behavior: 'smooth' });
-                playButtonSound();
+                try {
+                    const productData = getProductDataFromForm();
+                    previewTarget.innerHTML = createProductCardHTML(productData);
+                    generatorPreviewContainer.style.display = 'block';
+                    outputContainer.style.display = 'none';
+                    initCardEventListeners(previewTarget); // Aktifkan fungsionalitas pada kartu preview
+                    generatorPreviewContainer.scrollIntoView({ behavior: 'smooth' });
+                    playButtonSound();
+                } catch(e){
+                    alert("Gagal membuat preview. Pastikan semua field yang wajib diisi sudah terisi dengan benar.");
+                }
             });
 
             copyScriptBtn.addEventListener('click', () => { navigator.clipboard.writeText(outputElement.textContent).then(() => alert('Script berhasil disalin ke clipboard!')).catch(err => alert('Gagal menyalin script.')); playButtonSound(); });
