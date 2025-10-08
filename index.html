@@ -204,7 +204,7 @@
             }
         }
         
-        /* --- [FITUR BARU] FORM GENERATOR --- */
+        /* --- [FITUR BARU & PENYEMPURNAAN TAMPILAN] FORM GENERATOR --- */
         .generator-fab {
             position: fixed;
             bottom: 20px;
@@ -234,38 +234,116 @@
             left: 0; top: 0;
             width: 100%; height: 100%;
             overflow: auto;
-            background-color: rgba(0,0,0,0.6);
+            background-color: rgba(0,0,0,0.7);
             align-items: center;
             justify-content: center;
         }
         .generator-modal.show { display: flex; }
         .generator-modal-content {
-            background-color: #fefefe;
+            background-color: #f8f9fa; /* Warna latar lebih cerah */
             margin: 20px;
-            padding: 25px;
-            border: 1px solid #888;
+            padding: 0; /* Hapus padding default */
+            border: none; /* Hapus border default */
             width: 95%;
-            max-width: 800px;
-            border-radius: 10px;
+            max-width: 900px; /* Lebarkan sedikit */
+            border-radius: 12px; /* Border lebih melengkung */
             max-height: 90vh;
-            overflow-y: auto;
-            position: relative;
+            display: flex; /* Gunakan flexbox untuk layout */
+            flex-direction: column;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
         }
-        .close-generator-modal { color: #aaa; position: absolute; top: 10px; right: 20px; font-size: 28px; font-weight: bold; cursor: pointer; }
-        .generator-modal-content h2 { color: #007bff; margin-top: 0; border-bottom: 2px solid #eee; padding-bottom: 10px; }
-        .generator-modal-content h3 { color: #333; margin-top: 20px; font-size: 1.1rem; border-left: 4px solid #007bff; padding-left: 10px; }
+        .generator-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 25px;
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            color: white;
+            border-top-left-radius: 12px;
+            border-top-right-radius: 12px;
+        }
+        .generator-modal-header h2 {
+            margin: 0;
+            font-size: 1.5rem;
+            font-family: 'Playfair Display', serif;
+        }
+        .close-generator-modal {
+            color: white;
+            font-size: 32px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s;
+            line-height: 1;
+        }
+        .close-generator-modal:hover { transform: rotate(90deg); }
+        
+        .generator-modal-body {
+            padding: 25px;
+            overflow-y: auto;
+            background-color: #f8f9fa;
+        }
+        .generator-section {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            border: 1px solid #dee2e6;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        .generator-section h3 {
+            color: #0056b3;
+            margin-top: 0;
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+            border-left: 4px solid #007bff;
+            padding-left: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
         #productGeneratorForm { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
         #productGeneratorForm .form-group { display: flex; flex-direction: column; }
         #productGeneratorForm .full-width { grid-column: 1 / -1; }
-        #productGeneratorForm label { margin-bottom: 5px; font-weight: 600; color: #555; font-size: 0.9rem; }
+        #productGeneratorForm label { margin-bottom: 8px; font-weight: 600; color: #495057; font-size: 0.9rem; }
         #productGeneratorForm input, #productGeneratorForm select, #productGeneratorForm textarea {
-            padding: 10px; font-size: 1rem; border: 1px solid #ccc; border-radius: 5px; font-family: 'Poppins', sans-serif;
+            padding: 12px; font-size: 1rem; border: 1px solid #ced4da; border-radius: 5px; font-family: 'Poppins', sans-serif;
+            transition: border-color 0.2s, box-shadow 0.2s;
         }
-        #productGeneratorForm textarea { resize: vertical; min-height: 100px; }
+        #productGeneratorForm input:focus, #productGeneratorForm select:focus, #productGeneratorForm textarea:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+            outline: none;
+        }
+        #productGeneratorForm textarea { resize: vertical; min-height: 120px; }
         .dynamic-list-item { display: flex; gap: 10px; margin-bottom: 10px; align-items: center; }
         .dynamic-list-item input { flex: 1; }
-        .btn-remove-item { background-color: #dc3545; color: white; border: none; padding: 0; width: 38px; height: 38px; border-radius: 5px; cursor: pointer; font-size: 1rem; }
-        .btn-add-item { background-color: #007bff; color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; margin-top: 10px; }
+        .btn-remove-item { background-color: #e74c3c; color: white; border: none; width: 42px; height: 42px; border-radius: 5px; cursor: pointer; font-size: 1rem; transition: background-color 0.2s; }
+        .btn-remove-item:hover { background-color: #c0392b; }
+        .btn-add-item { background-color: #007bff; color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; margin-top: 10px; transition: background-color 0.2s; font-weight: 500;}
+        .btn-add-item:hover { background-color: #0056b3; }
+        .btn-add-item i { margin-right: 5px; }
+
+        /* [BARU] Editor Toolbar untuk Deskripsi */
+        .description-toolbar {
+            margin-bottom: 8px;
+            background-color: #e9ecef;
+            padding: 5px;
+            border-radius: 5px;
+            display: flex;
+            gap: 5px;
+        }
+        .toolbar-btn {
+            background-color: #fff;
+            border: 1px solid #ced4da;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 3px;
+            font-family: sans-serif;
+            font-size: 0.9rem;
+            transition: background-color 0.2s;
+        }
+        .toolbar-btn:hover { background-color: #f1f1f1; }
         
         #generatorOutputContainer { margin-top: 25px; border-top: 2px solid #eee; padding-top: 20px; display: none; }
         .output-controls { display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px; }
@@ -277,10 +355,9 @@
         #generatedScriptWrapper.visible { display: block; }
         #generatedScriptOutput {
             background-color: #2d2d2d; color: #f8f8f2; padding: 20px; border-radius: 8px;
-            white-space: pre; overflow-x: auto; max-height: 400px; font-family: monospace;
+            white-space: pre; overflow-x: auto; max-height: 400px; font-family: 'Fira Code', 'Courier New', monospace;
         }
         
-        /* [BARU] CSS Untuk Preview Generator */
         #generatorPreviewContainer {
              margin-top: 25px; border-top: 2px solid #eee; padding-top: 20px; display: none;
              background-color: #f9f9f9; padding: 20px; border-radius: 8px;
@@ -293,8 +370,8 @@
             box-shadow: 0 8px 25px rgba(0,0,0,0.1);
             transform: scale(1);
             transition: none;
-            margin: 0 auto; /* tengahkan kartu preview */
-            max-width: 400px; /* Batasi lebar agar tidak terlalu besar di modal */
+            margin: 0 auto;
+            max-width: 400px;
         }
         #previewTarget .gallery-item:hover {
             transform: none;
@@ -514,8 +591,7 @@
     </a>
     
     <div class="generator-fab" id="openGeneratorBtn" aria-label="Buka Generator Produk">
-        <i class="fas fa-plus"></i>
-    </div>
+        <i class="fas fa-cogs"></i> </div>
     
     <footer>
         <div class="footer-container">
@@ -623,171 +699,196 @@
 
     <div class="generator-modal" id="generatorModal">
         <div class="generator-modal-content">
-            <span class="close-generator-modal" id="closeGeneratorModal">&times;</span>
-            <h2><i class="fas fa-magic"></i> Product Data Generator</h2>
-            
-            <h3><i class="fas fa-paste"></i> Edit dari Script yang Ada</h3>
-            <div class="form-group full-width">
-                <label for="gen-importer">Tempel (paste) script produk di sini untuk mengedit:</label>
-                <textarea id="gen-importer" rows="4" placeholder='Contoh: { "id": "ACA-2025-8899", ... } atau [ { "id": "ACA-2025-8899", ... } ]' style="font-family: monospace; font-size: 0.9rem;"></textarea>
-                <button type="button" id="importScriptBtn" class="btn-add-item"><i class="fas fa-upload"></i> Muat Data ke Form</button>
+            <div class="generator-modal-header">
+                <h2><i class="fas fa-magic"></i> Product Data Generator</h2>
+                <span class="close-generator-modal" id="closeGeneratorModal">&times;</span>
             </div>
-            <hr style="grid-column: 1 / -1; border: 0; border-top: 1px solid #eee; margin: 20px 0;">
-
-            <form id="productGeneratorForm">
-                <h3><i class="fas fa-info-circle"></i> Informasi Dasar</h3>
-                <div class="form-group">
-                    <label for="gen-id">ID Unik</label>
-                    <input type="text" id="gen-id" placeholder="e.g., ACA-2025-8899" required>
-                </div>
-                <div class="form-group">
-                    <label for="gen-code">Kode Produk</label>
-                    <input type="text" id="gen-code" placeholder="e.g., ACA-2025-8899" required>
-                </div>
-                <div class="form-group">
-                    <label for="gen-title">Judul Produk</label>
-                    <input type="text" id="gen-title" placeholder="e.g., Paket Lengkap Ternak Ayam" required>
-                </div>
-                <div class="form-group">
-                    <label for="gen-category">Kategori</label>
-                    <select id="gen-category">
-                        <option value="food">Makanan & Minuman</option>
-                        <option value="snack">Kue & Cemilan</option>
-                        <option value="construction">Alat Konstruksi</option>
-                        <option value="office">Alat Kantor</option>
-                        <option value="household">Alat Rumah Tangga</option>
-                        <option value="software">Software Aplikasi</option>
-                        <option value="electronics">Elektronik</option>
-                        <option value="fishery">Perikanan</option>
-                        <option value="livestock">Peternakan</option>
-                        <option value="agriculture">Pertanian</option>
-                    </select>
-                </div>
-                 <div class="form-group">
-                    <label for="gen-type">Tipe Tampilan</label>
-                    <select id="gen-type">
-                        <option value="all">Semua</option>
-                        <option value="rental">Sewa</option>
-                        <option value="promo">Promosi</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="gen-mainImage">URL Gambar Utama</label>
-                    <input type="url" id="gen-mainImage" placeholder="https://i.imgur.com/..." required>
-                </div>
-
-                <h3><i class="fas fa-tag"></i> Info Harga & Badge</h3>
-                <div class="form-group">
-                    <label for="gen-price">Harga Awal (Angka)</label>
-                    <input type="number" id="gen-price" placeholder="e.g., 8000" required>
-                </div>
-                <div class="form-group">
-                    <label for="gen-originalPrice">Harga Asli (Opsional)</label>
-                    <input type="number" id="gen-originalPrice" placeholder="e.g., 10000">
-                </div>
-                <div class="form-group">
-                    <label for="gen-discount">Teks Diskon (Opsional)</label>
-                    <input type="text" id="gen-discount" placeholder="e.g., 10% OFF">
-                </div>
-                <div class="form-group">
-                    <label for="gen-badge-text">Teks Badge</label>
-                    <input type="text" id="gen-badge-text" placeholder="e.g., Promosi" required>
-                </div>
-                 <div class="form-group">
-                    <label for="gen-badge-type">Tipe Badge</label>
-                    <select id="gen-badge-type">
-                        <option value="promo">Promo</option>
-                        <option value="rental">Rental</option>
-                        <option value="new">Baru</option>
-                    </select>
-                </div>
-
-                <h3><i class="fas fa-store"></i> Info Penjual & Kontak</h3>
-                <div class="form-group">
-                    <label for="gen-seller-name">Nama Gerai/Penjual</label>
-                    <input type="text" id="gen-seller-name" placeholder="e.g., Chacha  Farm" required>
-                </div>
-                <div class="form-group">
-                    <label for="gen-seller-link">Link Halaman Gerai</label>
-                    <input type="url" id="gen-seller-link" placeholder="https://www.anekamarket.my.id/..." required>
-                </div>
-                <div class="form-group">
-                    <label for="gen-contact-whatsapp">Nomor WhatsApp</label>
-                    <input type="tel" id="gen-contact-whatsapp" placeholder="e.g., 6281234567890" required>
-                </div>
-                <div class="form-group">
-                    <label for="gen-contact-phone">Nomor Telepon</label>
-                    <input type="tel" id="gen-contact-phone" placeholder="e.g., +6281234567890" required>
-                </div>
-
-                <div class="full-width">
-                    <h3><i class="fas fa-money-bill-wave"></i> Variasi Harga</h3>
-                    <div id="priceVariationsContainer"></div>
-                    <button type="button" class="btn-add-item" id="addPriceVariationBtn"><i class="fas fa-plus"></i> Tambah Variasi</button>
-                </div>
-
-                <div class="full-width">
-                    <h3><i class="fas fa-balance-scale"></i> Satuan Produk (Units)</h3>
-                    <div class="form-group">
-                        <label for="gen-units">Daftar Satuan (pisahkan dengan koma)</label>
-                        <input type="text" id="gen-units" placeholder="e.g., pcs, kg, biji, ekor" required>
-                    </div>
-                     <div class="form-group">
-                        <label for="gen-defaultUnit">Satuan Default</label>
-                        <input type="text" id="gen-defaultUnit" placeholder="e.g., ekor" required>
-                    </div>
-                </div>
-
-                <div class="full-width">
-                    <h3><i class="fas fa-align-left"></i> Detail Produk</h3>
+            <div class="generator-modal-body">
+                <div class="generator-section">
+                    <h3><i class="fas fa-paste"></i> Impor & Edit Data</h3>
                     <div class="form-group full-width">
-                        <label for="gen-description">Deskripsi</label>
-                        <textarea id="gen-description" placeholder="Deskripsi lengkap produk..." required></textarea>
-                    </div>
-                    <div class="form-group full-width">
-                        <label for="gen-images">URL Gambar Tambahan (pisahkan dengan koma)</label>
-                        <textarea id="gen-images" placeholder="https://..., https://..."></textarea>
+                        <label for="gen-importer">Tempel (paste) script produk di sini untuk mengedit:</label>
+                        <textarea id="gen-importer" rows="4" placeholder='Contoh: { "id": "ACA-2025-8899", ... } atau [ { "id": "ACA-2025-8899", ... } ]' style="font-family: monospace; font-size: 0.9rem;"></textarea>
+                        <button type="button" id="importScriptBtn" class="btn-add-item" style="margin-top: 10px;"><i class="fas fa-upload"></i> Muat Data ke Form</button>
                     </div>
                 </div>
 
-                <div class="full-width">
-                    <h3><i class="fas fa-list-ul"></i> Spesifikasi</h3>
-                    <div id="specsContainer"></div>
-                    <button type="button" class="btn-add-item" id="addSpecBtn"><i class="fas fa-plus"></i> Tambah Spesifikasi</button>
-                </div>
+                <form id="productGeneratorForm">
+                    <div class="generator-section full-width">
+                        <h3><i class="fas fa-info-circle"></i> Informasi Dasar</h3>
+                        <div id="basicInfoGrid">
+                            <div class="form-group">
+                                <label for="gen-id">ID Unik</label>
+                                <input type="text" id="gen-id" placeholder="e.g., ACA-2025-8899" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="gen-code">Kode Produk</label>
+                                <input type="text" id="gen-code" placeholder="e.g., ACA-2025-8899" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="gen-title">Judul Produk</label>
+                                <input type="text" id="gen-title" placeholder="e.g., Paket Lengkap Ternak Ayam" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="gen-category">Kategori</label>
+                                <select id="gen-category">
+                                    <option value="food">Makanan & Minuman</option>
+                                    <option value="snack">Kue & Cemilan</option>
+                                    <option value="construction">Alat Konstruksi</option>
+                                    <option value="office">Alat Kantor</option>
+                                    <option value="household">Alat Rumah Tangga</option>
+                                    <option value="software">Software Aplikasi</option>
+                                    <option value="electronics">Elektronik</option>
+                                    <option value="fishery">Perikanan</option>
+                                    <option value="livestock">Peternakan</option>
+                                    <option value="agriculture">Pertanian</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="gen-type">Tipe Tampilan</label>
+                                <select id="gen-type">
+                                    <option value="all">Semua</option>
+                                    <option value="rental">Sewa</option>
+                                    <option value="promo">Promosi</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="gen-mainImage">URL Gambar Utama</label>
+                                <input type="url" id="gen-mainImage" placeholder="https://i.imgur.com/..." required>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="generator-section full-width">
+                        <h3><i class="fas fa-tag"></i> Info Harga & Badge</h3>
+                         <div id="priceInfoGrid">
+                            <div class="form-group">
+                                <label for="gen-price">Harga Awal (Angka)</label>
+                                <input type="number" id="gen-price" placeholder="e.g., 8000" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="gen-originalPrice">Harga Asli (Opsional)</label>
+                                <input type="number" id="gen-originalPrice" placeholder="e.g., 10000">
+                            </div>
+                            <div class="form-group">
+                                <label for="gen-discount">Teks Diskon (Opsional)</label>
+                                <input type="text" id="gen-discount" placeholder="e.g., 10% OFF">
+                            </div>
+                            <div class="form-group">
+                                <label for="gen-badge-text">Teks Badge</label>
+                                <input type="text" id="gen-badge-text" placeholder="e.g., Promosi" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="gen-badge-type">Tipe Badge</label>
+                                <select id="gen-badge-type">
+                                    <option value="promo">Promo</option>
+                                    <option value="rental">Rental</option>
+                                    <option value="new">Baru</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
 
-                <button type="submit" class="btn btn-primary full-width" style="margin-top:20px; font-size: 1.2rem; padding: 15px;">
-                    <i class="fas fa-cogs"></i> Generate Script
-                </button>
+                    <div class="generator-section full-width">
+                        <h3><i class="fas fa-store"></i> Info Penjual & Kontak</h3>
+                        <div id="sellerInfoGrid">
+                             <div class="form-group">
+                                <label for="gen-seller-name">Nama Gerai/Penjual</label>
+                                <input type="text" id="gen-seller-name" placeholder="e.g., Chacha Farm" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="gen-seller-link">Link Halaman Gerai</label>
+                                <input type="url" id="gen-seller-link" placeholder="https://www.anekamarket.my.id/..." required>
+                            </div>
+                            <div class="form-group">
+                                <label for="gen-contact-whatsapp">Nomor WhatsApp</label>
+                                <input type="tel" id="gen-contact-whatsapp" placeholder="e.g., 081234567890" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="gen-contact-phone">Nomor Telepon</label>
+                                <input type="tel" id="gen-contact-phone" placeholder="e.g., 081234567890" required>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="generator-section full-width">
+                        <h3><i class="fas fa-money-bill-wave"></i> Variasi Harga</h3>
+                        <div id="priceVariationsContainer"></div>
+                        <button type="button" class="btn-add-item" id="addPriceVariationBtn"><i class="fas fa-plus"></i> Tambah Variasi</button>
+                    </div>
+
+                    <div class="generator-section full-width">
+                        <h3><i class="fas fa-balance-scale"></i> Satuan Produk (Units)</h3>
+                        <div id="unitsInfoGrid">
+                            <div class="form-group">
+                                <label for="gen-units">Daftar Satuan (pisahkan dengan koma)</label>
+                                <input type="text" id="gen-units" placeholder="e.g., pcs, kg, biji, ekor" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="gen-defaultUnit">Satuan Default</label>
+                                <input type="text" id="gen-defaultUnit" placeholder="e.g., ekor" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="generator-section full-width">
+                        <h3><i class="fas fa-align-left"></i> Detail Produk</h3>
+                        <div class="form-group full-width">
+                            <label for="gen-description">Deskripsi</label>
+                            <div class="description-toolbar">
+                                <button type="button" class="toolbar-btn" data-tag="b"><b>Bold</b></button>
+                                <button type="button" class="toolbar-btn" data-tag="strong"><strong>Strong</strong></button>
+                                <button type="button" class="toolbar-btn" data-tag="i"><i>Italic</i></button>
+                                <button type="button" class="toolbar-btn" data-tag="br">Line Break</button>
+                            </div>
+                            <textarea id="gen-description" placeholder="Deskripsi lengkap produk..." required></textarea>
+                        </div>
+                        <div class="form-group full-width" style="margin-top:15px;">
+                            <label for="gen-images">URL Gambar Tambahan (pisahkan dengan koma)</label>
+                            <textarea id="gen-images" placeholder="https://..., https://..."></textarea>
+                        </div>
+                    </div>
+
+                    <div class="generator-section full-width">
+                        <h3><i class="fas fa-list-ul"></i> Spesifikasi</h3>
+                        <div id="specsContainer"></div>
+                        <button type="button" class="btn-add-item" id="addSpecBtn"><i class="fas fa-plus"></i> Tambah Spesifikasi</button>
+                    </div>
+                    
+                    <div class="full-width" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px;">
+                        <button type="button" id="previewProductBtn" class="btn btn-primary" style="background-color: #28a745; border-color: #218838; font-size: 1.1rem; padding: 15px;">
+                            <i class="fas fa-eye"></i> Preview Tampilan
+                        </button>
+                         <button type="submit" class="btn btn-primary" style="font-size: 1.1rem; padding: 15px;">
+                            <i class="fas fa-cogs"></i> Generate Script
+                        </button>
+                    </div>
+                </form>
+
+                <div id="generatorOutputContainer">
+                    <div class="output-controls">
+                        <h3><i class="fas fa-code"></i> Hasil Script</h3>
+                        <div class="output-actions">
+                            <button id="toggleScriptVisibilityBtn" title="Lihat/Sembunyikan Script">
+                                <i class="fas fa-eye-slash"></i>
+                            </button>
+                            <button id="copyScriptBtn" title="Salin ke Clipboard">
+                                <i class="fas fa-copy"></i> Salin
+                            </button>
+                            <button id="downloadScriptBtn" title="Unduh sebagai file .js">
+                                <i class="fas fa-download"></i> Unduh
+                            </button>
+                        </div>
+                    </div>
+                    <div id="generatedScriptWrapper">
+                        <pre><code id="generatedScriptOutput"></code></pre>
+                    </div>
+                </div>
                 
-                <button type="button" id="previewProductBtn" class="btn btn-primary full-width" style="margin-top:10px; background-color: #28a745; border-color: #218838;">
-                    <i class="fas fa-eye"></i> Preview Tampilan Produk
-                </button>
-            </form>
-
-            <div id="generatorOutputContainer">
-                <div class="output-controls">
-                    <h3><i class="fas fa-code"></i> Hasil Script</h3>
-                    <div class="output-actions">
-                        <button id="toggleScriptVisibilityBtn" title="Lihat/Sembunyikan Script">
-                            <i class="fas fa-eye-slash"></i>
-                        </button>
-                        <button id="copyScriptBtn" title="Salin ke Clipboard">
-                            <i class="fas fa-copy"></i> Salin
-                        </button>
-                        <button id="downloadScriptBtn" title="Unduh sebagai file .js">
-                            <i class="fas fa-download"></i> Unduh
-                        </button>
-                    </div>
+                <div id="generatorPreviewContainer">
+                    <h3><i class="fas fa-desktop"></i> Pratinjau Hasil</h3>
+                    <div id="previewTarget"></div>
                 </div>
-                <div id="generatedScriptWrapper">
-                    <pre><code id="generatedScriptOutput"></code></pre>
-                </div>
-            </div>
-            
-            <div id="generatorPreviewContainer">
-                <h3><i class="fas fa-desktop"></i> Pratinjau Hasil</h3>
-                <div id="previewTarget"></div>
             </div>
         </div>
     </div>
@@ -1184,12 +1285,12 @@
                 item.className = 'dynamic-list-item';
                 item.innerHTML = `
                     <input type="text" class="dynamic-name" placeholder="${placeholder1}" value="${name}" required>
-                    <input type="number" class="dynamic-value" placeholder="${placeholder2}" value="${value}" required>
+                    <input type="text" class="dynamic-value" placeholder="${placeholder2}" value="${value}" required>
                     <button type="button" class="btn-remove-item"><i class="fas fa-trash"></i></button>
                 `;
-                // Ganti tipe input untuk spesifikasi menjadi teks
-                if (container === specsContainer) {
-                    item.querySelector('.dynamic-value').type = 'text';
+                // Untuk variasi harga, tipenya adalah number
+                if (container === priceVariationsContainer) {
+                    item.querySelector('.dynamic-value').type = 'number';
                 }
                 container.appendChild(item);
                 item.querySelector('.btn-remove-item').addEventListener('click', () => item.remove());
@@ -1223,7 +1324,7 @@
                 product.defaultUnit = document.getElementById('gen-defaultUnit').value;
                 product.details = {
                     description: document.getElementById('gen-description').value,
-                    images: document.getElementById('gen-images').value.split(',').map(img => img.trim()).filter(img => img),
+                    images: document.getElementById('gen-images').value.split(/[\n,]+/).map(img => img.trim()).filter(img => img), // Split by comma or newline
                     specs: []
                 };
                 specsContainer.querySelectorAll('.dynamic-list-item').forEach(item => {
@@ -1238,107 +1339,59 @@
             generatorForm.addEventListener('submit', (e) => {
                 e.preventDefault();
                 const product = getProductDataFromForm();
-                const jsonString = JSON.stringify(product, null, 2); // Using null, 2 for pretty printing
+                const jsonString = JSON.stringify(product, null, 2);
                 outputElement.textContent = jsonString;
                 outputContainer.style.display = 'block';
                 generatorPreviewContainer.style.display = 'none';
                 outputContainer.scrollIntoView({ behavior: 'smooth' });
                 playButtonSound();
             });
-            
-            // [ --- KODE YANG DIPERBAIKI DAN DISEMPURNAKAN --- ]
+
             importScriptBtn.addEventListener('click', () => {
                 let scriptText = genImporter.value.trim();
-
-                if (!scriptText) {
-                    alert("Area teks kosong. Silakan tempel script produk.");
-                    return;
-                }
-
+                if (!scriptText) { alert("Area teks kosong. Silakan tempel script produk."); return; }
                 try {
-                    // Cerdas: Coba deteksi jika pengguna menempelkan seluruh array produk atau variabel
-                    // dan coba ekstrak objek JSON pertama yang valid.
                     if (!scriptText.startsWith('{') && !scriptText.startsWith('[')) {
                         const jsonStart = scriptText.indexOf('{');
                         const jsonStartArray = scriptText.indexOf('[');
-                        
                         let startIndex = -1;
-                        if (jsonStart !== -1 && jsonStartArray !== -1) {
-                            startIndex = Math.min(jsonStart, jsonStartArray);
-                        } else if (jsonStart !== -1) {
-                            startIndex = jsonStart;
-                        } else {
-                            startIndex = jsonStartArray;
-                        }
-
-                        if (startIndex !== -1) {
-                            scriptText = scriptText.substring(startIndex);
-                        }
+                        if (jsonStart !== -1 && jsonStartArray !== -1) { startIndex = Math.min(jsonStart, jsonStartArray); }
+                        else if (jsonStart !== -1) { startIndex = jsonStart; }
+                        else { startIndex = jsonStartArray; }
+                        if (startIndex !== -1) { scriptText = scriptText.substring(startIndex); }
                     }
-                    
-                    // Menghapus trailing comma yang sering menyebabkan error JSON.parse
                     scriptText = scriptText.replace(/,\s*([}\]])/g, "$1");
-
-                    let rawData = JSON.parse(scriptText);
-                    let productData;
-
-                    // Cerdas: Jika data yang dipaste adalah array, ambil objek pertama.
+                    let rawData = JSON.parse(scriptText); let productData;
                     if (Array.isArray(rawData)) {
-                        if (rawData.length > 0) {
-                            productData = rawData[0];
-                            alert('Dideteksi input berupa array. Data dari produk pertama dalam daftar telah dimuat.');
-                        } else {
-                            alert('Array yang Anda tempel kosong. Tidak ada data untuk dimuat.');
-                            return;
-                        }
-                    } else {
-                        productData = rawData;
-                    }
-                    
-                    if (typeof productData !== 'object' || productData === null) {
-                        throw new Error("Data yang valid tidak ditemukan dalam teks yang Anda tempel.");
-                    }
-
-                    // --- Proses memuat data ke form (dengan optional chaining untuk keamanan) ---
+                        if (rawData.length > 0) { productData = rawData[0]; alert('Dideteksi input berupa array. Data dari produk pertama dalam daftar telah dimuat.'); }
+                        else { alert('Array yang Anda tempel kosong. Tidak ada data untuk dimuat.'); return; }
+                    } else { productData = rawData; }
+                    if (typeof productData !== 'object' || productData === null) { throw new Error("Data yang valid tidak ditemukan."); }
                     document.getElementById('gen-id').value = productData.id || '';
                     document.getElementById('gen-code').value = productData.code || productData.id || '';
                     document.getElementById('gen-title').value = productData.title || '';
                     document.getElementById('gen-category').value = productData.category || 'food';
                     document.getElementById('gen-type').value = productData.type || 'all';
                     document.getElementById('gen-mainImage').value = productData.mainImage || '';
-                    
                     document.getElementById('gen-price').value = productData.price ?? '';
                     document.getElementById('gen-originalPrice').value = productData.originalPrice ?? '';
                     document.getElementById('gen-discount').value = productData.discount || '';
-                    
                     document.getElementById('gen-badge-text').value = productData.badge?.text || '';
                     document.getElementById('gen-badge-type').value = productData.badge?.type || 'promo';
-                    
                     document.getElementById('gen-seller-name').value = productData.seller?.name || '';
                     document.getElementById('gen-seller-link').value = productData.seller?.link || '';
-                    
                     document.getElementById('gen-contact-whatsapp').value = productData.contact?.whatsapp || '';
                     document.getElementById('gen-contact-phone').value = productData.contact?.phone || '';
-
                     document.getElementById('gen-units').value = productData.units?.join(', ') || '';
                     document.getElementById('gen-defaultUnit').value = productData.defaultUnit || '';
-                    
                     document.getElementById('gen-description').value = productData.details?.description || '';
                     document.getElementById('gen-images').value = productData.details?.images?.join(',\n') || '';
-
                     priceVariationsContainer.innerHTML = '';
-                    (productData.priceVariations || []).forEach(v => addDynamicItem(priceVariationsContainer, v.name, v.price, 'Nama Variasi (e.g., Ecer)', 'Harga (e.g., 8000)'));
-
+                    (productData.priceVariations || []).forEach(v => addDynamicItem(priceVariationsContainer, v.name, v.price, 'Nama Variasi', 'Harga'));
                     specsContainer.innerHTML = '';
-                    (productData.details?.specs || []).forEach(s => addDynamicItem(specsContainer, s.label, s.value, 'Label (e.g., Kode Produk)', 'Value (e.g., ACA-2025-8899)'));
-                                                                                                  
-                    alert('Data produk berhasil dimuat ke dalam form!');
-                    playButtonSound();                                    
-
-                } catch (error) {
-                    alert(`Gagal memuat data. Pastikan script JSON yang Anda tempel valid.\n\nDetail Kesalahan: ${error.message}`);
-                    console.error('JSON Parse/Import Error:', error);
-                }
+                    (productData.details?.specs || []).forEach(s => addDynamicItem(specsContainer, s.label, s.value, 'Label', 'Value'));
+                    alert('Data produk berhasil dimuat ke dalam form!'); playButtonSound();
+                } catch (error) { alert(`Gagal memuat data. Pastikan script JSON valid.\n\nDetail: ${error.message}`); console.error('JSON Parse Error:', error); }
             });
 
             previewProductBtn.addEventListener('click', () => {
@@ -1347,17 +1400,63 @@
                     previewTarget.innerHTML = createProductCardHTML(productData);
                     generatorPreviewContainer.style.display = 'block';
                     outputContainer.style.display = 'none';
-                    initCardEventListeners(previewTarget); // Aktifkan fungsionalitas pada kartu preview
+                    initCardEventListeners(previewTarget);
                     generatorPreviewContainer.scrollIntoView({ behavior: 'smooth' });
                     playButtonSound();
-                } catch(e){
-                    alert("Gagal membuat preview. Pastikan semua field yang wajib diisi sudah terisi dengan benar.");
-                }
+                } catch(e){ alert("Gagal membuat preview. Pastikan semua field wajib diisi dengan benar."); }
             });
 
-            copyScriptBtn.addEventListener('click', () => { navigator.clipboard.writeText(outputElement.textContent).then(() => alert('Script berhasil disalin ke clipboard!')).catch(err => alert('Gagal menyalin script.')); playButtonSound(); });
+            copyScriptBtn.addEventListener('click', () => { navigator.clipboard.writeText(outputElement.textContent).then(() => alert('Script berhasil disalin!')).catch(err => alert('Gagal menyalin.')); playButtonSound(); });
             downloadScriptBtn.addEventListener('click', () => { const blob = new Blob([outputElement.textContent], { type: 'application/javascript' }); const url = URL.createObjectURL(blob); const a = document.createElement('a'); const fileName = document.getElementById('gen-id').value || 'product-data'; a.href = url; a.download = `${fileName}.js`; document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url); playButtonSound(); });
             toggleVisibilityBtn.addEventListener('click', () => { outputWrapper.classList.toggle('visible'); const icon = toggleVisibilityBtn.querySelector('i'); icon.className = outputWrapper.classList.contains('visible') ? 'fas fa-eye' : 'fas fa-eye-slash'; playButtonSound(); });
+            
+            // --- [FITUR CERDAS BARU] FORMAT OTOMATIS NOMOR TELEPON ---
+            const whatsappInput = document.getElementById('gen-contact-whatsapp');
+            const phoneInput = document.getElementById('gen-contact-phone');
+            
+            whatsappInput.addEventListener('input', (e) => {
+                let value = e.target.value.replace(/\D/g, ''); // Hapus semua selain angka
+                if (value.startsWith('0')) {
+                    value = '62' + value.substring(1);
+                }
+                e.target.value = value;
+            });
+            
+            phoneInput.addEventListener('input', (e) => {
+                let value = e.target.value.replace(/[^0-9+]/g, ''); // Hanya izinkan angka dan +
+                if (value.startsWith('0')) {
+                    value = '+62' + value.substring(1);
+                }
+                e.target.value = value;
+            });
+            
+            // --- [FITUR BARU] FUNGSI EDITOR DESKRIPSI ---
+            const descriptionTextarea = document.getElementById('gen-description');
+            const toolbar = document.querySelector('.description-toolbar');
+            toolbar.addEventListener('click', (e) => {
+                const button = e.target.closest('.toolbar-btn');
+                if (!button) return;
+
+                const tag = button.dataset.tag;
+                const start = descriptionTextarea.selectionStart;
+                const end = descriptionTextarea.selectionEnd;
+                const selectedText = descriptionTextarea.value.substring(start, end);
+                const beforeText = descriptionTextarea.value.substring(0, start);
+                const afterText = descriptionTextarea.value.substring(end);
+                
+                let replacement = '';
+                if (tag === 'br') {
+                    replacement = '<br>';
+                } else {
+                    replacement = `<${tag}>${selectedText}</${tag}>`;
+                }
+
+                descriptionTextarea.value = beforeText + replacement + afterText;
+                descriptionTextarea.focus();
+                // Atur kursor setelah teks yang disisipkan
+                descriptionTextarea.selectionStart = descriptionTextarea.selectionEnd = start + replacement.length;
+            });
+
         });
     </script>
 </body>
