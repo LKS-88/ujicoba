@@ -643,22 +643,24 @@
             right: 3rem;
             display: flex;
             flex-direction: column;
-            gap: 1.5rem;
+            gap: 1rem; /* Reduced gap for more buttons */
             z-index: 100;
         }
 
         .contact-btn {
-            width: 70px;
-            height: 70px;
+            width: 60px; /* Slightly smaller for more buttons */
+            height: 60px; /* Slightly smaller for more buttons */
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
-            font-size: 2rem;
+            font-size: 1.8rem; /* Adjusted font size */
             box-shadow: var(--shadow-lg);
             transition: var(--transition);
             text-decoration: none;
+            border: none;
+            cursor: pointer;
         }
 
         .contact-btn:hover {
@@ -669,6 +671,10 @@
         .whatsapp { background: linear-gradient(135deg, #25D366, #128C7E); }
         .order { background: linear-gradient(135deg, var(--accent), #d9731f); animation: pulse-gold 2s infinite; }
         .phone { background: linear-gradient(135deg, var(--secondary), #3182ce); }
+        /* ## PERBAIKAN: Styling untuk tombol melayang baru ## */
+        .services-toggle { background: linear-gradient(135deg, var(--gold), #b89b3c); }
+        .drivers-toggle { background: linear-gradient(135deg, var(--primary), #2c5282); }
+
 
         @keyframes pulse-gold {
             0% { box-shadow: 0 0 0 0 rgba(230, 126, 34, 0.5); }
@@ -737,10 +743,10 @@
             margin-bottom: 2rem;
         }
 
+        /* ## PERBAIKAN: Menghapus filter agar logo tampil ## */
         .footer-logo img {
             height: 50px;
             width: auto;
-            filter: brightness(0) invert(1);
         }
 
         .footer-logo span {
@@ -955,8 +961,8 @@
         }
         .conditional-field { display: none; margin-top: 1.5rem; animation: fadeIn 0.3s ease; }
         .conditional-field.active { display: block; }
-
-        /* --- Additional CSS for Custom Notification --- */
+        
+        /* CSS Tambahan untuk Notifikasi Kustom */
         #notification-container {
             position: fixed;
             top: 20px;
@@ -1087,11 +1093,7 @@
         <section class="services" id="services">
             <h2 class="section-title">Layanan Kami</h2>
             
-            <div style="text-align: center; margin-bottom: 2rem;">
-                <button id="toggleServicesBtn" class="btn btn-primary"><i class="fas fa-search"></i> Cek Layanan Kami</button>
-            </div>
-
-            <div id="servicesContainer" style="display: none;">
+            <div id="servicesContainer">
                 <p class="section-intro">Kami menyediakan berbagai layanan transportasi yang nyaman dan aman untuk memenuhi kebutuhan perjalanan Anda di Situbondo.</p>
                 <div class="services-grid">
                     <div class="service-card">
@@ -1225,10 +1227,6 @@
             <h2 class="section-title">Driver Profesional Kami</h2>
             <p class="section-intro">Driver profesional kami siap mengantarkan Anda dengan aman dan nyaman ke tujuan.</p>
             
-            <div style="text-align: center; margin-bottom: 2rem;">
-                <button id="toggleDriversBtn" class="btn btn-primary"><i class="fas fa-search"></i> Cek Driver NOS</button>
-            </div>
-            
             <div class="drivers-grid" id="driversGrid" style="display: none;">
                 <div class="driver-card">
                     <img src="https://github.com/LenteraKarya/NOS/blob/main/assets/images/driver1.jpeg?raw=true" alt="Budi Santoso" class="driver-avatar" loading="lazy">
@@ -1356,6 +1354,8 @@
     </div>
     
     <div class="contact-bar">
+        <button id="toggleServicesFloatingBtn" class="contact-btn services-toggle" aria-label="Lihat Layanan"><i class="fas fa-concierge-bell"></i></button>
+        <button id="toggleDriversFloatingBtn" class="contact-btn drivers-toggle" aria-label="Lihat Driver"><i class="fas fa-id-card"></i></button>
         <a href="https://wa.me/6285647709114" class="contact-btn whatsapp" target="_blank" aria-label="Hubungi via WhatsApp"><i class="fab fa-whatsapp"></i></a>
         <a href="tel:+6287865614222" class="contact-btn phone" aria-label="Telepon Kami"><i class="fas fa-phone"></i></a>
         <a href="#order" class="contact-btn order" aria-label="Pesan Cepat"><i class="fas fa-motorcycle"></i></a>
@@ -1432,7 +1432,7 @@
                 { id: 'joko_p', nama: 'Joko Prasetyo', no_polisi: 'P 9012 EF', jenis_kendaraan: 'Honda CB150', gambar_profil: 'https://github.com/LenteraKarya/NOS/blob/main/assets/images/driver3.jpeg?raw=true', status: 'nonaktif' }
             ];
             
-            const logoBase64 = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAASiSURBVGhDzZpZyFxFFMf/O6O7uqu7qwsK6kJBwaMiqCCo4F0RFFHwHkQBlUBRUEEFH3xQUUFFhIgoeO8RBBUEBUHBiIhYxTey/s/0/N2Z7p6e3plZdpJ/MvPNN/N/Mzc3M3dHYOD/n8CgJXBwCZycAj8rAWoK4EKJDB4N3CgRwa9ChRLaA5RK2B8FSoVkECa0BVAqYX8UaBUygTDh9goUStgfBcYFEugcMGE3gEKJ/38KlAobwIRbA5RKyL8VKE8ggyZh9wgUSsi/FTgskEETNssoUShh/1U4JpDAKWzSKZSw/yrMECjgU2zSKZSw/yqcIJBBLmzSKZSw/ypsUCjgC2zSKZSw/yocEEhgsS2bhRL2X4V/BIJkYrEtm4US9l+FDwSCpGKLbNkoZfxXYUkgyLTYLptlMv4rsLdAAjexWWbLJOK/ChsFEjhpM8uyk4j/KlxRSOCUzSy7JRj/VVgskECzzSy7JRj/VVgQSGDzzCy7JRj/VTgmkECzMyy7JRj/VTgkkECMMyy7JRj/VQgBAs0zYJkl4r8KpQQIZN6AYZb4/yocJEDgzJmQZZG8PwqzBAg4M2dilliXBAgcN2dklsWSBHQYv2bWyLLEmgSccGfWyLLEmgSMuDdrllliTQJ+3DlrZJm1TMD1eSMLbLLMmgScuDdrZJm1Ccj1eSMLbLLMmgSMuDdrZJm1Ccj1eSMLbLLMmgSMuDdrZJm1Ccj1eSMLbLLMmgSMuDdrZJm1Ccj1eSMLbLLMmgSMuDdrZJm1Ccj1eSMLbLLMmgSMuDdrZJm1Ccj1eSMLbLLMmgSMuDdrZJm1Ccj1eSMLbLLMmgSMuDdrZJm1Ccj1eSMLbLLMmgSMuDdrZJm1Ccj1eSMLbLLMmgSMuDdrZJm1Ccj1eSMLbLLMmgSMuDdrZJm1Ccj1eSMLbLLMmgSMuDdrZJm1Ccj1eSMLbLLMmgSMuDdrZJm1Ccj1eSMLbLLMmgSMuDdrZJm1Ccj1eSMLbLLMmgSMuDdrZJm1Ccj1eSMLbLLMmgSMuDdrZJm1Ccj1eSMLbLLMmgSMuDdrZJm1Ccj1eSMLbLLMmgSMuDdrZJm1Ccj1eSMLbLLMmgSMuDdrZJm1Ccj1eSMLbLLMmgSMuDdrZJm1Ccj1eSMLbLLMmgSMuDdrZJm1Ccj1eSMLbLLMmgSMuDdrZJm1Ccj1eSMLbLLMmgSMuDdrZJm1Ccj1eSMLbLLMmgSMuDdrZJm1Ccj1eSMLbLLMmgSMuDdrZJm1Ccj1eSMLbLLMmgSMuDdrZJm1Ccj1eSMLbLLMmgSMuDdrZJm1Ccj1eSMLbLLMmgSMuDdrZJm1Ccj1eSMLbLLMmgSMuDdrZJm1Ccj1eSMLbLLMmgSMuDdrZJm1Ccj1eSMLbLLMmgSMuDdrZJm1Ccj1eSMLbLLMmgSMuDdrZJm1Ccj1eSMLbLLMmgSMuDdrZJm1Ccj1eSMLbLLMmgSMuDdrZJm1Ccj1eSMLbLLMmgSMuDdrZJm1Ccj1eSMLbLLMmgSMuDdrZJm1Ccj1eSMLbLLMmgSMuDdrZJm1Ccj1eSMLbLLMmgTcyRdn5r+u/iPw5+L/T/Q/jLw5+c4v25qP+P9A8D785Qd/38R+K+Nf0n835X585WvfkL+b/K/85YdP0P+b/G/L/Pna7/5/wv+4sU/Wf7v3j6Y+L/E/1/W/3n5T83+T8T+j5k/YwP8//H0X8n4f/gHDP/3+J9v/Uv5L8//n+3/+c6vA152fW38XwIUCGRwCXCmQwc3AoyVgQQUKJWw/7oH7V+iYfFMAAAAASUVORK5CYII=';
+            const logoBase64 = 'data:image/png;base64,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';
 
             // --- INISIALISASI ---
             initNavbar();
@@ -1446,12 +1446,12 @@
             initContactForm();
             initNewsletterForm();
             initSmoothScroll();
-            initToggleDrivers(); 
-            initToggleServices();
+            initFloatingActionButtons(); // ## PERBAIKAN: Initialize floating buttons ##
 
             // --- FUNGSI-FUNGSI ---
 
             function showNotification(message, isSuccess = true) {
+                // ## PERBAIKAN: Memastikan suara notifikasi diputar saat notifikasi sukses ##
                 if (notificationSound && isSuccess) {
                     notificationSound.currentTime = 0;
                     notificationSound.play().catch(e => console.error("Notification sound failed to play:", e));
@@ -1509,41 +1509,43 @@
                 });
             }
             
-            function initToggleDrivers() {
-                const toggleBtn = document.getElementById('toggleDriversBtn');
+            // ## PERBAIKAN: Fungsi baru untuk mengelola semua tombol melayang ##
+            function initFloatingActionButtons() {
+                const toggleDriversBtn = document.getElementById('toggleDriversFloatingBtn');
                 const driversGrid = document.getElementById('driversGrid');
-                if (toggleBtn && driversGrid) {
-                    toggleBtn.addEventListener('click', () => {
-                        playButtonSound();
-                        const isHidden = driversGrid.style.display === 'none';
-                        if (isHidden) {
-                            driversGrid.style.display = 'grid';
-                            toggleBtn.innerHTML = '<i class="fas fa-eye-slash"></i> Sembunyikan Driver';
-                        } else {
-                            driversGrid.style.display = 'none';
-                            toggleBtn.innerHTML = '<i class="fas fa-search"></i> Cek Driver NOS';
-                        }
-                    });
-                }
-            }
-            
-            function initToggleServices() {
-                const toggleBtn = document.getElementById('toggleServicesBtn');
+                const toggleServicesBtn = document.getElementById('toggleServicesFloatingBtn');
                 const servicesContainer = document.getElementById('servicesContainer');
-                if (toggleBtn && servicesContainer) {
-                    toggleBtn.addEventListener('click', () => {
+
+                if (toggleDriversBtn && driversGrid) {
+                    toggleDriversBtn.addEventListener('click', () => {
                         playButtonSound();
-                        const isHidden = servicesContainer.style.display === 'none';
-                        if (isHidden) {
-                            servicesContainer.style.display = 'block';
-                            toggleBtn.innerHTML = '<i class="fas fa-eye-slash"></i> Sembunyikan Layanan';
-                        } else {
-                            servicesContainer.style.display = 'none';
-                            toggleBtn.innerHTML = '<i class="fas fa-search"></i> Cek Layanan Kami';
-                        }
+                        const isHidden = driversGrid.style.display === 'none' || driversGrid.style.display === '';
+                        
+                        // Scroll to the section first
+                        document.getElementById('drivers').scrollIntoView({ behavior: 'smooth' });
+
+                        // Then toggle visibility
+                        driversGrid.style.display = isHidden ? 'grid' : 'none';
+                        
+                        showNotification(isHidden ? 'Menampilkan daftar driver.' : 'Menyembunyikan daftar driver.');
+                    });
+                }
+
+                if (toggleServicesBtn && servicesContainer) {
+                    toggleServicesBtn.addEventListener('click', () => {
+                        playButtonSound();
+                        const isHidden = servicesContainer.style.display === 'none' || servicesContainer.style.display === '';
+                        
+                        // Scroll to the section first
+                        document.getElementById('services').scrollIntoView({ behavior: 'smooth' });
+                        
+                        // Then toggle visibility
+                        servicesContainer.style.display = isHidden ? 'block' : 'none';
+                        showNotification(isHidden ? 'Menampilkan daftar layanan.' : 'Menyembunyikan daftar layanan.');
                     });
                 }
             }
+
 
             function initParticles() {
                 const particlesContainer = document.getElementById('particles');
@@ -1637,11 +1639,12 @@
                     }
                 });
                 
+                // ## PERBAIKAN: Logika baru untuk tombol Kirim WA dan Unduh Struk ##
                 document.getElementById('sendWaBtn').addEventListener('click', () => {
                     if (lastOrderData) {
                         const data = lastOrderData;
                         const pickupCoordsArray = data.pickupCoords.split(',');
-                        const googleMapsLink = `https://www.google.com/maps/search/?api=1&query=${pickupCoordsArray[0]},${pickupCoordsArray[1]}`;
+                        const googleMapsLink = `https://www.google.com/maps?q=${pickupCoordsArray[0]},${pickupCoordsArray[1]}`;
                         const formattedPrice = formatRupiah(data.estimatedPrice);
                         const distanceText = data.distance ? `${data.distance} km` : 'Tidak terhitung';
                         let driverText = 'Bebas (sistem yang memilih)';
@@ -1663,6 +1666,7 @@
                         
                         sendWhatsAppMessage(WHATSAPP_NUMBER, message);
                         
+                        // Menampilkan tombol Unduh Struk setelah pesan dikirim
                         document.getElementById('downloadPdfBtn').style.display = 'inline-flex';
                         const successMessage = document.getElementById('successMessage').querySelector('p');
                         successMessage.textContent = "Pesan terkirim! Sekarang Anda dapat mengunduh struk pemesanan Anda.";
@@ -1691,6 +1695,7 @@
                         showNotification('Data pesanan tidak ditemukan untuk membuat struk.', false);
                     }
                 });
+
 
                 document.getElementById('proceedToFinishBtn').addEventListener('click', () => {
                     playButtonSound();
@@ -1725,6 +1730,7 @@
                         star.classList.add('far');
                     });
                     
+                    // ## PERBAIKAN: Memastikan tombol unduh kembali tersembunyi untuk pesanan baru ##
                     document.getElementById('downloadPdfBtn').style.display = 'none';
                     navigateToStep(1);
                 });
@@ -1738,7 +1744,7 @@
                         }
                         
                         const pickupCoordsArray = lastOrderData.pickupCoords.split(',');
-                        const googleMapsLink = `https://www.google.com/maps/search/?api=1&query=${pickupCoordsArray[0]},${pickupCoordsArray[1]}`;
+                        const googleMapsLink = `https://www.google.com/maps?q=${pickupCoordsArray[0]},${pickupCoordsArray[1]}`;
 
                         let historyMessage = `*SALINAN PESANAN LENGKAP (NOS ADMIN)*\n` +
                             `================================\n\n` +
@@ -1768,6 +1774,7 @@
                                           `_Pesan ini dibuat otomatis oleh sistem._`;
                             
                         sendWhatsAppMessage(ADMIN_WHATSAPP_NUMBER, historyMessage);
+                        // ## PERBAIKAN: Memastikan notifikasi sukses memicu suara ##
                         showNotification('Konfirmasi pesanan selesai telah dikirim. Terima kasih!', true);
                         document.getElementById('finalActions').style.display = 'none';
                         document.getElementById('successMessage').querySelector('p').textContent = "Terima kasih! Pesanan Anda telah selesai sepenuhnya.";
@@ -1836,6 +1843,7 @@
                 if (stepNumber === 3) {
                     document.getElementById('initialActions').style.display = 'block';
                     document.getElementById('finalActions').style.display = 'none';
+                    // ## PERBAIKAN: Reset tampilan tombol dan teks saat masuk ke step 3 ##
                     document.getElementById('downloadPdfBtn').style.display = 'none';
                     document.getElementById('successMessage').querySelector('p').textContent = "Silakan kirim detail pesanan Anda ke admin via WhatsApp untuk melanjutkan.";
                 } else if (stepNumber === 1) {
@@ -1917,7 +1925,7 @@
                         let message = `*PENDAFTARAN DRIVER BARU NOS*\n\n`;
                         formData.forEach((value, key) => { message += `*${key}:* ${value}\n`; });
                         sendWhatsAppMessage(WHATSAPP_NUMBER, message);
-                        showNotification('Pendaftaran Anda akan diproses. Terima kasih!');
+                        showNotification('Pendaftaran Anda akan diproses. Terima kasih!', true);
                         form.reset();
                         form.querySelectorAll('.selected, .active').forEach(el => el.classList.remove('selected', 'active'));
                     }
@@ -1933,7 +1941,7 @@
                         const data = Object.fromEntries(formData.entries());
                         const message = `*Pesan dari Website NOS*\n\n*Nama:* ${data.Nama}\n*Pesan:* ${data.Pesan}`;
                         sendWhatsAppMessage(WHATSAPP_NUMBER, message);
-                        showNotification('Pesan Anda telah terkirim. Terima kasih!');
+                        showNotification('Pesan Anda telah terkirim. Terima kasih!', true);
                         form.reset();
                     }
                 });
@@ -1947,7 +1955,7 @@
                         const email = form.querySelector('input[type="email"]').value;
                         const message = `*Berlangganan Newsletter NOS*\n\nEmail: ${email}`;
                         sendWhatsAppMessage(WHATSAPP_NUMBER, message);
-                        showNotification('Terima kasih telah berlangganan!');
+                        showNotification('Terima kasih telah berlangganan!', true);
                         form.reset();
                     }
                  });
@@ -1993,7 +2001,7 @@
                         try {
                             const address = await reverseGeocode(latitude, longitude);
                             document.getElementById('pickupLocation').value = address;
-                            showNotification('Lokasi berhasil ditemukan!');
+                            showNotification('Lokasi berhasil ditemukan!', true);
                         } catch (error) {
                             showNotification('Gagal mendapatkan nama alamat. Silakan isi manual.', false);
                         } finally {
@@ -2046,6 +2054,7 @@
                 const pickupInput = document.getElementById('pickupLocation');
                 const destinationInput = document.getElementById('destination');
                 try {
+                    // Always re-geocode the pickup location unless coordinates are from the 'use my location' button
                     if (!pickupCoords || pickupInput.value !== await reverseGeocode(pickupCoords.lat, pickupCoords.lon).catch(() => '')) {
                         pickupCoords = await geocodeAddress(pickupInput.value + ', Situbondo');
                         document.getElementById('pickupCoords').value = `${pickupCoords.lat},${pickupCoords.lon}`;
@@ -2112,7 +2121,7 @@
                 return `NOS-${initials}${datePart}-${timePart}-${Math.floor(distance)}K${Math.round(price/1000)}`;
             }
             
-            // ## FUNGSI PDF YANG TELAH DIPERBAIKI TOTAL ##
+            // ## PERBAIKAN: Fungsi generate PDF disempurnakan untuk stabilitas dan fungsionalitas ##
             async function generateAndDownloadPDF(data) {
                 try {
                     const { jsPDF } = window.jspdf;
@@ -2121,14 +2130,13 @@
                     const formattedTime = data.orderDate.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
                     const driverName = data.selectedDriver ? `${data.selectedDriver.nama} (${data.selectedDriver.no_polisi})` : 'Sistem';
 
-                    // Generate QR Code
                     const qr = qrcode(0, 'M');
                     qr.addData(`Kode: ${data.orderCode}\nPelanggan: ${data.name}\nHarga: ${formatRupiah(data.estimatedPrice)}`);
                     qr.make();
                     const qrImg = qr.createDataURL(4);
                     
                     // --- PDF HEADER ---
-                    doc.setFillColor(34, 49, 63); // Warna --primary
+                    doc.setFillColor(34, 49, 63); // Darker blue
                     doc.rect(0, 0, 210, 35, 'F');
                     doc.addImage(logoBase64, 'PNG', 15, 8, 20, 20);
                     doc.setFont('helvetica', 'bold');
@@ -2178,7 +2186,7 @@
                     yPos += 12;
 
                     // --- TRIP DETAILS ---
-                    doc.setFillColor(240, 240, 240); // Light grey background
+                    doc.setFillColor(240, 240, 240);
                     doc.setDrawColor(200, 200, 200);
                     doc.roundedRect(14, yPos, 182, 40, 3, 3, 'FD');
                     yPos += 8;
@@ -2202,12 +2210,12 @@
                     doc.setFont('helvetica', 'bold');
                     doc.text('Estimasi Jarak:', 15, yPos);
                     doc.setFont('helvetica', 'normal');
-                    doc.text(`${data.distance || '0'} km`, 50, yPos);
+                    doc.text(`${data.distance} km`, 50, yPos);
 
                     doc.setFontSize(14);
                     doc.setFont('helvetica', 'bold');
                     doc.text('TOTAL BIAYA:', 15, yPos + 10);
-                    doc.setTextColor(40, 167, 69); // Green color for price
+                    doc.setTextColor(0, 102, 0); // Green color for price
                     doc.text(formatRupiah(data.estimatedPrice), 55, yPos + 10);
                     doc.setTextColor(0, 0, 0);
 
@@ -2225,6 +2233,7 @@
                     doc.text('Struk ini valid dan dibuat secara otomatis oleh sistem.', 105, finalY + 15, { align: 'center' });
 
                     doc.save(`struk-nos-${data.orderCode}.pdf`);
+                    showNotification('Struk berhasil diunduh!', true);
                 } catch (e) {
                     console.error("Gagal membuat PDF:", e);
                     showNotification("Gagal membuat struk PDF: " + e.message, false);
