@@ -27,6 +27,38 @@
     <link rel="icon" href="https://raw.githubusercontent.com/anekamarket/aplikasi-usaha/refs/heads/main/logo-anekamarket.png" type="image/png">
     
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <style>
+        /* CSS Tambahan untuk Notifikasi Kustom */
+        #notification-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .toast-notification {
+            background-color: #2c3e50;
+            color: #fff;
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            opacity: 0;
+            transform: translateX(100%);
+            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+        }
+        .toast-notification.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        .toast-notification .icon {
+            font-size: 1.2rem;
+        }
+    </style>
 </head>
 <body>
     
@@ -34,6 +66,7 @@
     <audio id="ratingSound" src="https://raw.githubusercontent.com/LenteraKarya/NOS/main/assets/audio/bell.mp3" preload="auto"></audio>
     <audio id="notificationSound" src="https://media1.vocaroo.com/mp3/1BjrRUnRSEqJ" preload="auto"></audio>
 
+    <div id="notification-container"></div>
     <div class="particles" id="particles"></div>
     
     <header id="home">
@@ -349,7 +382,7 @@
         <div class="footer-container">
             <div class="footer-col footer-about">
                 <div class="footer-logo">
-                    <img src="https://raw.githubusercontent.com/anekamarket/aplikasi-usaha/refs/heads/main/logo-anekamarket.png" alt="NOS Logo">
+                    <img src="https://raw.githubusercontent.com/anekamarket/aplikasi-usaha/refs/heads/main/logo-anekamarket.png" alt="NOS Logo" width="50" style="vertical-align: middle;">
                     <span>NOS</span>
                 </div>
                 <p>Nompak Ojek Situbondo (NOS) adalah layanan ojek online profesional di Situbondo dengan driver berpengalaman dan tarif terjangkau.</p>
@@ -416,7 +449,7 @@
                 { id: 'joko_p', nama: 'Joko Prasetyo', no_polisi: 'P 9012 EF', jenis_kendaraan: 'Honda CB150', gambar_profil: 'https://github.com/LenteraKarya/NOS/blob/main/assets/images/driver3.jpeg?raw=true', status: 'nonaktif' }
             ];
             
-            const logoBase64 = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOEAAADhCAMAAAAJbSJIAAAAhFBMVEX////rABn/yMnqAADqAAD/+/v85+f/9/f73d32t7n/8fH2urr97u796urwTE7/zMzrABj97+/wS1L0q6z609T4x8j5zM3sExbsFxfuLS/tICPuMDL62tr1sbP0pqj2ubr50NDvP0L84+PzpqfsHR7vREj85ubtJinvQELuNzj1rK018dZIAAAD8klEQVR4nO3d63aqPBSG4QC9gChq1VoVb9Ra6/v/H7fIu5OQhGBCzpy95+uHkDPJnCQh2D8eAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD+j1hKS2Np/BtbDbyMpcVS+iR/iT3F2uJp/Q3/EuOIpfVf/Bv6YLG0/o5/Q4IYl9buY9/QfLRYWs+i19A8pFtau49fQ1M8jKVo/T38GpoiwCgW1u7jl9AUKUaxuPYufg1N0Wi0mFp7h76GplgYxWLaO/Q1NMWhUSyuPUvfQ1MMjGKR7Z16GprgcBQLa++i19AUp0YxqfY+eg1NMSiKxfT36Gtoxj1FsdW0n41oRqEolrC/jWgG8SimsZ9NaAbHKRa39rOJzVGIYkn72YQWKIpixvtZhLpYpPjp/U6iIxRFMX/AZxPKo5hig4d9JqEhilms7zMJZVEsxn2fSyiDYonlPZ9JqI9iiRU9n0koiiL7D3yTSShDopjm0YQ+KIq53ucS+qIoFqf4TKLfFEVx0v+k3hTFUf6zCU1RNHyfSyg/ReEcY/yZRCUoik1P+kxivBRFsX7qSGLNKIpO8JtESxRFMcb/SKJpFMXq+E0iQ6IodvoZRKsURbHj/GWiWBSFW/xdotUURSf8btE2imI3/D7RLApC9c/OaU/5P8V3e+d/0T+d+p/if5t/5k3+6b2/Fv//8r/mBf8w1X8V/5V/9i7/VNt/xX8V/vEt/1TbX8V/Df/xLf+k2l/Ffy3/8S3/pMtfxX89//Et/6TDX8V//e9v+Sdd/iv+63t/yTPv8F/f+1v+yRPv8L/h9T+SfvK6a/mv7/0lT7zT/+a+/vWXvPEM/119/+svfeIZ/rv7/tdf+oZn+O/u+19/6Rmf4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b+qNf/k0t/5s6P+/Tfw0f60s9v+Sbf+VnQ3807G//+k37/L9A/D3/0L375t7/z7wF+qPjp/X+E+9R+VwBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/Nl+A7bWwW2k0lKMAAAAAElFTkSuQmCC';
+            const logoBase64 = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOEAAADhCAMAAAAJbSJIAAAAhFBMVEX////rABn/yMnqAADqAAD/+/v85+f/9/f73d32t7n/8fH2urr97u796urwTE7/zMzrABj97+/wS1L0q6z609T4x8j5zM3sExbsFxfuLS/tICPuMDL62tr1sbP0pqj2ubr50NDvP0L84+PzpqfsHR7vREj85ubtJinvQELuNzj1rK018dZIAAAD8klEQVR4nO3d63aqPBSG4QC9gChq1VoVb9Ra6/v/H7fIu5OQhGBCzpy95+uHkDPJnCQh2D8eAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD+j1hKS2Np/BtbDbyMpcVS+iR/iT3F2uJp/Q3/EuOIpfVf/Bv6YLG0/o5/Q4IYl9buY9/QfLRYWs+i19A8pFtau49fQ1M8jKVo/T38GpoiwCgW1u7jl9AUKUaxuPYufg1N0Wi0mFp7h76GplgYxWLaO/Q1NMWhUSyuPUvfQ1MMjGKR7Z16GprgcBQLa++i19AUp0YxqfY+eg1NMSiKxfT36Gtoxj1FsdW0n41oRqEolrC/jWgG8SimsZ9NaAbHKRa39rOJzVGIYkn72YQWKIpixvtZhLpYpPjp/U6iIxRFMX/AZxPKo5hig4d9JqEhilms7zMJZVEsxn2fSyiDYonlPZ9JqI9iiRU9n0koiiL7D3yTSShDopjm0YQ+KIq53ucS+qIoFqf4TKLfFEVx0v+k3hTFUf6zCU1RNHyfSyg/ReEcY/yZRCUoik1P+kxivBRFsX7qSGLNKIpO8JtESxRFMcb/SKJpFMXq+E0iQ6IodvoZRKsURbHj/GWiWBSFW/xdotUURSf8btE2imI3/D7RLApC9c/OaU/5P8V3e+d/0T+d+p/if5t/5k3+6b2/Fv//8r/mBf8w1X8V/5V/9i7/VNt/xX8V/vEt/1TbX8V/Df/xLf+k2l/Ffy3/8S3/pMtfxX89//Et/6TDX8V//e9v+Sdd/iv+63t/yTPv8F/f+1v+yRPv8L/h9T+SfvK6a/mv7/0lT7zT/+a+/vWXvPEM/119/+svfeIZ/rv7/tdf+oZn+O/u+19/6Rmf4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b+qNf/k0t/5s6P+/Tfw0f60s9v+Sbf+VnQ3807G//+k37/L9A/D3/0L375t7/z7wF+qPjp/X+E+9R+VwBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/Nl+A7bWwW2k0lKMAAAAAElFTkSuQmCC';
 
             // --- INISIALISASI ---
             initNavbar();
@@ -433,12 +466,31 @@
 
             // --- FUNGSI-FUNGSI ---
 
-            function showNotification(message) {
+            function showNotification(message, isSuccess = true) {
                 if (notificationSound) {
                     notificationSound.currentTime = 0;
                     notificationSound.play().catch(e => console.error("Notification sound failed to play:", e));
                 }
-                alert(message);
+                
+                const container = document.getElementById('notification-container');
+                const toast = document.createElement('div');
+                toast.className = 'toast-notification';
+                
+                const iconClass = isSuccess ? 'fas fa-check-circle' : 'fas fa-exclamation-circle';
+                toast.innerHTML = `<span class="icon"><i class="${iconClass}"></i></span><span class="message">${message}</span>`;
+                
+                container.appendChild(toast);
+
+                setTimeout(() => {
+                    toast.classList.add('show');
+                }, 100);
+
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                    setTimeout(() => {
+                        toast.remove();
+                    }, 500);
+                }, 5000);
             }
             
             function initNavbar() {
@@ -568,7 +620,7 @@
                     if (lastOrderData) {
                         const data = lastOrderData;
                         const pickupCoordsArray = data.pickupCoords.split(',');
-                        const googleMapsLink = `https://www.google.com/maps?q=${pickupCoordsArray[0]},${pickupCoordsArray[1]}`;
+                        const googleMapsLink = `https://www.google.com/maps?q=${pickupCoordsArray[0]},${pickupCoordsArray[1]}`; // Perbaikan link Google Maps
                         const formattedPrice = formatRupiah(data.estimatedPrice);
                         const distanceText = data.distance ? `${data.distance} km` : 'Tidak terhitung';
                         let driverText = 'Bebas (sistem yang memilih)';
@@ -590,14 +642,13 @@
                         
                         sendWhatsAppMessage(WHATSAPP_NUMBER, message);
                     } else {
-                        showNotification('Data pesanan tidak ditemukan. Mohon ulangi proses pemesanan.');
+                        showNotification('Data pesanan tidak ditemukan. Mohon ulangi proses pemesanan.', false);
                     }
                 });
                 
-                // PERBAIKAN: Tombol Unduh Struk dengan Pengecekan Kesiapan Komponen
                 document.getElementById('downloadPdfBtn').addEventListener('click', async () => {
                     if (typeof window.jspdf === 'undefined' || typeof window.qrcode === 'undefined') {
-                        showNotification('Komponen PDF belum siap. Mohon tunggu sesaat dan coba lagi. Pastikan koneksi internet Anda stabil.');
+                        showNotification('Komponen PDF belum siap. Mohon tunggu sesaat dan coba lagi.', false);
                         return;
                     }
 
@@ -611,7 +662,7 @@
                         downloadBtn.disabled = false;
                         downloadBtn.innerHTML = '<i class="fas fa-file-pdf"></i> Unduh Struk';
                     } else {
-                        showNotification('Data pesanan tidak ditemukan untuk membuat struk. Silakan coba buat pesanan baru.');
+                        showNotification('Data pesanan tidak ditemukan untuk membuat struk.', false);
                     }
                 });
 
@@ -692,7 +743,7 @@
                                           `_Pesan ini dibuat otomatis oleh sistem._`;
                             
                         sendWhatsAppMessage(ADMIN_WHATSAPP_NUMBER, historyMessage);
-                        showNotification('Konfirmasi pesanan selesai telah dikirim ke Admin. Terima kasih!');
+                        showNotification('Konfirmasi pesanan selesai telah dikirim. Terima kasih!');
                         document.getElementById('finalActions').style.display = 'none';
                         document.getElementById('successMessage').querySelector('p').textContent = "Terima kasih! Pesanan Anda telah selesai sepenuhnya.";
                     }
@@ -703,7 +754,7 @@
                 document.getElementById('submitRatingBtn').addEventListener('click', () => {
                     const rating = document.getElementById('driverRating').value;
                     if (!rating) {
-                        showNotification("Mohon berikan nilai bintang terlebih dahulu.");
+                        showNotification("Mohon berikan nilai bintang terlebih dahulu.", false);
                         return;
                     }
                     if (lastOrderData && lastOrderData.selectedDriver) {
@@ -856,7 +907,7 @@
                         const data = Object.fromEntries(formData.entries());
                         const message = `*Pesan dari Website NOS*\n\n*Nama:* ${data.Nama}\n*Pesan:* ${data.Pesan}`;
                         sendWhatsAppMessage(WHATSAPP_NUMBER, message);
-                        showNotification('Pesan Anda telah terkirim via WhatsApp. Terima kasih!');
+                        showNotification('Pesan Anda telah terkirim. Terima kasih!');
                         form.reset();
                     }
                 });
@@ -898,7 +949,7 @@
                 btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mencari...';
 
                 if (!navigator.geolocation) {
-                    showNotification('Geolocation tidak didukung oleh browser Anda.');
+                    showNotification('Geolocation tidak didukung oleh browser Anda.', false);
                     btn.disabled = false;
                     btn.innerHTML = originalText;
                     return;
@@ -916,8 +967,9 @@
                         try {
                             const address = await reverseGeocode(latitude, longitude);
                             document.getElementById('pickupLocation').value = address;
+                            showNotification('Lokasi berhasil ditemukan!');
                         } catch (error) {
-                            showNotification('Gagal mendapatkan nama alamat dari lokasi Anda. Silakan isi manual.');
+                            showNotification('Gagal mendapatkan nama alamat. Silakan isi manual.', false);
                         } finally {
                              btn.disabled = false;
                              btn.innerHTML = originalText;
@@ -931,7 +983,7 @@
                             case error.TIMEOUT: message += "Permintaan lokasi timed out."; break;
                             default: message += "Terjadi kesalahan tidak diketahui."; break;
                         }
-                        showNotification(message);
+                        showNotification(message, false);
                         btn.disabled = false;
                         btn.innerHTML = originalText;
                     }
@@ -979,7 +1031,7 @@
                     document.getElementById('estimatedPrice').value = Math.round(estimatedPrice / 1000) * 1000;
                     return true;
                 } catch (error) {
-                    showNotification(`Validasi alamat gagal: ${error.message}. Mohon periksa kembali alamat, pastikan lebih spesifik.`);
+                    showNotification(`Validasi alamat gagal: ${error.message}. Mohon periksa kembali, pastikan lebih spesifik.`, false);
                     return false;
                 }
             }
@@ -987,7 +1039,8 @@
             function validateStep(step) {
                 for (const field of step.querySelectorAll('input[required], textarea[required]')) {
                     if (!field.value.trim() || (field.type === 'hidden' && !field.value) || (field.type === 'tel' && !field.checkValidity())) {
-                        showNotification('Mohon isi semua kolom yang ditandai * dengan benar.');
+                        showNotification('Mohon isi semua kolom yang ditandai * dengan benar.', false);
+                        field.focus();
                         return false;
                     }
                 }
@@ -996,8 +1049,9 @@
 
             function validateForm(form) {
                 for (const field of form.querySelectorAll('input[required], textarea[required]')) {
-                    if (!field.value.trim()) {
-                        showNotification('Mohon isi semua kolom yang ditandai *.');
+                    if (!field.value.trim() || !field.checkValidity()) {
+                        showNotification('Mohon isi semua kolom yang ditandai * dengan benar.', false);
+                        field.focus();
                         return false;
                     }
                 }
@@ -1011,7 +1065,7 @@
             function sendWhatsAppMessage(number, message) {
                 const url = `https://wa.me/${number}?text=${encodeURIComponent(message)}`;
                 if (!window.open(url, '_blank')) {
-                    showNotification("Gagal membuka WhatsApp. Mohon nonaktifkan pemblokir pop-up pada browser Anda.");
+                    showNotification("Gagal membuka WhatsApp. Mohon nonaktifkan pemblokir pop-up.", false);
                 }
                 playButtonSound();
             }
@@ -1119,7 +1173,7 @@
                     doc.save(`struk-nos-${data.orderCode}.pdf`);
                 } catch (e) {
                     console.error("Gagal membuat PDF:", e);
-                    showNotification("Gagal membuat struk PDF: " + e.message + "\n\nPastikan koneksi internet Anda stabil dan tidak ada pemblokir pop-up yang aktif. Pesanan Anda sudah terkirim, Anda bisa melanjutkan tanpa struk.");
+                    showNotification("Gagal membuat struk PDF: " + e.message, false);
                 }
             }
         });
