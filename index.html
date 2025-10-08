@@ -2,6 +2,11 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
+    
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, minimum-scale=1.0">
     <meta name="description" content="NOS (Nompak Ojek Situbondo) - Layanan ojek online profesional di Situbondo dengan driver berpengalaman dan tarif terjangkau.">
     <meta name="keywords" content="ojek online, transportasi, ojek, situbondo, angkutan, nos, nompak ojek situbondo">
@@ -22,9 +27,9 @@
 
     <style>
         :root {
-            --primary: #1a365d; /* Deep blue */
+            --primary: #1a365d; /* Deep blue - Verified consistent with anekamarket.my.id */
             --secondary: #4299e1; /* Light blue */
-            --accent: #e67e22; /* Warm orange */
+            --accent: #e67e22; /* Warm orange - Verified consistent with anekamarket.my.id */
             --light: #f8f9fa;
             --dark: #1a202c;
             --text: #4a5568;
@@ -1178,8 +1183,9 @@
 </head>
 <body>
     
-    <audio id="buttonSound" src="https://github.com/LenteraKarya/homestay/blob/main/assets/audio/audiotombol.mp3?raw=true"></audio>
-    <audio id="ratingSound" src="https://github.com/notifications/sounds/blob/main/sounds/bell.mp3?raw=true"></audio>
+    <audio id="buttonSound" src="https://raw.githubusercontent.com/LenteraKarya/homestay/main/assets/audio/audiotombol.mp3" preload="auto"></audio>
+    <audio id="ratingSound" src="https://raw.githubusercontent.com/LenteraKarya/NOS/main/assets/audio/bell.mp3" preload="auto"></audio>
+    <audio id="notificationSound" src="https://raw.githubusercontent.com/LenteraKarya/NOS/main/assets/audio/notification.mp3" preload="auto"></audio>
 
     <div class="particles" id="particles"></div>
     
@@ -1581,7 +1587,8 @@
             
             const buttonSound = document.getElementById('buttonSound');
             const ratingSound = document.getElementById('ratingSound');
-            
+            const notificationSound = document.getElementById('notificationSound');
+
             let pickupCoords = null;
             let destinationCoords = null;
             let calculatedDistance = null; 
@@ -1616,7 +1623,7 @@
                 }
             ];
             
-            const logoBase64 = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOEAAADhCAMAAAAJbSJIAAAAhFBMVEX////rABn/yMnqAADqAAD/+/v85+f/9/f73d32t7n/8fH2urr97u796urwTE7/zMzrABj97+/wS1L0q6z609T4x8j5zM3sExbsFxfuLS/tICPuMDL62tr1sbP0pqj2ubr50NDvP0L84+PzpqfsHR7vREj85ubtJinvQELuNzj1rK018dZIAAAD8klEQVR4nO3d63aqPBSG4QC9gChq1VoVb9Ra6/v/H7fIu5OQhGBCzpy95+uHkDPJnCQh2D8eAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD+j1hKS2Np/BtbDbyMpcVS+iR/iT3F2uJp/Q3/EuOIpfVf/Bv6YLG0/o5/Q4IYl9buY9/QfLRYWs+i19A8pFtau49fQ1M8jKVo/T38GpoiwCgW1u7jl9AUKUaxuPYufg1N0Wi0mFp7h76GplgYxWLaO/Q1NMWhUSyuPUvfQ1MMjGKR7Z16GprgcBQLa++i19AUp0YxqfY+eg1NMSiKxfT36Gtoxj1FsdW0n41oRqEolrC/jWgG8SimsZ9NaAbHKRa39rOJzVGIYkn72YQWKIpixvtZhLpYpPjp/U6iIxRFMX/AZxPKo5hig4d9JqEhilms7zMJZVEsxn2fSyiDYonlPZ9JqI9iiRU9n0koiiL7D3yTSShDopjm0YQ+KIq53ucS+qIoFqf4TKLfFEVx0v+k3hTFUf6zCU1RNHyfSyg/ReEcY/yZRCUoik1P+kxivBRFsX7qSGLNKIpO8JtESxRFMcb/SKJpFMXq+E0iQ6IodvoZRKsURbHj/GWiWBSFW/xdotUURSf8btE2imI3/D7RLApC9c/OaU/5P8V3e+d/0T+d+p/if5t/5k3+6b2/Fv//8r/mBf8w1X8V/5V/9i7/VNt/xX8V/vEt/1TbX8V/Df/xLf+k2l/Ffy3/8S3/pMtfxX89//Et/6TDX8V//e9v+Sdd/iv+63t/yTPv8F/f+1v+yRPv8L/h9T+SfvK6a/mv7/0lT7zT/+a+/vWXvPEM/119/+svfeIZ/rv7/tdf+oZn+O/u+19/6Rmf4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b+qNf/k0t/5s6P+/Tfw0f60s9v+Sbf+VnQ3807G//+k37/L9A/D3/0L375t7/z7wF+qPjp/X+E+9R+VwBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/Nl+A7bWwW2k0lKMAAAAAElFTkSuQmCC';
+            const logoBase64 = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOEAAADhCAMAAAAJbSJIAAAAhFBMVEX////rABn/yMnqAADqAAD/+/v85+f/9/f73d32t7n/8fH2urr97u796urwTE7/zMzrABj97+/wS1L0q6z609T4x8j5zM3sExbsFxfuLS/tICPuMDL62tr1sbP0pqj2ubr50NDvP0L84+PzpqfsHR7vREj85ubtJinvQELuNzj1rK018dZIAAAD8klEQVR4nO3d63aqPBSG4QC9gChq1VoVb9Ra6/v/H7fIu5OQhGBCzpy95+uHkDPJnCQh2D8eAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD+j1hKS2Np/BtbDbyMpcVS+iR/iT3F2uJp/Q3/EuOIpfVf/Bv6YLG0/o5/Q4IYl9buY9/QfLRYWs+i19A8pFtau49fQ1M8jKVo/T38GpoiwCgW1u7jl9AUKUaxuPYufg1N0Wi0mFp7h76GplgYxWLaO/Q1NMWhUSyuPUvfQ1MMjGKR7Z16GprgcBQLa++i19AUp0YxqfY+eg1NMSiKxfT36Gtoxj1FsdW0n41oRqEolrC/jWgG8SimsZ9NaAbHKRa39rOJzVGIYkn72YQWKIpixvtZhLpYpPjp/U6iIxRFMX/AZxPKo5hig4d9JqEhilms7zMJZVEsxn2fSyiDYonlPZ9JqI9iiRU9n0koiiL7D3yTSShDopjm0YQ+KIq53ucS+qIoFqf4TKLfFEVx0v+k3hTFUf6zCU1RNHyfSyg/ReEcY/yZRCUoik1P+kxivBRFsX7qSGLNKIpO8JtESxRFMcb/SKJpFMXq+E0iQ6IodvoZRKsURbHj/GWiWBSFW/xdotUURSf8btE2imI3/D7RLApC9c/OaU/5P8V3e+d/0T+d+p/if5t/5k3+6b2/Fv//8r/mBf8w1X8V/5V/9i7/VNt/xX8V/vEt/1TbX8V/Df/xLf+k2l/Ffy3/8S3/pMtfxX89//Et/6TDX8V//e9v+Sdd/iv+63t/yTPv8F/f+1v+yRPv8L/h9T+SfvK6a/mv7/0lT7zT/+a+/vWXvPEM/119/+svfeIZ/rv7/tdf+oZn+O/u+19/6Rmf4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b+qNf/k0t/5s6P+/Tfw0f60s9v+Sbf+VnQ3807G//+k37/L9A/D3/0L375t7/z7wF+qPjp/X+E+9R+VwBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/Nl+A7bWwW2k0lKMAAAAAElFTkSuQmCC';
 
 
             // --- INISIALISASI ---
@@ -1633,6 +1640,14 @@
             initSmoothScroll();
 
             // --- FUNGSI-FUNGSI ---
+
+            function showNotification(message) {
+                if (notificationSound) {
+                    notificationSound.currentTime = 0;
+                    notificationSound.play().catch(e => console.error("Notification sound failed to play:", e));
+                }
+                alert(message);
+            }
             
             function initNavbar() {
                 const navbar = document.getElementById('navbar');
@@ -1734,7 +1749,6 @@
                     });
                 });
                 
-                // [REVISED] Form submission logic is simplified. It now only prepares the data and moves to the final step.
                 form.addEventListener('submit', (e) => {
                     e.preventDefault();
                     const submitBtn = document.getElementById('submitOrderBtn');
@@ -1749,10 +1763,7 @@
                         const orderCode = generateOrderCode(data.name, data.distance, data.estimatedPrice);
                         const selectedDriver = driversData.find(d => d.id === data.selectedDriver);
                         
-                        // Save order data globally to be used by other buttons
                         lastOrderData = { ...data, selectedDriver, orderCode, orderDate: new Date() };
-                        
-                        // The PDF generation is MOVED from here to the WhatsApp button click event.
                         
                         navigateToStep(3);
                         
@@ -1761,15 +1772,12 @@
                     }
                 });
                 
-                // [REVISED] The 'Send to WA' button now handles both sending the message AND generating the PDF.
                 document.getElementById('sendWaBtn').addEventListener('click', async () => {
                     if (lastOrderData) {
                         const sendWaBtn = document.getElementById('sendWaBtn');
-                        const originalBtnText = sendWaBtn.innerHTML;
                         
                         const data = lastOrderData;
                         const pickupCoordsArray = data.pickupCoords.split(',');
-                        // [FIXED] Correct and more universal Google Maps link format.
                         const googleMapsLink = `https://www.google.com/maps?q=${pickupCoordsArray[0]},${pickupCoordsArray[1]}`;
                         const formattedPrice = formatRupiah(data.estimatedPrice);
                         const distanceText = data.distance ? `${data.distance} km` : 'Tidak terhitung';
@@ -1790,14 +1798,11 @@
                             `*Titik Jemput (Google Maps):*\n${googleMapsLink}\n\n` +
                             `*Catatan:* ${data.notes || '-'}`;
                         
-                        // Action 1: Send the message via WhatsApp
                         sendWhatsAppMessage(WHATSAPP_NUMBER, message);
 
-                        // Action 2: Generate and Download the PDF receipt
                         sendWaBtn.disabled = true;
                         sendWaBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Membuat Struk...';
                         
-                        // A small delay to ensure the WhatsApp tab has time to open before the download starts.
                         await new Promise(resolve => setTimeout(resolve, 1000));
                         await generateAndDownloadPDF(lastOrderData);
 
@@ -1839,7 +1844,6 @@
                         star.classList.add('far');
                     });
                     
-                    // Reset the 'Send WA' button to its original state
                     const sendWaBtn = document.getElementById('sendWaBtn');
                     sendWaBtn.innerHTML = '<i class="fab fa-whatsapp"></i> Kirim & Unduh Struk';
                     sendWaBtn.disabled = false;
@@ -1856,7 +1860,6 @@
                         }
                         
                         const pickupCoordsArray = lastOrderData.pickupCoords.split(',');
-                        // [FIXED] Correct Google Maps link for the admin copy as well.
                         const googleMapsLink = `https://www.google.com/maps?q=${pickupCoordsArray[0]},${pickupCoordsArray[1]}`;
 
                         let historyMessage = `*SALINAN PESANAN LENGKAP (NOS ADMIN)*\n` +
@@ -1888,7 +1891,7 @@
                             
                         sendWhatsAppMessage(ADMIN_WHATSAPP_NUMBER, historyMessage);
                         
-                        alert('Konfirmasi pesanan selesai telah dikirim ke Admin. Terima kasih!');
+                        showNotification('Konfirmasi pesanan selesai telah dikirim ke Admin. Terima kasih!');
                         
                         document.getElementById('finalActions').style.display = 'none';
                         document.getElementById('successMessage').querySelector('p').textContent = "Terima kasih! Pesanan Anda telah selesai sepenuhnya.";
@@ -1902,7 +1905,7 @@
                 document.getElementById('submitRatingBtn').addEventListener('click', () => {
                     const rating = document.getElementById('driverRating').value;
                     if (!rating) {
-                        alert("Mohon berikan nilai bintang terlebih dahulu.");
+                        showNotification("Mohon berikan nilai bintang terlebih dahulu.");
                         return;
                     }
                     if (lastOrderData && lastOrderData.selectedDriver) {
@@ -1930,7 +1933,7 @@
                         const rating = e.target.dataset.value;
                         document.getElementById('driverRating').value = rating;
                         document.getElementById('submitRatingBtn').style.display = 'inline-flex';
-                        ratingSound.play().catch(e => console.error("Audio rating gagal diputar:", e));
+                        if(ratingSound) ratingSound.play().catch(err => console.error("Audio rating gagal diputar:", err));
                          stars.forEach(s => {
                             s.classList.toggle('selected', s.dataset.value <= rating);
                         });
@@ -1965,7 +1968,6 @@
                 if (stepNumber === 3) {
                     document.getElementById('initialActions').style.display = 'block';
                     document.getElementById('finalActions').style.display = 'none';
-                    // [REVISED] Updated text for clarity on the new workflow.
                     document.getElementById('successMessage').querySelector('p').textContent = "Klik tombol WhatsApp untuk mengirim pesanan ke admin. Struk akan diunduh secara otomatis setelah Anda mengirim pesan.";
                 }
                  if (stepNumber === 1){
@@ -2048,7 +2050,7 @@
                         let message = `*PENDAFTARAN DRIVER BARU NOS*\n\n`;
                         formData.forEach((value, key) => { message += `*${key}:* ${value}\n`; });
                         sendWhatsAppMessage(WHATSAPP_NUMBER, message);
-                        alert('Pendaftaran Anda akan diproses. Terima kasih!');
+                        showNotification('Pendaftaran Anda akan diproses. Terima kasih!');
                         form.reset();
                         form.querySelectorAll('.selected, .active').forEach(el => el.classList.remove('selected', 'active'));
                     }
@@ -2064,7 +2066,7 @@
                         const data = Object.fromEntries(formData.entries());
                         const message = `*Pesan dari Website NOS*\n\n*Nama:* ${data.Nama}\n*Pesan:* ${data.Pesan}`;
                         sendWhatsAppMessage(WHATSAPP_NUMBER, message);
-                        alert('Pesan Anda telah terkirim via WhatsApp. Terima kasih!');
+                        showNotification('Pesan Anda telah terkirim via WhatsApp. Terima kasih!');
                         form.reset();
                     }
                 });
@@ -2078,7 +2080,7 @@
                         const email = form.querySelector('input[type="email"]').value;
                         const message = `*Berlangganan Newsletter NOS*\n\nEmail: ${email}`;
                         sendWhatsAppMessage(WHATSAPP_NUMBER, message);
-                        alert('Terima kasih telah berlangganan!');
+                        showNotification('Terima kasih telah berlangganan!');
                         form.reset();
                     }
                  });
@@ -2106,7 +2108,7 @@
                 btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mencari...';
 
                 if (!navigator.geolocation) {
-                    alert('Geolocation tidak didukung oleh browser Anda.');
+                    showNotification('Geolocation tidak didukung oleh browser Anda.');
                     btn.disabled = false;
                     btn.innerHTML = originalText;
                     return;
@@ -2126,7 +2128,7 @@
                             document.getElementById('pickupLocation').value = address;
                         } catch (error) {
                             console.error('Error reverse geocoding:', error);
-                            alert('Gagal mendapatkan nama alamat dari lokasi Anda. Silakan isi manual.');
+                            showNotification('Gagal mendapatkan nama alamat dari lokasi Anda. Silakan isi manual.');
                         } finally {
                              btn.disabled = false;
                              btn.innerHTML = originalText;
@@ -2140,7 +2142,7 @@
                             case error.TIMEOUT: message += "Permintaan lokasi timed out."; break;
                             default: message += "Terjadi kesalahan tidak diketahui."; break;
                         }
-                        alert(message);
+                        showNotification(message);
                         btn.disabled = false;
                         btn.innerHTML = originalText;
                     }
@@ -2188,7 +2190,7 @@
                     document.getElementById('estimatedPrice').value = Math.round(estimatedPrice / 1000) * 1000;
                     return true;
                 } catch (error) {
-                    alert(`Validasi alamat gagal: ${error.message}. Mohon periksa kembali alamat, pastikan lebih spesifik.`);
+                    showNotification(`Validasi alamat gagal: ${error.message}. Mohon periksa kembali alamat, pastikan lebih spesifik.`);
                     return false;
                 }
             }
@@ -2200,7 +2202,7 @@
                     if (!field.value.trim() || (field.type === 'hidden' && !field.value) || (field.type === 'tel' && !field.checkValidity())) {
                         field.classList.add('invalid');
                         if (label) label.style.color = 'var(--danger)';
-                        alert('Mohon isi semua kolom yang ditandai * dengan benar.');
+                        showNotification('Mohon isi semua kolom yang ditandai * dengan benar.');
                         return false;
                     } else {
                         field.classList.remove('invalid');
@@ -2213,7 +2215,7 @@
             function validateForm(form) {
                 for (const field of form.querySelectorAll('input[required], textarea[required]')) {
                     if (!field.value.trim()) {
-                        alert('Mohon isi semua kolom yang ditandai *.');
+                        showNotification('Mohon isi semua kolom yang ditandai *.');
                         return false;
                     }
                 }
@@ -2227,14 +2229,16 @@
             function sendWhatsAppMessage(number, message) {
                 const url = `https://wa.me/${number}?text=${encodeURIComponent(message)}`;
                 if (!window.open(url, '_blank')) {
-                    alert("Gagal membuka WhatsApp. Mohon nonaktifkan pemblokir pop-up pada browser Anda.");
+                    showNotification("Gagal membuka WhatsApp. Mohon nonaktifkan pemblokir pop-up pada browser Anda.");
                 }
                 playButtonSound();
             }
 
             function playButtonSound() {
-                buttonSound.currentTime = 0;
-                buttonSound.play().catch(e => {});
+                if(buttonSound) {
+                    buttonSound.currentTime = 0;
+                    buttonSound.play().catch(e => {});
+                }
             }
             
             function generateOrderCode(name, distance, price) {
@@ -2351,7 +2355,7 @@
 
                 } catch (e) {
                     console.error("Gagal membuat PDF:", e);
-                    alert("Gagal membuat struk PDF: " + e.message + "\n\nPastikan koneksi internet Anda stabil dan tidak ada pemblokir pop-up yang aktif. Pesanan Anda sudah terkirim, Anda bisa melanjutkan tanpa struk.");
+                    showNotification("Gagal membuat struk PDF: " + e.message + "\n\nPastikan koneksi internet Anda stabil dan tidak ada pemblokir pop-up yang aktif. Pesanan Anda sudah terkirim, Anda bisa melanjutkan tanpa struk.");
                 }
             }
         });
