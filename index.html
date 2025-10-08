@@ -64,7 +64,7 @@
     
     <audio id="buttonSound" src="https://raw.githubusercontent.com/LenteraKarya/homestay/main/assets/audio/audiotombol.mp3" preload="auto"></audio>
     <audio id="ratingSound" src="https://raw.githubusercontent.com/LenteraKarya/NOS/main/assets/audio/bell.mp3" preload="auto"></audio>
-    <audio id="notificationSound" src="https://media1.vocaroo.com/mp3/1BjrRUnRSEqJ" preload="auto"></audio>
+    <audio id="notificationSound" src="https://voca.ro/1BjrRUnRSEqJ" preload="auto"></audio>
 
     <div id="notification-container"></div>
     <div class="particles" id="particles"></div>
@@ -115,22 +115,29 @@
     <div class="container">
         <section class="services" id="services">
             <h2 class="section-title">Layanan Kami</h2>
-            <p class="section-intro">Kami menyediakan berbagai layanan transportasi yang nyaman dan aman untuk memenuhi kebutuhan perjalanan Anda di Situbondo.</p>
-            <div class="services-grid">
-                <div class="service-card">
-                    <div class="service-icon"><i class="fas fa-motorcycle"></i></div>
-                    <h3 class="service-title">Ojek Reguler</h3>
-                    <p>Layanan ojek harian untuk perjalanan jarak pendek dan menengah di seluruh wilayah Situbondo dengan tarif terjangkau.</p>
-                </div>
-                <div class="service-card">
-                    <div class="service-icon"><i class="fas fa-car"></i></div>
-                    <h3 class="service-title">Ojek Antar Jemput</h3>
-                    <p>Layanan antar jemput khusus dengan jadwal yang bisa disesuaikan kebutuhan Anda, termasuk bandara dan stasiun.</p>
-                </div>
-                <div class="service-card">
-                    <div class="service-icon"><i class="fas fa-box"></i></div>
-                    <h3 class="service-title">Ojek Kirim Barang</h3>
-                    <p>Pengiriman barang cepat dan aman ke seluruh Situbondo dengan berbagai pilihan kendaraan sesuai ukuran barang.</p>
+            
+            <div style="text-align: center; margin-bottom: 2rem;">
+                <button id="toggleServicesBtn" class="btn btn-primary"><i class="fas fa-search"></i> Cek Layanan Kami</button>
+            </div>
+
+            <div id="servicesContainer" style="display: none;">
+                <p class="section-intro">Kami menyediakan berbagai layanan transportasi yang nyaman dan aman untuk memenuhi kebutuhan perjalanan Anda di Situbondo.</p>
+                <div class="services-grid">
+                    <div class="service-card">
+                        <div class="service-icon"><i class="fas fa-motorcycle"></i></div>
+                        <h3 class="service-title">Ojek Reguler</h3>
+                        <p>Layanan ojek harian untuk perjalanan jarak pendek dan menengah di seluruh wilayah Situbondo dengan tarif terjangkau.</p>
+                    </div>
+                    <div class="service-card">
+                        <div class="service-icon"><i class="fas fa-car"></i></div>
+                        <h3 class="service-title">Ojek Antar Jemput</h3>
+                        <p>Layanan antar jemput khusus dengan jadwal yang bisa disesuaikan kebutuhan Anda, termasuk bandara dan stasiun.</p>
+                    </div>
+                    <div class="service-card">
+                        <div class="service-icon"><i class="fas fa-box"></i></div>
+                        <h3 class="service-title">Ojek Kirim Barang</h3>
+                        <p>Pengiriman barang cepat dan aman ke seluruh Situbondo dengan berbagai pilihan kendaraan sesuai ukuran barang.</p>
+                    </div>
                 </div>
             </div>
         </section>
@@ -207,14 +214,14 @@
                             <i class="fas fa-check-circle"></i>
                             <div>
                                 <h3 style="margin:0;">Pemesanan Berhasil!</h3>
-                                <p>Silakan kirim detail pesanan Anda ke admin via WhatsApp dan unduh struk pemesanan Anda.</p>
+                                <p>Silakan kirim detail pesanan Anda ke admin via WhatsApp untuk melanjutkan.</p>
                             </div>
                         </div>
 
                         <div id="initialActions">
                             <div id="orderActionButtons" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem; margin-top: 1rem;">
                                 <button type="button" class="btn btn-success" id="sendWaBtn"><i class="fab fa-whatsapp"></i> Kirim via WhatsApp</button>
-                                <button type="button" class="btn btn-primary" id="downloadPdfBtn"><i class="fas fa-file-pdf"></i> Unduh Struk</button>
+                                <button type="button" class="btn btn-primary" id="downloadPdfBtn" style="display: none;"><i class="fas fa-file-pdf"></i> Unduh Struk</button>
                             </div>
                             <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem; margin-top: 2rem;">
                                 <button type="button" class="btn btn-primary" id="proceedToFinishBtn"><i class="fas fa-flag-checkered"></i> Selesaikan Pesanan</button>
@@ -454,7 +461,7 @@
                 { id: 'joko_p', nama: 'Joko Prasetyo', no_polisi: 'P 9012 EF', jenis_kendaraan: 'Honda CB150', gambar_profil: 'https://github.com/LenteraKarya/NOS/blob/main/assets/images/driver3.jpeg?raw=true', status: 'nonaktif' }
             ];
             
-            const logoBase64 = 'data:image/png;base64,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';
+            const logoBase64 = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAASiSURBVGhDzZpZyFxFFMf/O6O7uqu7qwsK6kJBwaMiqCCo4F0RFFHwHkQBlUBRUEEFH3xQUUFFhIgoeO8RBBUEBUHBiIhYxTey/s/0/N2Z7p6e3plZdpJ/MvPNN/N/Mzc3M3dHYOD/n8CgJXBwCZycAj8rAWoK4EKJDB4N3CgRwa9ChRLaA5RK2B8FSoVkECa0BVAqYX8UaBUygTDh9goUStgfBcYFEugcMGE3gEKJ/38KlAobwIRbA5RKyL8VKE8ggyZh9wgUSsi/FTgskEETNssoUShh/1U4JpDAKWzSKZSw/yrMECjgU2zSKZSw/yqcIJBBLmzSKZSw/ypsUCjgC2zSKZSw/yocEEhgsS2bhRL2X4V/BIJkYrEtm4US9l+FDwSCpGKLbNkoZfxXYUkgyLTYLptlMv4rsLdAAjexWWbLJOK/ChsFEjhpM8uyk4j/KlxRSOCUzSy7JRj/VVgskECzzSy7JRj/VVgQSGDzzCy7JRj/VTgmkECzMyy7JRj/VTgkkECMMyy7JRj/VQgBAs0zYJkl4r8KpQQIZN6AYZb4/yocJEDgzJmQZZG8PwqzBAg4M2dilliXBAgcN2dklsWSBHQYv2bWyLLEmgSccGfWyLLEmgSMuDdrllliTQJ+3DlrZJm1TMD1eSMLbLLMmgScuDdrZJm1Ccj1eSMLbLLMmgSMuDdrZJm1Ccj1eSMLbLLMmgSMuDdrZJm1Ccj1eSMLbLLMmgSMuDdrZJm1Ccj1eSMLbLLMmgSMuDdrZJm1Ccj1eSMLbLLMmgSMuDdrZJm1Ccj1eSMLbLLMmgSMuDdrZJm1Ccj1eSMLbLLMmgSMuDdrZJm1Ccj1eSMLbLLMmgSMuDdrZJm1Ccj1eSMLbLLMmgSMuDdrZJm1Ccj1eSMLbLLMmgSMuDdrZJm1Ccj1eSMLbLLMmgSMuDdrZJm1Ccj1eSMLbLLMmgSMuDdrZJm1Ccj1eSMLbLLMmgSMuDdrZJm1Ccj1eSMLbLLMmgSMuDdrZJm1Ccj1eSMLbLLMmgSMuDdrZJm1Ccj1eSMLbLLMmgSMuDdrZJm1Ccj1eSMLbLLMmgSMuDdrZJm1Ccj1eSMLbLLMmgSMuDdrZJm1Ccj1eSMLbLLMmgSMuDdrZJm1Ccj1eSMLbLLMmgSMuDdrZJm1Ccj1eSMLbLLMmgSMuDdrZJm1Ccj1eSMLbLLMmgSMuDdrZJm1Ccj1eSMLbLLMmgSMuDdrZJm1Ccj1eSMLbLLMmgSMuDdrZJm1Ccj1eSMLbLLMmgSMuDdrZJm1Ccj1eSMLbLLMmgSMuDdrZJm1Ccj1eSMLbLLMmgSMuDdrZJm1Ccj1eSMLbLLMmgSMuDdrZJm1Ccj1eSMLbLLMmgSMuDdrZJm1Ccj1eSMLbLLMmgSMuDdrZJm1Ccj1eSMLbLLMmgSMuDdrZJm1Ccj1eSMLbLLMmgSMuDdrZJm1Ccj1eSMLbLLMmgSMuDdrZJm1Ccj1eSMLbLLMmgSMuDdrZJm1Ccj1eSMLbLLMmgSMuDdrZJm1Ccj1eSMLbLLMmgSMuDdrZJm1Ccj1eSMLbLLMmgSMuDdrZJm1Ccj1eSMLbLLMmgSMuDdrZJm1Ccj1eSMLbLLMmgSMuDdrZJm1Ccj1eSMLbLLMmgSMuDdrZJm1Ccj1eSMLbLLMmgSMuDdrZJm1Ccj1eSMLbLLMmgSMuDdrZJm1Ccj1eSMLbLLMmgSMuDdrZJm1Ccj1eSMLbLLMmgTcyRdn5r+u/iPw5+L/T/Q/jLw5+c4v25qP+P9A8D785Qd/38R+K+Nf0n835X585WvfkL+b/K/85YdP0P+b/G/L/Pna7/5/wv+4sU/Wf7v3j6Y+L/E/1/W/3n5T83+T8T+j5k/YwP8//H0X8n4f/gHDP/3+J9v/Uv5L8//n+3/+c6vA152fW38XwIUCGRwCXCmQwc3AoyVgQQUKJWw/7oH7V+iYfFMAAAAASUVORK5CYII=';
 
             // --- INISIALISASI ---
             initNavbar();
@@ -468,12 +475,14 @@
             initContactForm();
             initNewsletterForm();
             initSmoothScroll();
-            initToggleDrivers(); // ## NEW: Initialize the new toggle driver button ##
+            initToggleDrivers(); 
+            initToggleServices(); // ## PERBAIKAN: Initialize the new toggle service button ##
 
             // --- FUNGSI-FUNGSI ---
 
             function showNotification(message, isSuccess = true) {
-                if (notificationSound && isSuccess) { // Play sound only on success notifications
+                // ## PERBAIKAN: Memastikan suara notifikasi diputar saat notifikasi sukses ##
+                if (notificationSound && isSuccess) {
                     notificationSound.currentTime = 0;
                     notificationSound.play().catch(e => console.error("Notification sound failed to play:", e));
                 }
@@ -530,7 +539,6 @@
                 });
             }
             
-            // ## NEW: Function to initialize the driver toggle button ##
             function initToggleDrivers() {
                 const toggleBtn = document.getElementById('toggleDriversBtn');
                 const driversGrid = document.getElementById('driversGrid');
@@ -544,6 +552,25 @@
                         } else {
                             driversGrid.style.display = 'none';
                             toggleBtn.innerHTML = '<i class="fas fa-search"></i> Cek Driver NOS';
+                        }
+                    });
+                }
+            }
+
+            // ## PERBAIKAN: Fungsi baru untuk tombol Cek Layanan Kami ##
+            function initToggleServices() {
+                const toggleBtn = document.getElementById('toggleServicesBtn');
+                const servicesContainer = document.getElementById('servicesContainer');
+                if (toggleBtn && servicesContainer) {
+                    toggleBtn.addEventListener('click', () => {
+                        playButtonSound();
+                        const isHidden = servicesContainer.style.display === 'none';
+                        if (isHidden) {
+                            servicesContainer.style.display = 'block';
+                            toggleBtn.innerHTML = '<i class="fas fa-eye-slash"></i> Sembunyikan Layanan';
+                        } else {
+                            servicesContainer.style.display = 'none';
+                            toggleBtn.innerHTML = '<i class="fas fa-search"></i> Cek Layanan Kami';
                         }
                     });
                 }
@@ -641,11 +668,11 @@
                     }
                 });
                 
+                // ## PERBAIKAN: Logika baru untuk tombol Kirim WA dan Unduh Struk ##
                 document.getElementById('sendWaBtn').addEventListener('click', () => {
                     if (lastOrderData) {
                         const data = lastOrderData;
                         const pickupCoordsArray = data.pickupCoords.split(',');
-                        // ## FIX: Corrected the Google Maps link to a functional format ##
                         const googleMapsLink = `https://maps.google.com/?q=${pickupCoordsArray[0]},${pickupCoordsArray[1]}`;
                         const formattedPrice = formatRupiah(data.estimatedPrice);
                         const distanceText = data.distance ? `${data.distance} km` : 'Tidak terhitung';
@@ -667,6 +694,12 @@
                             `*Catatan:* ${data.notes || '-'}`;
                         
                         sendWhatsAppMessage(WHATSAPP_NUMBER, message);
+                        
+                        // Menampilkan tombol Unduh Struk setelah pesan dikirim
+                        document.getElementById('downloadPdfBtn').style.display = 'inline-flex';
+                        const successMessage = document.getElementById('successMessage').querySelector('p');
+                        successMessage.textContent = "Pesan terkirim! Sekarang Anda dapat mengunduh struk pemesanan Anda.";
+
                     } else {
                         showNotification('Data pesanan tidak ditemukan. Mohon ulangi proses pemesanan.', false);
                     }
@@ -726,7 +759,8 @@
                         star.classList.add('far');
                     });
                     
-                    document.getElementById('downloadPdfBtn').disabled = false;
+                    // ## PERBAIKAN: Memastikan tombol unduh kembali tersembunyi untuk pesanan baru ##
+                    document.getElementById('downloadPdfBtn').style.display = 'none';
                     navigateToStep(1);
                 });
                 
@@ -739,7 +773,6 @@
                         }
                         
                         const pickupCoordsArray = lastOrderData.pickupCoords.split(',');
-                         // ## FIX: Corrected the Google Maps link to a functional format ##
                         const googleMapsLink = `https://maps.google.com/?q=${pickupCoordsArray[0]},${pickupCoordsArray[1]}`;
 
                         let historyMessage = `*SALINAN PESANAN LENGKAP (NOS ADMIN)*\n` +
@@ -770,8 +803,8 @@
                                           `_Pesan ini dibuat otomatis oleh sistem._`;
                             
                         sendWhatsAppMessage(ADMIN_WHATSAPP_NUMBER, historyMessage);
-                        // ## FIX: Sound will now play from this notification ##
-                        showNotification('Konfirmasi pesanan selesai telah dikirim. Terima kasih!');
+                        // ## PERBAIKAN: Memastikan notifikasi sukses memicu suara ##
+                        showNotification('Konfirmasi pesanan selesai telah dikirim. Terima kasih!', true);
                         document.getElementById('finalActions').style.display = 'none';
                         document.getElementById('successMessage').querySelector('p').textContent = "Terima kasih! Pesanan Anda telah selesai sepenuhnya.";
                     }
@@ -839,7 +872,9 @@
                 if (stepNumber === 3) {
                     document.getElementById('initialActions').style.display = 'block';
                     document.getElementById('finalActions').style.display = 'none';
-                    document.getElementById('successMessage').querySelector('p').textContent = "Silakan kirim detail pesanan Anda ke admin via WhatsApp dan unduh struk pemesanan Anda.";
+                    // ## PERBAIKAN: Reset tampilan tombol dan teks saat masuk ke step 3 ##
+                    document.getElementById('downloadPdfBtn').style.display = 'none';
+                    document.getElementById('successMessage').querySelector('p').textContent = "Silakan kirim detail pesanan Anda ke admin via WhatsApp untuk melanjutkan.";
                 } else if (stepNumber === 1) {
                     document.getElementById('finalActions').style.display = 'none';
                     document.getElementById('ratingSection').style.display = 'none';
@@ -1049,7 +1084,7 @@
                 const destinationInput = document.getElementById('destination');
                 try {
                     // Always re-geocode the pickup location unless coordinates are from the 'use my location' button
-                    if (!pickupCoords || pickupInput.value !== await reverseGeocode(pickupCoords.lat, pickupCoords.lon)) {
+                    if (!pickupCoords || pickupInput.value !== await reverseGeocode(pickupCoords.lat, pickupCoords.lon).catch(() => '')) {
                         pickupCoords = await geocodeAddress(pickupInput.value + ', Situbondo');
                         document.getElementById('pickupCoords').value = `${pickupCoords.lat},${pickupCoords.lon}`;
                     }
@@ -1115,7 +1150,7 @@
                 return `NOS-${initials}${datePart}-${timePart}-${Math.floor(distance)}K${Math.round(price/1000)}`;
             }
             
-            // ## FIX & REWORK: Overhauled the PDF generation logic for better layout and reliability ##
+            // ## PERBAIKAN: Fungsi generate PDF disempurnakan untuk stabilitas ##
             async function generateAndDownloadPDF(data) {
                 try {
                     const { jsPDF } = window.jspdf;
