@@ -128,16 +128,24 @@
 
         .dynamic-item {
             display: grid;
-            grid-template-columns: 1fr 1fr auto;
+            grid-template-columns: 1fr auto;
             gap: 15px;
             align-items: center;
-            padding: 15px;
+            padding: 15px 0;
             border-bottom: 1px solid #eee;
+        }
+        .dynamic-item:first-child {
+            padding-top: 0;
         }
         .dynamic-item:last-child {
             border-bottom: none;
+            padding-bottom: 0;
         }
         
+        .price-variation-item {
+            grid-template-columns: 1fr 1fr auto;
+        }
+
         .spec-item {
             grid-template-columns: 1fr 2fr auto;
         }
@@ -210,7 +218,7 @@
             .grid-2 {
                 grid-template-columns: 1fr;
             }
-            .dynamic-item {
+            .dynamic-item, .price-variation-item, .spec-item {
                  grid-template-columns: 1fr;
             }
             .btn-remove {
@@ -287,13 +295,15 @@
 
             <h2><i class="fas fa-store"></i> Informasi Penjual (Gerai)</h2>
             <div class="grid-2">
-                <div class="form-group">
+                 <div class="form-group full-width">
                     <label for="sellerName">Nama Penjual / Gerai</label>
                     <input type="text" id="sellerName" placeholder="cth: Ardiwillis Farm" required>
                 </div>
-                <div class="form-group">
-                    <label for="sellerLink">Link Gerai</label>
-                    <input type="url" id="sellerLink" placeholder="https://www.anekamarket.my.id/..." required>
+                <div class="form-group full-width">
+                    <label>Link Gerai (URL Galeri)</label>
+                    <div class="dynamic-list" id="sellerLinksContainer">
+                        </div>
+                    <button type="button" class="btn btn-secondary" id="addSellerLink" style="margin-top:15px;"><i class="fas fa-plus"></i> Tambah Link Gerai</button>
                 </div>
                 <div class="form-group">
                     <label for="contactWhatsapp">No. WhatsApp</label>
@@ -322,9 +332,8 @@
             </div>
             
             <h3>Variasi Harga</h3>
-            <div class="dynamic-list" id="priceVariationsContainer">
-                </div>
-            <button type="button" class="btn btn-secondary" id="addPriceVariation"><i class="fas fa-plus"></i> Tambah Variasi Harga</button>
+            <div class="dynamic-list" id="priceVariationsContainer"></div>
+            <button type="button" class="btn btn-secondary" id="addPriceVariation" style="margin-top:15px;"><i class="fas fa-plus"></i> Tambah Variasi Harga</button>
 
             <h2><i class="fas fa-balance-scale"></i> Unit Produk</h2>
              <div class="grid-2">
@@ -357,14 +366,12 @@
             <h2><i class="fas fa-info-circle"></i> Detail Lanjutan</h2>
             
             <h3>Gambar Tambahan</h3>
-            <div class="dynamic-list" id="imagesContainer">
-                </div>
-            <button type="button" class="btn btn-secondary" id="addImage"><i class="fas fa-plus"></i> Tambah Gambar</button>
+            <div class="dynamic-list" id="imagesContainer"></div>
+            <button type="button" class="btn btn-secondary" id="addImage" style="margin-top:15px;"><i class="fas fa-plus"></i> Tambah Gambar</button>
             
             <h3 style="margin-top: 20px;">Spesifikasi</h3>
-            <div class="dynamic-list" id="specsContainer">
-                </div>
-            <button type="button" class="btn btn-secondary" id="addSpec"><i class="fas fa-plus"></i> Tambah Spesifikasi</button>
+            <div class="dynamic-list" id="specsContainer"></div>
+            <button type="button" class="btn btn-secondary" id="addSpec" style="margin-top:15px;"><i class="fas fa-plus"></i> Tambah Spesifikasi</button>
             
         </form>
 
@@ -383,83 +390,96 @@
     document.addEventListener('DOMContentLoaded', function() {
         const form = document.getElementById('productForm');
 
-        // Fungsi untuk menambah item dinamis
-        function addDynamicItem(containerId, itemHtml) {
-            document.getElementById(containerId).insertAdjacentHTML('beforeend', itemHtml);
+        function addDynamicItem(containerId, itemHtml, focusNew = true) {
+            const container = document.getElementById(containerId);
+            container.insertAdjacentHTML('beforeend', itemHtml);
+            if (focusNew) {
+                const newInputs = container.lastElementChild.querySelectorAll('input, textarea');
+                if (newInputs.length > 0) {
+                    newInputs[0].focus();
+                }
+            }
         }
 
-        // Fungsi untuk menghapus item dinamis
         document.body.addEventListener('click', function(e) {
-            if (e.target.classList.contains('btn-remove')) {
-                e.target.closest('.dynamic-item').remove();
+            const removeBtn = e.target.closest('.btn-remove');
+            if (removeBtn) {
+                removeBtn.closest('.dynamic-item').remove();
             }
         });
 
-        // Menambah Variasi Harga
-        document.getElementById('addPriceVariation').addEventListener('click', function() {
+        // [PENYEMPURNAAN] Menambah Link Gerai
+        document.getElementById('addSellerLink').addEventListener('click', function() {
             const html = `
                 <div class="dynamic-item">
+                    <input type="url" class="seller-link" placeholder="https://www.anekamarket.my.id/..." required>
+                    <button type="button" class="btn btn-danger btn-remove"><i class="fas fa-trash"></i></button>
+                </div>`;
+            addDynamicItem('sellerLinksContainer', html);
+        });
+        
+        document.getElementById('addPriceVariation').addEventListener('click', function() {
+            const html = `
+                <div class="dynamic-item price-variation-item">
                     <input type="text" class="price-variation-name" placeholder="Nama Variasi (cth: Ecer per ekor)" required>
                     <input type="number" class="price-variation-price" placeholder="Harga" required>
                     <button type="button" class="btn btn-danger btn-remove"><i class="fas fa-trash"></i></button>
-                </div>
-            `;
+                </div>`;
             addDynamicItem('priceVariationsContainer', html);
         });
 
-        // Menambah Gambar
         document.getElementById('addImage').addEventListener('click', function() {
             const html = `
                 <div class="dynamic-item">
-                    <input type="url" class="image-url" placeholder="https://i.imgur.com/..." required style="grid-column: 1 / 3;">
+                    <input type="url" class="image-url" placeholder="https://i.imgur.com/..." required>
                     <button type="button" class="btn btn-danger btn-remove"><i class="fas fa-trash"></i></button>
-                </div>
-            `;
+                </div>`;
             addDynamicItem('imagesContainer', html);
         });
 
-        // Menambah Spesifikasi
         document.getElementById('addSpec').addEventListener('click', function() {
             const html = `
                 <div class="dynamic-item spec-item">
                     <input type="text" class="spec-label" placeholder="Label (cth: Jenis)" required>
                     <input type="text" class="spec-value" placeholder="Value (cth: Ayam Pedaging)" required>
                     <button type="button" class="btn btn-danger btn-remove"><i class="fas fa-trash"></i></button>
-                </div>
-            `;
+                </div>`;
             addDynamicItem('specsContainer', html);
         });
         
-        // Auto-generate ID
         document.getElementById('code').addEventListener('input', function(e) {
             document.getElementById('id').value = e.target.value;
         });
 
-        // Fungsi utama untuk generate JSON
+        // [PENYEMPURNAAN] Fungsi generate JSON kini mendukung multi-URL
         function generateJson() {
              if (!form.checkValidity()) {
                 alert('Harap isi semua kolom yang wajib diisi (ditandai dengan required).');
                 form.reportValidity();
-                return;
+                return null;
             }
             
-            const priceVariations = Array.from(document.querySelectorAll('#priceVariationsContainer .dynamic-item')).map(item => {
-                return {
-                    name: item.querySelector('.price-variation-name').value,
-                    price: parseFloat(item.querySelector('.price-variation-price').value)
-                };
+            const sellerLinks = Array.from(document.querySelectorAll('#sellerLinksContainer .dynamic-item')).map(item => {
+                return item.querySelector('.seller-link').value;
             });
 
-            const images = Array.from(document.querySelectorAll('#imagesContainer .dynamic-item')).map(item => {
-                return item.querySelector('.image-url').value;
-            });
+            if (sellerLinks.length === 0) {
+                 alert('Harap tambahkan minimal satu Link Gerai.');
+                 document.getElementById('addSellerLink').focus();
+                 return null;
+            }
 
-            const specs = Array.from(document.querySelectorAll('#specsContainer .dynamic-item')).map(item => {
-                return {
-                    label: item.querySelector('.spec-label').value,
-                    value: item.querySelector('.spec-value').value
-                };
-            });
+            const priceVariations = Array.from(document.querySelectorAll('#priceVariationsContainer .dynamic-item')).map(item => ({
+                name: item.querySelector('.price-variation-name').value,
+                price: parseFloat(item.querySelector('.price-variation-price').value)
+            }));
+
+            const images = Array.from(document.querySelectorAll('#imagesContainer .dynamic-item')).map(item => item.querySelector('.image-url').value);
+
+            const specs = Array.from(document.querySelectorAll('#specsContainer .dynamic-item')).map(item => ({
+                label: item.querySelector('.spec-label').value,
+                value: item.querySelector('.spec-value').value
+            }));
             
             const originalPriceValue = document.getElementById('originalPrice').value;
 
@@ -469,7 +489,8 @@
                 type: document.getElementById('type').value,
                 seller: {
                     name: document.getElementById('sellerName').value,
-                    link: document.getElementById('sellerLink').value
+                    // [PENYEMPURNAAN] Menggunakan array 'links'
+                    links: sellerLinks 
                 },
                 badge: {
                     text: document.getElementById('badgeText').value,
@@ -497,18 +518,18 @@
 
             const jsonString = JSON.stringify(productData, null, 4);
             document.getElementById('jsonOutput').value = jsonString;
+            return jsonString;
         }
 
         document.getElementById('generateBtn').addEventListener('click', generateJson);
 
-        // Fungsi Download
         document.getElementById('downloadBtn').addEventListener('click', function() {
-            const jsonString = document.getElementById('jsonOutput').value;
+            const jsonString = generateJson(); // Generate ulang untuk memastikan data terbaru
             if (!jsonString) {
-                alert('Silakan generate script terlebih dahulu.');
+                alert('Gagal membuat file unduhan karena data belum lengkap.');
                 return;
             }
-            const blob = new Blob([jsonString], { type: 'text/plain' });
+            const blob = new Blob([jsonString], { type: 'text/plain;charset=utf-8' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             const fileName = document.getElementById('code').value || 'product-data';
@@ -520,7 +541,7 @@
             URL.revokeObjectURL(url);
         });
         
-        // --- FITUR RESTORE ---
+        // [PENYEMPURNAAN] Fitur Restore File
         const restoreFileInput = document.getElementById('restoreFile');
         const fileNameSpan = document.getElementById('fileName');
 
@@ -546,8 +567,10 @@
             reader.readAsText(file);
         });
 
+        // [PENYEMPURNAAN] Fungsi populateForm kini mendukung data lama (seller.link) & baru (seller.links)
         function populateForm(data) {
             // Bersihkan form dinamis
+            document.getElementById('sellerLinksContainer').innerHTML = '';
             document.getElementById('priceVariationsContainer').innerHTML = '';
             document.getElementById('imagesContainer').innerHTML = '';
             document.getElementById('specsContainer').innerHTML = '';
@@ -562,7 +585,6 @@
             document.getElementById('description').value = data.details?.description || '';
             
             document.getElementById('sellerName').value = data.seller?.name || '';
-            document.getElementById('sellerLink').value = data.seller?.link || '';
             document.getElementById('contactWhatsapp').value = data.contact?.whatsapp || '';
             document.getElementById('contactPhone').value = data.contact?.phone || '';
             
@@ -576,26 +598,34 @@
             document.getElementById('badgeText').value = data.badge?.text || '';
             document.getElementById('badgeType').value = data.badge?.type || 'promo';
 
-            // Isi field dinamis
+            // Isi link gerai (mendukung format lama dan baru)
+            const links = data.seller?.links || (data.seller?.link ? [data.seller.link] : []);
+            links.forEach(link => {
+                 const html = `
+                    <div class="dynamic-item">
+                        <input type="url" class="seller-link" value="${link}" required>
+                        <button type="button" class="btn btn-danger btn-remove"><i class="fas fa-trash"></i></button>
+                    </div>`;
+                addDynamicItem('sellerLinksContainer', html, false);
+            });
+            
             data.priceVariations?.forEach(pv => {
                 const html = `
-                    <div class="dynamic-item">
+                    <div class="dynamic-item price-variation-item">
                         <input type="text" class="price-variation-name" value="${pv.name}" required>
                         <input type="number" class="price-variation-price" value="${pv.price}" required>
                         <button type="button" class="btn btn-danger btn-remove"><i class="fas fa-trash"></i></button>
-                    </div>
-                `;
-                addDynamicItem('priceVariationsContainer', html);
+                    </div>`;
+                addDynamicItem('priceVariationsContainer', html, false);
             });
 
             data.details?.images?.forEach(img => {
                 const html = `
                     <div class="dynamic-item">
-                        <input type="url" class="image-url" value="${img}" required style="grid-column: 1 / 3;">
+                        <input type="url" class="image-url" value="${img}" required>
                         <button type="button" class="btn btn-danger btn-remove"><i class="fas fa-trash"></i></button>
-                    </div>
-                `;
-                addDynamicItem('imagesContainer', html);
+                    </div>`;
+                addDynamicItem('imagesContainer', html, false);
             });
 
             data.details?.specs?.forEach(spec => {
@@ -604,9 +634,8 @@
                         <input type="text" class="spec-label" value="${spec.label}" required>
                         <input type="text" class="spec-value" value="${spec.value}" required>
                         <button type="button" class="btn btn-danger btn-remove"><i class="fas fa-trash"></i></button>
-                    </div>
-                `;
-                addDynamicItem('specsContainer', html);
+                    </div>`;
+                addDynamicItem('specsContainer', html, false);
             });
             
             alert('Data berhasil dimuat ke dalam formulir. Anda sekarang bisa mengeditnya.');
