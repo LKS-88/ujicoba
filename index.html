@@ -19,6 +19,7 @@
     <title>NOS | Nompak Ojek Situbondo</title>
     
     <link rel="stylesheet" href="style.css">
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -119,9 +120,7 @@
                     </div>
 
                     <div class="form-step active" data-step="1">
-                        <div class="map-container">
-                            <div id="map"></div>
-                        </div>
+                        <div class="map-container"><div id="map"></div></div>
                         <div class="form-group">
                             <label for="pickupLocation">Lokasi Penjemputan *</label>
                             <input type="text" id="pickupLocation" name="pickupLocation" required autocomplete="street-address" placeholder="Contoh: Alun-alun Situbondo">
@@ -149,25 +148,15 @@
                         <div class="form-group">
                             <label>Pilih Kendaraan *</label>
                             <div class="vehicle-options">
-                                <div class="vehicle-option" data-value="Motor">
-                                    <div class="vehicle-icon"><i class="fas fa-motorcycle"></i></div>
-                                    <div class="vehicle-name">Motor</div>
-                                </div>
-                                <div class="vehicle-option" data-value="Motor Premium">
-                                    <div class="vehicle-icon"><i class="fas fa-biking"></i></div>
-                                    <div class="vehicle-name">Motor Premium</div>
-                                </div>
-                                <div class="vehicle-option" data-value="Mobil">
-                                    <div class="vehicle-icon"><i class="fas fa-car"></i></div>
-                                    <div class="vehicle-name">Mobil</div>
-                                </div>
+                                <div class="vehicle-option" data-value="Motor"><div class="vehicle-icon"><i class="fas fa-motorcycle"></i></div><div class="vehicle-name">Motor</div></div>
+                                <div class="vehicle-option" data-value="Motor Premium"><div class="vehicle-icon"><i class="fas fa-biking"></i></div><div class="vehicle-name">Motor Premium</div></div>
+                                <div class="vehicle-option" data-value="Mobil"><div class="vehicle-icon"><i class="fas fa-car"></i></div><div class="vehicle-name">Mobil</div></div>
                             </div>
                             <input type="hidden" id="selectedVehicle" name="selectedVehicle" required>
                         </div>
                         <div class="form-group">
                             <label>Pilih Driver (Opsional)</label>
-                            <div class="driver-options" id="driverOptionsContainer">
-                                </div>
+                            <div class="driver-options" id="driverOptionsContainer"></div>
                             <input type="hidden" id="selectedDriver" name="selectedDriver">
                         </div>
                         <div class="form-group">
@@ -203,11 +192,7 @@
                             <div id="ratingSection" style="display: none; text-align: center; margin-top: 2rem;">
                                 <h3 style="margin-bottom: 1.5rem;">Beri Penilaian untuk Driver Anda</h3>
                                 <div class="star-rating">
-                                    <i class="far fa-star" data-value="1"></i>
-                                    <i class="far fa-star" data-value="2"></i>
-                                    <i class="far fa-star" data-value="3"></i>
-                                    <i class="far fa-star" data-value="4"></i>
-                                    <i class="far fa-star" data-value="5"></i>
+                                    <i class="far fa-star" data-value="1"></i><i class="far fa-star" data-value="2"></i><i class="far fa-star" data-value="3"></i><i class="far fa-star" data-value="4"></i><i class="far fa-star" data-value="5"></i>
                                 </div>
                                 <input type="hidden" id="driverRating" name="driverRating">
                             </div>
@@ -233,9 +218,7 @@
                     <img src="https://github.com/LenteraKarya/NOS/blob/main/assets/images/driver1.jpeg?raw=true" alt="Budi Santoso" class="driver-avatar" loading="lazy">
                     <div class="driver-badge">Terdaftar</div>
                     <h3 class="service-title">Budi Santoso</h3>
-                    <div class="driver-rating">
-                        <i class="fas fa-star"></i> 4.7 (127)
-                    </div>
+                    <div class="driver-rating"><i class="fas fa-star"></i> 4.7 (127)</div>
                     <div class="driver-specs">
                         <div class="spec-item"><span class="spec-label">Kendaraan:</span><span class="spec-value">Honda Beat</span></div>
                         <div class="spec-item"><span class="spec-label">No. Polisi:</span><span class="spec-value">P 1234 AB</span></div>
@@ -248,9 +231,7 @@
                     <img src="https://github.com/LenteraKarya/NOS/blob/main/assets/images/driver2.jpeg?raw=true" alt="Ani Wijaya" class="driver-avatar" loading="lazy">
                     <div class="driver-badge">Terdaftar</div>
                     <h3 class="service-title">Ani Wijaya</h3>
-                    <div class="driver-rating">
-                        <i class="fas fa-star"></i> 5.0 (89)
-                    </div>
+                    <div class="driver-rating"><i class="fas fa-star"></i> 5.0 (89)</div>
                     <div class="driver-specs">
                          <div class="spec-item"><span class="spec-label">Kendaraan:</span><span class="spec-value">Yamaha NMax</span></div>
                          <div class="spec-item"><span class="spec-label">No. Polisi:</span><span class="spec-value">P 5678 CD</span></div>
@@ -263,9 +244,7 @@
                     <img src="https://github.com/LenteraKarya/NOS/blob/main/assets/images/driver3.jpeg?raw=true" alt="Joko Prasetyo" class="driver-avatar" loading="lazy">
                     <div class="driver-badge inactive">Berhenti</div>
                     <h3 class="service-title">Joko Prasetyo</h3>
-                    <div class="driver-rating">
-                        <i class="fas fa-star"></i> 4.2 (203)
-                    </div>
+                    <div class="driver-rating"><i class="fas fa-star"></i> 4.2 (203)</div>
                      <div class="driver-specs">
                         <div class="spec-item"><span class="spec-label">Kendaraan:</span><span class="spec-value">Honda CB150</span></div>
                         <div class="spec-item"><span class="spec-label">No. Polisi:</span><span class="spec-value">P 9012 EF</span></div>
@@ -337,22 +316,10 @@
             <div class="contact-container">
                 <div class="contact-info">
                     <h3>Informasi Kontak</h3>
-                    <div class="contact-detail">
-                        <i class="fas fa-map-marker-alt contact-icon"></i>
-                        <div><h4>Alamat</h4><p>Jl. PB Sudirman, Wringin Anom, Panarukan, Situbondo (68351), Jawa Timur</p></div>
-                    </div>
-                    <div class="contact-detail">
-                        <i class="fas fa-phone-alt contact-icon"></i>
-                        <div><h4>Telepon</h4><p>+62 878 6561 4222</p></div>
-                    </div>
-                    <div class="contact-detail">
-                        <i class="fas fa-envelope contact-icon"></i>
-                        <div><h4>Email</h4><p>admin@anekamarket.my.id</p></div>
-                    </div>
-                    <div class="contact-detail">
-                        <i class="fas fa-clock contact-icon"></i>
-                        <div><h4>Jam Operasional</h4><p>Setiap Hari: 08.00 - 22.00</p></div>
-                    </div>
+                    <div class="contact-detail"><i class="fas fa-map-marker-alt contact-icon"></i><div><h4>Alamat</h4><p>Jl. PB Sudirman, Wringin Anom, Panarukan, Situbondo (68351), Jawa Timur</p></div></div>
+                    <div class="contact-detail"><i class="fas fa-phone-alt contact-icon"></i><div><h4>Telepon</h4><p>+62 878 6561 4222</p></div></div>
+                    <div class="contact-detail"><i class="fas fa-envelope contact-icon"></i><div><h4>Email</h4><p>admin@anekamarket.my.id</p></div></div>
+                    <div class="contact-detail"><i class="fas fa-clock contact-icon"></i><div><h4>Jam Operasional</h4><p>Setiap Hari: 08.00 - 22.00</p></div></div>
                 </div>
                 <div class="contact-form">
                     <h3>Kirim Pesan</h3>
@@ -444,34 +411,12 @@
 
             // --- DATA DRIVER (SINKRON DENGAN TAMPILAN) ---
             const driversData = [
-                {
-                    id: 'budi_s',
-                    nama: 'Budi Santoso',
-                    no_polisi: 'P 1234 AB',
-                    jenis_kendaraan: 'Honda Beat',
-                    gambar_profil: 'https://github.com/LenteraKarya/NOS/blob/main/assets/images/driver1.jpeg?raw=true',
-                    status: 'aktif'
-                },
-                {
-                    id: 'ani_w',
-                    nama: 'Ani Wijaya',
-                    no_polisi: 'P 5678 CD',
-                    jenis_kendaraan: 'Yamaha NMax',
-                    gambar_profil: 'https://github.com/LenteraKarya/NOS/blob/main/assets/images/driver2.jpeg?raw=true',
-                    status: 'aktif'
-                },
-                {
-                    id: 'joko_p',
-                    nama: 'Joko Prasetyo',
-                    no_polisi: 'P 9012 EF',
-                    jenis_kendaraan: 'Honda CB150',
-                    gambar_profil: 'https://github.com/LenteraKarya/NOS/blob/main/assets/images/driver3.jpeg?raw=true',
-                    status: 'nonaktif'
-                }
+                { id: 'budi_s', nama: 'Budi Santoso', no_polisi: 'P 1234 AB', jenis_kendaraan: 'Honda Beat', gambar_profil: 'https://github.com/LenteraKarya/NOS/blob/main/assets/images/driver1.jpeg?raw=true', status: 'aktif' },
+                { id: 'ani_w', nama: 'Ani Wijaya', no_polisi: 'P 5678 CD', jenis_kendaraan: 'Yamaha NMax', gambar_profil: 'https://github.com/LenteraKarya/NOS/blob/main/assets/images/driver2.jpeg?raw=true', status: 'aktif' },
+                { id: 'joko_p', nama: 'Joko Prasetyo', no_polisi: 'P 9012 EF', jenis_kendaraan: 'Honda CB150', gambar_profil: 'https://github.com/LenteraKarya/NOS/blob/main/assets/images/driver3.jpeg?raw=true', status: 'nonaktif' }
             ];
             
-            const logoBase64 = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOEAAADhCAMAAAAJbSJIAAAAhFBMVEX////rABn/yMnqAADqAAD/+/v85+f/9/f73d32t7n/8fH2urr97u796urwTE7/zMzrABj97+/wS1L0q6z609T4x8j5zM3sExbsFxfuLS/tICPuMDL62tr1sbP0pqj2ubr50NDvP0L84+PzpqfsHR7vREj85ubtJinvQELuNzj1rK018dZIAAAD8klEQVR4nO3d63aqPBSG4QC9gChq1VoVb9Ra6/v/H7fIu5OQhGBCzpy95+uHkDPJnCQh2D8eAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD+j1hKS2Np/BtbDbyMpcVS+iR/iT3F2uJp/Q3/EuOIpfVf/Bv6YLG0/o5/Q4IYl9buY9/QfLRYWs+i19A8pFtau49fQ1M8jKVo/T38GpoiwCgW1u7jl9AUKUaxuPYufg1N0Wi0mFp7h76GplgYxWLaO/Q1NMWhUSyuPUvfQ1MMjGKR7Z16GprgcBQLa++i19AUp0YxqfY+eg1NMSiKxfT36Gtoxj1FsdW0n41oRqEolrC/jWgG8SimsZ9NaAbHKRa39rOJzVGIYkn72YQWKIpixvtZhLpYpPjp/U6iIxRFMX/AZxPKo5hig4d9JqEhilms7zMJZVEsxn2fSyiDYonlPZ9JqI9iiRU9n0koiiL7D3yTSShDopjm0YQ+KIq53ucS+qIoFqf4TKLfFEVx0v+k3hTFUf6zCU1RNHyfSyg/ReEcY/yZRCUoik1P+kxivBRFsX7qSGLNKIpO8JtESxRFMcb/SKJpFMXq+E0iQ6IodvoZRKsURbHj/GWiWBSFW/xdotUURSf8btE2imI3/D7RLApC9c/OaU/5P8V3e+d/0T+d+p/if5t/5k3+6b2/Fv//8r/mBf8w1X8V/5V/9i7/VNt/xX8V/vEt/1TbX8V/Df/xLf+k2l/Ffy3/8S3/pMtfxX89//Et/6TDX8V//e9v+Sdd/iv+63t/yTPv8F/f+1v+yRPv8L/h9T+SfvK6a/mv7/0lT7zT/+a+/vWXvPEM/119/+svfeIZ/rv7/tdf+oZn+O/u+19/6Rmf4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b+qNf/k0t/5s6P+/Tfw0f60s9v+Sbf+VnQ3807G//+k37/L9A/D3/0L375t7/z7wF+qPjp/X+E+9R+VwBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/Nl+A7bWwW2k0lKMAAAAAElFTkSuQmCC';
-
+            const logoBase64 = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOEAAADhCAMAAAAJbSJIAAAAhFBMVEX////rABn/yMnqAADqAAD/+/v85+f/9/f73d32t7n/8fH2urr97u796urwTE7/zMzrABj97+/wS1L0q6z609T4x8j5zM3sExbsFxfuLS/tICPuMDL62tr1sbP0pqj2ubr50NDvP0L84+PzpqfsHR7vREj85ubtJinvQELuNzj1rK018dZIAAAD8klEQVR4nO3d63aqPBSG4QC9gChq1VoVb9Ra6/v/H7fIu5OQhGBCzpy95+uHkDPJnCQh2D8eAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD+j1hKS2Np/BtbDbyMpcVS+iR/iT3F2uJp/Q3/EuOIpfVf/Bv6YLG0/o5/Q4IYl9buY9/QfLRYWs+i19A8pFtau49fQ1M8jKVo/T38GpoiwCgW1u7jl9AUKUaxuPYufg1N0Wi0mFp7h76GplgYxWLaO/Q1NMWhUSyuPUvfQ1MMjGKR7Z16GprgcBQLa++i19AUp0YxqfY+eg1NMSiKxfT36Gtoxj1FsdW0n41oRqEolrC/jWgG8SimsZ9NaAbHKRa39rOJzVGIYkn72YQWKIpixvtZhLpYpPjp/U6iIxRFMX/AZxPKo5hig4d9JqEhilms7zMJZVEsxn2fSyiDYonlPZ9JqI9iiRU9n0koiiL7D3yTSShDopjm0YQ+KIq53ucS+qIoFqf4TKLfFEVx0v+k3hTFUf6zCU1RNHyfSyg/ReEcY/yZRCUoik1P+kxivBRFsX7qSGLNKIpO8JtESxRFMcb/SKJpFMXq+E0iQ6IodvoZRKsURbHj/GWiWBSFW/xdotUURSf8btE2imI3/D7RLApC9c/OaU/5P8V3e+d/0T+d+p/if5t/5k3+6b2/Fv//8r/mBf8w1X8V/5V/9i7/VNt/xX8V/vEt/1TbX8V/Df/xLf+k2l/Ffy3/8S3/pMtfxX89//Et/6TDX8V//e9v+Sdd/iv+63t/yTPv8F/f+1v+yRPv8L/h9T+SfvK6a/mv7/0lT7zT/+a+/vWXvPEM/119/+svfeIZ/rv7/tdf+oZn+O/u+19/6Rmf4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b++/re/9I3f4b+qNf/k0t/5s6P+/Tfw0f60s9v+Sbf+VnQ3807G//+k37/L9A/D3/0L375t7/z7wF+qPjp/X+E+9R+VwBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/Nl+A7bWwW2k0lKMAAAAAElFTkSuQmCC';
 
             // --- INISIALISASI ---
             initNavbar();
@@ -488,14 +433,11 @@
 
             // --- FUNGSI-FUNGSI ---
 
-            function showNotification(message, type = 'info') {
-                // Selalu putar suara notifikasi jika ada pesan
+            function showNotification(message) {
                 if (notificationSound) {
                     notificationSound.currentTime = 0;
                     notificationSound.play().catch(e => console.error("Notification sound failed to play:", e));
                 }
-                
-                // Tampilkan pesan menggunakan alert bawaan browser
                 alert(message);
             }
             
@@ -622,7 +564,6 @@
                     }
                 });
                 
-                // LOGIC DIPISAHKAN: Tombol WhatsApp
                 document.getElementById('sendWaBtn').addEventListener('click', () => {
                     if (lastOrderData) {
                         const data = lastOrderData;
@@ -653,8 +594,13 @@
                     }
                 });
                 
-                // LOGIC DIPISAHKAN: Tombol Unduh Struk
+                // PERBAIKAN: Tombol Unduh Struk dengan Pengecekan Kesiapan Komponen
                 document.getElementById('downloadPdfBtn').addEventListener('click', async () => {
+                    if (typeof window.jspdf === 'undefined' || typeof window.qrcode === 'undefined') {
+                        showNotification('Komponen PDF belum siap. Mohon tunggu sesaat dan coba lagi. Pastikan koneksi internet Anda stabil.');
+                        return;
+                    }
+
                     if (lastOrderData) {
                         const downloadBtn = document.getElementById('downloadPdfBtn');
                         downloadBtn.disabled = true;
@@ -665,7 +611,7 @@
                         downloadBtn.disabled = false;
                         downloadBtn.innerHTML = '<i class="fas fa-file-pdf"></i> Unduh Struk';
                     } else {
-                        showNotification('Data pesanan tidak ditemukan untuk membuat struk.');
+                        showNotification('Data pesanan tidak ditemukan untuk membuat struk. Silakan coba buat pesanan baru.');
                     }
                 });
 
@@ -694,7 +640,7 @@
                     lastOrderData = null;
                     form.querySelectorAll('.selected').forEach(el => el.classList.remove('selected'));
                     ['pickupCoords', 'distance', 'estimatedPrice', 'selectedDriver', 'selectedVehicle', 'driverRating'].forEach(id => {
-                        document.getElementById(id).value = '';
+                        if(document.getElementById(id)) document.getElementById(id).value = '';
                     });
                     
                     const stars = document.querySelectorAll('.star-rating .fa-star');
@@ -703,10 +649,7 @@
                         star.classList.add('far');
                     });
                     
-                    const downloadPdfBtn = document.getElementById('downloadPdfBtn');
-                    downloadPdfBtn.innerHTML = '<i class="fas fa-file-pdf"></i> Unduh Struk';
-                    downloadPdfBtn.disabled = false;
-
+                    document.getElementById('downloadPdfBtn').disabled = false;
                     navigateToStep(1);
                 });
                 
@@ -749,17 +692,13 @@
                                           `_Pesan ini dibuat otomatis oleh sistem._`;
                             
                         sendWhatsAppMessage(ADMIN_WHATSAPP_NUMBER, historyMessage);
-                        
                         showNotification('Konfirmasi pesanan selesai telah dikirim ke Admin. Terima kasih!');
-                        
                         document.getElementById('finalActions').style.display = 'none';
                         document.getElementById('successMessage').querySelector('p').textContent = "Terima kasih! Pesanan Anda telah selesai sepenuhnya.";
                     }
                 };
 
-                document.getElementById('finishOrderBtn').addEventListener('click', () => {
-                    finishOrderAndSendAdminCopy();
-                });
+                document.getElementById('finishOrderBtn').addEventListener('click', () => finishOrderAndSendAdminCopy());
                 
                 document.getElementById('submitRatingBtn').addEventListener('click', () => {
                     const rating = document.getElementById('driverRating').value;
@@ -803,8 +742,6 @@
             function navigateToStep(stepNumber) {
                 const steps = document.querySelectorAll('.form-step');
                 const progressSteps = document.querySelectorAll('.progress-step');
-                const totalSteps = steps.length;
-
                 steps.forEach(step => step.classList.toggle('active', parseInt(step.dataset.step) === stepNumber));
                 
                 progressSteps.forEach((step, index) => {
@@ -816,11 +753,7 @@
                     }
                     
                     if (index === stepNumber - 1) {
-                        if (stepNumber === totalSteps) {
-                            progressStepDiv.classList.add('completed');
-                        } else {
-                            progressStepDiv.classList.add('active');
-                        }
+                        progressStepDiv.classList.add(stepNumber === steps.length ? 'completed' : 'active');
                     }
                 });
 
@@ -828,8 +761,7 @@
                     document.getElementById('initialActions').style.display = 'block';
                     document.getElementById('finalActions').style.display = 'none';
                     document.getElementById('successMessage').querySelector('p').textContent = "Silakan kirim detail pesanan Anda ke admin via WhatsApp dan unduh struk pemesanan Anda.";
-                }
-                 if (stepNumber === 1){
+                } else if (stepNumber === 1) {
                     document.getElementById('finalActions').style.display = 'none';
                     document.getElementById('ratingSection').style.display = 'none';
                     document.getElementById('submitRatingBtn').style.display = 'none';
@@ -841,17 +773,16 @@
             function populateDriverOptions() {
                 const container = document.getElementById('driverOptionsContainer');
                 if (!container) return;
-                let html = '';
-                driversData.filter(d => d.status === 'aktif').forEach(driver => {
-                    html += `
+                container.innerHTML = driversData
+                    .filter(d => d.status === 'aktif')
+                    .map(driver => `
                         <div class="driver-option" data-id="${driver.id}">
                             <img src="${driver.gambar_profil}" alt="Foto ${driver.nama}">
                             <div class="driver-option-name">${driver.nama}</div>
                             <div class="driver-option-vehicle">${driver.jenis_kendaraan}</div>
                         </div>
-                    `;
-                });
-                container.innerHTML = html;
+                    `).join('');
+
                 container.addEventListener('click', e => {
                     const selectedOption = e.target.closest('.driver-option');
                     if (selectedOption) {
@@ -986,7 +917,6 @@
                             const address = await reverseGeocode(latitude, longitude);
                             document.getElementById('pickupLocation').value = address;
                         } catch (error) {
-                            console.error('Error reverse geocoding:', error);
                             showNotification('Gagal mendapatkan nama alamat dari lokasi Anda. Silakan isi manual.');
                         } finally {
                              btn.disabled = false;
@@ -1055,17 +985,10 @@
             }
             
             function validateStep(step) {
-                const fields = step.querySelectorAll('input[required], textarea[required]');
-                for (const field of fields) {
-                    const label = field.closest('.form-group')?.querySelector('label');
+                for (const field of step.querySelectorAll('input[required], textarea[required]')) {
                     if (!field.value.trim() || (field.type === 'hidden' && !field.value) || (field.type === 'tel' && !field.checkValidity())) {
-                        field.classList.add('invalid');
-                        if (label) label.style.color = 'var(--danger)';
                         showNotification('Mohon isi semua kolom yang ditandai * dengan benar.');
                         return false;
-                    } else {
-                        field.classList.remove('invalid');
-                        if (label) label.style.color = '';
                     }
                 }
                 return true;
@@ -1111,9 +1034,6 @@
             
             async function generateAndDownloadPDF(data) {
                 try {
-                    if (typeof window.jspdf === 'undefined' || typeof qrcode === 'undefined') {
-                        throw new Error("Library PDF atau QRCode gagal dimuat. Pastikan koneksi internet Anda stabil.");
-                    }
                     const { jsPDF } = window.jspdf;
                     const doc = new jsPDF();
                     const formattedDate = data.orderDate.toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' });
@@ -1139,33 +1059,24 @@
                     let yPos = 50;
                     doc.setFontSize(11);
                     doc.setTextColor(26, 32, 44);
-                    doc.setFont('helvetica', 'bold');
-                    doc.text('Kode Pesanan:', 15, yPos);
-                    doc.setFont('helvetica', 'normal');
+                    doc.text('Kode Pesanan:', 15, yPos, {fontStyle: 'bold'});
                     doc.text(data.orderCode, 55, yPos);
-                    
-                    doc.setFont('helvetica', 'bold');
-                    doc.text('Tanggal:', 120, yPos);
-                    doc.setFont('helvetica', 'normal');
+                    doc.text('Tanggal:', 120, yPos, {fontStyle: 'bold'});
                     doc.text(`${formattedDate}, ${formattedTime} WIB`, 140, yPos);
 
                     yPos += 7;
                     doc.setLineWidth(0.2);
                     doc.line(15, yPos, 195, yPos);
                     yPos += 10;
+                    
                     doc.setFontSize(10);
-
-                    doc.setFont('helvetica', 'bold');
-                    doc.text('INFORMASI PELANGGAN', 15, yPos);
+                    doc.text('INFORMASI PELANGGAN', 15, yPos, {fontStyle: 'bold'});
                     yPos += 6;
-                    doc.setFont('helvetica', 'normal');
                     doc.text(`Nama: ${data.name}`, 15, yPos);
                     yPos += 6;
                     doc.text(`WhatsApp: ${data.phone}`, 15, yPos);
 
-                    doc.setFont('helvetica', 'bold');
-                    doc.text('INFORMASI DRIVER', 110, yPos - 12);
-                    doc.setFont('helvetica', 'normal');
+                    doc.text('INFORMASI DRIVER', 110, yPos - 12, {fontStyle: 'bold'});
                     doc.text(`Nama: ${driverName}`, 110, yPos-6);
                     doc.text(`Kendaraan: ${data.selectedVehicle}`, 110, yPos);
 
@@ -1175,11 +1086,9 @@
                     doc.rect(15, yPos, 180, 50, 'S'); 
                     yPos += 7;
 
-                    doc.setFont('helvetica', 'bold');
-                    doc.text('DETAIL PERJALANAN', 105, yPos, { align: 'center' });
+                    doc.text('DETAIL PERJALANAN', 105, yPos, { align: 'center', fontStyle: 'bold' });
                     yPos += 8;
 
-                    doc.setFont('helvetica', 'normal');
                     const splitJemput = doc.splitTextToSize(`Jemput: ${data.pickupLocation}`, 170);
                     doc.text(splitJemput, 20, yPos);
                     yPos += (splitJemput.length * 5) + 2;
@@ -1188,15 +1097,12 @@
                     doc.text(splitTujuan, 20, yPos);
                     yPos += (splitTujuan.length * 5) + 15;
 
-                    doc.setFont('helvetica', 'bold');
                     doc.setFontSize(10);
-                    doc.text('Estimasi Jarak:', 15, yPos);
-                    doc.setFont('helvetica', 'normal');
+                    doc.text('Estimasi Jarak:', 15, yPos, {fontStyle: 'bold'});
                     doc.text(`${data.distance} km`, 75, yPos);
 
-                    doc.setFont('helvetica', 'bold');
                     doc.setFontSize(16);
-                    doc.text('TOTAL BIAYA:', 15, yPos + 10);
+                    doc.text('TOTAL BIAYA:', 15, yPos + 10, {fontStyle: 'bold'});
                     doc.text(formatRupiah(data.estimatedPrice), 75, yPos + 10);
 
                     doc.addImage(qrImg, 'JPEG', 150, yPos - 5, 45, 45);
@@ -1211,7 +1117,6 @@
                     doc.text('Struk ini valid dan dibuat secara otomatis oleh sistem.', 105, finalY + 15, { align: 'center' });
 
                     doc.save(`struk-nos-${data.orderCode}.pdf`);
-
                 } catch (e) {
                     console.error("Gagal membuat PDF:", e);
                     showNotification("Gagal membuat struk PDF: " + e.message + "\n\nPastikan koneksi internet Anda stabil dan tidak ada pemblokir pop-up yang aktif. Pesanan Anda sudah terkirim, Anda bisa melanjutkan tanpa struk.");
