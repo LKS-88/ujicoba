@@ -28,2722 +28,6 @@
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.js"></script>
-    
-    <style>
-        /* CSS yang sudah ada tetap dipertahankan */
-        .search-modal.show { display: flex; }
-        .search-modal-content { width: 90%; max-width: 600px; background: #fff; border-radius: 8px; padding: 20px; position: relative; }
-        .search-modal-input { width: 100%; padding: 12px; font-size: 1rem; border: 1px solid #ccc; border-radius: 5px; margin-bottom: 15px; }
-        .search-results { max-height: 400px; overflow-y: auto; }
-        .search-result-item { display: flex; align-items: center; padding: 10px; border-bottom: 1px solid #eee; text-decoration: none; color: #333; transition: background-color 0.3s; }
-        .search-result-item:hover { background-color: #f5f5f5; }
-        .search-result-image { width: 60px; height: 60px; object-fit: cover; border-radius: 5px; margin-right: 15px; }
-        .search-result-info h4 { margin: 0 0 5px 0; font-size: 1rem; font-weight: 600; }
-        .search-result-info p { margin: 0; font-size: 0.85rem; color: #666; }
-        .search-results-placeholder { text-align: center; color: #888; padding: 20px; }
-        
-:root {
-    --primary: #3461FD;      /* Bright Blue from aplikasiusaha.com */
-    --secondary: #5D82FF;    /* Lighter Blue */
-    --accent: #F77D0B;       /* Orange Accent from aplikasiusaha.com */
-    --light: #f8f9fa;        /* Light Gray Background */
-    --dark: #002266;         /* Dark Blue for Gradients */
-    --text: #212529;         /* Dark Gray/Black for Text */
-    --text-light: #6C757D;   /* Lighter Gray for Text */
-    --success: #28a745;      /* Standard Success Green */
-    --warning: #ffc107;      /* Standard Warning Yellow */
-    --transition: all 0.3s ease;
-    --shadow-sm: 0 1px 3px rgba(0,0,0,0.05), 0 1px 2px rgba(0,0,0,0.1);
-    --shadow-md: 0 4px 6px rgba(0,0,0,0.05), 0 1px 3px rgba(0,0,0,0.06);
-    --shadow-lg: 0 10px 25px rgba(0,0,0,0.07), 0 5px 10px rgba(0,0,0,0.05);
-    --shadow-xl: 0 20px 50px rgba(0,0,0,0.1), 0 10px 20px rgba(0,0,0,0.08);
-    --gold: var(--accent); /* Replaced gold with the new accent color */
-}
-
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
-
-body {
-    background-color: #FFFFFF; /* Changed to white for a cleaner look */
-    color: var(--text);
-    line-height: 1.7;
-    overflow-x: hidden;
-    scroll-behavior: smooth;
-}
-
-h1, h2, h3, h4 {
-    font-family: 'Playfair Display', serif;
-    font-weight: 600;
-    color: var(--dark);
-}
-
-/* Premium Particle Animation */
-.particles {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 0;
-    overflow: hidden;
-}
-
-.particle {
-    position: absolute;
-    background: radial-gradient(circle, var(--accent), rgba(247, 125, 11, 0));
-    border-radius: 50%;
-    animation: float linear infinite;
-    filter: blur(1px);
-    opacity: 0;
-    transform: translateY(100vh);
-}
-
-@keyframes float {
-    0% {
-        transform: translateY(100vh) rotate(0deg);
-        opacity: 0;
-    }
-    10% {
-        opacity: 0.6;
-    }
-    90% {
-        opacity: 0.6;
-    }
-    100% {
-        transform: translateY(-20vh) rotate(360deg);
-        opacity: 0;
-    }
-}
-
-/* Premium Header with Gradient and 3D Effect */
-header {
-    background: linear-gradient(135deg, var(--primary), var(--dark));
-    color: white;
-    padding: 0;
-    text-align: center;
-    position: relative;
-    overflow: hidden;
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    isolation: isolate;
-}
-
-.header-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(135deg, rgba(52, 97, 253, 0.9), rgba(0, 34, 102, 0.95));
-    z-index: -1;
-}
-
-/* Premium 3D Effect for Header Content */
-.header-content {
-    position: relative;
-    z-index: 2;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 2rem 1.5rem;
-    animation: fadeIn 1.2s ease-out;
-    perspective: 1000px;
-    transform-style: preserve-3d;
-}
-
-.header-content::before {
-    content: '';
-    position: absolute;
-    top: -50px;
-    left: -50px;
-    right: -50px;
-    bottom: -50px;
-    background: radial-gradient(circle at center, rgba(247, 125, 11, 0.1), transparent 70%);
-    z-index: -1;
-    border-radius: 20px;
-    transform: translateZ(-50px);
-}
-
-@keyframes fadeIn {
-    from { 
-        opacity: 0; 
-        transform: translateY(30px) scale(0.98);
-    }
-    to { 
-        opacity: 1; 
-        transform: translateY(0) scale(1);
-    }
-}
-
-.logo {
-    font-size: clamp(2rem, 6vw, 4.5rem);
-    font-weight: 700;
-    margin-bottom: 2rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 20px;
-    text-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-    font-family: 'Playfair Display', serif;
-    letter-spacing: 1px;
-    position: relative;
-    flex-direction: column;
-}
-
-.logo::after {
-    content: '';
-    position: absolute;
-    bottom: -10px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 150px;
-    height: 3px;
-    background: var(--accent); /* Changed from gold */
-    border-radius: 3px;
-}
-
-.logo img {
-    height: clamp(60px, 20vw, 120px);
-    width: auto;
-    animation: pulse 3s infinite ease-in-out;
-    filter: drop-shadow(0 0 10px rgba(247, 125, 11, 0.3));
-}
-
-@keyframes pulse {
-    0% { 
-        transform: scale(1); 
-        opacity: 0.9;
-    }
-    50% { 
-        transform: scale(1.1); 
-        opacity: 1;
-        filter: drop-shadow(0 0 20px rgba(247, 125, 11, 0.7));
-    }
-    100% { 
-        transform: scale(1); 
-        opacity: 0.9;
-    }
-}
-
-.tagline {
-    font-size: clamp(1.1rem, 3vw, 2rem);
-    max-width: 800px;
-    margin: 0 auto 3rem;
-    font-weight: 300;
-    line-height: 1.4;
-    letter-spacing: 0.5px;
-    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-    opacity: 0;
-    animation: fadeInUp 1s ease-out 0.3s forwards;
-    font-family: 'Playfair Display', serif;
-    position: relative;
-    padding: 0 1rem;
-}
-
-.tagline::before, .tagline::after {
-    content: '❝';
-    position: absolute;
-    font-size: 3rem;
-    color: var(--accent); /* Changed from gold */
-    opacity: 0.5;
-}
-
-.tagline::before {
-    top: -30px;
-    left: -30px;
-}
-
-.tagline::after {
-    bottom: -40px;
-    right: -30px;
-    transform: rotate(180deg);
-}
-
-/* Search Bar in Header */
-.header-search {
-    max-width: 600px;
-    margin: 0 auto 3rem;
-    position: relative;
-    opacity: 0;
-    animation: fadeInUp 1s ease-out 0.5s forwards;
-    width: 90%;
-}
-
-.header-search input {
-    width: 100%;
-    padding: 1rem 2rem;
-    border-radius: 50px;
-    border: none;
-    font-size: 1rem;
-    box-shadow: var(--shadow-lg);
-    transition: var(--transition);
-    padding-right: 4.5rem;
-    background: rgba(255, 255, 255, 0.9);
-}
-
-.header-search input:focus {
-    outline: none;
-    box-shadow: 0 0 0 3px rgba(247, 125, 11, 0.3), var(--shadow-xl);
-}
-
-.header-search button {
-    position: absolute;
-    right: 1rem;
-    top: 50%;
-    transform: translateY(-50%);
-    background: var(--accent);
-    color: white;
-    border: none;
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: var(--transition);
-    box-shadow: var(--shadow-sm);
-}
-
-.header-search button:hover {
-    background: #e05a00; /* Darker orange */
-    transform: translateY(-50%) scale(1.05);
-    box-shadow: var(--shadow-md);
-}
-
-.header-buttons {
-    display: flex;
-    gap: 1.5rem;
-    justify-content: center;
-    margin-top: 1.5rem;
-    opacity: 0;
-    animation: fadeInUp 1s ease-out 0.6s forwards;
-    flex-wrap: wrap;
-}
-
-.scroll-down {
-    position: absolute;
-    bottom: 40px;
-    left: 50%;
-    transform: translateX(-50%);
-    color: white;
-    font-size: 2.5rem;
-    animation: bounce 2s infinite;
-    cursor: pointer;
-    z-index: 2;
-    opacity: 0.7;
-    transition: var(--transition);
-}
-
-.scroll-down:hover {
-    opacity: 1;
-    transform: translateY(5px) translateX(-50%);
-    color: var(--accent); /* Changed from gold */
-}
-
-@keyframes bounce {
-    0%, 20%, 50%, 80%, 100% { transform: translateY(0) translateX(-50%); }
-    40% { transform: translateY(-15px) translateX(-50%); }
-    60% { transform: translateY(-7px) translateX(-50%); }
-}
-
-@keyframes fadeInUp {
-    from { 
-        opacity: 0; 
-        transform: translateY(20px);
-    }
-    to { 
-        opacity: 1; 
-        transform: translateY(0);
-    }
-}
-
-.container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 1.5rem;
-}
-
-/* Navigation */
-nav {
-    background-color: rgba(255, 255, 255, 0.98);
-    box-shadow: 0 2px 30px rgba(0, 0, 0, 0.1);
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-    backdrop-filter: blur(8px);
-    transition: var(--transition);
-    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-}
-
-nav.scrolled {
-    background-color: rgba(255, 255, 255, 0.98);
-    box-shadow: 0 5px 30px rgba(0, 0, 0, 0.15);
-    padding: 0.5rem 0;
-}
-
-.nav-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem;
-    transition: var(--transition);
-}
-
-nav.scrolled .nav-container {
-    padding: 0.8rem 1rem;
-}
-
-.nav-logo {
-    font-weight: 600;
-    color: var(--primary);
-    text-decoration: none;
-    font-size: 1.2rem;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-family: 'Playfair Display', serif;
-    letter-spacing: 0.5px;
-}
-
-.nav-logo img {
-    height: 30px;
-    width: auto;
-    transition: var(--transition);
-}
-
-/* Nav Search */
-.nav-search {
-    flex: 1;
-    max-width: 400px;
-    margin: 0 1rem;
-    position: relative;
-    display: none;
-}
-
-.nav-search input {
-    width: 100%;
-    padding: 0.6rem 1.2rem;
-    border-radius: 50px;
-    border: 1px solid #e0e0e0;
-    font-size: 0.9rem;
-    transition: var(--transition);
-    padding-right: 2.5rem;
-}
-
-.nav-search input:focus {
-    outline: none;
-    border-color: var(--accent);
-    box-shadow: 0 0 0 3px rgba(247, 125, 11, 0.1);
-}
-
-.nav-search button {
-    position: absolute;
-    right: 0.6rem;
-    top: 50%;
-    transform: translateY(-50%);
-    background: none;
-    border: none;
-    color: var(--text-light);
-    cursor: pointer;
-    transition: var(--transition);
-    font-size: 0.9rem;
-}
-
-.nav-search button:hover {
-    color: var(--accent);
-}
-
-.nav-links {
-    display: flex;
-    gap: 1.5rem;
-}
-
-.nav-links a {
-    color: var(--text);
-    text-decoration: none;
-    font-weight: 500;
-    transition: var(--transition);
-    position: relative;
-    padding: 0.5rem 0;
-    font-size: 1rem;
-    letter-spacing: 0.5px;
-}
-
-.nav-links a:hover {
-    color: var(--accent);
-}
-
-.nav-links a::after {
-    content: '';
-    position: absolute;
-    width: 0;
-    height: 2px;
-    bottom: 0;
-    left: 0;
-    background-color: var(--accent);
-    transition: var(--transition);
-}
-
-.nav-links a:hover::after {
-    width: 100%;
-}
-
-/* Mobile Menu Toggle */
-.mobile-menu-toggle {
-    display: none;
-    background: none;
-    border: none;
-    color: var(--primary);
-    font-size: 1.5rem;
-    cursor: pointer;
-    z-index: 1001;
-    padding: 0.5rem;
-}
-
-/* Search Toggle Button for Mobile */
-.search-toggle {
-    display: none;
-    background: none;
-    border: none;
-    color: var(--primary);
-    font-size: 1.1rem;
-    cursor: pointer;
-    margin-right: 0.5rem;
-    padding: 0.5rem;
-}
-
-/* Sections */
-section {
-    padding: 4rem 0;
-    position: relative;
-}
-
-.section-title {
-    text-align: center;
-    margin-bottom: 3rem;
-    color: var(--dark);
-    position: relative;
-    font-size: clamp(1.7rem, 5vw, 2.5rem);
-    letter-spacing: 0.5px;
-    padding: 0 1rem;
-}
-
-.section-title::after {
-    content: '';
-    display: block;
-    width: 80px;
-    height: 4px;
-    background: var(--accent);
-    margin: 1.5rem auto 0;
-    border-radius: 2px;
-}
-
-/* Services Section */
-.services-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 2rem;
-}
-
-.service-card {
-    background: white;
-    border-radius: 16px;
-    padding: 2rem 1.5rem;
-    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
-    transition: var(--transition);
-    text-align: center;
-    border: 1px solid rgba(0, 0, 0, 0.03);
-    transform: translateY(0);
-    position: relative;
-    overflow: hidden;
-}
-
-.service-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 5px;
-    background: linear-gradient(90deg, var(--accent), var(--primary)); /* Updated gradient */
-}
-
-.service-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
-    border-color: rgba(247, 125, 11, 0.1);
-}
-
-.service-icon {
-    font-size: 3rem;
-    color: var(--accent);
-    margin-bottom: 1.5rem;
-    transition: var(--transition);
-    display: inline-block;
-}
-
-.service-card:hover .service-icon {
-    transform: scale(1.1) rotate(5deg);
-    filter: drop-shadow(0 5px 10px rgba(247, 125, 11, 0.2));
-}
-
-.service-title {
-    font-size: 1.4rem;
-    margin-bottom: 1rem;
-    color: var(--dark);
-    font-family: 'Playfair Display', serif;
-}
-
-.service-card p {
-    color: var(--text-light);
-    font-size: 1rem;
-    line-height: 1.6;
-}
-
-/* Gallery Section */
-.gallery-intro {
-    text-align: center;
-    margin-bottom: 3rem;
-    padding: 0 1rem;
-}
-
-.gallery-intro p {
-    color: var(--text-light);
-    max-width: 800px;
-    margin: 0 auto;
-    font-size: 1.05rem;
-    line-height: 1.8;
-}
-
-.category-tabs {
-    display: flex;
-    justify-content: center;
-    gap: 0.8rem;
-    margin-bottom: 3rem;
-    flex-wrap: wrap;
-}
-
-.category-btn {
-    padding: 0.7rem 1.5rem;
-    border-radius: 50px;
-    background: white;
-    border: 1px solid #e0e0e0;
-    cursor: pointer;
-    transition: var(--transition);
-    font-weight: 500;
-    font-size: 0.9rem;
-    letter-spacing: 0.5px;
-}
-
-.category-btn.active, .category-btn:hover {
-    background: var(--accent);
-    color: white;
-    border-color: var(--accent);
-    transform: translateY(-3px);
-    box-shadow: 0 5px 15px rgba(247, 125, 11, 0.2);
-}
-
-/* New Category Buttons */
-.product-categories {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 0.6rem;
-    margin: 1.5rem auto 2rem;
-    max-width: 1000px;
-    padding: 0 1rem;
-}
-
-.product-category-btn {
-    padding: 0.6rem 1.2rem;
-    border-radius: 50px;
-    background: white;
-    border: 1px solid #e0e0e0;
-    cursor: pointer;
-    transition: var(--transition);
-    font-weight: 500;
-    font-size: 0.85rem;
-    letter-spacing: 0.5px;
-    white-space: nowrap;
-}
-
-.product-category-btn:hover {
-    background: var(--primary);
-    color: white;
-    border-color: var(--primary);
-    transform: translateY(-2px);
-    box-shadow: 0 3px 10px rgba(52, 97, 253, 0.2);
-}
-
-.product-category-btn.active {
-    background: var(--primary);
-    color: white;
-    border-color: var(--primary);
-    transform: translateY(-2px);
-    box-shadow: 0 3px 10px rgba(52, 97, 253, 0.3);
-}
-
-/* UPDATED GALLERY GRID - Responsive */
-.gallery-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 2rem;
-    margin-top: 1.5rem;
-}
-
-.gallery-item {
-    background: white;
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-    transition: var(--transition);
-    position: relative;
-    opacity: 0;
-    transform: translateY(30px);
-    animation: fadeInUp 0.8s forwards;
-    border: 1px solid rgba(0, 0, 0, 0.03);
-}
-
-@keyframes fadeInUp {
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.gallery-item:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
-    border-color: rgba(247, 125, 11, 0.1);
-}
-
-.gallery-badge {
-    position: absolute;
-    top: 15px;
-    right: 15px;
-    background: var(--accent);
-    color: white;
-    padding: 0.3rem 1rem;
-    border-radius: 50px;
-    font-size: 0.8rem;
-    font-weight: 600;
-    z-index: 1;
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
-    letter-spacing: 0.5px;
-}
-
-.gallery-badge.rental {
-    background: var(--secondary);
-}
-
-.gallery-badge.promo {
-    background: var(--success);
-}
-
-.gallery-badge.seller {
-    position: absolute;
-    top: 15px;
-    left: 15px;
-    background: var(--primary);
-    color: white;
-    padding: 0.3rem 1rem;
-    border-radius: 50px;
-    font-size: 0.8rem;
-    font-weight: 600;
-    z-index: 1;
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
-    letter-spacing: 0.5px;
-    cursor: pointer;
-    transition: var(--transition);
-    text-decoration: none;
-}
-
-.gallery-badge.seller:hover {
-    background: var(--dark);
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-}
-
-.gallery-image-container {
-    position: relative;
-    overflow: hidden;
-    height: 250px;
-    aspect-ratio: 16/9;
-}
-
-.gallery-image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-    transition: transform 0.8s ease;
-    cursor: pointer;
-}
-
-.gallery-item:hover .gallery-image {
-    transform: scale(1.05);
-}
-
-.gallery-details {
-    padding: 1.5rem;
-}
-
-.gallery-title {
-    font-size: 1.3rem;
-    font-weight: 600;
-    margin-bottom: 0.8rem;
-    color: var(--dark);
-    font-family: 'Playfair Display', serif;
-}
-
-.gallery-meta {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 0.8rem;
-    font-size: 0.85rem;
-    color: var(--text-light);
-    flex-wrap: wrap;
-    gap: 0.5rem;
-}
-
-.gallery-code {
-    background: rgba(52, 97, 253, 0.1);
-    color: var(--primary);
-    padding: 0.2rem 0.6rem;
-    border-radius: 4px;
-    font-weight: 600;
-    font-size: 0.8rem;
-}
-
-.gallery-seller {
-    display: flex;
-    align-items: center;
-    gap: 0.3rem;
-    font-size: 0.8rem;
-}
-
-.gallery-seller i {
-    color: var(--accent);
-    font-size: 0.9rem;
-}
-
-.gallery-price {
-    color: var(--accent);
-    font-weight: 700;
-    margin-bottom: 1.2rem;
-    font-size: 1.1rem;
-    letter-spacing: 0.5px;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    flex-wrap: wrap;
-}
-
-.gallery-price .original-price {
-    font-size: 0.85rem;
-    text-decoration: line-through;
-    color: var(--text-light);
-    font-weight: normal;
-}
-
-.gallery-price .discount {
-    background: var(--success);
-    color: white;
-    padding: 0.2rem 0.5rem;
-    border-radius: 4px;
-    font-size: 0.75rem;
-    margin-left: 0.3rem;
-}
-
-/* Gallery Detail Expanded View */
-.gallery-detail-expanded {
-    display: none;
-    padding: 0 1.5rem 1.5rem;
-    margin-top: -1rem;
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.5s ease, padding 0.5s ease;
-}
-
-.gallery-detail-expanded.active {
-    display: block;
-    max-height: 1500px;
-    animation: fadeIn 0.5s ease;
-}
-
-.gallery-carousel {
-    position: relative;
-    margin-bottom: 1.5rem;
-}
-
-.gallery-main-image {
-    width: 100%;
-    height: 300px;
-    object-fit: contain;
-    background-color: #f9f9f9;
-    border-radius: 8px;
-    margin-bottom: 1rem;
-    display: block;
-    cursor: zoom-in;
-    transition: transform 0.3s ease;
-}
-
-.gallery-main-image:hover {
-    transform: scale(1.02);
-}
-
-.gallery-thumbnails {
-    display: flex;
-    gap: 0.8rem;
-    overflow-x: auto;
-    padding-bottom: 0.5rem;
-    scrollbar-width: thin;
-    scrollbar-color: var(--accent) #f1f1f1;
-}
-
-.gallery-thumbnails::-webkit-scrollbar {
-    height: 5px;
-}
-
-.gallery-thumbnails::-webkit-scrollbar-track {
-    background: #f1f1f1;
-    border-radius: 10px;
-}
-
-.gallery-thumbnails::-webkit-scrollbar-thumb {
-    background-color: var(--accent);
-    border-radius: 10px;
-}
-
-.thumbnail {
-    width: 80px;
-    height: 80px;
-    object-fit: cover;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: var(--transition);
-    border: 2px solid transparent;
-    flex-shrink: 0;
-    aspect-ratio: 1/1;
-}
-
-.thumbnail:hover, .thumbnail.active {
-    border-color: var(--accent);
-    transform: scale(1.05);
-}
-
-.gallery-description {
-    color: var(--text-light);
-    font-size: 0.95rem;
-    margin-bottom: 1.2rem;
-    line-height: 1.7;
-}
-
-.gallery-specs {
-    margin-top: 1.2rem;
-    border-top: 1px solid #eee;
-    padding-top: 1.2rem;
-}
-
-.spec-item {
-    display: flex;
-    margin-bottom: 0.8rem;
-    flex-wrap: wrap;
-}
-
-.spec-label {
-    font-weight: 600;
-    color: var(--dark);
-    min-width: 100px;
-    font-size: 0.9rem;
-    margin-bottom: 0.3rem;
-}
-
-.spec-value {
-    color: var(--text-light);
-    font-size: 0.9rem;
-    flex: 1;
-}
-
-/* Buttons */
-.btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    padding: 0.9rem 1.8rem;
-    border-radius: 50px;
-    font-weight: 600;
-    text-align: center;
-    cursor: pointer;
-    transition: var(--transition);
-    border: none;
-    font-size: 0.95rem;
-    letter-spacing: 0.5px;
-    text-decoration: none;
-}
-
-.btn i {
-    font-size: 1rem;
-}
-
-.btn-primary {
-    background-color: var(--accent);
-    color: white;
-    box-shadow: 0 5px 15px rgba(247, 125, 11, 0.3);
-}
-
-.btn-primary:hover {
-    background-color: #e05a00; /* Darker orange */
-    transform: translateY(-3px);
-    box-shadow: 0 8px 25px rgba(247, 125, 11, 0.4);
-}
-
-.btn-outline {
-    background-color: transparent;
-    border: 2px solid white; /* Changed for better contrast on header */
-    color: white;
-}
-
-.btn-outline:hover {
-    background-color: white;
-    color: var(--primary);
-    transform: translateY(-3px);
-    box-shadow: 0 8px 25px rgba(255, 255, 255, 0.2);
-}
-
-.btn-accent {
-    background-color: var(--accent);
-    color: white;
-}
-
-.btn-accent:hover {
-    background-color: #e05a00; /* Darker orange */
-    transform: translateY(-3px);
-    box-shadow: 0 8px 25px rgba(247, 125, 11, 0.4);
-}
-
-.btn-success {
-    background-color: var(--success);
-    color: white;
-}
-
-.btn-success:hover {
-    background-color: #218838; /* Darker green */
-    transform: translateY(-3px);
-    box-shadow: 0 8px 25px rgba(40, 167, 69, 0.3);
-}
-
-.action-buttons {
-    display: flex;
-    gap: 1rem;
-    margin-top: 1.5rem;
-    flex-wrap: wrap;
-}
-
-.btn-small {
-    padding: 0.7rem 1.2rem;
-    font-size: 0.9rem;
-}
-
-/* Improved Product Action Buttons */
-.gallery-actions {
-    display: flex;
-    flex-direction: column;
-    gap: 0.8rem;
-    margin-top: 1.5rem;
-}
-
-.btn-detail {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    padding: 0.8rem;
-    border-radius: 8px;
-    background-color: rgba(52, 97, 253, 0.1);
-    color: var(--primary);
-    font-weight: 600;
-    cursor: pointer;
-    transition: var(--transition);
-    border: none;
-    width: 100%;
-    text-align: center;
-    font-size: 0.9rem;
-}
-
-.btn-detail:hover {
-    background-color: rgba(52, 97, 253, 0.2);
-    transform: translateY(-2px);
-}
-
-.btn-detail i {
-    transition: transform 0.3s ease;
-}
-
-.btn-detail.active i {
-    transform: rotate(180deg);
-}
-
-.btn-order {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    padding: 0.8rem;
-    border-radius: 8px;
-    background-color: var(--success);
-    color: white;
-    font-weight: 600;
-    cursor: pointer;
-    transition: var(--transition);
-    border: none;
-    width: 100%;
-    text-align: center;
-    text-decoration: none;
-    font-size: 0.9rem;
-}
-
-.btn-order:hover {
-    background-color: #218838; /* Darker green */
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
-}
-
-.btn-whatsapp {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    padding: 0.8rem;
-    border-radius: 8px;
-    background-color: #25D366;
-    color: white;
-    font-weight: 600;
-    cursor: pointer;
-    transition: var(--transition);
-    border: none;
-    width: 100%;
-    text-align: center;
-    text-decoration: none;
-    font-size: 0.9rem;
-}
-
-.btn-whatsapp:hover {
-    background-color: #128C7E;
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(37, 211, 102, 0.3);
-}
-
-.btn-call {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    padding: 0.8rem;
-    border-radius: 8px;
-    background-color: var(--primary);
-    color: white;
-    font-weight: 600;
-    cursor: pointer;
-    transition: var(--transition);
-    border: none;
-    width: 100%;
-    text-align: center;
-    text-decoration: none;
-    font-size: 0.9rem;
-}
-
-.btn-call:hover {
-    background-color: var(--dark);
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(52, 97, 253, 0.3);
-}
-
-/* Pre-order Toggle Button */
-.btn-preorder-toggle {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    padding: 0.8rem;
-    border-radius: 8px;
-    background-color: rgba(247, 125, 11, 0.15);
-    color: var(--accent);
-    font-weight: 600;
-    cursor: pointer;
-    transition: var(--transition);
-    border: 2px solid rgba(247, 125, 11, 0.2);
-    width: 100%;
-    text-align: center;
-    font-size: 0.9rem;
-}
-
-.btn-preorder-toggle:hover {
-    background-color: rgba(247, 125, 11, 0.25);
-    transform: translateY(-2px);
-    border-color: rgba(247, 125, 11, 0.3);
-}
-
-.btn-preorder-toggle.active {
-    background-color: rgba(247, 125, 11, 0.25);
-    border-color: var(--accent);
-}
-
-/* Price Variations */
-.price-variations {
-    margin: 1.2rem 0;
-    border-top: 1px solid #eee;
-    padding-top: 1.2rem;
-}
-
-.price-variation {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0.7rem;
-    border-radius: 8px;
-    margin-bottom: 0.7rem;
-    transition: var(--transition);
-    background-color: rgba(248, 249, 250, 0.5);
-    cursor: pointer;
-    font-size: 0.9rem;
-}
-
-.price-variation:hover {
-    background-color: rgba(247, 125, 11, 0.05);
-}
-
-.price-variation.active {
-    background-color: rgba(247, 125, 11, 0.1);
-    border-left: 3px solid var(--accent);
-}
-
-.price-variation-name {
-    font-weight: 500;
-    color: var(--dark);
-}
-
-.price-variation-value {
-    font-weight: 600;
-    color: var(--accent);
-}
-
-/* Quantity Selector */
-.quantity-selector {
-    display: flex;
-    align-items: center;
-    gap: 0.8rem;
-    margin: 1.2rem 0;
-    flex-wrap: wrap;
-}
-
-.quantity-label {
-    font-weight: 500;
-    color: var(--dark);
-    min-width: 60px;
-    font-size: 0.9rem;
-}
-
-.quantity-controls {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.quantity-btn {
-    width: 35px;
-    height: 35px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: rgba(52, 97, 253, 0.1);
-    color: var(--primary);
-    border: none;
-    cursor: pointer;
-    transition: var(--transition);
-    font-size: 1rem;
-    font-weight: bold;
-}
-
-.quantity-btn:hover {
-    background-color: rgba(52, 97, 253, 0.2);
-}
-
-.quantity-input {
-    width: 50px;
-    text-align: center;
-    padding: 0.5rem;
-    border: 1px solid #e0e0e0;
-    border-radius: 8px;
-    font-size: 0.9rem;
-    font-weight: 600;
-}
-
-.quantity-input:focus {
-    outline: none;
-    border-color: var(--accent);
-    box-shadow: 0 0 0 3px rgba(247, 125, 11, 0.1);
-}
-
-.unit-selector {
-    margin-left: 0.5rem;
-}
-
-.unit-selector select {
-    padding: 0.5rem;
-    border: 1px solid #e0e0e0;
-    border-radius: 8px;
-    font-size: 0.85rem;
-    background-color: white;
-}
-
-.unit-selector select:focus {
-    outline: none;
-    border-color: var(--accent);
-}
-
-/* Total Price Display */
-.total-price {
-    margin: 1.2rem 0;
-    padding: 0.8rem;
-    background-color: rgba(40, 167, 69, 0.1);
-    border-radius: 8px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.total-price-label {
-    font-weight: 500;
-    color: var(--dark);
-    font-size: 0.95rem;
-}
-
-.total-price-value {
-    font-weight: 700;
-    color: var(--success);
-    font-size: 1.1rem;
-}
-
-/* Pre-order Form */
-.preorder-form {
-    margin-top: 1.2rem;
-    padding: 1.2rem;
-    background-color: rgba(255, 243, 205, 0.8);
-    border-radius: 10px;
-    border: 1px dashed var(--warning);
-    display: none;
-    transition: var(--transition);
-}
-
-.preorder-form.active {
-    display: block;
-    animation: fadeIn 0.5s ease;
-}
-
-.preorder-title {
-    font-size: 1rem;
-    margin-bottom: 0.8rem;
-    color: var(--dark);
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.preorder-title i {
-    color: var(--warning);
-}
-
-.preorder-input {
-    width: 100%;
-    padding: 0.7rem 0.9rem;
-    border: 1px solid #e0e0e0;
-    border-radius: 8px;
-    margin-bottom: 0.8rem;
-    font-size: 0.95rem;
-    transition: var(--transition);
-    background-color: white;
-}
-
-.preorder-input:focus {
-    outline: none;
-    border-color: var(--warning);
-    box-shadow: 0 0 0 3px rgba(255, 193, 7, 0.1);
-}
-
-.preorder-note {
-    font-size: 0.8rem;
-    color: var(--text-light);
-    margin-bottom: 0.8rem;
-    line-height: 1.5;
-}
-
-.btn-preorder {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    padding: 0.7rem;
-    border-radius: 8px;
-    background-color: var(--warning);
-    color: var(--text);
-    font-weight: 600;
-    cursor: pointer;
-    transition: var(--transition);
-    border: none;
-    width: 100%;
-    text-align: center;
-    font-size: 0.9rem;
-}
-
-.btn-preorder:hover {
-    background-color: #e0a800; /* Darker yellow */
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(255, 193, 7, 0.3);
-}
-
-/* Contact Section */
-.contact-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 2rem;
-}
-
-.contact-info {
-    background: white;
-    padding: 2.5rem 2rem;
-    border-radius: 12px;
-    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.05);
-    transition: var(--transition);
-    border: 1px solid rgba(0, 0, 0, 0.03);
-}
-
-.contact-info:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
-    border-color: rgba(247, 125, 11, 0.1);
-}
-
-.contact-info h3 {
-    margin-bottom: 2rem;
-    color: var(--dark);
-    font-size: 1.6rem;
-    position: relative;
-    padding-bottom: 1.2rem;
-    font-family: 'Playfair Display', serif;
-}
-
-.contact-info h3::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 60px;
-    height: 4px;
-    background: var(--accent);
-    border-radius: 2px;
-}
-
-.contact-detail {
-    display: flex;
-    align-items: flex-start;
-    gap: 1.2rem;
-    margin-bottom: 2rem;
-}
-
-.contact-icon {
-    font-size: 1.5rem;
-    color: var(--accent);
-    margin-top: 0.2rem;
-    min-width: 30px;
-    text-align: center;
-}
-
-.contact-text h4 {
-    margin-bottom: 0.3rem;
-    color: var(--dark);
-    font-size: 1.1rem;
-    font-family: 'Playfair Display', serif;
-}
-
-.contact-text p {
-    color: var(--text-light);
-    line-height: 1.7;
-    font-size: 0.95rem;
-}
-
-.contact-form {
-    background: white;
-    padding: 2.5rem 2rem;
-    border-radius: 12px;
-    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.05);
-    transition: var(--transition);
-    border: 1px solid rgba(0, 0, 0, 0.03);
-}
-
-.contact-form:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
-    border-color: rgba(247, 125, 11, 0.1);
-}
-
-.contact-form h3 {
-    margin-bottom: 2rem;
-    color: var(--dark);
-    font-size: 1.6rem;
-    position: relative;
-    padding-bottom: 1.2rem;
-    font-family: 'Playfair Display', serif;
-}
-
-.contact-form h3::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 60px;
-    height: 4px;
-    background: var(--accent);
-    border-radius: 2px;
-}
-
-.form-group {
-    margin-bottom: 1.5rem;
-}
-
-.form-group label {
-    display: block;
-    margin-bottom: 0.8rem;
-    font-weight: 500;
-    color: var(--dark);
-    font-size: 0.95rem;
-}
-
-.form-group input,
-.form-group textarea,
-.form-group select {
-    width: 100%;
-    padding: 1rem;
-    border: 1px solid #e0e0e0;
-    border-radius: 8px;
-    font-size: 0.95rem;
-    transition: var(--transition);
-    background-color: #f9f9f9;
-}
-
-.form-group input:focus,
-.form-group textarea:focus,
-.form-group select:focus {
-    border-color: var(--accent);
-    outline: none;
-    box-shadow: 0 0 0 3px rgba(247, 125, 11, 0.1);
-    background-color: white;
-}
-
-.form-group textarea {
-    min-height: 150px;
-    resize: vertical;
-}
-
-/* Form Status */
-.form-status {
-    padding: 1rem;
-    border-radius: 8px;
-    margin-bottom: 1.5rem;
-    display: none;
-    line-height: 1.6;
-    font-size: 0.95rem;
-}
-
-.form-status.success {
-    background-color: rgba(40, 167, 69, 0.1);
-    color: var(--success);
-    border: 1px solid var(--success);
-    display: block;
-}
-
-.form-status.error {
-    background-color: rgba(247, 125, 11, 0.1);
-    color: var(--accent);
-    border: 1px solid var(--accent);
-    display: block;
-}
-
-/* Floating Contact Buttons */
-.contact-bar {
-    position: fixed;
-    bottom: 1.5rem;
-    right: 1.5rem;
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    z-index: 100;
-}
-
-.contact-btn {
-    width: 55px;
-    height: 55px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-size: 1.5rem;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-    transition: var(--transition);
-    position: relative;
-    overflow: hidden;
-}
-
-.contact-btn::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(255, 255, 255, 0.15);
-    transform: scale(0);
-    border-radius: 50%;
-    transition: var(--transition);
-}
-
-.contact-btn:hover::after {
-    transform: scale(1);
-}
-
-.contact-btn:hover {
-    transform: scale(1.1) translateY(-5px);
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-}
-
-.whatsapp {
-    background: linear-gradient(135deg, #25D366, #128C7E);
-}
-
-.order {
-    background: linear-gradient(135deg, var(--accent), #e05a00);
-}
-
-.phone {
-    background: linear-gradient(135deg, var(--primary), var(--dark));
-}
-
-/* PREMIUM FOOTER DESIGN */
-footer {
-    background: linear-gradient(135deg, var(--primary), var(--dark));
-    color: white;
-    padding: 3rem 0 0;
-    position: relative;
-    overflow: hidden;
-}
-
-footer::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: url('https://raw.githubusercontent.com/LKS-88/anekamarket/refs/heads/main/Logo-Anekamarketku.png') center/cover fixed;
-    opacity: 0.03;
-    z-index: 0;
-}
-
-.footer-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 1.5rem 2rem;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 2rem;
-    position: relative;
-    z-index: 1;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.footer-col {
-    padding: 0 0.8rem;
-}
-
-.footer-col h3 {
-    font-size: 1.3rem;
-    margin-bottom: 1.2rem;
-    position: relative;
-    padding-bottom: 0.7rem;
-    font-family: 'Playfair Display', serif;
-    color: white;
-}
-
-.footer-col h3::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    width: 40px;
-    height: 3px;
-    background: var(--accent); /* Changed from gold */
-    border-radius: 2px;
-}
-
-.footer-about {
-    grid-column: 1 / -1;
-    text-align: center;
-    max-width: 800px;
-    margin: 0 auto 1.5rem;
-}
-
-.footer-about h3::after {
-    left: 50%;
-    transform: translateX(-50%);
-}
-
-.footer-about p {
-    margin-bottom: 1.2rem;
-    line-height: 1.7;
-    font-size: 0.95rem;
-    color: rgba(255, 255, 255, 0.8);
-}
-
-.footer-logo {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    margin-bottom: 1.2rem;
-}
-
-.footer-logo img {
-    height: 40px;
-    width: auto;
-    /* PERBAIKAN: Menghapus filter yang menyebabkan logo tidak terlihat */
-}
-
-.footer-logo span {
-    font-size: 1.5rem;
-    font-weight: 700;
-    font-family: 'Playfair Display', serif;
-    color: white;
-}
-
-/* Footer Links */
-.footer-links {
-    list-style: none;
-    padding-left: 0;
-}
-
-.footer-links li {
-    margin-bottom: 0.8rem;
-    position: relative;
-    padding-left: 20px;
-}
-
-.footer-links li::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 6px;
-    height: 6px;
-    background-color: var(--accent); /* Changed from gold */
-    border-radius: 50%;
-    transition: var(--transition);
-}
-
-.footer-links li:hover::before {
-    transform: translateY(-50%) scale(1.3);
-    background-color: white;
-}
-
-.footer-links a {
-    color: rgba(255, 255, 255, 0.8);
-    text-decoration: none;
-    transition: var(--transition);
-    display: inline-block;
-    padding: 0.2rem 0;
-    font-size: 0.95rem;
-    position: relative;
-}
-
-.footer-links a:hover {
-    color: white;
-    transform: translateX(5px);
-}
-
-.newsletter-form {
-    margin-top: 1rem;
-}
-
-.newsletter-form input {
-    width: 100%;
-    padding: 0.8rem;
-    border: none;
-    border-radius: 8px;
-    margin-bottom: 1rem;
-    background-color: rgba(255, 255, 255, 0.1);
-    color: white;
-    font-size: 0.9rem;
-    transition: var(--transition);
-}
-
-.newsletter-form input:focus {
-    outline: none;
-    background-color: rgba(255, 255, 255, 0.15);
-    box-shadow: 0 0 0 3px rgba(247, 125, 11, 0.2);
-}
-
-.newsletter-form input::placeholder {
-    color: rgba(255, 255, 255, 0.7);
-    font-size: 0.9rem;
-}
-
-.newsletter-form button {
-    width: 100%;
-    padding: 0.8rem;
-    font-size: 0.9rem;
-}
-
-.copyright {
-    text-align: center;
-    padding: 1.2rem 0;
-    font-size: 0.85rem;
-    color: rgba(255, 255, 255, 0.6);
-    position: relative;
-    z-index: 1;
-}
-
-.copyright a {
-    color: rgba(255, 255, 255, 0.8);
-    text-decoration: none;
-    transition: var(--transition);
-    position: relative;
-}
-
-.copyright a::after {
-    content: '';
-    position: absolute;
-    width: 0;
-    height: 1px;
-    bottom: -2px;
-    left: 0;
-    background-color: var(--accent); /* Changed from gold */
-    transition: var(--transition);
-}
-
-.copyright a:hover {
-    color: white;
-}
-
-.copyright a:hover::after {
-    width: 100%;
-}
-
-/* Modal */
-.modal {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.9);
-    z-index: 2000;
-    align-items: center;
-    justify-content: center;
-    backdrop-filter: blur(8px);
-    opacity: 0;
-    transition: opacity 0.4s ease;
-}
-
-.modal.show {
-    opacity: 1;
-    display: flex;
-}
-
-.modal-content {
-    background: white;
-    border-radius: 12px;
-    max-width: 500px;
-    width: 90%;
-    padding: 2.5rem;
-    position: relative;
-    animation: modalFadeIn 0.5s ease;
-    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
-    transform: translateY(0);
-    border: 1px solid rgba(0, 0, 0, 0.05);
-}
-
-@keyframes modalFadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(-40px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.close-modal {
-    position: absolute;
-    top: 1.5rem;
-    right: 1.5rem;
-    font-size: 1.5rem;
-    cursor: pointer;
-    color: var(--text-light);
-    transition: var(--transition);
-    width: 35px;
-    height: 35px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-}
-
-.close-modal:hover {
-    color: var(--accent);
-    transform: rotate(90deg);
-    background: rgba(247, 125, 11, 0.1);
-}
-
-.modal h2 {
-    margin-bottom: 2rem;
-    color: var(--dark);
-    font-size: 1.8rem;
-    position: relative;
-    padding-bottom: 1.2rem;
-    font-family: 'Playfair Display', serif;
-}
-
-.modal h2::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 60px;
-    height: 4px;
-    background: var(--accent);
-    border-radius: 2px;
-}
-
-/* Search Modal */
-.search-modal {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.95);
-    z-index: 2000;
-    align-items: center;
-    justify-content: center;
-    backdrop-filter: blur(8px);
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
-
-.search-modal.show {
-    display: flex;
-    opacity: 1;
-}
-
-.search-modal-content {
-    background: transparent;
-    max-width: 800px;
-    width: 90%;
-    padding: 1.5rem 0;
-    position: relative;
-}
-
-.search-modal-input {
-    width: 100%;
-    padding: 1.2rem 1.5rem;
-    border: none;
-    border-bottom: 2px solid rgba(255, 255, 255, 0.3);
-    background: transparent;
-    color: white;
-    font-size: 1.2rem;
-    transition: var(--transition);
-}
-
-.search-modal-input:focus {
-    outline: none;
-    border-bottom-color: var(--accent);
-}
-
-.search-modal-input::placeholder {
-    color: rgba(255, 255, 255, 0.5);
-}
-
-.close-search-modal {
-    position: absolute;
-    top: 1.5rem;
-    right: 1.5rem;
-    font-size: 1.5rem;
-    cursor: pointer;
-    color: rgba(255, 255, 255, 0.7);
-    transition: var(--transition);
-}
-
-.close-search-modal:hover {
-    color: var(--accent);
-    transform: rotate(90deg);
-}
-
-.search-results {
-    margin-top: 1.5rem;
-    max-height: 60vh;
-    overflow-y: auto;
-    padding-right: 0.8rem;
-}
-
-.search-result-item {
-    padding: 1.2rem;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 8px;
-    margin-bottom: 0.8rem;
-    transition: var(--transition);
-    border-left: 3px solid transparent;
-}
-
-.search-result-item:hover {
-    background: rgba(255, 255, 255, 0.1);
-    border-left-color: var(--accent);
-    transform: translateX(5px);
-}
-
-.search-result-item h3 {
-    color: white;
-    margin-bottom: 0.5rem;
-    font-family: 'Poppins', sans-serif;
-    font-size: 1.1rem;
-}
-
-.search-result-item p {
-    color: rgba(255, 255, 255, 0.7);
-    font-size: 0.9rem;
-}
-
-.search-result-item .category {
-    display: inline-block;
-    padding: 0.2rem 0.6rem;
-    background: rgba(247, 125, 11, 0.2);
-    color: var(--accent);
-    border-radius: 50px;
-    font-size: 0.75rem;
-    margin-top: 0.5rem;
-}
-
-.search-result-item .price {
-    color: var(--accent);
-    font-weight: 600;
-    margin-top: 0.5rem;
-    display: block;
-    font-size: 0.9rem;
-}
-
-.no-results {
-    color: rgba(255, 255, 255, 0.5);
-    text-align: center;
-    padding: 1.5rem;
-    font-size: 1rem;
-}
-
-/* Image Zoom Modal */
-.image-modal {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.9);
-    z-index: 3000;
-    align-items: center;
-    justify-content: center;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
-
-.image-modal.show {
-    display: flex;
-    opacity: 1;
-}
-
-.image-modal-content {
-    max-width: 90%;
-    max-height: 90%;
-    position: relative;
-}
-
-.image-modal-content img {
-    max-width: 100%;
-    max-height: 90vh;
-    object-fit: contain;
-    border-radius: 8px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-}
-
-.close-image-modal {
-    position: absolute;
-    top: -30px;
-    right: -5px;
-    color: white;
-    font-size: 2rem;
-    cursor: pointer;
-    transition: var(--transition);
-}
-
-.close-image-modal:hover {
-    color: var(--accent);
-    transform: rotate(90deg);
-}
-
-/* Audio Element for Button Sounds */
-audio {
-    display: none;
-}
-
-/* Lazy Loading */
-.lazy {
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
-
-.lazy.loaded {
-    opacity: 1;
-}
-
-/* Mobile Menu Styles */
-@media (max-width: 768px) {
-    /* Navigation */
-    .nav-links {
-        position: fixed;
-        top: 0;
-        right: -100%;
-        width: 80%;
-        max-width: 300px;
-        height: 100vh;
-        background: white;
-        flex-direction: column;
-        align-items: center;
-        justify-content: flex-start;
-        gap: 1.5rem;
-        transition: var(--transition);
-        box-shadow: -5px 0 20px rgba(0, 0, 0, 0.1);
-        z-index: 1000;
-        padding-top: 80px;
-        overflow-y: auto;
-    }
-    
-    .nav-links.active {
-        right: 0;
-    }
-    
-    .mobile-menu-toggle, .search-toggle {
-        display: block;
-    }
-    
-    .nav-search {
-        display: none;
-        position: absolute;
-        top: 100%;
-        left: 0;
-        width: 100%;
-        padding: 1rem;
-        background: white;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        z-index: 999;
-    }
-    
-    .nav-search.active {
-        display: block;
-    }
-    
-    /* Header adjustments */
-    header {
-        min-height: auto;
-        padding: 6rem 0;
-    }
-    
-    .logo {
-        flex-direction: column;
-        gap: 1rem;
-    }
-    
-    .header-buttons {
-        flex-direction: column;
-        align-items: center;
-        gap: 1rem;
-    }
-    
-    .btn {
-        width: 100%;
-        max-width: 250px;
-    }
-    
-    /* Gallery adjustments */
-    .gallery-grid {
-        grid-template-columns: 1fr;
-    }
-    
-    .gallery-main-image {
-        height: 250px;
-    }
-    
-    /* Contact buttons */
-    .contact-bar {
-        bottom: 1rem;
-        right: 1rem;
-    }
-    
-    .contact-btn {
-        width: 50px;
-        height: 50px;
-        font-size: 1.3rem;
-    }
-}
-
-@media (max-width: 480px) {
-    /* Further mobile optimizations */
-    .header-content {
-        padding: 1.5rem 1rem;
-    }
-    
-    .header-search input {
-        padding: 0.8rem 1.5rem;
-        font-size: 0.95rem;
-    }
-    
-    .header-search button {
-        width: 35px;
-        height: 35px;
-        font-size: 0.9rem;
-    }
-    
-    .section-title {
-        font-size: 1.5rem;
-        margin-bottom: 2rem;
-    }
-    
-    .service-card {
-        padding: 1.5rem 1rem;
-    }
-    
-    .service-icon {
-        font-size: 2.5rem;
-        margin-bottom: 1rem;
-    }
-    
-    .service-title {
-        font-size: 1.2rem;
-    }
-    
-    .product-categories {
-        gap: 0.4rem;
-    }
-    
-    .product-category-btn {
-        padding: 0.5rem 1rem;
-        font-size: 0.8rem;
-    }
-    
-    .category-tabs {
-        gap: 0.5rem;
-    }
-    
-    .category-btn {
-        padding: 0.6rem 1.2rem;
-        font-size: 0.8rem;
-    }
-    
-    .gallery-image-container {
-        height: 200px;
-    }
-    
-    .gallery-details {
-        padding: 1.2rem;
-    }
-    
-    .gallery-title {
-        font-size: 1.2rem;
-    }
-    
-    .gallery-meta {
-        font-size: 0.8rem;
-    }
-    
-    .gallery-price {
-        font-size: 1rem;
-    }
-    
-    .contact-info, .contact-form {
-        padding: 1.5rem;
-    }
-    
-    .contact-info h3, .contact-form h3 {
-        font-size: 1.4rem;
-        margin-bottom: 1.5rem;
-    }
-    
-    .contact-detail {
-        gap: 1rem;
-        margin-bottom: 1.5rem;
-    }
-    
-    .contact-icon {
-        font-size: 1.3rem;
-    }
-    
-    .contact-text h4 {
-        font-size: 1rem;
-    }
-    
-    .contact-text p {
-        font-size: 0.9rem;
-    }
-    
-    .form-group input,
-    .form-group textarea,
-    .form-group select {
-        padding: 0.8rem;
-    }
-    
-    .modal-content {
-        padding: 1.5rem;
-    }
-    
-    .modal h2 {
-        font-size: 1.5rem;
-    }
-    
-    .footer-logo {
-        flex-direction: column;
-        gap: 0.5rem;
-    }
-    
-    .footer-logo span {
-        font-size: 1.3rem;
-    }
-}
-
-        /* --- [FITUR BARU] CSS untuk Filter Pencarian Cerdas --- */
-        .search-filters {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-bottom: 15px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid #eee;
-        }
-        .search-filters label {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            font-size: 0.9rem;
-            background-color: #f1f1f1;
-            padding: 5px 10px;
-            border-radius: 20px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-            user-select: none;
-        }
-        .search-filters label:hover {
-            background-color: #e0e0e0;
-        }
-        .search-filters input[type="checkbox"] {
-            accent-color: #007bff;
-        }
-        
-        /* --- [PERBAIKAN] Posisi notifikasi dinaikkan agar tidak tumpang tindih dengan FAB Generator --- */
-        .offer-notification { position: fixed; bottom: 160px; right: 20px; background-color: #ffffff; color: #333; padding: 20px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); width: 320px; z-index: 1001; transform: translateY(200%); opacity: 0; transition: transform 0.5s ease-in-out, opacity 0.5s ease-in-out; font-family: 'Poppins', sans-serif; }
-        .offer-notification.show { transform: translateY(0); opacity: 1; }
-        .offer-notification .notification-content { display: none; }
-        .offer-notification .notification-content.active { display: block; }
-        .offer-notification h4 { margin: 0 0 10px 0; font-weight: 600; font-size: 1rem; line-height: 1.4; }
-        .offer-notification .notification-buttons { display: flex; gap: 10px; margin-top: 15px; }
-        .offer-notification .notification-btn { flex: 1; padding: 8px 12px; border: none; border-radius: 5px; cursor: pointer; font-weight: 500; transition: background-color 0.3s, color 0.3s; }
-        .offer-notification .btn-yes { background-color: #007bff; color: white; }
-        .offer-notification .btn-yes:hover { background-color: #0056b3; }
-        .offer-notification .btn-no { background-color: #f1f1f1; color: #333; border: 1px solid #ddd; }
-        .offer-notification .btn-no:hover { background-color: #e0e0e0; }
-        .offer-notification .close-notification { position: absolute; top: 10px; right: 15px; font-size: 20px; color: #888; cursor: pointer; transition: color 0.3s; }
-        .offer-notification .close-notification:hover { color: #333; }
-        
-        .btn-visit { display: flex; align-items: center; justify-content: center; background-color: #28a745; color: white; padding: 8px 12px; border-radius: 5px; text-decoration: none; font-weight: 500; font-size: 0.85rem; transition: background-color 0.3s; flex: 1; text-align: center; }
-        .btn-visit:hover { background-color: #218838; }
-        .gallery-actions { display: flex; gap: 10px; flex-wrap: wrap; }
-        .gallery-actions .btn-detail, .gallery-actions .btn-order, .gallery-actions .btn-preorder-toggle, .gallery-actions .btn-visit, .gallery-actions .btn-toggle-prices { flex-grow: 1; min-width: 120px; }
-
-        /* --- [PERBAIKAN & PENYEMPURNAAN] DESAIN TOMBOL CEK HARGA --- */
-        .btn-toggle-prices {
-            background-color: #ffc107; /* Warna kuning yang menarik perhatian */
-            color: #212529; /* Teks gelap agar kontras */
-            border: 1px solid #e0a800;
-        }
-        .btn-toggle-prices:hover {
-            background-color: #e0a800;
-            border-color: #d39e00;
-        }
-        /* State aktif ketika panel harga terbuka */
-        .btn-toggle-prices.active {
-            background-color: #dc3545; /* Warna merah untuk "Sembunyikan" */
-            color: white;
-            border-color: #c82333;
-        }
-        .btn-toggle-prices.active:hover {
-            background-color: #c82333;
-            border-color: #bd2130;
-        }
-
-        /* --- [PERBAIKAN TOTAL] CSS UNTUK PEMBELIAN MULTI-ITEM --- */
-        /* --- [FITUR BARU] Container untuk bagian harga yang bisa disembunyikan --- */
-        .price-section-collapsible {
-            display: none; /* Disembunyikan secara default */
-            margin-top: 15px;
-            animation: fadeIn 0.5s ease-in-out;
-        }
-        .price-section-collapsible.show {
-            display: block; /* Ditampilkan saat class 'show' ditambahkan */
-        }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
-
-        .price-variations-container {
-            border: 1px solid #eee;
-            border-radius: 8px;
-            overflow: hidden;
-        }
-        .price-variation-item {
-            display: grid;
-            grid-template-columns: 1fr auto auto;
-            align-items: center;
-            padding: 12px;
-            border-bottom: 1px solid #eee;
-            gap: 10px;
-        }
-        .price-variation-item:last-child {
-            border-bottom: none;
-        }
-        .price-variation-info {
-            display: flex;
-            flex-direction: column;
-        }
-        .price-variation-name {
-            font-weight: 600;
-            color: #333;
-        }
-        .price-variation-value {
-            font-size: 0.9rem;
-            color: #007bff;
-        }
-
-        .quantity-controls {
-            display: flex;
-            align-items: center;
-        }
-        .quantity-btn {
-            background-color: #007bff;
-            color: white;
-            border: none;
-            width: 28px;
-            height: 28px;
-            font-size: 1.2rem;
-            line-height: 28px;
-            font-weight: bold;
-            cursor: pointer;
-            border-radius: 50%;
-            transition: background-color 0.2s, transform 0.1s;
-        }
-        .quantity-btn:hover { background-color: #0056b3; }
-        .quantity-btn:active { transform: scale(0.95); }
-        .quantity-input {
-            width: 45px;
-            text-align: center;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            margin: 0 5px;
-            height: 28px;
-            font-size: 1rem;
-            font-weight: 500;
-            -moz-appearance: textfield;
-        }
-        .quantity-input::-webkit-outer-spin-button,
-        .quantity-input::-webkit-inner-spin-button {
-            -webkit-appearance: none; margin: 0;
-        }
-        .unit-select {
-            padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            background-color: #fff;
-            font-family: 'Poppins', sans-serif;
-            width: 100%;
-            margin-top: 10px;
-        }
-
-        .total-price {
-            margin-top: 15px;
-            padding: 12px;
-            background: linear-gradient(135deg, #e0f7fa, #b2ebf2);
-            border-radius: 8px;
-            text-align: center;
-            border: 1px solid #4dd0e1;
-        }
-        .total-price-label {
-            display: block;
-            font-size: 0.9rem;
-            color: #00796b;
-            font-weight: 500;
-        }
-        .total-price-value {
-            font-size: 1.6rem;
-            font-weight: 700;
-            color: #004d40;
-        }
-
-        /* --- [FITUR TAMBAHAN & PERBAIKAN] TOMBOL PEMBAYARAN MENGAMBANG --- */
-        .payment-fab {
-            position: fixed;
-            bottom: 120px;
-            left: 20px;
-            width: 60px;
-            height: 60px;
-            background-color: #007bff;
-            color: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.25);
-            z-index: 1000;
-            text-decoration: none;
-            transition: background-color 0.3s, transform 0.2s ease-in-out;
-        }
-        .payment-fab:hover {
-            background-color: #0056b3;
-            transform: scale(1.1);
-        }
-        .payment-fab::before {
-            content: '';
-            position: absolute;
-            z-index: -1;
-            left: 50%;
-            top: 50%;
-            transform: translateX(-50%) translateY(-50%);
-            display: block;
-            width: 100%;
-            height: 100%;
-            background-color: #007bff;
-            border-radius: 50%;
-            animation: pulse-animation 2.5s infinite;
-        }
-        @keyframes pulse-animation {
-            0% {
-                transform: translateX(-50%) translateY(-50%) scale(0.9);
-                opacity: 0.7;
-            }
-            100% {
-                transform: translateX(-50%) translateY(-50%) scale(2.5);
-                opacity: 0;
-            }
-        }
-        
-        /* --- [FITUR BARU & PENYEMPURNAAN TAMPILAN] FORM GENERATOR --- */
-        .generator-fab {
-            position: fixed;
-            bottom: 90px;
-            right: 20px;
-            width: 60px;
-            height: 60px;
-            background-color: #28a745;
-            color: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.25);
-            z-index: 1002;
-            cursor: pointer;
-            transition: background-color 0.3s, transform 0.2s ease-in-out;
-        }
-        .generator-fab:hover {
-            background-color: #218838;
-            transform: scale(1.1);
-        }
-        .generator-modal {
-            display: none;
-            position: fixed;
-            z-index: 2000;
-            left: 0; top: 0;
-            width: 100%; height: 100%;
-            overflow: auto;
-            background-color: rgba(0,0,0,0.7);
-            align-items: center;
-            justify-content: center;
-        }
-        .generator-modal.show { display: flex; }
-        .generator-modal-content {
-            background-color: #f8f9fa;
-            margin: 20px;
-            padding: 0;
-            border: none;
-            width: 95%;
-            max-width: 900px;
-            border-radius: 12px;
-            max-height: 90vh;
-            display: flex;
-            flex-direction: column;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-        }
-        .generator-modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 25px;
-            background: linear-gradient(135deg, #007bff, #0056b3);
-            color: white;
-            border-top-left-radius: 12px;
-            border-top-right-radius: 12px;
-        }
-        .generator-modal-header h2 {
-            margin: 0;
-            font-size: 1.5rem;
-            font-family: 'Playfair Display', serif;
-        }
-        .close-generator-modal {
-            color: white;
-            font-size: 32px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: transform 0.2s;
-            line-height: 1;
-        }
-        .close-generator-modal:hover { transform: rotate(90deg); }
-        
-        .generator-modal-body {
-            padding: 25px;
-            overflow-y: auto;
-            background-color: #f8f9fa;
-        }
-        .generator-section {
-            background-color: #ffffff;
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 25px;
-            border: 1px solid #dee2e6;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-        }
-        .generator-section h3 {
-            color: #0056b3;
-            margin-top: 0;
-            margin-bottom: 20px;
-            font-size: 1.2rem;
-            border-left: 4px solid #007bff;
-            padding-left: 10px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        #productGeneratorForm { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        #productGeneratorForm .form-group { display: flex; flex-direction: column; }
-        #productGeneratorForm .full-width { grid-column: 1 / -1; }
-        #productGeneratorForm label { margin-bottom: 8px; font-weight: 600; color: #495057; font-size: 0.9rem; }
-        #productGeneratorForm input, #productGeneratorForm select, #productGeneratorForm textarea {
-            padding: 12px; font-size: 1rem; border: 1px solid #ced4da; border-radius: 5px; font-family: 'Poppins', sans-serif;
-            transition: border-color 0.2s, box-shadow 0.2s;
-        }
-        #productGeneratorForm input:focus, #productGeneratorForm select:focus, #productGeneratorForm textarea:focus {
-            border-color: #007bff;
-            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
-            outline: none;
-        }
-        #productGeneratorForm textarea { resize: vertical; min-height: 120px; }
-        .dynamic-list-item { display: flex; gap: 10px; margin-bottom: 10px; align-items: center; }
-        .dynamic-list-item input { flex: 1; }
-        .btn-remove-item { background-color: #e74c3c; color: white; border: none; width: 42px; height: 42px; border-radius: 5px; cursor: pointer; font-size: 1rem; transition: background-color 0.2s; }
-        .btn-remove-item:hover { background-color: #c0392b; }
-        .btn-add-item { background-color: #007bff; color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; margin-top: 10px; transition: background-color 0.2s; font-weight: 500;}
-        .btn-add-item:hover { background-color: #0056b3; }
-        .btn-add-item i { margin-right: 5px; }
-
-        .description-toolbar {
-            margin-bottom: 8px;
-            background-color: #e9ecef;
-            padding: 5px;
-            border-radius: 5px;
-            display: flex;
-            gap: 5px;
-        }
-        .toolbar-btn {
-            background-color: #fff;
-            border: 1px solid #ced4da;
-            padding: 5px 10px;
-            cursor: pointer;
-            border-radius: 3px;
-            font-family: sans-serif;
-            font-size: 0.9rem;
-            transition: background-color 0.2s;
-        }
-        .toolbar-btn:hover { background-color: #f1f1f1; }
-        
-        #generatorOutputContainer { margin-top: 25px; border-top: 2px solid #eee; padding-top: 20px; display: none; }
-        .output-controls { display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px; }
-        .output-controls h3 { margin: 0; }
-        .output-actions button { background: none; border: 1px solid #ccc; border-radius: 5px; padding: 8px 12px; cursor: pointer; margin-left: 10px; transition: background-color 0.2s; }
-        .output-actions button:hover { background-color: #f0f0f0; }
-        .output-actions button i { margin-right: 5px; }
-        #generatedScriptWrapper { display: none; }
-        #generatedScriptWrapper.visible { display: block; }
-        #generatedScriptOutput {
-            background-color: #2d2d2d; color: #f8f8f2; padding: 20px; border-radius: 8px;
-            white-space: pre; overflow-x: auto; max-height: 400px; font-family: 'Fira Code', 'Courier New', monospace;
-        }
-        
-        #generatorPreviewContainer {
-             margin-top: 25px; border-top: 2px solid #eee; padding-top: 20px; display: none;
-             background-color: #f9f9f9; padding: 20px; border-radius: 8px;
-        }
-        #generatorPreviewContainer h3 {
-            margin-top: 0;
-            color: #28a745;
-        }
-        #previewTarget .gallery-item {
-            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-            transform: scale(1);
-            transition: none;
-            margin: 0 auto;
-            max-width: 400px;
-        }
-        #previewTarget .gallery-item:hover {
-            transform: none;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-        }
-
-        .gallery-badge.service {
-            background-color: #8e44ad;
-            color: white;
-        }
-
-        @media (max-width: 768px) {
-            #productGeneratorForm { grid-template-columns: 1fr; }
-        }
-    </style>
 </head>
 <body>
     <audio id="bgMusic" loop autoplay>
@@ -3029,14 +313,14 @@ audio {
             <input type="text" class="search-modal-input" placeholder="Cari produk, UMKM, kode..." id="searchModalInput">
             
             <div class="search-filters" id="searchFilters">
-                <label><input type="checkbox" name="search-filter" value="discount"> Potongan Harga</label>
-                <label><input type="checkbox" name="search-filter" value="bonus"> Bonus/Gratis</label>
-                <label><input type="checkbox" name="search-filter" value="negotiable"> Perkiraan Harga/Nego</label>
-                <label><input type="checkbox" name="search-filter" value="sort-cheap"> Urutkan Termurah</label>
+                <label><input type="checkbox" name="search-filter" value="discount"> <i class="fas fa-percent"></i> Potongan Harga</label>
+                <label><input type="checkbox" name="search-filter" value="bonus"> <i class="fas fa-gift"></i> Bonus/Gratis</label>
+                <label><input type="checkbox" name="search-filter" value="negotiable"> <i class="fas fa-handshake"></i> Harga Nego</label>
+                <label><input type="checkbox" name="search-filter" value="sort-cheap"> <i class="fas fa-sort-amount-down"></i> Urutkan Termurah</label>
             </div>
             
             <div class="search-results" id="searchResults">
-                <p class="search-results-placeholder">Mulai ketik untuk mencari produk...</p>
+                <p class="search-results-placeholder">Mulai ketik atau pilih filter untuk mencari...</p>
             </div>
         </div>
     </div>
@@ -3269,23 +553,23 @@ audio {
     <audio id="buttonSound" src="https://raw.githubusercontent.com/LenteraKarya/Lentera-Karya/main/assets/audio/audiotombol.mp3"></audio>
     
     <script>
-        // --- [PERUBAHAN] DATA PRODUK KINI DALAM FORMAT JSON YANG VALID ---
-        const products = [
-        { "id": "AWF-2025-2575", "category": "livestock", "type": "promo", "seller": { "name": "Ardiwillis Farm", "link": "https://www.anekamarket.my.id/ardiwillisfarm" }, "badge": { "text": "Promosi", "type": "promo" }, "mainImage": "https://i.imgur.com/pKLE9EY.jpeg", "title": "Paket Lengkap Ternak Ayam Ardiwilis", "code": "AWF-2025-2575", "price": 8000, "originalPrice": 10000, "discount": "10%", "priceVariations": [ { "name": "Ecer (per ekor)", "price": 8000 }, { "name": "10 ekor", "price": 75000 }, { "name": "100 ekor", "price": 700000 } ], "units": ["pcs", "kg", "biji", "ekor"], "defaultUnit": "ekor", "details": { "description": "Ardiwillis Farm menyediakan produk unggulan peternakan ayam berkualitas tinggi. Kami menyediakan telur tetas fertil dengan daya tetas tinggi, DOC (Day Old Chicken) berbagai strain unggul, ayam karkas segar, dan ayam bakar siap saji dengan bumbu khas. Semua produk dihasilkan dari peternakan yang dikelola secara profesional dengan standar kesehatan dan kebersihan tinggi. (Note: Harga tersebut bukan harga tetap, & bisa berubah)", "images": [ "https://i.imgur.com/pAygjAZ.jpeg", "https://i.imgur.com/XRMPBhw.jpeg", "https://i.imgur.com/K5m75Rq.jpeg", "https://i.imgur.com/coJadaj.jpeg" ], "specs": [ { "label": "Kode Produk", "value": "AWF-2025-2575" }, { "label": "Gerai", "value": "Ardiwillis Farm" }, { "label": "Jenis", "value": "Ayam Pedaging" }, { "label": "Usia", "value": "DOC (1 hari)" }, { "label": "Strain", "value": "Cobb 500" }, { "label": "Garansi", "value": "Hidup sampai diterima" }, { "label": "Minimal Order", "value": "10 ekor" }, { "label": "Catatan", "value": "Harga bisa berubah sewaktu-waktu" } ] }, "contact": { "whatsapp": "6285258544543", "phone": "+6285258544543" } },
-        { "id": "NS-2025-3348", "category": "food", "type": "promo", "seller": { "name": "Niki Sae", "link": "https://www.anekamarket.my.id/nikisae" }, "badge": { "text": "Promo Spesial", "type": "promo" }, "mainImage": "https://i.imgur.com/y8r14Z3.jpeg", "title": "Promo Frozen Food Homemade Niki Sae", "code": "NS-2025-3348", "price": 12000, "originalPrice": 15000, "discount": "20% OFF", "priceVariations": [ { "name": "Pempek", "price": 12000, "original": 15000 }, { "name": "Tahu Walik", "price": 11000, "original": 13750 }, { "name": "Nugget Ikan/Ayam", "price": 12000, "original": 15000 }, { "name": "Dragon Stick", "price": 12000, "original": 15000 }, { "name": "Otak-Otak Ikan", "price": 12000, "original": 15000 } ], "units": ["pcs", "pack", "set", "lusin"], "defaultUnit": "pcs", "details": { "description": "<strong>PROMO SPESIAL!</strong> Niki Sae dari Dapur Yunna menghadirkan promo frozen food homemade dengan kualitas terbaik. Semua produk dibuat dengan bahan pilihan dan teknik khusus untuk menjamin cita rasa autentik. Produk kami termasuk Pempek, Tahu Walik, Otak-Otak Ikan, Nugget Ikan dan Ayam, serta Dragon Stick. Setiap produk dibuat dengan standar kebersihan tinggi dan rasa yang konsisten. Nikmati diskon spesial untuk pembelian selama periode promo! Bonus gratis ongkir untuk pembelian di atas Rp100.000.", "images": [ "https://i.imgur.com/RP8HTMb.jpeg", "https://i.imgur.com/GWXfEGJ.jpeg", "https://i.imgur.com/WSB6cXr.jpeg", "https://i.imgur.com/ubU63gJ.jpeg" ], "specs": [ { "label": "Kode Promo", "value": "NS-2025-3348" }, { "label": "Nama UMKM", "value": "Niki Sae Pempek dan Tahu walik" }, { "label": "Pemilik", "value": "Yuliana Mulyaningtyas" }, { "label": "Alamat", "value": "Perum Graha Sultan Raya 1 blok G. 61, Panji" }, { "label": "Kontak", "value": "085731247566" }, { "label": "Media Sosial", "value": "Belum tersedia" }, { "label": "Daftar Promo", "value": "• Pempek <s>Rp15.000</s> <strong>Rp12.000</strong> (20% OFF)<br>• Tahu Walik <s>Rp13.750</s> <strong>Rp11.000</strong> (20% OFF)<br>• Nugget Ikan/Ayam <s>Rp15.000</s> <strong>Rp12.000</strong> (20% OFF)<br>• Dragon Stick <s>Rp15.000</s> <strong>Rp12.000</strong> (20% OFF)<br>• Otak-Otak Ikan <s>Rp15.000</s> <strong>Rp12.000</strong> (20% OFF)" }, { "label": "Periode Promo", "value": "Periode Promo sewaktu-waktu tidak berlaku" }, { "label": "Catatan", "value": "• Harga normal berlaku setelah periode promo berakhir<br>• Minimal pembelian 5 pcs per item<br>• Free ongkir untuk pembelian di atas Rp100.000 (area tertentu)" } ] }, "contact": { "whatsapp": "6285731247566", "phone": "+6285731247566" } },
-        { "id": "PRD-2025-2688", "category": "fishery", "type": "promo", "seller": { "name": "PRADIPA", "link": "https://www.anekamarket.my.id/pradipa" }, "badge": { "text": "Promosi", "type": "promo" }, "mainImage": "https://i.imgur.com/ru1FKXW.jpeg", "title": "Produk Hasil Laut Segar Pradipa", "code": "PRD-2025-2688", "price": 30000, "originalPrice": null, "discount": null, "priceVariations": [ { "name": "Ikan Bogek/Mendut", "price": 35000 }, { "name": "Ikan Mangla/Swangi", "price": 30000 }, { "name": "Ikan Sebelah/Sulfis", "price": 35000 } ], "units": ["kg", "ekor", "pack"], "defaultUnit": "kg", "details": { "description": "PRADIPA menghadirkan hasil laut segar langsung dari perairan Panarukan. Kami menyediakan berbagai jenis ikan berkualitas tinggi yang ditangkap dengan metode ramah lingkungan. Setiap produk kami melalui proses seleksi ketat untuk memastikan kesegaran dan kualitas terbaik untuk pelanggan. Dengan pengalaman bertahun-tahun di bidang hasil laut, kami berkomitmen memberikan produk terbaik dengan harga kompetitif.", "images": [ "https://i.imgur.com/n2AkesD.jpeg", "https://i.imgur.com/tupfVCl.jpeg", "https://i.imgur.com/VhfoAsv.png" ], "specs": [ { "label": "Kode Produk", "value": "PRD-2025-2688" }, { "label": "Gerai", "value": "PRADIPA" }, { "label": "Pemilik", "value": "Fajar Nur Cholis" }, { "label": "Alamat", "value": "Tanah Anyar RT 3 RW 02 Desa Kilensari, Panarukan" }, { "label": "Kontak", "value": "082334393922 | quenie89@gmail.com" }, { "label": "Produk Unggulan", "value": "Ikan Bogek/Mendut (Rp35.000/kg), Ikan Mangla/Swangi (Rp30.000/kg), Ikan Sebelah/Sulfis (Rp35.000/kg)" }, { "label": "Catatan", "value": "Harga bisa berubah sewaktu-waktu" } ] }, "contact": { "whatsapp": "6282334393922", "phone": "+6282334393922" } },
-        { "id": "MCU-2025-2830", "category": "snack", "type": "promo", "seller": { "name": "Mochi UMA", "link": "https://www.anekamarket.my.id/mochiuma" }, "badge": { "text": "Promo Spesial", "type": "promo" }, "mainImage": "https://i.imgur.com/TPSWsZw.jpeg", "title": "Promo Aneka Kue Lezat Mochi Uma", "code": "MCU-2025-2830", "price": 10000, "originalPrice": null, "discount": null, "priceVariations": [ { "name": "Pancake Durian", "price": 10000 }, { "name": "Mochi (3pcs)", "price": 10000 }, { "name": "Cireng Ayam Suwir", "price": 10000 }, { "name": "Corndog Coklat (isi 3)", "price": 10000 } ], "units": ["pcs", "pack", "set", "lusin"], "defaultUnit": "pcs", "details": { "description": "<strong>PROMO SPESIAL!</strong> Mochi UMA menghadirkan paket promo aneka kue lezat dengan harga spesial. Nikmati berbagai pilihan kue premium dengan diskon menarik untuk waktu terbatas. Setiap produk dibuat dengan bahan pilihan dan teknik khusus untuk menjamin cita rasa autentik. Jangan lewatkan kesempatan ini untuk menikmati kue berkualitas dengan harga terjangkau!", "images": [ "https://i.imgur.com/dlK9kfP.jpeg", "https://i.imgur.com/JsXOHCO.jpeg", "https://i.imgur.com/kJDDUy4.jpeg" ], "specs": [ { "label": "Kode Promo", "value": "MCU-2025-2830" }, { "label": "Nama UMKM", "value": "Mochi UMA" }, { "label": "Pemilik", "value": "ULink" }, { "label": "Alamat", "value": "Jl. Wijaya Kusuma Samping Bidan Ika" }, { "label": "Kontak", "value": "089679013099 | nurilaneeh@gmail.com" }, { "label": "Media Sosial", "value": "TikTok @mochi.uma3" }, { "label": "Daftar Promo", "value": "• Pancake Durian hanya Rp10.000<br>• Mochi 3pcs Rp10.000<br>• Cireng Ayam Suwir Rp10.000<br>• Corndog Coklat isi 3 Rp10.000" }, { "label": "Periode Promo", "value": "Periode dapat berubah sewaktu-waktu" }, { "label": "Catatan", "value": "Harga bisa berubah sewaktu-waktu" } ] }, "contact": { "whatsapp": "6289679013099", "phone": "+6289679013099" } },
-        { "id": "UDJ-2025-3038", "category": "agriculture", "type": "all", "seller": { "name": "UD Jaya Makmur", "link": "https://anekamarket.my.id/jayamakmur" }, "badge": { "text": "Grosir", "type": "rental" }, "mainImage": "https://i.imgur.com/fjnwYfW.jpeg", "title": "Garam Krosok Geo Membran Premium", "code": "UDJ-2025-3038", "price": 2500, "originalPrice": null, "discount": null, "priceVariations": [ { "name": "Per Kilo", "price": 2500 }, { "name": "3.5 Ton (Minimal Order)", "price": 8750000 } ], "units": ["kg", "ton"], "defaultUnit": "kg", "details": { "description": "<strong>UD Jaya Makmur</strong> menghadirkan garam krosok geo membran premium berkualitas tinggi dari Panarukan. Garam kami diproduksi dengan metode geo membran yang menghasilkan garam dengan kadar NaCl tinggi (minimal 95%) dan rendah pengotor. Kami menyediakan garam dengan kualitas konsumsi dan industri, dikemas secara higienis dan siap dikirim ke seluruh Indonesia. Minimal pembelian 3.500 kg dengan layanan pengantaran langsung ke lokasi Anda. Garam kami cocok untuk berbagai kebutuhan mulai dari industri, rumah tangga, hingga pengolahan makanan. Anda juga bisa order ke Nomor Whatsapp : 082244014323", "images": [ "https://i.imgur.com/WFbAET3.jpeg", "https://i.imgur.com/EwIAvxE.jpeg", "https://i.imgur.com/5w9ueN7.jpeg" ], "specs": [ { "label": "Kode Produk", "value": "UDJ-2025-3038" }, { "label": "Nama UMKM", "value": "UD Jaya Makmur" }, { "label": "Pemilik", "value": "Zaini" }, { "label": "Alamat", "value": "Kp. Sabrang RT 001 RW 001 Desa Wringin Anom, Panarukan" }, { "label": "Kontak", "value": "087816295963 | jayamakmurpanarukan@gmail.com" }, { "label": "Jenis Produk", "value": "Garam Krosok Geo Membran" }, { "label": "Harga", "value": "Rp 2.500/kg (minimal 3.500 kg)" }, { "label": "Pengiriman", "value": "Gratis ongkir untuk area tertentu (minimal 3.5 ton)" }, { "label": "Catatan", "value": "Harga bisa berubah sewaktu-waktu" } ] }, "contact": { "whatsapp": "6287816295963", "phone": "+6287816295963" } },
-        { "id": "BNJ-2025-3184", "category": "food", "type": "all", "seller": { "name": "Bu Nju", "link": "https://anekamarket.my.id/bunju" }, "badge": { "text": "Produk Lokal", "type": "promo" }, "mainImage": "https://i.imgur.com/Ra4CZgd.jpeg", "title": "Ikan Kering & Terasi Puger Premium", "code": "BNJ-2025-3184", "price": 4000, "originalPrice": null, "discount": null, "priceVariations": [ { "name": "Terasi Puger 1kg", "price": 80000 }, { "name": "Terasi Puger 1ons", "price": 8000 }, { "name": "Terasi Puger ½ons", "price": 4000 }, { "name": "Ikan Kering (berbumbu)", "price": 75000 }, { "name": "Ikan Kering (polos)", "price": 65000 } ], "units": ["pcs", "kg", "ons", "pack"], "defaultUnit": "pcs", "details": { "description": "<strong>Bu Nju</strong> menghadirkan produk ikan kering dan terasi Puger berkualitas premium dari Panarukan. Terasi kami diproduksi secara tradisional dengan kualitas terbaik, memiliki aroma khas dan rasa gurih autentik. Ikan kering kami diproses secara higienis dengan dua varian: siap goreng (sudah berbumbu) dan polos (tanpa bumbu). Semua produk dibuat dengan bahan pilihan dan pengolahan yang menjaga cita rasa asli. Cocok untuk berbagai masakan rumahan hingga usaha kuliner.", "images": [ "https://i.imgur.com/CV57qDP.jpeg", "https://i.imgur.com/ImPrZJw.jpeg", "https://i.imgur.com/eFnhNYu.jpeg" ], "specs": [ { "label": "Kode Produk", "value": "BNJ-2025-3184" }, { "label": "Nama UMKM", "value": "Bu Nju" }, { "label": "Pemilik", "value": "Riqi" }, { "label": "Alamat", "value": "Karangsari, Desa Kilensari, Kecamatan Panarukan" }, { "label": "Kontak", "value": "082327600708 | vaiper.blood22@gmail.com" }, { "label": "Daftar Harga", "value": "• Terasi Puger 1kg: Rp80.000<br>• Terasi Puger 1ons: Rp8.000<br>• Terasi Puger ½ons: Rp4.000<br>• Ikan kering berbumbu: Rp70.000/kg<br>• Ikan kering polos: Rp60.000/kg" }, { "label": "Media Sosial", "value": "TikTok @seesaretadek" }, { "label": "Catatan", "value": "Harga bisa berubah sewaktu-waktu" } ] }, "contact": { "whatsapp": "6282327600708", "phone": "+6282327600708" } },
-        { "id": "LDW-2025-8001", "category": "software", "type": "promo", "seller": { "name": "Lentera Karya Situbondo", "link": "https://www.anekamarket.my.id/lenterakaryasitubondo" }, "badge": { "text": "Super Deal", "type": "promo" }, "mainImage": "https://i.imgur.com/VumvfHv.png", "title": "Paket Lengkap Aplikasi Web HTML", "code": "LDW-2025-8001", "price": 599000, "originalPrice": 899000, "discount": "33% OFF", "priceVariations": [ { "name": "Paket Komplit (7 Aplikasi)", "price": 599000, "original": 899000 }, { "name": "Aplikasi Kasir Web", "price": 350000, "original": 450000 }, { "name": "Sistem Pembukuan Web", "price": 400000, "original": 550000 } ], "units": ["paket", "lisensi", "unit"], "defaultUnit": "paket", "details": { "description": "<strong>SOLUSI APLIKASI WEB TERBAIK UNTUK BISNIS ANDA!</strong> Paket lengkap aplikasi web HTML kami dirancang khusus untuk bekerja sempurna di semua perangkat tanpa perlu instalasi. Cukup buka browser dan aplikasi siap digunakan! Setiap aplikasi memiliki anturarmuka modern yang responsif, beradaptasi otomatis dengan layar desktop, tablet, maupun smartphone. Sistem kami mencakup fitur-fitur canggih seperti penyimpanan data di perangkat pengguna, backup/restore, laporan transaksi, dan cetak struk - semuanya dalam platform web yang ringan dan cepat.", "images": [ "https://i.imgur.com/GjByUuX.png", "https://i.imgur.com/rsR7RhC.png", "https://i.imgur.com/gg5AGFc.png", "https://i.imgur.com/VumvfHv.png" ], "specs": [ { "label": "Kode Produk", "value": "LDW-2025-8001" }, { "label": "Developer", "value": "Lentera Karya Situbondo" }, { "label": "Daftar Aplikasi", "value": "• Aplikasi Kasir Web - Sistem kasir lengkap dengan cetak struk<br>• Sistem Pembukuan Web - Pencatatan keuangan profesional<br>• Aplikasi Absensi Web - Manajemen kehadiran karyawan<br>• Sistem Manajemen Restoran - Pesanan, meja, dan kitchen display<br>• Website Profesional Instan - Website bisnis siap pakai<br>• Aplikasi Tiket/Karcis - Sistem tiket elektronik<br>• Sistem Penginapan Web - Manajemen kamar dan tamu" }, { "label": "Fitur Unggulan", "value": "• Akses dari perangkat apapun dengan browser modern<br>• Tampilan responsif otomatis menyesuaikan layar<br>• Tanpa perlu instalasi - langsung buka file<br>• Penyimpanan data aman di perangkat pengguna<br>• Backup & restore data dengan satu klik<br>• Laporan keuangan lengkap dengan grafik<br>• Multi-user support dengan level akses berbeda<br>• Offline capable (PWA) - bisa digunakan tanpa internet" }, { "label": "Kompatibilitas", "value": "• Browser: Chrome, Firefox, Edge, Safari versi terbaru<br>• Sistem Operasi: Windows 10/11, macOS, Linux, Android, iOS<br>• Perangkat: Desktop, Laptop, Tablet, Smartphone<br>• Resolusi: Mendukung dari 320px hingga 4K" }, { "label": "Cara Penggunaan", "value": "1. Terima file HTML via email setelah pembelian<br>2. Buka file di browser favorit Anda (Chrome direkomendasikan)<br>3. Aplikasi siap digunakan segera!<br>4. Simpan sebagai PWA (Add to Home Screen) untuk pengalaman seperti aplikasi native<br>5. Untuk backup, cukup simpan file data yang dihasilkan aplikasi" } ] }, "contact": { "whatsapp": "6285647709114", "phone": "+6285647709114" } },
-        { "id": "LDW-2025-8002", "category": "software", "type": "promo", "seller": { "name": "Lentera Karya Situbondo", "link": "https://www.anekamarket.my.id/lenterakaryasitubondo" }, "badge": { "text": "Baru!", "type": "new" }, "mainImage": "https://i.imgur.com/i7PAJfs.png", "title": "Aplikasi Kasir Web HTML", "code": "LDW-2025-8002", "price": 350000, "originalPrice": 450000, "discount": "22% OFF", "priceVariations": [ { "name": "Lisensi Tunggal", "price": 350000, "original": 450000 } ], "units": ["lisensi", "pcs", "unit"], "defaultUnit": "lisensi", "details": { "description": "<strong>APLIKASI KASIR MODERN TANPA INSTALASI!</strong> Aplikasi Kasir Web HTML dari Lentera Karya Situbondo adalah solusi sempurna untuk bisnis retail, toko, atau usaha kecil. Cukup buka file HTML di browser dan aplikasi siap digunakan! Dirancang khusus untuk bekerja optimal di semua perangkat - dari desktop PC hingga smartphone. Fitur termasuk manajemen produk, transaksi cepat, cetak struk, laporan penjualan, dan penyimpanan data langsung di perangkat Anda. Tidak perlu server mahal atau koneksi internet terus-menerus! Ada bonus voucher diskon 15% juga.", "images": [ "https://i.imgur.com/9IuPANW.png", "https://i.imgur.com/PY8ge6k.png", "https://i.imgur.com/2Yr4njs.png", "https://i.imgur.com/i7PAJfs.png" ], "specs": [ { "label": "Kode Produk", "value": "LDW-2025-8002" }, { "label": "Developer", "value": "Lentera Karya Situbondo" }, { "label": "Fitur Inti", "value": "• Input transaksi cepat dengan anturarmuka modern<br>• Manajemen produk & kategori<br>• Pencarian produk instan dengan autocomplete<br>• Cetak struk pdf dengan header custom<br>• Laporan harian/mingguan/bulanan dengan grafik<br>• Backup & restore data dengan enkripsi<br>• Manajemen diskon dan promo produk<br>• Hitung kembalian & Stok otomatis berkurang saat transaksi" }, { "label": "Keunggulan", "value": "• Buka langsung di browser tanpa proses instalasi<br>• Tampilan responsif semua device (desktop, tablet, HP)<br>• Bisa digunakan offline setelah pertama kali dibuka<br>• Penyimpanan data aman di perangkat pengguna<br>• Tidak perlu server/hosting yang mahal<br>• Ringan dan cepat bahkan di spesifikasi rendah<br>• Update mudah dengan mengganti file HTML<br>• Tidak ada biaya bulanan/tahunan" }, { "label": "Cara Implementasi", "value": "1. Dapatkan file HTML aplikasi setelah pembelian<br>2. Buka file di browser favorit (Chrome direkomendasikan)<br>3. Mulai gunakan aplikasi kasir langsung<br>4. (Opsional) Simpan sebagai PWA untuk pengalaman seperti app native<br>5. Data otomatis tersimpan aman di perangkat<br>6. Backup rutin dengan menyimpan file data yang dihasilkan" }, { "label": "Bonus Pembelian", "value": "• Panduan penggunaan video step-by-step<br>• Template struk profesional yang bisa dicustom<br>• File contoh database produk siap pakai<br>• Support via WhatsApp  gratis<br>• Voucher diskon 15% untuk pembelian produk lain" } ] }, "contact": { "whatsapp": "6285647709114", "phone": "+6285647709114" } },
-        { "id": "WPU-2025-0610", "category": "food", "type": "promo", "seller": { "name": "Warung Pak Untung", "link": "https://anekamarket.my.id/pakuntung" }, "badge": { "text": "Diskon Spesial", "type": "promo" }, "mainImage": "https://i.imgur.com/1Mvj3cv.jpeg", "title": "Menu Bakaran Spesial Warung Pak Untung", "code": "WPU-2025-0610", "price": 30000, "originalPrice": 50000, "discount": "40% OFF", "priceVariations": [ { "name": "Paket Hemat Komplit", "price": 30000, "original": 50000 }, { "name": "Ikan Super (1 org) - 2 ons", "price": 25000 }, { "name": "Ikan Super (1 org) - 3 ons", "price": 30000 }, { "name": "Ikan Super (1 org) - 4 ons", "price": 35000 }, { "name": "Ikan Super (1 org) - 5 ons", "price": 45000 }, { "name": "Ikan Super (1 org) - 6 ons", "price": 55000 }, { "name": "Ikan Super (1 org) - 7 ons", "price": 60000 }, { "name": "Ikan Super (1 org) - 8 ons", "price": 70000 }, { "name": "Ikan Super (1 org) - 9 ons", "price": 80000 }, { "name": "Ikan Super (1 org) - 1 kg", "price": 90000 }, { "name": "Ikan Super (2 org) - 2 ons", "price": 30000 }, { "name": "Ikan Super (2 org) - 3 ons", "price": 40000 }, { "name": "Ikan Super (2 org) - 4 ons", "price": 50000 }, { "name": "Ikan Super (2 org) - 5 ons", "price": 60000 }, { "name": "Ikan Super (2 org) - 6 ons", "price": 65000 }, { "name": "Ikan Super (2 org) - 7 ons", "price": 75000 }, { "name": "Ikan Super (2 org) - 8 ons", "price": 85000 }, { "name": "Ikan Super (2 org) - 9 ons", "price": 95000 }, { "name": "Ikan Super (2 org) - 1 kg", "price": 100000 } ], "units": ["porsi", "kg", "ons", "ekor"], "defaultUnit": "porsi", "details": { "description": "<strong>Diskon Spesial: Nikmati Sensasi Kuliner Laut Bakar di Warung Pak Untung!</strong><br>Cari tempat makan yang bikin penasaran? Mampir ke <strong>Warung Pak Untung</strong>! Terletak strategis di dekat destinasi Wisata Kampung Kerapu, kami menyajikan hidangan laut bakar segar dengan bumbu rahasia yang meresap sempurna hingga ke dalam daging.<br><br>🔥 <strong>PROMO SPESIAL!</strong> Jangan lewatkan paket komplit kami yang super hemat! Cukup dengan <strong>Rp 30.000</strong> saja dari harga normal Rp 50.000, Anda sudah bisa menikmati hidangan lezat yang bikin ketahihan.<br><br>Ingin yang lebih spesial? Pilih sendiri <strong>ikan super segar</strong> kami dengan berbagai ukuran sesuai selera Anda, cocok untuk dinikmati sendiri atau beramai-ramai. Setiap hidangan disajikan dengan sambal khas Pak Untung yang pedasnya nendang dan segar, dijamin akan menyempurnakan setiap suapan Anda.", "images": [ "https://i.imgur.com/1Mvj3cv.jpeg", "https://i.imgur.com/54G3vZ8.jpeg", "https://i.imgur.com/jSYOe6m.jpeg", "https://i.imgur.com/YqGxIMK.jpeg", "https://i.imgur.com/2tbgQnd.jpeg", "https://i.imgur.com/aSEVqAp.jpeg", "https://i.imgur.com/v1kqfUt.jpeg", "https://i.imgur.com/8XfYID8.jpeg", "https://i.imgur.com/QjUO7gc.jpeg", "https://i.imgur.com/NgAvdi7.jpeg", "https://i.imgur.com/MOahwIU.jpeg", "https://i.imgur.com/vTbwJGv.jpeg" ], "specs": [ { "label": "Kode Promo", "value": "WPU-2025-0610" }, { "label": "Nama Gerai", "value": "Warung Pak Untung" }, { "label": "Pemilik", "value": "Mas Eko" }, { "label": "Alamat", "value": "Jalan Raya Gundil, sebelah barat Wisata Kampung Kerapu (selatan jalan)" }, { "label": "Kontak", "value": "083826231962" }, { "label": "Menu Promo", "value": "• Paket Hemat Komplit <s>Rp50.000</s> <strong>Rp30.000</strong> (Diskon 40%)" }, { "label": "Lauk Tambahan", "value": "• Ikan Super (1 Orang) mulai dari Rp25.000<br>• Ikan Super (2 Orang) mulai dari Rp30.000" }, { "label": "Catatan", "value": "Harga dapat berubah sewaktu-waktu tanpa pemberitahuan." } ] }, "contact": { "whatsapp": "6283826231962", "phone": "+6283826231962" } },
-        { "id": "AJN-2025-JASA", "category": "construction", "type": "jasa", "seller": { "name": "Abang Joni", "link": "https://anekamarket.my.id/abangjoni" }, "badge": { "text": "Jasa Profesional", "type": "service" }, "mainImage": "https://i.imgur.com/8SQGdWj.jpeg", "title": "Jasa Tukang Profesional Berpengalaman", "code": "AJN-2025-JASA", "price": 0, "originalPrice": null, "discount": "Nego", "priceVariations": [], "units": ["proyek", "harian", "borongan"], "defaultUnit": "proyek", "details": { "description": "<strong>Butuh tukang handal dan berpengalaman untuk proyek bangunan Anda? Abang Joni solusinya!</strong><br><br>Dengan pengalaman sejak tahun 2000, Abang Joni telah terbukti profesional dalam mengerjakan berbagai proyek, mulai dari rumah minimalis, perumahan, kost-kostan, hingga perkantoran. Dikenal dengan karakter yang humoris dan sosial tinggi, Abang Joni tidak hanya memberikan hasil kerja yang rapi dan berkualitas, tetapi juga suasana kerja yang menyenangkan.<br><br>Siap bekerja dengan sistem harian, mingguan, bulanan, maupun borongan sesuai kebutuhan Anda. Hubungi langsung untuk konsultasi gratis dan dapatkan penawaran terbaik untuk proyek impian Anda! Harga bisa nego.", "images": [ "https://i.imgur.com/gVuL79s.jpeg", "https://i.imgur.com/lrAPJFa.jpeg", "https://i.imgur.com/hIl9fQz.jpeg", "https://i.imgur.com/RcQWBKO.jpeg", "https://i.imgur.com/8SQGdWj.jpeg" ], "specs": [ { "label": "Kode Jasa", "value": "AJN-2025-JASA" }, { "label": "Nama Tukang", "value": "Abang Joni" }, { "label": "Pengalaman", "value": "Sejak tahun 2000" }, { "label": "Portofolio", "value": "Rumah minimalis, kolam, gudang, perumahan, kost, perkantoran" }, { "label": "Jabatan Proyek", "value": "Pernah menjadi Mandor, Kepala Proyek, Kepala Tukang" }, { "label": "Sistem Kerja", "value": "Harian, Mingguan, Bulanan, Borongan" }, { "label": "Karakter", "value": "Humoris, Sosial Tinggi, Profesional" }, { "label": "Area Layanan", "value": "Situbondo & sekitarnya (Nego)" }, { "label": "Catatan", "value": "Hubungi langsung untuk diskusi harga dan jadwal." } ] }, "contact": { "whatsapp": "6285257633212", "phone": "+6285257633212" } }
-    ];
-
         document.addEventListener('DOMContentLoaded', () => {
             const { jsPDF } = window.jspdf;
-            
+            const products = [
+                { "id": "AWF-2025-2575", "category": "livestock", "type": "promo", "seller": { "name": "Ardiwillis Farm", "link": "https://www.anekamarket.my.id/ardiwillisfarm" }, "badge": { "text": "Promosi", "type": "promo" }, "mainImage": "https://i.imgur.com/pKLE9EY.jpeg", "title": "Paket Lengkap Ternak Ayam Ardiwilis", "code": "AWF-2025-2575", "price": 8000, "originalPrice": 10000, "discount": "10%", "priceVariations": [ { "name": "Ecer (per ekor)", "price": 8000 }, { "name": "10 ekor", "price": 75000 }, { "name": "100 ekor", "price": 700000 } ], "units": ["pcs", "kg", "biji", "ekor"], "defaultUnit": "ekor", "details": { "description": "Ardiwillis Farm menyediakan produk unggulan peternakan ayam berkualitas tinggi. Kami menyediakan telur tetas fertil dengan daya tetas tinggi, DOC (Day Old Chicken) berbagai strain unggul, ayam karkas segar, dan ayam bakar siap saji dengan bumbu khas. Semua produk dihasilkan dari peternakan yang dikelola secara profesional dengan standar kesehatan dan kebersihan tinggi. (Note: Harga tersebut bukan harga tetap, & bisa berubah)", "images": [ "https://i.imgur.com/pAygjAZ.jpeg", "https://i.imgur.com/XRMPBhw.jpeg", "https://i.imgur.com/K5m75Rq.jpeg", "https://i.imgur.com/coJadaj.jpeg" ], "specs": [ { "label": "Kode Produk", "value": "AWF-2025-2575" }, { "label": "Gerai", "value": "Ardiwillis Farm" }, { "label": "Jenis", "value": "Ayam Pedaging" }, { "label": "Usia", "value": "DOC (1 hari)" }, { "label": "Strain", "value": "Cobb 500" }, { "label": "Garansi", "value": "Hidup sampai diterima" }, { "label": "Minimal Order", "value": "10 ekor" }, { "label": "Catatan", "value": "Harga bisa berubah sewaktu-waktu" } ] }, "contact": { "whatsapp": "6285258544543", "phone": "+6285258544543" } },
+                { "id": "NS-2025-3348", "category": "food", "type": "promo", "seller": { "name": "Niki Sae", "link": "https://www.anekamarket.my.id/nikisae" }, "badge": { "text": "Promo Spesial", "type": "promo" }, "mainImage": "https://i.imgur.com/y8r14Z3.jpeg", "title": "Promo Frozen Food Homemade Niki Sae", "code": "NS-2025-3348", "price": 12000, "originalPrice": 15000, "discount": "20% OFF", "priceVariations": [ { "name": "Pempek", "price": 12000, "original": 15000 }, { "name": "Tahu Walik", "price": 11000, "original": 13750 }, { "name": "Nugget Ikan/Ayam", "price": 12000, "original": 15000 }, { "name": "Dragon Stick", "price": 12000, "original": 15000 }, { "name": "Otak-Otak Ikan", "price": 12000, "original": 15000 } ], "units": ["pcs", "pack", "set", "lusin"], "defaultUnit": "pcs", "details": { "description": "<strong>PROMO SPESIAL!</strong> Niki Sae dari Dapur Yunna menghadirkan promo frozen food homemade dengan kualitas terbaik. Semua produk dibuat dengan bahan pilihan dan teknik khusus untuk menjamin cita rasa autentik. Produk kami termasuk Pempek, Tahu Walik, Otak-Otak Ikan, Nugget Ikan dan Ayam, serta Dragon Stick. Setiap produk dibuat dengan standar kebersihan tinggi dan rasa yang konsisten. Nikmati diskon spesial untuk pembelian selama periode promo! Bonus gratis ongkir untuk pembelian di atas Rp100.000.", "images": [ "https://i.imgur.com/RP8HTMb.jpeg", "https://i.imgur.com/GWXfEGJ.jpeg", "https://i.imgur.com/WSB6cXr.jpeg", "https://i.imgur.com/ubU63gJ.jpeg" ], "specs": [ { "label": "Kode Promo", "value": "NS-2025-3348" }, { "label": "Nama UMKM", "value": "Niki Sae Pempek dan Tahu walik" }, { "label": "Pemilik", "value": "Yuliana Mulyaningtyas" }, { "label": "Alamat", "value": "Perum Graha Sultan Raya 1 blok G. 61, Panji" }, { "label": "Kontak", "value": "085731247566" }, { "label": "Media Sosial", "value": "Belum tersedia" }, { "label": "Daftar Promo", "value": "• Pempek <s>Rp15.000</s> <strong>Rp12.000</strong> (20% OFF)<br>• Tahu Walik <s>Rp13.750</s> <strong>Rp11.000</strong> (20% OFF)<br>• Nugget Ikan/Ayam <s>Rp15.000</s> <strong>Rp12.000</strong> (20% OFF)<br>• Dragon Stick <s>Rp15.000</s> <strong>Rp12.000</strong> (20% OFF)<br>• Otak-Otak Ikan <s>Rp15.000</s> <strong>Rp12.000</strong> (20% OFF)" }, { "label": "Periode Promo", "value": "Periode Promo sewaktu-waktu tidak berlaku" }, { "label": "Catatan", "value": "• Harga normal berlaku setelah periode promo berakhir<br>• Minimal pembelian 5 pcs per item<br>• Free ongkir untuk pembelian di atas Rp100.000 (area tertentu)" } ] }, "contact": { "whatsapp": "6285731247566", "phone": "+6285731247566" } },
+                { "id": "PRD-2025-2688", "category": "fishery", "type": "promo", "seller": { "name": "PRADIPA", "link": "https://www.anekamarket.my.id/pradipa" }, "badge": { "text": "Promosi", "type": "promo" }, "mainImage": "https://i.imgur.com/ru1FKXW.jpeg", "title": "Produk Hasil Laut Segar Pradipa", "code": "PRD-2025-2688", "price": 30000, "originalPrice": null, "discount": null, "priceVariations": [ { "name": "Ikan Bogek/Mendut", "price": 35000 }, { "name": "Ikan Mangla/Swangi", "price": 30000 }, { "name": "Ikan Sebelah/Sulfis", "price": 35000 } ], "units": ["kg", "ekor", "pack"], "defaultUnit": "kg", "details": { "description": "PRADIPA menghadirkan hasil laut segar langsung dari perairan Panarukan. Kami menyediakan berbagai jenis ikan berkualitas tinggi yang ditangkap dengan metode ramah lingkungan. Setiap produk kami melalui proses seleksi ketat untuk memastikan kesegaran dan kualitas terbaik untuk pelanggan. Dengan pengalaman bertahun-tahun di bidang hasil laut, kami berkomitmen memberikan produk terbaik dengan harga kompetitif.", "images": [ "https://i.imgur.com/n2AkesD.jpeg", "https://i.imgur.com/tupfVCl.jpeg", "https://i.imgur.com/VhfoAsv.png" ], "specs": [ { "label": "Kode Produk", "value": "PRD-2025-2688" }, { "label": "Gerai", "value": "PRADIPA" }, { "label": "Pemilik", "value": "Fajar Nur Cholis" }, { "label": "Alamat", "value": "Tanah Anyar RT 3 RW 02 Desa Kilensari, Panarukan" }, { "label": "Kontak", "value": "082334393922 | quenie89@gmail.com" }, { "label": "Produk Unggulan", "value": "Ikan Bogek/Mendut (Rp35.000/kg), Ikan Mangla/Swangi (Rp30.000/kg), Ikan Sebelah/Sulfis (Rp35.000/kg)" }, { "label": "Catatan", "value": "Harga bisa berubah sewaktu-waktu" } ] }, "contact": { "whatsapp": "6282334393922", "phone": "+6282334393922" } },
+                { "id": "MCU-2025-2830", "category": "snack", "type": "promo", "seller": { "name": "Mochi UMA", "link": "https://www.anekamarket.my.id/mochiuma" }, "badge": { "text": "Promo Spesial", "type": "promo" }, "mainImage": "https://i.imgur.com/TPSWsZw.jpeg", "title": "Promo Aneka Kue Lezat Mochi Uma", "code": "MCU-2025-2830", "price": 10000, "originalPrice": null, "discount": null, "priceVariations": [ { "name": "Pancake Durian", "price": 10000 }, { "name": "Mochi (3pcs)", "price": 10000 }, { "name": "Cireng Ayam Suwir", "price": 10000 }, { "name": "Corndog Coklat (isi 3)", "price": 10000 } ], "units": ["pcs", "pack", "set", "lusin"], "defaultUnit": "pcs", "details": { "description": "<strong>PROMO SPESIAL!</strong> Mochi UMA menghadirkan paket promo aneka kue lezat dengan harga spesial. Nikmati berbagai pilihan kue premium dengan diskon menarik untuk waktu terbatas. Setiap produk dibuat dengan bahan pilihan dan teknik khusus untuk menjamin cita rasa autentik. Jangan lewatkan kesempatan ini untuk menikmati kue berkualitas dengan harga terjangkau!", "images": [ "https://i.imgur.com/dlK9kfP.jpeg", "https://i.imgur.com/JsXOHCO.jpeg", "https://i.imgur.com/kJDDUy4.jpeg" ], "specs": [ { "label": "Kode Promo", "value": "MCU-2025-2830" }, { "label": "Nama UMKM", "value": "Mochi UMA" }, { "label": "Pemilik", "value": "ULink" }, { "label": "Alamat", "value": "Jl. Wijaya Kusuma Samping Bidan Ika" }, { "label": "Kontak", "value": "089679013099 | nurilaneeh@gmail.com" }, { "label": "Media Sosial", "value": "TikTok @mochi.uma3" }, { "label": "Daftar Promo", "value": "• Pancake Durian hanya Rp10.000<br>• Mochi 3pcs Rp10.000<br>• Cireng Ayam Suwir Rp10.000<br>• Corndog Coklat isi 3 Rp10.000" }, { "label": "Periode Promo", "value": "Periode dapat berubah sewaktu-waktu" }, { "label": "Catatan", "value": "Harga bisa berubah sewaktu-waktu" } ] }, "contact": { "whatsapp": "6289679013099", "phone": "+6289679013099" } },
+                { "id": "UDJ-2025-3038", "category": "agriculture", "type": "all", "seller": { "name": "UD Jaya Makmur", "link": "https://anekamarket.my.id/jayamakmur" }, "badge": { "text": "Grosir", "type": "rental" }, "mainImage": "https://i.imgur.com/fjnwYfW.jpeg", "title": "Garam Krosok Geo Membran Premium", "code": "UDJ-2025-3038", "price": 2500, "originalPrice": null, "discount": null, "priceVariations": [ { "name": "Per Kilo", "price": 2500 }, { "name": "3.5 Ton (Minimal Order)", "price": 8750000 } ], "units": ["kg", "ton"], "defaultUnit": "kg", "details": { "description": "<strong>UD Jaya Makmur</strong> menghadirkan garam krosok geo membran premium berkualitas tinggi dari Panarukan. Garam kami diproduksi dengan metode geo membran yang menghasilkan garam dengan kadar NaCl tinggi (minimal 95%) dan rendah pengotor. Kami menyediakan garam dengan kualitas konsumsi dan industri, dikemas secara higienis dan siap dikirim ke seluruh Indonesia. Minimal pembelian 3.500 kg dengan layanan pengantaran langsung ke lokasi Anda. Garam kami cocok untuk berbagai kebutuhan mulai dari industri, rumah tangga, hingga pengolahan makanan. Anda juga bisa order ke Nomor Whatsapp : 082244014323", "images": [ "https://i.imgur.com/WFbAET3.jpeg", "https://i.imgur.com/EwIAvxE.jpeg", "https://i.imgur.com/5w9ueN7.jpeg" ], "specs": [ { "label": "Kode Produk", "value": "UDJ-2025-3038" }, { "label": "Nama UMKM", "value": "UD Jaya Makmur" }, { "label": "Pemilik", "value": "Zaini" }, { "label": "Alamat", "value": "Kp. Sabrang RT 001 RW 001 Desa Wringin Anom, Panarukan" }, { "label": "Kontak", "value": "087816295963 | jayamakmurpanarukan@gmail.com" }, { "label": "Jenis Produk", "value": "Garam Krosok Geo Membran" }, { "label": "Harga", "value": "Rp 2.500/kg (minimal 3.500 kg)" }, { "label": "Pengiriman", "value": "Gratis ongkir untuk area tertentu (minimal 3.5 ton)" }, { "label": "Catatan", "value": "Harga bisa berubah sewaktu-waktu" } ] }, "contact": { "whatsapp": "6287816295963", "phone": "+6287816295963" } },
+                { "id": "BNJ-2025-3184", "category": "food", "type": "all", "seller": { "name": "Bu Nju", "link": "https://anekamarket.my.id/bunju" }, "badge": { "text": "Produk Lokal", "type": "promo" }, "mainImage": "https://i.imgur.com/Ra4CZgd.jpeg", "title": "Ikan Kering & Terasi Puger Premium", "code": "BNJ-2025-3184", "price": 4000, "originalPrice": null, "discount": null, "priceVariations": [ { "name": "Terasi Puger 1kg", "price": 80000 }, { "name": "Terasi Puger 1ons", "price": 8000 }, { "name": "Terasi Puger ½ons", "price": 4000 }, { "name": "Ikan Kering (berbumbu)", "price": 75000 }, { "name": "Ikan Kering (polos)", "price": 65000 } ], "units": ["pcs", "kg", "ons", "pack"], "defaultUnit": "pcs", "details": { "description": "<strong>Bu Nju</strong> menghadirkan produk ikan kering dan terasi Puger berkualitas premium dari Panarukan. Terasi kami diproduksi secara tradisional dengan kualitas terbaik, memiliki aroma khas dan rasa gurih autentik. Ikan kering kami diproses secara higienis dengan dua varian: siap goreng (sudah berbumbu) dan polos (tanpa bumbu). Semua produk dibuat dengan bahan pilihan dan pengolahan yang menjaga cita rasa asli. Cocok untuk berbagai masakan rumahan hingga usaha kuliner.", "images": [ "https://i.imgur.com/CV57qDP.jpeg", "https://i.imgur.com/ImPrZJw.jpeg", "https://i.imgur.com/eFnhNYu.jpeg" ], "specs": [ { "label": "Kode Produk", "value": "BNJ-2025-3184" }, { "label": "Nama UMKM", "value": "Bu Nju" }, { "label": "Pemilik", "value": "Riqi" }, { "label": "Alamat", "value": "Karangsari, Desa Kilensari, Kecamatan Panarukan" }, { "label": "Kontak", "value": "082327600708 | vaiper.blood22@gmail.com" }, { "label": "Daftar Harga", "value": "• Terasi Puger 1kg: Rp80.000<br>• Terasi Puger 1ons: Rp8.000<br>• Terasi Puger ½ons: Rp4.000<br>• Ikan kering berbumbu: Rp70.000/kg<br>• Ikan kering polos: Rp60.000/kg" }, { "label": "Media Sosial", "value": "TikTok @seesaretadek" }, { "label": "Catatan", "value": "Harga bisa berubah sewaktu-waktu" } ] }, "contact": { "whatsapp": "6282327600708", "phone": "+6282327600708" } },
+                { "id": "LDW-2025-8001", "category": "software", "type": "promo", "seller": { "name": "Lentera Karya Situbondo", "link": "https://www.anekamarket.my.id/lenterakaryasitubondo" }, "badge": { "text": "Super Deal", "type": "promo" }, "mainImage": "https://i.imgur.com/VumvfHv.png", "title": "Paket Lengkap Aplikasi Web HTML", "code": "LDW-2025-8001", "price": 599000, "originalPrice": 899000, "discount": "33% OFF", "priceVariations": [ { "name": "Paket Komplit (7 Aplikasi)", "price": 599000, "original": 899000 }, { "name": "Aplikasi Kasir Web", "price": 350000, "original": 450000 }, { "name": "Sistem Pembukuan Web", "price": 400000, "original": 550000 } ], "units": ["paket", "lisensi", "unit"], "defaultUnit": "paket", "details": { "description": "<strong>SOLUSI APLIKASI WEB TERBAIK UNTUK BISNIS ANDA!</strong> Paket lengkap aplikasi web HTML kami dirancang khusus untuk bekerja sempurna di semua perangkat tanpa perlu instalasi. Cukup buka browser dan aplikasi siap digunakan! Setiap aplikasi memiliki anturarmuka modern yang responsif, beradaptasi otomatis dengan layar desktop, tablet, maupun smartphone. Sistem kami mencakup fitur-fitur canggih seperti penyimpanan data di perangkat pengguna, backup/restore, laporan transaksi, dan cetak struk - semuanya dalam platform web yang ringan dan cepat.", "images": [ "https://i.imgur.com/GjByUuX.png", "https://i.imgur.com/rsR7RhC.png", "https://i.imgur.com/gg5AGFc.png", "https://i.imgur.com/VumvfHv.png" ], "specs": [ { "label": "Kode Produk", "value": "LDW-2025-8001" }, { "label": "Developer", "value": "Lentera Karya Situbondo" }, { "label": "Daftar Aplikasi", "value": "• Aplikasi Kasir Web - Sistem kasir lengkap dengan cetak struk<br>• Sistem Pembukuan Web - Pencatatan keuangan profesional<br>• Aplikasi Absensi Web - Manajemen kehadiran karyawan<br>• Sistem Manajemen Restoran - Pesanan, meja, dan kitchen display<br>• Website Profesional Instan - Website bisnis siap pakai<br>• Aplikasi Tiket/Karcis - Sistem tiket elektronik<br>• Sistem Penginapan Web - Manajemen kamar dan tamu" }, { "label": "Fitur Unggulan", "value": "• Akses dari perangkat apapun dengan browser modern<br>• Tampilan responsif otomatis menyesuaikan layar<br>• Tanpa perlu instalasi - langsung buka file<br>• Penyimpanan data aman di perangkat pengguna<br>• Backup & restore data dengan satu klik<br>• Laporan keuangan lengkap dengan grafik<br>• Multi-user support dengan level akses berbeda<br>• Offline capable (PWA) - bisa digunakan tanpa internet" }, { "label": "Kompatibilitas", "value": "• Browser: Chrome, Firefox, Edge, Safari versi terbaru<br>• Sistem Operasi: Windows 10/11, macOS, Linux, Android, iOS<br>• Perangkat: Desktop, Laptop, Tablet, Smartphone<br>• Resolusi: Mendukung dari 320px hingga 4K" }, { "label": "Cara Penggunaan", "value": "1. Terima file HTML via email setelah pembelian<br>2. Buka file di browser favorit Anda (Chrome direkomendasikan)<br>3. Aplikasi siap digunakan segera!<br>4. Simpan sebagai PWA (Add to Home Screen) untuk pengalaman seperti aplikasi native<br>5. Untuk backup, cukup simpan file data yang dihasilkan aplikasi" } ] }, "contact": { "whatsapp": "6285647709114", "phone": "+6285647709114" } },
+                { "id": "LDW-2025-8002", "category": "software", "type": "promo", "seller": { "name": "Lentera Karya Situbondo", "link": "https://www.anekamarket.my.id/lenterakaryasitubondo" }, "badge": { "text": "Baru!", "type": "new" }, "mainImage": "https://i.imgur.com/i7PAJfs.png", "title": "Aplikasi Kasir Web HTML", "code": "LDW-2025-8002", "price": 350000, "originalPrice": 450000, "discount": "22% OFF", "priceVariations": [ { "name": "Lisensi Tunggal", "price": 350000, "original": 450000 } ], "units": ["lisensi", "pcs", "unit"], "defaultUnit": "lisensi", "details": { "description": "<strong>APLIKASI KASIR MODERN TANPA INSTALASI!</strong> Aplikasi Kasir Web HTML dari Lentera Karya Situbondo adalah solusi sempurna untuk bisnis retail, toko, atau usaha kecil. Cukup buka file HTML di browser dan aplikasi siap digunakan! Dirancang khusus untuk bekerja optimal di semua perangkat - dari desktop PC hingga smartphone. Fitur termasuk manajemen produk, transaksi cepat, cetak struk, laporan penjualan, dan penyimpanan data langsung di perangkat Anda. Tidak perlu server mahal atau koneksi internet terus-menerus! Ada bonus voucher diskon 15% juga.", "images": [ "https://i.imgur.com/9IuPANW.png", "https://i.imgur.com/PY8ge6k.png", "https://i.imgur.com/2Yr4njs.png", "https://i.imgur.com/i7PAJfs.png" ], "specs": [ { "label": "Kode Produk", "value": "LDW-2025-8002" }, { "label": "Developer", "value": "Lentera Karya Situbondo" }, { "label": "Fitur Inti", "value": "• Input transaksi cepat dengan anturarmuka modern<br>• Manajemen produk & kategori<br>• Pencarian produk instan dengan autocomplete<br>• Cetak struk pdf dengan header custom<br>• Laporan harian/mingguan/bulanan dengan grafik<br>• Backup & restore data dengan enkripsi<br>• Manajemen diskon dan promo produk<br>• Hitung kembalian & Stok otomatis berkurang saat transaksi" }, { "label": "Keunggulan", "value": "• Buka langsung di browser tanpa proses instalasi<br>• Tampilan responsif semua device (desktop, tablet, HP)<br>• Bisa digunakan offline setelah pertama kali dibuka<br>• Penyimpanan data aman di perangkat pengguna<br>• Tidak perlu server/hosting yang mahal<br>• Ringan dan cepat bahkan di spesifikasi rendah<br>• Update mudah dengan mengganti file HTML<br>• Tidak ada biaya bulanan/tahunan" }, { "label": "Cara Implementasi", "value": "1. Dapatkan file HTML aplikasi setelah pembelian<br>2. Buka file di browser favorit (Chrome direkomendasikan)<br>3. Mulai gunakan aplikasi kasir langsung<br>4. (Opsional) Simpan sebagai PWA untuk pengalaman seperti app native<br>5. Data otomatis tersimpan aman di perangkat<br>6. Backup rutin dengan menyimpan file data yang dihasilkan" }, { "label": "Bonus Pembelian", "value": "• Panduan penggunaan video step-by-step<br>• Template struk profesional yang bisa dicustom<br>• File contoh database produk siap pakai<br>• Support via WhatsApp  gratis<br>• Voucher diskon 15% untuk pembelian produk lain" } ] }, "contact": { "whatsapp": "6285647709114", "phone": "+6285647709114" } },
+                { "id": "WPU-2025-0610", "category": "food", "type": "promo", "seller": { "name": "Warung Pak Untung", "link": "https://anekamarket.my.id/pakuntung" }, "badge": { "text": "Diskon Spesial", "type": "promo" }, "mainImage": "https://i.imgur.com/1Mvj3cv.jpeg", "title": "Menu Bakaran Spesial Warung Pak Untung", "code": "WPU-2025-0610", "price": 30000, "originalPrice": 50000, "discount": "40% OFF", "priceVariations": [ { "name": "Paket Hemat Komplit", "price": 30000, "original": 50000 }, { "name": "Ikan Super (1 org) - 2 ons", "price": 25000 }, { "name": "Ikan Super (1 org) - 3 ons", "price": 30000 }, { "name": "Ikan Super (1 org) - 4 ons", "price": 35000 }, { "name": "Ikan Super (1 org) - 5 ons", "price": 45000 }, { "name": "Ikan Super (1 org) - 6 ons", "price": 55000 }, { "name": "Ikan Super (1 org) - 7 ons", "price": 60000 }, { "name": "Ikan Super (1 org) - 8 ons", "price": 70000 }, { "name": "Ikan Super (1 org) - 9 ons", "price": 80000 }, { "name": "Ikan Super (1 org) - 1 kg", "price": 90000 }, { "name": "Ikan Super (2 org) - 2 ons", "price": 30000 }, { "name": "Ikan Super (2 org) - 3 ons", "price": 40000 }, { "name": "Ikan Super (2 org) - 4 ons", "price": 50000 }, { "name": "Ikan Super (2 org) - 5 ons", "price": 60000 }, { "name": "Ikan Super (2 org) - 6 ons", "price": 65000 }, { "name": "Ikan Super (2 org) - 7 ons", "price": 75000 }, { "name": "Ikan Super (2 org) - 8 ons", "price": 85000 }, { "name": "Ikan Super (2 org) - 9 ons", "price": 95000 }, { "name": "Ikan Super (2 org) - 1 kg", "price": 100000 } ], "units": ["porsi", "kg", "ons", "ekor"], "defaultUnit": "porsi", "details": { "description": "<strong>Diskon Spesial: Nikmati Sensasi Kuliner Laut Bakar di Warung Pak Untung!</strong><br>Cari tempat makan yang bikin penasaran? Mampir ke <strong>Warung Pak Untung</strong>! Terletak strategis di dekat destinasi Wisata Kampung Kerapu, kami menyajikan hidangan laut bakar segar dengan bumbu rahasia yang meresap sempurna hingga ke dalam daging.<br><br>🔥 <strong>PROMO SPESIAL!</strong> Jangan lewatkan paket komplit kami yang super hemat! Cukup dengan <strong>Rp 30.000</strong> saja dari harga normal Rp 50.000, Anda sudah bisa menikmati hidangan lezat yang bikin ketahihan.<br><br>Ingin yang lebih spesial? Pilih sendiri <strong>ikan super segar</strong> kami dengan berbagai ukuran sesuai selera Anda, cocok untuk dinikmati sendiri atau beramai-ramai. Setiap hidangan disajikan dengan sambal khas Pak Untung yang pedasnya nendang dan segar, dijamin akan menyempurnakan setiap suapan Anda.", "images": [ "https://i.imgur.com/1Mvj3cv.jpeg", "https://i.imgur.com/54G3vZ8.jpeg", "https://i.imgur.com/jSYOe6m.jpeg", "https://i.imgur.com/YqGxIMK.jpeg", "https://i.imgur.com/2tbgQnd.jpeg", "https://i.imgur.com/aSEVqAp.jpeg", "https://i.imgur.com/v1kqfUt.jpeg", "https://i.imgur.com/8XfYID8.jpeg", "https://i.imgur.com/QjUO7gc.jpeg", "https://i.imgur.com/NgAvdi7.jpeg", "https://i.imgur.com/MOahwIU.jpeg", "https://i.imgur.com/vTbwJGv.jpeg" ], "specs": [ { "label": "Kode Promo", "value": "WPU-2025-0610" }, { "label": "Nama Gerai", "value": "Warung Pak Untung" }, { "label": "Pemilik", "value": "Mas Eko" }, { "label": "Alamat", "value": "Jalan Raya Gundil, sebelah barat Wisata Kampung Kerapu (selatan jalan)" }, { "label": "Kontak", "value": "083826231962" }, { "label": "Menu Promo", "value": "• Paket Hemat Komplit <s>Rp50.000</s> <strong>Rp30.000</strong> (Diskon 40%)" }, { "label": "Lauk Tambahan", "value": "• Ikan Super (1 Orang) mulai dari Rp25.000<br>• Ikan Super (2 Orang) mulai dari Rp30.000" }, { "label": "Catatan", "value": "Harga dapat berubah sewaktu-waktu tanpa pemberitahuan." } ] }, "contact": { "whatsapp": "6283826231962", "phone": "+6283826231962" } },
+                { "id": "AJN-2025-JASA", "category": "construction", "type": "jasa", "seller": { "name": "Abang Joni", "link": "https://anekamarket.my.id/abangjoni" }, "badge": { "text": "Jasa Profesional", "type": "service" }, "mainImage": "https://i.imgur.com/8SQGdWj.jpeg", "title": "Jasa Tukang Profesional Berpengalaman", "code": "AJN-2025-JASA", "price": 0, "originalPrice": null, "discount": "Nego", "priceVariations": [], "units": ["proyek", "harian", "borongan"], "defaultUnit": "proyek", "details": { "description": "<strong>Butuh tukang handal dan berpengalaman untuk proyek bangunan Anda? Abang Joni solusinya!</strong><br><br>Dengan pengalaman sejak tahun 2000, Abang Joni telah terbukti profesional dalam mengerjakan berbagai proyek, mulai dari rumah minimalis, perumahan, kost-kostan, hingga perkantoran. Dikenal dengan karakter yang humoris dan sosial tinggi, Abang Joni tidak hanya memberikan hasil kerja yang rapi dan berkualitas, tetapi juga suasana kerja yang menyenangkan.<br><br>Siap bekerja dengan sistem harian, mingguan, bulanan, maupun borongan sesuai kebutuhan Anda. Hubungi langsung untuk konsultasi gratis dan dapatkan penawaran terbaik untuk proyek impian Anda! Harga bisa nego.", "images": [ "https://i.imgur.com/gVuL79s.jpeg", "https://i.imgur.com/lrAPJFa.jpeg", "https://i.imgur.com/hIl9fQz.jpeg", "https://i.imgur.com/RcQWBKO.jpeg", "https://i.imgur.com/8SQGdWj.jpeg" ], "specs": [ { "label": "Kode Jasa", "value": "AJN-2025-JASA" }, { "label": "Nama Tukang", "value": "Abang Joni" }, { "label": "Pengalaman", "value": "Sejak tahun 2000" }, { "label": "Portofolio", "value": "Rumah minimalis, kolam, gudang, perumahan, kost, perkantoran" }, { "label": "Jabatan Proyek", "value": "Pernah menjadi Mandor, Kepala Proyek, Kepala Tukang" }, { "label": "Sistem Kerja", "value": "Harian, Mingguan, Bulanan, Borongan" }, { "label": "Karakter", "value": "Humoris, Sosial Tinggi, Profesional" }, { "label": "Area Layanan", "value": "Situbondo & sekitarnya (Nego)" }, { "label": "Catatan", "value": "Hubungi langsung untuk diskusi harga dan jadwal." } ] }, "contact": { "whatsapp": "6285257633212", "phone": "+6285257633212" } }
+            ];
+
+            const body = document.body;
+
             function formatPrice(amount) {
                 return new Intl.NumberFormat('id-ID', {
                     style: 'currency',
@@ -3294,7 +578,7 @@ audio {
                 }).format(amount);
             }
 
-            async function colorizeQrCode(qrDataUrl, newColor = {r: 0, g: 123, b: 255}) {
+            async function colorizeQrCode(qrDataUrl, newColor = {r: 52, g: 97, b: 253}) { // Using --primary color
                 return new Promise((resolve, reject) => {
                     const canvas = document.createElement('canvas');
                     const ctx = canvas.getContext('2d', { willReadFrequently: true });
@@ -3330,9 +614,9 @@ audio {
                 }));
                 try {
                     const logoBase64 = await toDataURL(logoUrl);
-                    const pageW = doc.internal.pageSize.getWidth(); const pageH = doc.internal.pageSize.getHeight(); const margin = 15; let y = 0;
-                    const brandColor = '#007bff'; const darkColor = '#212529'; const lightColor = '#f8f9fa'; const grayColor = '#6c757d'; const borderColor = '#dee2e6';
-                    doc.setFillColor(brandColor); doc.rect(0, 0, pageW, 40, 'F');
+                    const pageW = doc.internal.pageSize.getWidth(); const margin = 15; let y = 0;
+                    const brandColor = '#3461FD'; const darkColor = '#002266'; const lightColor = '#f8f9fa'; const grayColor = '#6C757D'; const borderColor = '#dee2e6';
+                    doc.setFillColor(darkColor); doc.rect(0, 0, pageW, 40, 'F');
                     doc.addImage(logoBase64, 'PNG', margin, 7.5, 25, 25);
                     doc.setFontSize(22).setFont(undefined, 'bold'); doc.setTextColor('#FFFFFF'); doc.text('ANEKAMARKET', pageW - margin, 18, { align: 'right' });
                     doc.setFontSize(9).setFont(undefined, 'normal'); doc.text('Jl. PB Sudirman, Wringin Anom, Situbondo', pageW - margin, 24, { align: 'right' }); doc.text('admin@anekamarket.my.id', pageW - margin, 29, { align: 'right' });
@@ -3374,24 +658,25 @@ audio {
                     const finalAmount = orderDetails.type === 'PRE-ORDER' ? orderDetails.dpAmount : formatPrice(orderDetails.grandTotal);
                     const finalLabel = orderDetails.type === 'PRE-ORDER' ? 'TOTAL DP:' : 'TOTAL BAYAR:';
                     doc.text(finalLabel, totalBoxX, y + 8, { align: 'right' }); doc.setTextColor(brandColor); doc.text(finalAmount, pageW - margin, y + 8, { align: 'right' });
+                    
+                    const pageH = doc.internal.pageSize.getHeight();
                     y = pageH - 40; doc.setDrawColor(borderColor); doc.line(margin, y, pageW - margin, y); y += 8;
                     doc.setFontSize(8).setFont(undefined, 'italic').setTextColor(grayColor);
                     const noteText = doc.splitTextToSize('Struk ini merupakan bukti pemesanan yang sah dan dibuat secara otomatis oleh sistem. Harap simpan struk ini untuk proses konfirmasi pembayaran dengan penjual.', pageW - margin * 2 - 30);
                     doc.text(noteText, margin, y);
                     const qr = qrcode(0, 'M'); qr.addData('https://s.id/anekamarket'); qr.make();
                     const blackQrCodeImage = qr.createDataURL(4);
-                    const blueQrCodeImage = await colorizeQrCode(blackQrCodeImage, {r: 0, g: 123, b: 255});
+                    const blueQrCodeImage = await colorizeQrCode(blackQrCodeImage);
                     doc.addImage(blueQrCodeImage, 'PNG', pageW - margin - 22, y, 22, 22);
                     y = pageH - 10; doc.setFontSize(8).setFont(undefined, 'normal').setTextColor(grayColor);
                     const footerText = `© ${new Date().getFullYear()} ANEKAMARKET | Developed by www.anekamarket.my.id`;
                     doc.text(footerText, pageW / 2, y, { align: 'center' });
                     doc.save(`Struk-${orderDetails.type}-${productData.code}.pdf`);
-                } catch (error) { alert("Maaf, terjadi kesalahan saat membuat struk PDF. Silakan coba lagi."); }
+                } catch (error) { console.error("PDF generation error:", error); alert("Maaf, terjadi kesalahan saat membuat struk PDF. Silakan coba lagi."); }
             }
 
             function createProductCardHTML(product) {
                  const hasPriceVariations = product.priceVariations && product.priceVariations.length > 0;
-                 
                  const priceVariationsHTML = hasPriceVariations 
                     ? product.priceVariations.map(v => `
                         <div class="price-variation-item" data-price="${v.price}" data-name="${v.name}">
@@ -3404,8 +689,7 @@ audio {
                                 <input type="number" class="quantity-input" value="0" min="0" aria-label="Jumlah item">
                                 <button class="quantity-btn plus" aria-label="Tambah jumlah">+</button>
                             </div>
-                        </div>`).join('')
-                    : '';
+                        </div>`).join('') : '';
 
                 const unitOptionsHTML = product.units.map(unit => `<option value="${unit}" ${unit === product.defaultUnit ? 'selected' : ''}>${unit}</option>`).join('');
                 const detailImagesHTML = product.details.images.map((img, index) => `<img src="${img}" alt="Thumbnail ${index + 1}" class="thumbnail" loading="lazy">`).join('');
@@ -3439,7 +723,7 @@ audio {
                                 <div class="preorder-form">
                                     <div class="preorder-title"><i class="fas fa-money-bill-wave"></i><span>Form Uang Muka (DP)</span></div>
                                     <input type="number" class="preorder-input" placeholder="Masukkan nominal DP (minimal 40%)">
-                                    <p class="preorder-note">* Untuk pre-order, harap masukkan nominal uang muka minimal 40% dari total harga. Kami akan menghubungi Anda untuk konfirmasi lebih lanjut.</p>
+                                    <p class="preorder-note">* Untuk pre-order, harap masukkan nominal uang muka minimal 40% dari total harga.</p>
                                     <button class="btn-preorder"><i class="fas fa-paper-plane"></i> Kirim Pre-Order</button>
                                 </div>
                             </div>
@@ -3452,36 +736,29 @@ audio {
                             <div class="gallery-detail-expanded">
                                 <div class="gallery-carousel"><img src="${product.mainImage}" alt="${product.title}" class="gallery-main-image" loading="lazy"><div class="gallery-thumbnails">${detailImagesHTML}</div></div>
                                 <div class="gallery-content"><p class="gallery-description">${product.details.description}</p><div class="gallery-specs">${detailSpecsHTML}</div></div>
-                                <div class="gallery-actions-expanded"><a href="https://wa.me/${product.contact.whatsapp}?text=Halo%20${encodeURIComponent(product.seller.name)},%20saya%20tertarik%20dengan%20produk%20${encodeURIComponent(product.title)}%20(${product.code})" class="btn-whatsapp" target="_blank"><i class="fab fa-whatsapp"></i> Chat via WhatsApp</a><a href="tel:${product.contact.phone}" class="btn-call"><i class="fas fa-phone-alt"></i> Telepon Sekarang</a></div>
+                                <div class="action-buttons-expanded"><a href="https://wa.me/${product.contact.whatsapp}?text=Halo%20${encodeURIComponent(product.seller.name)},%20saya%20tertarik%20dengan%20produk%20${encodeURIComponent(product.title)}%20(${product.code})" class="btn-whatsapp" target="_blank"><i class="fab fa-whatsapp"></i> Chat via WhatsApp</a><a href="tel:${product.contact.phone}" class="btn-call"><i class="fas fa-phone-alt"></i> Telepon Sekarang</a></div>
                             </div>
                         </div>
                     </div>`;
             }
 
-
             const galleryGrid = document.getElementById('gallery-grid');
-            const body = document.body;
-
             function renderProducts(productsData) {
                 if (!galleryGrid) return;
-                galleryGrid.innerHTML = productsData.map(product => createProductCardHTML(product)).join('');
+                galleryGrid.innerHTML = productsData.map(createProductCardHTML).join('');
             }
             renderProducts(products); 
 
             function initCardEventListeners(container) {
                  const updateGrandTotal = (productCard) => {
                     let grandTotal = 0;
-                    const variationItems = productCard.querySelectorAll('.price-variation-item');
-                    variationItems.forEach(item => {
+                    productCard.querySelectorAll('.price-variation-item').forEach(item => {
                         const price = parseFloat(item.dataset.price) || 0;
-                        const quantityInput = item.querySelector('.quantity-input');
-                        const quantity = parseInt(quantityInput.value, 10) || 0;
+                        const quantity = parseInt(item.querySelector('.quantity-input').value, 10) || 0;
                         grandTotal += price * quantity;
                     });
                     const totalPriceElement = productCard.querySelector('.total-price-value');
-                    if (totalPriceElement) {
-                        totalPriceElement.textContent = formatPrice(grandTotal);
-                    }
+                    if (totalPriceElement) totalPriceElement.textContent = formatPrice(grandTotal);
                 };
 
                 container.addEventListener('click', e => {
@@ -3495,20 +772,18 @@ audio {
                         priceSection.classList.toggle('show');
                         btn.classList.toggle('active');
                         btn.innerHTML = priceSection.classList.contains('show') 
-                            ? '<i class="fas fa-eye-slash"></i> Sembunyikan Harga' 
+                            ? '<i class="fas fa-eye-slash"></i> Sembunyikan' 
                             : '<i class="fas fa-tags"></i> Cek Harga';
                         playButtonSound();
                     }
 
                     if (target.classList.contains('quantity-btn')) {
-                        const btn = target;
-                        const input = btn.parentElement.querySelector('.quantity-input');
+                        const input = target.parentElement.querySelector('.quantity-input');
                         let value = parseInt(input.value, 10) || 0;
-                        if (btn.classList.contains('plus')) value++;
-                        else if (btn.classList.contains('minus') && value > 0) value--;
+                        if (target.classList.contains('plus')) value++;
+                        else if (target.classList.contains('minus') && value > 0) value--;
                         input.value = value;
                         updateGrandTotal(productCard);
-                        playButtonSound();
                     }
 
                     if (target.closest('.btn-detail')) { 
@@ -3521,24 +796,21 @@ audio {
                     }
 
                     if (target.classList.contains('thumbnail')) { 
-                        const mainImage = productCard.querySelector('.gallery-main-image'); 
-                        mainImage.src = target.src; 
+                        productCard.querySelector('.gallery-main-image').src = target.src; 
                         productCard.querySelectorAll('.thumbnail').forEach(t => t.classList.remove('active'));
                         target.classList.add('active');
-                        playButtonSound(); 
                     }
                     
                     if(target.classList.contains('gallery-main-image')) { 
                         document.getElementById('zoomedImage').src = target.src; 
                         document.getElementById('imageModal').classList.add('show');
-                        body.style.overflow = 'hidden'; playButtonSound();
+                        body.style.overflow = 'hidden';
                     }
 
                     if (target.closest('.btn-preorder-toggle')) {
                         const btn = target.closest('.btn-preorder-toggle');
                         const preorderForm = productCard.querySelector('.preorder-form');
                         preorderForm.classList.toggle('active'); btn.classList.toggle('active');
-                        btn.innerHTML = preorderForm.classList.contains('active') ? '<i class="fas fa-times"></i> Batal Pre-Order' : '<i class="fas fa-calendar-check"></i> Pre-Order';
                         playButtonSound();
                     }
                     
@@ -3546,19 +818,14 @@ audio {
                     const productData = products.find(p => p.id === productId);
                     if (!productData) return;
 
-                    const gatherOrderDetails = (type = 'PEMESANAN LANGSUNG') => {
+                    const gatherOrderDetails = (type = 'PEMESANAN') => {
                         const items = []; let grandTotal = 0;
-                        const unitSelect = productCard.querySelector('.unit-select');
-                        const unit = unitSelect ? unitSelect.value : productData.defaultUnit;
-                        const variationItems = productCard.querySelectorAll('.price-variation-item');
-                        variationItems.forEach(item => {
+                        const unit = productCard.querySelector('.unit-select')?.value || productData.defaultUnit;
+                        productCard.querySelectorAll('.price-variation-item').forEach(item => {
                             const quantity = parseInt(item.querySelector('.quantity-input').value, 10) || 0;
                             if (quantity > 0) {
-                                const name = item.dataset.name;
-                                const unitPrice = parseFloat(item.dataset.price);
-                                const subtotal = unitPrice * quantity;
-                                items.push({ name, quantity, unitPrice, subtotal });
-                                grandTotal += subtotal;
+                                items.push({ name: item.dataset.name, quantity, unitPrice: parseFloat(item.dataset.price), subtotal: parseFloat(item.dataset.price) * quantity });
+                                grandTotal += parseFloat(item.dataset.price) * quantity;
                             }
                         });
                         if (items.length === 0) { alert('Anda belum memilih item atau jumlah produk.'); return null; }
@@ -3566,8 +833,8 @@ audio {
                         if (type === 'PRE-ORDER') { 
                             const dpInput = productCard.querySelector('.preorder-input'); 
                             const dpValue = parseFloat(dpInput.value); 
-                            if (isNaN(dpValue) || dpValue <= 0) { alert('Mohon masukkan nominal DP yang valid'); return null; } 
-                            if (dpValue < (grandTotal * 0.4)) { alert(`Uang muka minimal 40% dari total harga (${formatPrice(grandTotal * 0.4)})`); return null; } 
+                            if (isNaN(dpValue) || dpValue <= 0) { alert('Mohon masukkan nominal DP yang valid.'); return null; } 
+                            if (dpValue < (grandTotal * 0.4)) { alert(`Uang muka minimal 40% dari total harga (${formatPrice(grandTotal * 0.4)}).`); return null; } 
                             dpAmount = formatPrice(dpValue); 
                         }
                         return { type, items, grandTotal, unit, dpAmount };
@@ -3581,24 +848,20 @@ audio {
                     }
 
                     if (target.closest('.btn-order')) {
-                        const orderDetails = gatherOrderDetails('PEMESANAN LANGSUNG');
-                        if (orderDetails) {
-                            if (confirm(`Anda akan memesan dengan total ${formatPrice(orderDetails.grandTotal)}.\n\nLanjutkan?`)) {
-                                generateAndDownloadReceipt(productData, orderDetails);
-                                window.open(`https://wa.me/${productData.contact.whatsapp}?text=${encodeURIComponent(generateWhatsAppMessage(productData, orderDetails))}`, '_blank');
-                                playButtonSound();
-                            }
+                        const orderDetails = gatherOrderDetails('PEMESANAN');
+                        if (orderDetails && confirm(`Anda akan memesan dengan total ${formatPrice(orderDetails.grandTotal)}.\n\nLanjutkan?`)) {
+                            generateAndDownloadReceipt(productData, orderDetails);
+                            window.open(`https://wa.me/${productData.contact.whatsapp}?text=${encodeURIComponent(generateWhatsAppMessage(productData, orderDetails))}`, '_blank');
+                            playButtonSound();
                         }
                     }
                     
                     if (target.closest('.btn-preorder')) {
                         const orderDetails = gatherOrderDetails('PRE-ORDER');
-                        if (orderDetails) {
-                            if(confirm(`Anda akan Pre-Order dengan total ${formatPrice(orderDetails.grandTotal)} dan DP ${orderDetails.dpAmount}.\n\nLanjutkan?`)){
-                                generateAndDownloadReceipt(productData, orderDetails);
-                                window.open(`https://wa.me/${productData.contact.whatsapp}?text=${encodeURIComponent(generateWhatsAppMessage(productData, orderDetails))}`, '_blank');
-                                playButtonSound();
-                            }
+                        if (orderDetails && confirm(`Anda akan Pre-Order dengan total ${formatPrice(orderDetails.grandTotal)} dan DP ${orderDetails.dpAmount}.\n\nLanjutkan?`)){
+                            generateAndDownloadReceipt(productData, orderDetails);
+                            window.open(`https://wa.me/${productData.contact.whatsapp}?text=${encodeURIComponent(generateWhatsAppMessage(productData, orderDetails))}`, '_blank');
+                            playButtonSound();
                         }
                     }
                 });
@@ -3613,14 +876,30 @@ audio {
             }
             if(galleryGrid) initCardEventListeners(galleryGrid);
 
-            // --- [PENYEMPURNAAN] FITUR PENCARIAN DENGAN FILTER CERDAS ---
-            const searchModal = document.getElementById('searchModal'); const searchModalInput = document.getElementById('searchModalInput'); const searchResults = document.getElementById('searchResults'); const headerSearchInput = document.getElementById('headerSearchInput'); const headerSearchBtn = document.getElementById('headerSearchBtn'); const navSearchInput = document.getElementById('navSearchInput'); const navSearchBtn = document.getElementById('navSearchBtn'); const searchFilters = document.getElementById('searchFilters');
-            function openSearchModal(query = '') { searchModal.classList.add('show'); body.style.overflow = 'hidden'; searchModalInput.value = query; searchModalInput.focus(); performSearch(query); }
-            function closeSearchModal() { searchModal.classList.remove('show'); body.style.overflow = ''; }
+            // --- [PENYEMPURNAAN & IMPLEMENTASI] FITUR PENCARIAN CERDAS ---
+            const searchModal = document.getElementById('searchModal'); 
+            const searchModalInput = document.getElementById('searchModalInput'); 
+            const searchResults = document.getElementById('searchResults'); 
+            const headerSearchInput = document.getElementById('headerSearchInput'); 
+            const headerSearchBtn = document.getElementById('headerSearchBtn'); 
+            const navSearchInput = document.getElementById('navSearchInput'); 
+            const navSearchBtn = document.getElementById('navSearchBtn'); 
+            const searchFilters = document.getElementById('searchFilters');
+
+            function openSearchModal(query = '') { 
+                searchModal.classList.add('show'); 
+                body.style.overflow = 'hidden'; 
+                searchModalInput.value = query; 
+                searchModalInput.focus(); 
+                performSearch(); 
+            }
+            function closeSearchModal() { 
+                searchModal.classList.remove('show'); 
+                body.style.overflow = ''; 
+            }
             
-            // --- [REVISI] Logika fungsi pencarian untuk mengakomodasi filter cerdas ---
-            function performSearch(query) { 
-                const lowerCaseQuery = query.trim().toLowerCase(); 
+            function performSearch() { 
+                const query = searchModalInput.value.trim().toLowerCase();
                 const filters = {
                     discount: document.querySelector('input[value="discount"]').checked,
                     bonus: document.querySelector('input[value="bonus"]').checked,
@@ -3630,20 +909,18 @@ audio {
 
                 let results = products;
 
-                if (lowerCaseQuery.length >= 2) {
-                    results = products.filter(p => 
-                        [p.title, p.seller.name, p.code, p.details.description.replace(/<[^>]*>?/gm, ''), ...p.details.specs.map(s => `${s.label} ${s.value.replace(/<[^>]*>?/gm, '')}`)].join(' ').toLowerCase().includes(lowerCaseQuery)
+                if (query.length >= 2) {
+                    results = results.filter(p => 
+                        [p.title, p.seller.name, p.code, p.details.description]
+                        .join(' ').toLowerCase().includes(query)
                     );
-                } else if (Object.values(filters).every(v => !v)) {
-                    searchResults.innerHTML = '<p class="search-results-placeholder">Ketik minimal 2 huruf atau pilih filter...</p>'; 
-                    return;
                 }
                 
                 if (filters.discount) {
                     results = results.filter(p => p.originalPrice || p.discount);
                 }
                 if (filters.bonus) {
-                    results = results.filter(p => /bonus|gratis|free/i.test(JSON.stringify(p.details)));
+                    results = results.filter(p => /bonus|gratis|free/i.test(p.details.description));
                 }
                 if (filters.negotiable) {
                     results = results.filter(p => p.discount === 'Nego' || /nego|estimasi|perkiraan|hubungi/i.test(p.details.description));
@@ -3653,31 +930,61 @@ audio {
                     results.sort((a, b) => a.price - b.price);
                 }
 
+                if (query.length < 2 && !Object.values(filters).some(v => v)) {
+                    searchResults.innerHTML = '<p class="search-results-placeholder">Ketik minimal 2 huruf atau pilih filter...</p>';
+                    return;
+                }
+                
                 displaySearchResults(results); 
             }
             
-            function displaySearchResults(results) { if (results.length === 0) { searchResults.innerHTML = '<p class="search-results-placeholder">Produk tidak ditemukan.</p>'; return; } searchResults.innerHTML = results.map(p => `<a href="#product-${p.id}" class="search-result-item" data-product-id="${p.id}"><img src="${p.mainImage}" alt="${p.title}" class="search-result-image"><div class="search-result-info"><h4>${p.title}</h4><p>oleh ${p.seller.name} (Kode: ${p.code})</p></div></a>`).join(''); }
-            [headerSearchInput, navSearchInput].forEach(input => { input.addEventListener('keypress', (e) => { if (e.key === 'Enter') { e.preventDefault(); openSearchModal(input.value); } }); });
-            [headerSearchBtn, navSearchBtn].forEach(button => { button.addEventListener('click', (e) => { e.preventDefault(); const input = button.previousElementSibling; openSearchModal(input.value); }); });
-            searchModalInput.addEventListener('input', () => { performSearch(searchModalInput.value); });
-            searchFilters.addEventListener('change', () => { performSearch(searchModalInput.value); });
-            searchResults.addEventListener('click', (e) => { const link = e.target.closest('.search-result-item'); if (link) { e.preventDefault(); const targetId = link.getAttribute('href'); const targetElement = document.querySelector(targetId); if (targetElement) { closeSearchModal(); setTimeout(() => { window.scrollTo({ top: targetElement.offsetTop - 100, behavior: 'smooth' }); }, 100); } } });
+            function displaySearchResults(results) { 
+                if (results.length === 0) { 
+                    searchResults.innerHTML = '<p class="search-results-placeholder">Produk tidak ditemukan.</p>'; 
+                    return; 
+                } 
+                searchResults.innerHTML = results.map(p => `
+                    <a href="#product-${p.id}" class="search-result-item" data-product-id="${p.id}">
+                        <img src="${p.mainImage}" alt="${p.title}" class="search-result-image">
+                        <div class="search-result-info">
+                            <h4>${p.title}</h4>
+                            <p>Oleh: ${p.seller.name} <span class="price">${p.price > 0 ? formatPrice(p.price) : "Harga Nego"}</span></p>
+                        </div>
+                    </a>`).join(''); 
+            }
             
-            const bgMusic = document.getElementById('bgMusic'); if (bgMusic) { bgMusic.volume = 0.3; let p = false; const pm = () => { if (!p) { bgMusic.play().then(() => { p = true; }).catch(() => {}); } }; pm(); document.body.addEventListener('click', pm, { once: true }); document.body.addEventListener('touchstart', pm, { once: true }); }
-            const particlesContainer = document.getElementById('particles'); if (particlesContainer) { for (let i = 0; i < 40; i++) { const pr = document.createElement('div'); pr.classList.add('particle'); const s = Math.random() * 6 + 2; pr.style.width = `${s}px`; pr.style.height = `${s}px`; pr.style.left = `${Math.random() * 100}%`; pr.style.animationDuration = `${Math.random() * 15 + 15}s`; pr.style.animationDelay = `${Math.random() * 10}s`; particlesContainer.appendChild(pr); } }
-            const navbar = document.getElementById('navbar'); window.addEventListener('scroll', () => { if (navbar) { navbar.classList.toggle('scrolled', window.scrollY > 50); } });
-            const mobileMenuToggle = document.getElementById('mobileMenuToggle'); const navLinks = document.getElementById('navLinks'); if (mobileMenuToggle && navLinks) { mobileMenuToggle.addEventListener('click', () => { navLinks.classList.toggle('active'); mobileMenuToggle.innerHTML = navLinks.classList.contains('active') ? '<i class="fas fa-times"></i>' : '<i class="fas fa-bars"></i>'; playButtonSound(); }); navLinks.addEventListener('click', (e) => { if (e.target.tagName === 'A') { navLinks.classList.remove('active'); mobileMenuToggle.innerHTML = '<i class="fas fa-bars"></i>'; } }); }
+            [headerSearchInput, navSearchInput].forEach(input => { input.addEventListener('keypress', e => { if (e.key === 'Enter') { e.preventDefault(); openSearchModal(input.value); } }); });
+            [headerSearchBtn, navSearchBtn].forEach(button => { button.addEventListener('click', e => { e.preventDefault(); openSearchModal(button.previousElementSibling.value); }); });
+            searchModalInput.addEventListener('input', performSearch);
+            searchFilters.addEventListener('change', performSearch);
+            searchResults.addEventListener('click', e => { 
+                const link = e.target.closest('.search-result-item'); 
+                if (link) { 
+                    e.preventDefault(); 
+                    const targetElement = document.querySelector(link.getAttribute('href')); 
+                    if (targetElement) { 
+                        closeSearchModal(); 
+                        setTimeout(() => window.scrollTo({ top: targetElement.offsetTop - 100, behavior: 'smooth' }), 100); 
+                    } 
+                } 
+            });
+            document.querySelectorAll('.search-modal, .close-search-modal').forEach(el => el.addEventListener('click', e => { if (e.target === el) closeSearchModal(); }));
+
+            const bgMusic = document.getElementById('bgMusic'); if (bgMusic) { bgMusic.volume = 0.3; let p = false; const pm = () => { if (!p) { bgMusic.play().then(() => p = true).catch(() => {}); } }; document.body.addEventListener('click', pm, { once: true }); document.body.addEventListener('touchstart', pm, { once: true }); }
+            const particlesContainer = document.getElementById('particles'); if (particlesContainer) { for (let i = 0; i < 40; i++) { const pr = document.createElement('div'); pr.classList.add('particle'); const s = Math.random() * 6 + 2; pr.style.cssText = `width:${s}px;height:${s}px;left:${Math.random()*100}%;animation-duration:${Math.random()*15+15}s;animation-delay:${Math.random()*10}s;`; particlesContainer.appendChild(pr); } }
+            const navbar = document.getElementById('navbar'); window.addEventListener('scroll', () => navbar?.classList.toggle('scrolled', window.scrollY > 50));
+            const mobileMenuToggle = document.getElementById('mobileMenuToggle'); const navLinks = document.getElementById('navLinks'); if (mobileMenuToggle && navLinks) { mobileMenuToggle.addEventListener('click', () => { navLinks.classList.toggle('active'); mobileMenuToggle.innerHTML = navLinks.classList.contains('active') ? '<i class="fas fa-times"></i>' : '<i class="fas fa-bars"></i>'; playButtonSound(); }); navLinks.addEventListener('click', e => { if (e.target.tagName === 'A') { navLinks.classList.remove('active'); mobileMenuToggle.innerHTML = '<i class="fas fa-bars"></i>'; } }); }
             const searchToggle = document.getElementById('searchToggle'); const navSearch = document.getElementById('navSearch'); if(searchToggle && navSearch) { searchToggle.addEventListener('click', () => { navSearch.classList.toggle('active'); playButtonSound(); }); }
             const productCategories = document.querySelector('.product-categories'); const categoryTabs = document.querySelector('.category-tabs'); let activeCategory = 'all'; let activeType = 'all';
-            function applyFilters() { document.querySelectorAll('.gallery-item').forEach(item => { const iC = item.dataset.category; const iT = item.dataset.type; const cM = activeCategory === 'all' || iC === activeCategory; const tM = activeType === 'all' || iT === activeType || (iT === 'all' && activeType !== 'rental' && activeType !== 'promo' && activeType !== 'jasa') ; item.style.display = (cM && tM) ? 'block' : 'none'; }); }
-            if (productCategories) { productCategories.addEventListener('click', e => { if (e.target.classList.contains('product-category-btn')) { productCategories.querySelectorAll('.product-category-btn').forEach(btn => btn.classList.remove('active')); e.target.classList.add('active'); activeCategory = e.target.dataset.category; applyFilters(); playButtonSound(); } }); }
-            if (categoryTabs) { categoryTabs.addEventListener('click', e => { if (e.target.classList.contains('category-btn')) { categoryTabs.querySelectorAll('.category-btn').forEach(btn => btn.classList.remove('active')); e.target.classList.add('active'); activeType = e.target.dataset.type; applyFilters(); playButtonSound(); } }); }
-            const contactForm = document.getElementById('contactForm'); if (contactForm) { contactForm.addEventListener('submit', function(e) { e.preventDefault(); alert('Fitur ini sedang dalam pengembangan.'); playButtonSound(); }); }
+            function applyFilters() { document.querySelectorAll('.gallery-item').forEach(item => { const cM = activeCategory === 'all' || item.dataset.category === activeCategory; const tM = activeType === 'all' || item.dataset.type === activeType; item.style.display = (cM && tM) ? 'block' : 'none'; }); }
+            productCategories?.addEventListener('click', e => { if (e.target.classList.contains('product-category-btn')) { productCategories.querySelector('.active').classList.remove('active'); e.target.classList.add('active'); activeCategory = e.target.dataset.category; applyFilters(); playButtonSound(); } });
+            categoryTabs?.addEventListener('click', e => { if (e.target.classList.contains('category-btn')) { categoryTabs.querySelector('.active').classList.remove('active'); e.target.classList.add('active'); activeType = e.target.dataset.type; applyFilters(); playButtonSound(); } });
+            document.getElementById('contactForm')?.addEventListener('submit', e => { e.preventDefault(); alert('Fitur ini sedang dalam pengembangan.'); playButtonSound(); });
             const orderModal = document.getElementById('orderModal'); const quickOrderBtn = document.getElementById('quick-order'); if (orderModal && quickOrderBtn) { quickOrderBtn.addEventListener('click', () => { orderModal.classList.add('show'); body.style.overflow = 'hidden'; playButtonSound(); }); }
-            document.querySelectorAll('.modal, .image-modal, .search-modal').forEach(modal => { modal.addEventListener('click', (e) => { if (e.target === modal || e.target.classList.contains('close-modal') || e.target.classList.contains('close-image-modal') || e.target.classList.contains('close-search-modal')) { modal.classList.remove('show'); body.style.overflow = ''; } }); });
+            document.querySelectorAll('.modal, .image-modal').forEach(modal => { modal.addEventListener('click', e => { if (e.target === modal || e.target.classList.contains('close-modal') || e.target.classList.contains('close-image-modal')) { modal.classList.remove('show'); body.style.overflow = ''; } }); });
             const buttonSound = document.getElementById('buttonSound'); function playButtonSound() { if(buttonSound) { buttonSound.currentTime = 0; buttonSound.play().catch(() => {}); } }
-            document.querySelectorAll('a[href^="#"]').forEach(anchor => { anchor.addEventListener('click', function(e) { if (this.getAttribute('href') !== '#' && !this.closest('.search-result-item')) { e.preventDefault(); const target = document.querySelector(this.getAttribute('href')); if (target) { window.scrollTo({ top: target.offsetTop - 80, behavior: 'smooth' }); } } }); });
-            const offerNotification = document.getElementById('offerNotification'); const step1 = document.getElementById('notificationStep1'); const step2 = document.getElementById('notificationStep2'); const showNotification = () => { if (!sessionStorage.getItem('offerDismissed')) { offerNotification.classList.add('show'); } }; const hideNotification = () => { offerNotification.classList.remove('show'); sessionStorage.setItem('offerDismissed', 'true'); }; setTimeout(showNotification, 5000); offerNotification.addEventListener('click', (e) => { const t = e.target; if (t.id === 'closeNotification') hideNotification(); if (t.matches('.notification-btn')) { const a = t.dataset.action; if (a === 'close') hideNotification(); else if (a === 'next') { step1.classList.remove('active'); step2.classList.add('active'); } else if (a === 'register') { window.open('https://anekamarket.github.io/formulir/', '_blank'); hideNotification(); } } });
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => { anchor.addEventListener('click', function(e) { if (this.getAttribute('href') !== '#' && !this.closest('.search-result-item')) { e.preventDefault(); const target = document.querySelector(this.getAttribute('href')); if (target) window.scrollTo({ top: target.offsetTop - 80, behavior: 'smooth' }); } }); });
+            const offerNotification = document.getElementById('offerNotification'); const step1 = document.getElementById('notificationStep1'); const step2 = document.getElementById('notificationStep2'); const showNotification = () => { if (!sessionStorage.getItem('offerDismissed')) offerNotification.classList.add('show'); }; const hideNotification = () => { offerNotification.classList.remove('show'); sessionStorage.setItem('offerDismissed', 'true'); }; setTimeout(showNotification, 5000); offerNotification?.addEventListener('click', e => { const t = e.target; if (t.id === 'closeNotification' || t.dataset.action === 'close') hideNotification(); else if (t.dataset.action === 'next') { step1.classList.remove('active'); step2.classList.add('active'); } else if (t.dataset.action === 'register') { window.open('https://anekamarket.github.io/formulir/', '_blank'); hideNotification(); } });
         
             const generatorModal = document.getElementById('generatorModal');
             const openGeneratorBtn = document.getElementById('openGeneratorBtn');
@@ -3785,22 +1092,9 @@ audio {
                 let scriptText = genImporter.value.trim();
                 if (!scriptText) { alert("Area teks kosong. Silakan tempel script produk."); return; }
                 try {
-                    if (!scriptText.startsWith('{') && !scriptText.startsWith('[')) {
-                        const jsonStart = scriptText.indexOf('{');
-                        const jsonStartArray = scriptText.indexOf('[');
-                        let startIndex = -1;
-                        if (jsonStart !== -1 && jsonStartArray !== -1) { startIndex = Math.min(jsonStart, jsonStartArray); }
-                        else if (jsonStart !== -1) { startIndex = jsonStart; }
-                        else { startIndex = jsonStartArray; }
-                        if (startIndex !== -1) { scriptText = scriptText.substring(startIndex); }
-                    }
-                    scriptText = scriptText.replace(/,\s*([}\]])/g, "$1");
-                    let rawData = JSON.parse(scriptText); let productData;
-                    if (Array.isArray(rawData)) {
-                        if (rawData.length > 0) { productData = rawData[0]; alert('Dideteksi input berupa array. Data dari produk pertama dalam daftar telah dimuat.'); }
-                        else { alert('Array yang Anda tempel kosong. Tidak ada data untuk dimuat.'); return; }
-                    } else { productData = rawData; }
-                    if (typeof productData !== 'object' || productData === null) { throw new Error("Data yang valid tidak ditemukan."); }
+                    let rawData = JSON.parse(scriptText); let productData = Array.isArray(rawData) ? rawData[0] : rawData;
+                    if (!productData) { throw new Error("Data produk tidak ditemukan."); }
+
                     document.getElementById('gen-id').value = productData.id || '';
                     document.getElementById('gen-code').value = productData.code || productData.id || '';
                     document.getElementById('gen-title').value = productData.title || '';
@@ -3820,10 +1114,12 @@ audio {
                     document.getElementById('gen-defaultUnit').value = productData.defaultUnit || '';
                     document.getElementById('gen-description').value = productData.details?.description || '';
                     document.getElementById('gen-images').value = productData.details?.images?.join(',\n') || '';
+                    
                     priceVariationsContainer.innerHTML = '';
                     (productData.priceVariations || []).forEach(v => addDynamicItem(priceVariationsContainer, v.name, v.price, 'Nama Variasi', 'Harga'));
                     specsContainer.innerHTML = '';
                     (productData.details?.specs || []).forEach(s => addDynamicItem(specsContainer, s.label, s.value, 'Label', 'Value'));
+                    
                     alert('Data produk berhasil dimuat ke dalam form!'); playButtonSound();
                 } catch (error) { alert(`Gagal memuat data. Pastikan script JSON valid.\n\nDetail: ${error.message}`); console.error('JSON Parse Error:', error); }
             });
@@ -3840,54 +1136,34 @@ audio {
                 } catch(e){ alert("Gagal membuat preview. Pastikan semua field wajib diisi dengan benar."); }
             });
 
-            copyScriptBtn.addEventListener('click', () => { navigator.clipboard.writeText(outputElement.textContent).then(() => alert('Script berhasil disalin!')).catch(err => alert('Gagal menyalin.')); playButtonSound(); });
-            downloadScriptBtn.addEventListener('click', () => { const blob = new Blob([outputElement.textContent], { type: 'application/javascript' }); const url = URL.createObjectURL(blob); const a = document.createElement('a'); const fileName = document.getElementById('gen-id').value || 'product-data'; a.href = url; a.download = `${fileName}.js`; document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url); playButtonSound(); });
+            copyScriptBtn.addEventListener('click', () => { navigator.clipboard.writeText(outputElement.textContent).then(() => alert('Script berhasil disalin!')).catch(() => alert('Gagal menyalin.')); playButtonSound(); });
+            downloadScriptBtn.addEventListener('click', () => { const blob = new Blob([outputElement.textContent], { type: 'application/javascript' }); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = `${document.getElementById('gen-id').value || 'product-data'}.js`; a.click(); URL.revokeObjectURL(url); playButtonSound(); });
             toggleVisibilityBtn.addEventListener('click', () => { outputWrapper.classList.toggle('visible'); const icon = toggleVisibilityBtn.querySelector('i'); icon.className = outputWrapper.classList.contains('visible') ? 'fas fa-eye' : 'fas fa-eye-slash'; playButtonSound(); });
             
             const whatsappInput = document.getElementById('gen-contact-whatsapp');
-            const phoneInput = document.getElementById('gen-contact-phone');
-            
             whatsappInput.addEventListener('input', (e) => {
                 let value = e.target.value.replace(/\D/g, '');
-                if (value.startsWith('0')) {
-                    value = '62' + value.substring(1);
-                }
+                if (value.startsWith('0')) value = '62' + value.substring(1);
                 e.target.value = value;
             });
             
-            phoneInput.addEventListener('input', (e) => {
+            document.getElementById('gen-contact-phone').addEventListener('input', (e) => {
                 let value = e.target.value.replace(/[^0-9+]/g, '');
-                if (value.startsWith('0')) {
-                    value = '+62' + value.substring(1);
-                }
+                if (value.startsWith('0')) value = '+62' + value.substring(1);
                 e.target.value = value;
             });
             
-            const descriptionTextarea = document.getElementById('gen-description');
-            const toolbar = document.querySelector('.description-toolbar');
-            toolbar.addEventListener('click', (e) => {
+            document.querySelector('.description-toolbar').addEventListener('click', (e) => {
                 const button = e.target.closest('.toolbar-btn');
                 if (!button) return;
-
                 const tag = button.dataset.tag;
-                const start = descriptionTextarea.selectionStart;
-                const end = descriptionTextarea.selectionEnd;
-                const selectedText = descriptionTextarea.value.substring(start, end);
-                const beforeText = descriptionTextarea.value.substring(0, start);
-                const afterText = descriptionTextarea.value.substring(end);
-                
-                let replacement = '';
-                if (tag === 'br') {
-                    replacement = '<br>';
-                } else {
-                    replacement = `<${tag}>${selectedText}</${tag}>`;
-                }
-
-                descriptionTextarea.value = beforeText + replacement + afterText;
-                descriptionTextarea.focus();
-                descriptionTextarea.selectionStart = descriptionTextarea.selectionEnd = start + replacement.length;
+                const textarea = document.getElementById('gen-description');
+                const start = textarea.selectionStart, end = textarea.selectionEnd;
+                const selected = textarea.value.substring(start, end);
+                const replacement = tag === 'br' ? '<br>' : `<${tag}>${selected}</${tag}>`;
+                textarea.setRangeText(replacement, start, end, 'end');
+                textarea.focus();
             });
-
         });
     </script>
 </body>
