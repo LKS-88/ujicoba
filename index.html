@@ -30,206 +30,196 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.js"></script>
     
     <style>
-        /* --- [PENYEMPURNAAN] Reset & Global Styles untuk Responsivitas Lebih Baik --- */
-        *, *::before, *::after {
-            box-sizing: border-box;
-        }
-
-        /* --- [PENYEMPURNAAN & PERBAIKAN] Modal & Filter Pencarian Cerdas --- */
-        .search-modal {
-            display: none;
-            position: fixed;
-            z-index: 2000;
-            left: 0; top: 0;
-            width: 100%; height: 100%;
-            overflow: auto;
-            background-color: rgba(0,0,0,0.6);
-            align-items: flex-start; /* Mengubah alignment ke atas */
-            justify-content: center;
-            padding-top: 5vh; /* Memberi jarak dari atas */
-        }
+        /* CSS yang sudah ada tetap dipertahankan */
         .search-modal.show { display: flex; }
+        .search-modal-content { width: 90%; max-width: 600px; background: #fff; border-radius: 8px; padding: 20px; position: relative; }
+        .search-modal-input { width: 100%; padding: 12px; font-size: 1rem; border: 1px solid #ccc; border-radius: 5px; margin-bottom: 15px; }
+        .search-results { max-height: 400px; overflow-y: auto; }
+        .search-result-item { display: flex; align-items: center; padding: 10px; border-bottom: 1px solid #eee; text-decoration: none; color: #333; transition: background-color 0.3s; }
+        .search-result-item:hover { background-color: #f5f5f5; }
+        .search-result-image { width: 60px; height: 60px; object-fit: cover; border-radius: 5px; margin-right: 15px; }
+        .search-result-info h4 { margin: 0 0 5px 0; font-size: 1rem; font-weight: 600; }
+        .search-result-info p { margin: 0; font-size: 0.85rem; color: #666; }
+        .search-results-placeholder { text-align: center; color: #888; padding: 20px; }
         
-        .search-modal-content {
-            width: 90%;
-            max-width: 650px;
-            background: #fff;
-            border-radius: 12px;
-            padding: 0; /* Menghapus padding lama */
-            position: relative;
-            box-shadow: 0 5px 25px rgba(0,0,0,0.2);
-            animation: slideDown 0.4s ease-out;
-        }
-
-        @keyframes slideDown {
-            from { transform: translateY(-30px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-
-        .search-modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 20px;
-            border-bottom: 1px solid #e9ecef;
-        }
-
-        .search-modal-header h3 {
-            margin: 0;
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: #343a40;
-        }
-        
-        .close-search-modal {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #adb5bd;
-            cursor: pointer;
-            transition: color 0.2s, transform 0.2s;
-            background: none;
-            border: none;
-            line-height: 1;
-        }
-        .close-search-modal:hover {
-            color: #343a40;
-            transform: rotate(90deg);
-        }
-
-        .search-modal-body {
-            padding: 20px;
-        }
-
-        .search-modal-input {
-            width: 100%;
-            padding: 15px;
-            font-size: 1.1rem;
-            border: 1px solid #ced4da;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            transition: border-color 0.2s, box-shadow 0.2s;
-        }
-        .search-modal-input:focus {
-            border-color: #007bff;
-            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
-            outline: none;
-        }
-
+        /* --- [FITUR BARU] CSS untuk Filter Pencarian Cerdas --- */
         .search-filters {
             display: flex;
             flex-wrap: wrap;
-            gap: 12px;
-            margin-bottom: 20px;
-            padding-bottom: 20px;
-            border-bottom: 1px solid #e9ecef;
+            gap: 10px;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
         }
         .search-filters label {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 5px;
             font-size: 0.9rem;
-            font-weight: 500;
-            background-color: #f8f9fa;
-            padding: 8px 15px;
-            border: 1px solid #dee2e6;
-            border-radius: 50px; /* Membuat bentuk pill */
+            background-color: #f1f1f1;
+            padding: 5px 10px;
+            border-radius: 20px;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: background-color 0.3s;
             user-select: none;
         }
-        .search-filters input[type="checkbox"] {
-            display: none; /* Sembunyikan checkbox asli */
-        }
         .search-filters label:hover {
-            background-color: #e9ecef;
-            border-color: #adb5bd;
+            background-color: #e0e0e0;
         }
-        /* Style untuk state terpilih/checked */
-        .search-filters input[type="checkbox"]:checked + label {
-            background-color: #007bff;
-            color: white;
-            border-color: #0056b3;
-            box-shadow: 0 2px 5px rgba(0, 123, 255, 0.3);
+        .search-filters input[type="checkbox"] {
+            accent-color: #007bff;
         }
-        .search-filters input[type="checkbox"]:checked + label i {
-            color: white; /* Pastikan ikon juga berubah warna */
-        }
-        .search-filters label i {
-            color: #6c757d;
-            transition: color 0.3s ease;
-        }
-
-        .search-results { max-height: 45vh; overflow-y: auto; }
-        .search-result-item { display: flex; align-items: center; padding: 12px; border-bottom: 1px solid #f1f1f1; text-decoration: none; color: #333; transition: background-color 0.3s; border-radius: 8px; }
-        .search-result-item:last-child { border-bottom: none; }
-        .search-result-item:hover { background-color: #f8f9fa; }
-        .search-result-image { width: 50px; height: 50px; object-fit: cover; border-radius: 8px; margin-right: 15px; }
-        .search-result-info h4 { margin: 0 0 4px 0; font-size: 1rem; font-weight: 600; color: #212529; }
-        .search-result-info p { margin: 0; font-size: 0.8rem; color: #6c757d; }
-        .search-results-placeholder { text-align: center; color: #888; padding: 30px 20px; font-size: 1rem; }
+        
+        /* --- [PERBAIKAN] Posisi notifikasi dinaikkan agar tidak tumpang tindih dengan FAB Generator --- */
+        .offer-notification { position: fixed; bottom: 160px; right: 20px; background-color: #ffffff; color: #333; padding: 20px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); width: 320px; z-index: 1001; transform: translateY(200%); opacity: 0; transition: transform 0.5s ease-in-out, opacity 0.5s ease-in-out; font-family: 'Poppins', sans-serif; }
+        .offer-notification.show { transform: translateY(0); opacity: 1; }
+        .offer-notification .notification-content { display: none; }
+        .offer-notification .notification-content.active { display: block; }
+        .offer-notification h4 { margin: 0 0 10px 0; font-weight: 600; font-size: 1rem; line-height: 1.4; }
+        .offer-notification .notification-buttons { display: flex; gap: 10px; margin-top: 15px; }
+        .offer-notification .notification-btn { flex: 1; padding: 8px 12px; border: none; border-radius: 5px; cursor: pointer; font-weight: 500; transition: background-color 0.3s, color 0.3s; }
+        .offer-notification .btn-yes { background-color: #007bff; color: white; }
+        .offer-notification .btn-yes:hover { background-color: #0056b3; }
+        .offer-notification .btn-no { background-color: #f1f1f1; color: #333; border: 1px solid #ddd; }
+        .offer-notification .btn-no:hover { background-color: #e0e0e0; }
+        .offer-notification .close-notification { position: absolute; top: 10px; right: 15px; font-size: 20px; color: #888; cursor: pointer; transition: color 0.3s; }
+        .offer-notification .close-notification:hover { color: #333; }
         
         .btn-visit { display: flex; align-items: center; justify-content: center; background-color: #28a745; color: white; padding: 8px 12px; border-radius: 5px; text-decoration: none; font-weight: 500; font-size: 0.85rem; transition: background-color 0.3s; flex: 1; text-align: center; }
         .btn-visit:hover { background-color: #218838; }
         .gallery-actions { display: flex; gap: 10px; flex-wrap: wrap; }
         .gallery-actions .btn-detail, .gallery-actions .btn-order, .gallery-actions .btn-preorder-toggle, .gallery-actions .btn-visit, .gallery-actions .btn-toggle-prices { flex-grow: 1; min-width: 120px; }
 
-        /* --- [REVISI & PENYEMPURNAAN] Desain Tombol Cek Harga --- */
+        /* --- [PERBAIKAN & PENYEMPURNAAN] DESAIN TOMBOL CEK HARGA --- */
         .btn-toggle-prices {
-            background: linear-gradient(145deg, #007bff, #0056b3); /* Menggunakan palet warna utama */
-            color: white;
-            border: none;
-            box-shadow: 0 3px 8px rgba(0, 91, 179, 0.3);
-            transition: all 0.3s ease;
-            font-weight: 600;
+            background-color: #ffc107; /* Warna kuning yang menarik perhatian */
+            color: #212529; /* Teks gelap agar kontras */
+            border: 1px solid #e0a800;
         }
         .btn-toggle-prices:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(0, 91, 179, 0.4);
-            background: linear-gradient(145deg, #0088ff, #0062cc);
+            background-color: #e0a800;
+            border-color: #d39e00;
         }
+        /* State aktif ketika panel harga terbuka */
         .btn-toggle-prices.active {
-            background: linear-gradient(145deg, #6c757d, #343a40); /* Warna netral/abu-abu untuk 'Sembunyikan' */
+            background-color: #dc3545; /* Warna merah untuk "Sembunyikan" */
             color: white;
-            box-shadow: 0 3px 8px rgba(52, 58, 64, 0.3);
+            border-color: #c82333;
         }
         .btn-toggle-prices.active:hover {
-            background: linear-gradient(145deg, #868e96, #495057);
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(52, 58, 64, 0.4);
+            background-color: #c82333;
+            border-color: #bd2130;
         }
 
         /* --- [PERBAIKAN TOTAL] CSS UNTUK PEMBELIAN MULTI-ITEM --- */
+        /* --- [FITUR BARU] Container untuk bagian harga yang bisa disembunyikan --- */
         .price-section-collapsible {
-            display: none;
+            display: none; /* Disembunyikan secara default */
             margin-top: 15px;
             animation: fadeIn 0.5s ease-in-out;
         }
-        .price-section-collapsible.show { display: block; }
+        .price-section-collapsible.show {
+            display: block; /* Ditampilkan saat class 'show' ditambahkan */
+        }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
 
-        .price-variations-container { border: 1px solid #eee; border-radius: 8px; overflow: hidden; }
-        .price-variation-item { display: grid; grid-template-columns: 1fr auto auto; align-items: center; padding: 12px; border-bottom: 1px solid #eee; gap: 10px; }
-        .price-variation-item:last-child { border-bottom: none; }
-        .price-variation-info { display: flex; flex-direction: column; }
-        .price-variation-name { font-weight: 600; color: #333; }
-        .price-variation-value { font-size: 0.9rem; color: #007bff; }
+        .price-variations-container {
+            border: 1px solid #eee;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .price-variation-item {
+            display: grid;
+            grid-template-columns: 1fr auto auto;
+            align-items: center;
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+            gap: 10px;
+        }
+        .price-variation-item:last-child {
+            border-bottom: none;
+        }
+        .price-variation-info {
+            display: flex;
+            flex-direction: column;
+        }
+        .price-variation-name {
+            font-weight: 600;
+            color: #333;
+        }
+        .price-variation-value {
+            font-size: 0.9rem;
+            color: #007bff;
+        }
 
-        .quantity-controls { display: flex; align-items: center; }
-        .quantity-btn { background-color: #007bff; color: white; border: none; width: 28px; height: 28px; font-size: 1.2rem; line-height: 28px; font-weight: bold; cursor: pointer; border-radius: 50%; transition: background-color 0.2s, transform 0.1s; }
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+        }
+        .quantity-btn {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            width: 28px;
+            height: 28px;
+            font-size: 1.2rem;
+            line-height: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 50%;
+            transition: background-color 0.2s, transform 0.1s;
+        }
         .quantity-btn:hover { background-color: #0056b3; }
         .quantity-btn:active { transform: scale(0.95); }
-        .quantity-input { width: 45px; text-align: center; border: 1px solid #ddd; border-radius: 5px; margin: 0 5px; height: 28px; font-size: 1rem; font-weight: 500; -moz-appearance: textfield; }
-        .quantity-input::-webkit-outer-spin-button, .quantity-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
-        .unit-select { padding: 8px; border: 1px solid #ddd; border-radius: 5px; background-color: #fff; font-family: 'Poppins', sans-serif; width: 100%; margin-top: 10px; }
+        .quantity-input {
+            width: 45px;
+            text-align: center;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin: 0 5px;
+            height: 28px;
+            font-size: 1rem;
+            font-weight: 500;
+            -moz-appearance: textfield;
+        }
+        .quantity-input::-webkit-outer-spin-button,
+        .quantity-input::-webkit-inner-spin-button {
+            -webkit-appearance: none; margin: 0;
+        }
+        .unit-select {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #fff;
+            font-family: 'Poppins', sans-serif;
+            width: 100%;
+            margin-top: 10px;
+        }
 
-        .total-price { margin-top: 15px; padding: 12px; background: linear-gradient(135deg, #e0f7fa, #b2ebf2); border-radius: 8px; text-align: center; border: 1px solid #4dd0e1; }
-        .total-price-label { display: block; font-size: 0.9rem; color: #00796b; font-weight: 500; }
-        .total-price-value { font-size: 1.6rem; font-weight: 700; color: #004d40; }
-        
-        /* --- [REVISI] Penataan Ulang Posisi Tombol Melayang (FAB) & Notifikasi untuk Mobile --- */
+        .total-price {
+            margin-top: 15px;
+            padding: 12px;
+            background: linear-gradient(135deg, #e0f7fa, #b2ebf2);
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid #4dd0e1;
+        }
+        .total-price-label {
+            display: block;
+            font-size: 0.9rem;
+            color: #00796b;
+            font-weight: 500;
+        }
+        .total-price-value {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #004d40;
+        }
+
+        /* --- [FITUR TAMBAHAN & PERBAIKAN] TOMBOL PEMBAYARAN MENGAMBANG --- */
         .payment-fab {
             position: fixed;
-            bottom: 20px; /* Diturunkan ke posisi standar FAB */
+            bottom: 120px;
             left: 20px;
             width: 60px;
             height: 60px;
@@ -245,17 +235,39 @@
             text-decoration: none;
             transition: background-color 0.3s, transform 0.2s ease-in-out;
         }
-        .payment-fab:hover { background-color: #0056b3; transform: scale(1.1); }
-        .payment-fab::before { content: ''; position: absolute; z-index: -1; left: 50%; top: 50%; transform: translateX(-50%) translateY(-50%); display: block; width: 100%; height: 100%; background-color: #007bff; border-radius: 50%; animation: pulse-animation 2.5s infinite; }
-        
-        @keyframes pulse-animation { 
-            0% { transform: translateX(-50%) translateY(-50%) scale(0.9); opacity: 0.7; } 
-            100% { transform: translateX(-50%) translateY(-50%) scale(2.5); opacity: 0; } 
+        .payment-fab:hover {
+            background-color: #0056b3;
+            transform: scale(1.1);
+        }
+        .payment-fab::before {
+            content: '';
+            position: absolute;
+            z-index: -1;
+            left: 50%;
+            top: 50%;
+            transform: translateX(-50%) translateY(-50%);
+            display: block;
+            width: 100%;
+            height: 100%;
+            background-color: #007bff;
+            border-radius: 50%;
+            animation: pulse-animation 2.5s infinite;
+        }
+        @keyframes pulse-animation {
+            0% {
+                transform: translateX(-50%) translateY(-50%) scale(0.9);
+                opacity: 0.7;
+            }
+            100% {
+                transform: translateX(-50%) translateY(-50%) scale(2.5);
+                opacity: 0;
+            }
         }
         
+        /* --- [FITUR BARU & PENYEMPURNAAN TAMPILAN] FORM GENERATOR --- */
         .generator-fab {
             position: fixed;
-            bottom: 20px; /* Diturunkan ke posisi standar FAB */
+            bottom: 90px;
             right: 20px;
             width: 60px;
             height: 60px;
@@ -271,55 +283,98 @@
             cursor: pointer;
             transition: background-color 0.3s, transform 0.2s ease-in-out;
         }
-        .generator-fab:hover { background-color: #218838; transform: scale(1.1); }
-        
-        .offer-notification {
-            position: fixed;
-            /* (20px dari bawah) + (60px tinggi FAB) + (10px spasi) = 90px dari bawah */
-            bottom: 90px;
-            right: 20px;
-            background-color: #ffffff;
-            color: #333;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            width: 320px;
-            z-index: 1001;
-            transform: translateY(200%);
-            opacity: 0;
-            transition: transform 0.5s ease-in-out, opacity 0.5s ease-in-out;
-            font-family: 'Poppins', sans-serif;
+        .generator-fab:hover {
+            background-color: #218838;
+            transform: scale(1.1);
         }
-        .offer-notification.show { transform: translateY(0); opacity: 1; }
-        .offer-notification .notification-content { display: none; }
-        .offer-notification .notification-content.active { display: block; }
-        .offer-notification h4 { margin: 0 0 10px 0; font-weight: 600; font-size: 1rem; line-height: 1.4; }
-        .offer-notification .notification-buttons { display: flex; gap: 10px; margin-top: 15px; }
-        .offer-notification .notification-btn { flex: 1; padding: 8px 12px; border: none; border-radius: 5px; cursor: pointer; font-weight: 500; transition: background-color 0.3s, color 0.3s; }
-        .offer-notification .btn-yes { background-color: #007bff; color: white; }
-        .offer-notification .btn-yes:hover { background-color: #0056b3; }
-        .offer-notification .btn-no { background-color: #f1f1f1; color: #333; border: 1px solid #ddd; }
-        .offer-notification .btn-no:hover { background-color: #e0e0e0; }
-        .offer-notification .close-notification { position: absolute; top: 10px; right: 15px; font-size: 20px; color: #888; cursor: pointer; transition: color 0.3s; }
-        .offer-notification .close-notification:hover { color: #333; }
-
-        /* --- CSS Generator & Modal (Tidak Diubah Sesuai Instruksi) --- */
-        .generator-modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.7); align-items: center; justify-content: center; }
+        .generator-modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0; top: 0;
+            width: 100%; height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.7);
+            align-items: center;
+            justify-content: center;
+        }
         .generator-modal.show { display: flex; }
-        .generator-modal-content { background-color: #f8f9fa; margin: 20px; padding: 0; border: none; width: 95%; max-width: 900px; border-radius: 12px; max-height: 90vh; display: flex; flex-direction: column; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
-        .generator-modal-header { display: flex; justify-content: space-between; align-items: center; padding: 15px 25px; background: linear-gradient(135deg, #007bff, #0056b3); color: white; border-top-left-radius: 12px; border-top-right-radius: 12px; }
-        .generator-modal-header h2 { margin: 0; font-size: 1.5rem; font-family: 'Playfair Display', serif; }
-        .close-generator-modal { color: white; font-size: 32px; font-weight: bold; cursor: pointer; transition: transform 0.2s; line-height: 1; }
+        .generator-modal-content {
+            background-color: #f8f9fa;
+            margin: 20px;
+            padding: 0;
+            border: none;
+            width: 95%;
+            max-width: 900px;
+            border-radius: 12px;
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        .generator-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 25px;
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            color: white;
+            border-top-left-radius: 12px;
+            border-top-right-radius: 12px;
+        }
+        .generator-modal-header h2 {
+            margin: 0;
+            font-size: 1.5rem;
+            font-family: 'Playfair Display', serif;
+        }
+        .close-generator-modal {
+            color: white;
+            font-size: 32px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s;
+            line-height: 1;
+        }
         .close-generator-modal:hover { transform: rotate(90deg); }
-        .generator-modal-body { padding: 25px; overflow-y: auto; background-color: #f8f9fa; }
-        .generator-section { background-color: #ffffff; padding: 20px; border-radius: 8px; margin-bottom: 25px; border: 1px solid #dee2e6; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        .generator-section h3 { color: #0056b3; margin-top: 0; margin-bottom: 20px; font-size: 1.2rem; border-left: 4px solid #007bff; padding-left: 10px; display: flex; align-items: center; gap: 10px; }
+        
+        .generator-modal-body {
+            padding: 25px;
+            overflow-y: auto;
+            background-color: #f8f9fa;
+        }
+        .generator-section {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            border: 1px solid #dee2e6;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        .generator-section h3 {
+            color: #0056b3;
+            margin-top: 0;
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+            border-left: 4px solid #007bff;
+            padding-left: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
         #productGeneratorForm { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
         #productGeneratorForm .form-group { display: flex; flex-direction: column; }
         #productGeneratorForm .full-width { grid-column: 1 / -1; }
         #productGeneratorForm label { margin-bottom: 8px; font-weight: 600; color: #495057; font-size: 0.9rem; }
-        #productGeneratorForm input, #productGeneratorForm select, #productGeneratorForm textarea { padding: 12px; font-size: 1rem; border: 1px solid #ced4da; border-radius: 5px; font-family: 'Poppins', sans-serif; transition: border-color 0.2s, box-shadow 0.2s; }
-        #productGeneratorForm input:focus, #productGeneratorForm select:focus, #productGeneratorForm textarea:focus { border-color: #007bff; box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25); outline: none; }
+        #productGeneratorForm input, #productGeneratorForm select, #productGeneratorForm textarea {
+            padding: 12px; font-size: 1rem; border: 1px solid #ced4da; border-radius: 5px; font-family: 'Poppins', sans-serif;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        #productGeneratorForm input:focus, #productGeneratorForm select:focus, #productGeneratorForm textarea:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+            outline: none;
+        }
         #productGeneratorForm textarea { resize: vertical; min-height: 120px; }
         .dynamic-list-item { display: flex; gap: 10px; margin-bottom: 10px; align-items: center; }
         .dynamic-list-item input { flex: 1; }
@@ -328,9 +383,27 @@
         .btn-add-item { background-color: #007bff; color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; margin-top: 10px; transition: background-color 0.2s; font-weight: 500;}
         .btn-add-item:hover { background-color: #0056b3; }
         .btn-add-item i { margin-right: 5px; }
-        .description-toolbar { margin-bottom: 8px; background-color: #e9ecef; padding: 5px; border-radius: 5px; display: flex; gap: 5px; }
-        .toolbar-btn { background-color: #fff; border: 1px solid #ced4da; padding: 5px 10px; cursor: pointer; border-radius: 3px; font-family: sans-serif; font-size: 0.9rem; transition: background-color 0.2s; }
+
+        .description-toolbar {
+            margin-bottom: 8px;
+            background-color: #e9ecef;
+            padding: 5px;
+            border-radius: 5px;
+            display: flex;
+            gap: 5px;
+        }
+        .toolbar-btn {
+            background-color: #fff;
+            border: 1px solid #ced4da;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 3px;
+            font-family: sans-serif;
+            font-size: 0.9rem;
+            transition: background-color 0.2s;
+        }
         .toolbar-btn:hover { background-color: #f1f1f1; }
+        
         #generatorOutputContainer { margin-top: 25px; border-top: 2px solid #eee; padding-top: 20px; display: none; }
         .output-controls { display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px; }
         .output-controls h3 { margin: 0; }
@@ -339,55 +412,38 @@
         .output-actions button i { margin-right: 5px; }
         #generatedScriptWrapper { display: none; }
         #generatedScriptWrapper.visible { display: block; }
-        #generatedScriptOutput { background-color: #2d2d2d; color: #f8f8f2; padding: 20px; border-radius: 8px; white-space: pre; overflow-x: auto; max-height: 400px; font-family: 'Fira Code', 'Courier New', monospace; }
-        #generatorPreviewContainer { margin-top: 25px; border-top: 2px solid #eee; padding-top: 20px; display: none; background-color: #f9f9f9; padding: 20px; border-radius: 8px; }
-        #generatorPreviewContainer h3 { margin-top: 0; color: #28a745; }
-        #previewTarget .gallery-item { box-shadow: 0 8px 25px rgba(0,0,0,0.1); transform: scale(1); transition: none; margin: 0 auto; max-width: 400px; }
-        #previewTarget .gallery-item:hover { transform: none; box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
-        .gallery-badge.service { background-color: #8e44ad; color: white; }
+        #generatedScriptOutput {
+            background-color: #2d2d2d; color: #f8f8f2; padding: 20px; border-radius: 8px;
+            white-space: pre; overflow-x: auto; max-height: 400px; font-family: 'Fira Code', 'Courier New', monospace;
+        }
+        
+        #generatorPreviewContainer {
+             margin-top: 25px; border-top: 2px solid #eee; padding-top: 20px; display: none;
+             background-color: #f9f9f9; padding: 20px; border-radius: 8px;
+        }
+        #generatorPreviewContainer h3 {
+            margin-top: 0;
+            color: #28a745;
+        }
+        #previewTarget .gallery-item {
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            transform: scale(1);
+            transition: none;
+            margin: 0 auto;
+            max-width: 400px;
+        }
+        #previewTarget .gallery-item:hover {
+            transform: none;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
 
-        /* --- [PENYEMPURNAAN] Media Queries untuk Responsivitas --- */
+        .gallery-badge.service {
+            background-color: #8e44ad;
+            color: white;
+        }
+
         @media (max-width: 768px) {
             #productGeneratorForm { grid-template-columns: 1fr; }
-            .contact-container, .services-grid {
-                grid-template-columns: 1fr;
-                flex-direction: column;
-            }
-            .footer-container {
-                flex-direction: column;
-                text-align: center;
-            }
-            .footer-col {
-                margin-bottom: 20px;
-            }
-            .nav-search {
-                display: none; /* Disembunyikan dan di-handle oleh toggle */
-                position: absolute;
-                top: 100%;
-                left: 0;
-                width: 100%;
-                background-color: #fff;
-                padding: 10px;
-                box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            }
-            .nav-search.active { display: flex; }
-            .search-toggle { display: block; } /* Ditampilkan di mobile */
-
-            .gallery-detail-expanded {
-                flex-direction: column;
-            }
-            
-            /* Menyesuaikan notifikasi untuk layar kecil */
-            .offer-notification {
-                width: auto;
-                left: 20px;
-                max-width: calc(100% - 40px);
-            }
-        }
-        @media (max-width: 480px) {
-            .header-content h1, .header-content .logo span { font-size: 2rem; }
-            .header-buttons { flex-direction: column; }
-            .btn { width: 100%; text-align: center; }
         }
     </style>
 </head>
@@ -671,30 +727,18 @@
     
     <div class="search-modal" id="searchModal">
         <div class="search-modal-content">
-            <div class="search-modal-header">
-                <h3><i class="fas fa-search"></i> Pencarian Cerdas</h3>
-                <button class="close-search-modal">&times;</button>
+            <span class="close-search-modal">&times;</span>
+            <input type="text" class="search-modal-input" placeholder="Cari produk, UMKM, kode..." id="searchModalInput">
+            
+            <div class="search-filters" id="searchFilters">
+                <label><input type="checkbox" name="search-filter" value="discount"> Potongan Harga</label>
+                <label><input type="checkbox" name="search-filter" value="bonus"> Bonus/Gratis</label>
+                <label><input type="checkbox" name="search-filter" value="negotiable"> Perkiraan Harga/Nego</label>
+                <label><input type="checkbox" name="search-filter" value="sort-cheap"> Urutkan Termurah</label>
             </div>
-            <div class="search-modal-body">
-                <input type="text" class="search-modal-input" placeholder="Cari produk, UMKM, kode..." id="searchModalInput">
-                
-                <div class="search-filters" id="searchFilters">
-                    <input type="checkbox" id="filter-discount" name="search-filter" value="discount">
-                    <label for="filter-discount"><i class="fas fa-percent"></i> Potongan Harga</label>
-                    
-                    <input type="checkbox" id="filter-bonus" name="search-filter" value="bonus">
-                    <label for="filter-bonus"><i class="fas fa-gift"></i> Bonus/Gratis</label>
-                    
-                    <input type="checkbox" id="filter-negotiable" name="search-filter" value="negotiable">
-                    <label for="filter-negotiable"><i class="fas fa-handshake"></i> Harga Nego</label>
-                    
-                    <input type="checkbox" id="filter-sort-cheap" name="search-filter" value="sort-cheap">
-                    <label for="filter-sort-cheap"><i class="fas fa-sort-amount-down"></i> Urutkan Termurah</label>
-                </div>
-                
-                <div class="search-results" id="searchResults">
-                    <p class="search-results-placeholder">Mulai ketik untuk mencari produk...</p>
-                </div>
+            
+            <div class="search-results" id="searchResults">
+                <p class="search-results-placeholder">Mulai ketik untuk mencari produk...</p>
             </div>
         </div>
     </div>
@@ -1153,7 +1197,7 @@
                         priceSection.classList.toggle('show');
                         btn.classList.toggle('active');
                         btn.innerHTML = priceSection.classList.contains('show') 
-                            ? '<i class="fas fa-eye-slash"></i> Sembunyikan' 
+                            ? '<i class="fas fa-eye-slash"></i> Sembunyikan Harga' 
                             : '<i class="fas fa-tags"></i> Cek Harga';
                         playButtonSound();
                     }
@@ -1173,7 +1217,7 @@
                         const btn = target.closest('.btn-detail'); 
                         const expandedContent = productCard.querySelector('.gallery-detail-expanded');
                         expandedContent.classList.toggle('active'); btn.classList.toggle('active');
-                        btn.innerHTML = expandedContent.classList.contains('active') ? '<i class="fas fa-chevron-up"></i> Sembunyikan' : '<i class="fas fa-chevron-down"></i> Detail';
+                        btn.innerHTML = expandedContent.classList.contains('active') ? '<i class="fas fa-chevron-up"></i> Sembunyikan Detail' : '<i class="fas fa-chevron-down"></i> Detail Produk';
                         if (expandedContent.classList.contains('active')) expandedContent.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
                         playButtonSound(); 
                     }
@@ -1196,7 +1240,7 @@
                         const btn = target.closest('.btn-preorder-toggle');
                         const preorderForm = productCard.querySelector('.preorder-form');
                         preorderForm.classList.toggle('active'); btn.classList.toggle('active');
-                        btn.innerHTML = preorderForm.classList.contains('active') ? '<i class="fas fa-times"></i> Batal' : '<i class="fas fa-calendar-check"></i> Pre-Order';
+                        btn.innerHTML = preorderForm.classList.contains('active') ? '<i class="fas fa-times"></i> Batal Pre-Order' : '<i class="fas fa-calendar-check"></i> Pre-Order';
                         playButtonSound();
                     }
                     
@@ -1276,13 +1320,14 @@
             function openSearchModal(query = '') { searchModal.classList.add('show'); body.style.overflow = 'hidden'; searchModalInput.value = query; searchModalInput.focus(); performSearch(query); }
             function closeSearchModal() { searchModal.classList.remove('show'); body.style.overflow = ''; }
             
+            // --- [REVISI] Logika fungsi pencarian untuk mengakomodasi filter cerdas ---
             function performSearch(query) { 
                 const lowerCaseQuery = query.trim().toLowerCase(); 
                 const filters = {
-                    discount: document.getElementById('filter-discount').checked,
-                    bonus: document.getElementById('filter-bonus').checked,
-                    negotiable: document.getElementById('filter-negotiable').checked,
-                    sortCheap: document.getElementById('filter-sort-cheap').checked
+                    discount: document.querySelector('input[value="discount"]').checked,
+                    bonus: document.querySelector('input[value="bonus"]').checked,
+                    negotiable: document.querySelector('input[value="negotiable"]').checked,
+                    sortCheap: document.querySelector('input[value="sort-cheap"]').checked
                 };
 
                 let results = products;
@@ -1296,10 +1341,19 @@
                     return;
                 }
                 
-                if (filters.discount) { results = results.filter(p => p.originalPrice || p.discount); }
-                if (filters.bonus) { results = results.filter(p => /bonus|gratis|free/i.test(JSON.stringify(p.details))); }
-                if (filters.negotiable) { results = results.filter(p => p.discount === 'Nego' || /nego|estimasi|perkiraan|hubungi/i.test(p.details.description)); }
-                if (filters.sortCheap) { results.sort((a, b) => a.price - b.price); }
+                if (filters.discount) {
+                    results = results.filter(p => p.originalPrice || p.discount);
+                }
+                if (filters.bonus) {
+                    results = results.filter(p => /bonus|gratis|free/i.test(JSON.stringify(p.details)));
+                }
+                if (filters.negotiable) {
+                    results = results.filter(p => p.discount === 'Nego' || /nego|estimasi|perkiraan|hubungi/i.test(p.details.description));
+                }
+
+                if (filters.sortCheap) {
+                    results.sort((a, b) => a.price - b.price);
+                }
 
                 displaySearchResults(results); 
             }
