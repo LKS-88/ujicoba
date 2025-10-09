@@ -92,23 +92,33 @@
 
         /* --- [PERBAIKAN & PENYEMPURNAAN] DESAIN TOMBOL CEK HARGA --- */
         .btn-toggle-prices {
-            background-color: #ffc107; /* Warna kuning yang menarik perhatian */
-            color: #212529; /* Teks gelap agar kontras */
-            border: 1px solid #e0a800;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.8rem;
+            border-radius: 8px;
+            background-color: var(--warning);
+            color: var(--text);
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+            width: 100%;
+            text-align: center;
+            font-size: 0.9rem;
         }
         .btn-toggle-prices:hover {
             background-color: #e0a800;
-            border-color: #d39e00;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 193, 7, 0.3);
         }
-        /* State aktif ketika panel harga terbuka */
         .btn-toggle-prices.active {
-            background-color: #dc3545; /* Warna merah untuk "Sembunyikan" */
+            background-color: #dc3545;
             color: white;
-            border-color: #c82333;
         }
         .btn-toggle-prices.active:hover {
             background-color: #c82333;
-            border-color: #bd2130;
         }
 
         /* --- [PERBAIKAN TOTAL] CSS UNTUK PEMBELIAN MULTI-ITEM --- */
@@ -265,10 +275,11 @@
         }
         
         /* --- [FITUR BARU & PENYEMPURNAAN TAMPILAN] FORM GENERATOR --- */
+        /* --- [PERBAIKAN] Posisi FAB Generator dipindah ke kiri bawah untuk menghindari tumpang tindih --- */
         .generator-fab {
             position: fixed;
-            bottom: 90px;
-            right: 20px;
+            bottom: 20px;
+            left: 20px;
             width: 60px;
             height: 60px;
             background-color: #28a745;
