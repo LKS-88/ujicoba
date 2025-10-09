@@ -313,10 +313,22 @@
             <input type="text" class="search-modal-input" placeholder="Cari produk, UMKM, kode..." id="searchModalInput">
             
             <div class="search-filters" id="searchFilters">
-                <label><input type="checkbox" name="search-filter" value="discount"> <i class="fas fa-percent"></i> Potongan Harga</label>
-                <label><input type="checkbox" name="search-filter" value="bonus"> <i class="fas fa-gift"></i> Bonus/Gratis</label>
-                <label><input type="checkbox" name="search-filter" value="negotiable"> <i class="fas fa-handshake"></i> Harga Nego</label>
-                <label><input type="checkbox" name="search-filter" value="sort-cheap"> <i class="fas fa-sort-amount-down"></i> Urutkan Termurah</label>
+                <label>
+                    <input type="checkbox" name="search-filter" value="discount">
+                    <i class="fas fa-percent"></i> Potongan Harga
+                </label>
+                <label>
+                    <input type="checkbox" name="search-filter" value="bonus">
+                    <i class="fas fa-gift"></i> Bonus/Gratis
+                </label>
+                <label>
+                    <input type="checkbox" name="search-filter" value="negotiable">
+                    <i class="fas fa-handshake"></i> Harga Nego
+                </label>
+                <label>
+                    <input type="checkbox" name="search-filter" value="sort-cheap">
+                    <i class="fas fa-sort-amount-down"></i> Urutkan Termurah
+                </label>
             </div>
             
             <div class="search-results" id="searchResults">
@@ -334,17 +346,15 @@
 
     <div class="offer-notification" id="offerNotification">
         <span class="close-notification" id="closeNotification">&times;</span>
-        
         <div class="notification-content active" id="notificationStep1">
-            <h4>Punya bisnis atau usaha? 🚀 Ingin menjangkau lebih banyak pelanggan?</h4>
+            <h4>Punya bisnis atau usaha? 🚀 Ingin jangkau lebih banyak pelanggan?</h4>
             <div class="notification-buttons">
                 <button class="notification-btn btn-no" data-action="close">Tidak</button>
                 <button class="notification-btn btn-yes" data-action="next">Iya, Tentu</button>
             </div>
         </div>
-        
         <div class="notification-content" id="notificationStep2">
-            <h4>Tertarik mendaftarkan usaha Anda di Anekamarket secara GRATIS dan tanpa komisi?</h4>
+            <h4>Daftarkan usaha Anda di Anekamarket secara GRATIS & tanpa komisi?</h4>
             <div class="notification-buttons">
                 <button class="notification-btn btn-no" data-action="close">Lain Kali</button>
                 <button class="notification-btn btn-yes" data-action="register">Iya, Saya Mau</button>
@@ -459,11 +469,11 @@
                             </div>
                             <div class="form-group">
                                 <label for="gen-contact-whatsapp">Nomor WhatsApp</label>
-                                <input type="tel" id="gen-contact-whatsapp" placeholder="e.g., 081234567890" required>
+                                <input type="tel" id="gen-contact-whatsapp" placeholder="e.g., 6281234567890" required>
                             </div>
                             <div class="form-group">
                                 <label for="gen-contact-phone">Nomor Telepon</label>
-                                <input type="tel" id="gen-contact-phone" placeholder="e.g., 081234567890" required>
+                                <input type="tel" id="gen-contact-phone" placeholder="e.g., +6281234567890" required>
                             </div>
                         </div>
                     </div>
@@ -984,8 +994,9 @@
             document.querySelectorAll('.modal, .image-modal').forEach(modal => { modal.addEventListener('click', e => { if (e.target === modal || e.target.classList.contains('close-modal') || e.target.classList.contains('close-image-modal')) { modal.classList.remove('show'); body.style.overflow = ''; } }); });
             const buttonSound = document.getElementById('buttonSound'); function playButtonSound() { if(buttonSound) { buttonSound.currentTime = 0; buttonSound.play().catch(() => {}); } }
             document.querySelectorAll('a[href^="#"]').forEach(anchor => { anchor.addEventListener('click', function(e) { if (this.getAttribute('href') !== '#' && !this.closest('.search-result-item')) { e.preventDefault(); const target = document.querySelector(this.getAttribute('href')); if (target) window.scrollTo({ top: target.offsetTop - 80, behavior: 'smooth' }); } }); });
-            const offerNotification = document.getElementById('offerNotification'); const step1 = document.getElementById('notificationStep1'); const step2 = document.getElementById('notificationStep2'); const showNotification = () => { if (!sessionStorage.getItem('offerDismissed')) offerNotification.classList.add('show'); }; const hideNotification = () => { offerNotification.classList.remove('show'); sessionStorage.setItem('offerDismissed', 'true'); }; setTimeout(showNotification, 5000); offerNotification?.addEventListener('click', e => { const t = e.target; if (t.id === 'closeNotification' || t.dataset.action === 'close') hideNotification(); else if (t.dataset.action === 'next') { step1.classList.remove('active'); step2.classList.add('active'); } else if (t.dataset.action === 'register') { window.open('https://anekamarket.github.io/formulir/', '_blank'); hideNotification(); } });
+            const offerNotification = document.getElementById('offerNotification'); const step1 = document.getElementById('notificationStep1'); const step2 = document.getElementById('notificationStep2'); const showNotification = () => { if (!sessionStorage.getItem('offerDismissed')) offerNotification.classList.add('show'); }; const hideNotification = () => { offerNotification.classList.remove('show'); sessionStorage.setItem('offerDismissed', 'true'); }; setTimeout(showNotification, 5000); offerNotification?.addEventListener('click', e => { const t = e.target; if (t.id === 'closeNotification' || t.closest('[data-action="close"]')) hideNotification(); else if (t.closest('[data-action="next"]')) { step1.classList.remove('active'); step2.classList.add('active'); } else if (t.closest('[data-action="register"]')) { window.open('https://anekamarket.github.io/formulir/', '_blank'); hideNotification(); } });
         
+            // --- [FIXED] DATA GENERATOR SCRIPT ---
             const generatorModal = document.getElementById('generatorModal');
             const openGeneratorBtn = document.getElementById('openGeneratorBtn');
             const closeGeneratorModalBtn = document.getElementById('closeGeneratorModal');
@@ -1061,11 +1072,11 @@
                     const price = parseFloat(item.querySelector('.dynamic-value').value);
                     if (name && !isNaN(price)) product.priceVariations.push({ name, price });
                 });
-                product.units = document.getElementById('gen-units').value.split(',').map(u => u.trim()).filter(u => u);
+                product.units = document.getElementById('gen-units').value.split(',').map(u => u.trim()).filter(Boolean);
                 product.defaultUnit = document.getElementById('gen-defaultUnit').value;
                 product.details = {
                     description: document.getElementById('gen-description').value,
-                    images: document.getElementById('gen-images').value.split(/[\n,]+/).map(img => img.trim()).filter(img => img),
+                    images: document.getElementById('gen-images').value.split(/[\n,]+/).map(img => img.trim()).filter(Boolean),
                     specs: []
                 };
                 specsContainer.querySelectorAll('.dynamic-list-item').forEach(item => {
