@@ -120,11 +120,12 @@
             margin-bottom: 1.5rem;
             display: flex;
             align-items: center;
+            line-height: 1.5;
         }
 
-        #status.info { background-color: #eef2ff; border-left: 4px solid #4f46e5; }
-        #status.success { background-color: #f0fdf4; border-left: 4px solid var(--success-color); }
-        #status.error { background-color: #fef2f2; border-left: 4px solid var(--error-color); }
+        #status.info { background-color: #eef2ff; border-left: 4px solid #4f46e5; color: #3730a3; }
+        #status.success { background-color: #f0fdf4; border-left: 4px solid var(--success-color); color: #14532d; }
+        #status.error { background-color: #fef2f2; border-left: 4px solid var(--error-color); color: #991b1b; }
         #status b { font-weight: 600; }
 
         .form-group {
@@ -229,7 +230,7 @@
             <h1>Pendataan Lokasi Gerai</h1>
             <p>Sistem ini membutuhkan lokasi GPS yang akurat. Pastikan GPS aktif dan Anda berada di lokasi gerai.</p>
             
-            <div id="status" class="info">Sistem siap untuk mengambil titik koordinat.</div>
+            <div id="status" class="info"><b>Sistem siap mengambil titik koordinat.</b></div>
             
             <div id="initialSection">
                  <button id="getLocationBtn" class="btn">
@@ -274,7 +275,7 @@
         // --- Fungsi UI & Status ---
         function setStatus(message, type = 'info') {
             status.innerHTML = message;
-            status.className = type; // Menghapus kelas lama dan menetapkan yang baru
+            status.className = type;
         }
         
         function showSpinner(show) {
@@ -296,8 +297,10 @@
         // --- Fungsi Geolocation ---
         function success(position) {
             showSpinner(false);
-            if (position.coords.accuracy > REQUIRED_ACCURACY_METERS) {
-                 setStatus(`❌ <b>Akurasi Lokasi Rendah!</b> <br>Akurasi Anda ${Math.round(position.coords.accuracy)} meter. Sistem butuh akurasi di bawah ${REQUIRED_ACCURACY_METERS} meter. Coba lagi di area terbuka.`, 'error');
+            const accuracy = Math.round(position.coords.accuracy);
+
+            if (accuracy > REQUIRED_ACCURACY_METERS) {
+                 setStatus(`❌ <b>Akurasi Lokasi Rendah!</b> <br>Akurasi Anda ${accuracy} meter. Sistem butuh akurasi di bawah ${REQUIRED_ACCURACY_METERS} meter. Coba lagi di area terbuka.`, 'error');
                  return;
             }
 
@@ -306,7 +309,9 @@
                 longitude: position.coords.longitude
             };
             
-            setStatus(`✅ <b>Lokasi Akurat Ditemukan!</b> (Akurasi: ${Math.round(position.coords.accuracy)} meter). Silakan isi form di bawah.`, 'success');
+            // --- PERBAIKAN: Tampilan notifikasi dibuat lebih rapi dengan <br> ---
+            setStatus(`✅ <b>Lokasi Akurat Ditemukan!</b><br>Akurasi: <b>${accuracy} meter</b>.<br>Silakan lanjutkan mengisi formulir di bawah.`, 'success');
+            
             initialSection.classList.add('hidden');
             formSection.classList.remove('hidden');
         }
@@ -322,7 +327,7 @@
                     message = "❌ <b>Sinyal GPS Lemah.</b><br>Pastikan GPS aktif dan Anda berada di tempat dengan sinyal baik.";
                     break;
                 case err.TIMEOUT:
-                    message = "❌ <b>Waktu Habis.</b><br>Gagal mendapatkan lokasi. Mohon coba lagi.";
+                    message = "❌ <b>Waktu Habis.</b><br>Gagal mendapatkan lokasi dalam 20 detik. Mohon coba lagi.";
                     break;
                 default:
                     message = "❌ <b>Terjadi Kesalahan.</b><br>Tidak dapat mengakses lokasi Anda.";
@@ -334,25 +339,28 @@
         // --- Event Listeners ---
         getLocationBtn.addEventListener('click', () => {
             if (!navigator.geolocation) {
-                setStatus('Geolocation tidak didukung oleh browser Anda.', 'error');
+                setStatus('❌ <b>Browser Tidak Mendukung.</b><br>Fitur Geolocation tidak tersedia di browser Anda.', 'error');
                 return;
             }
             showSpinner(true);
+            setStatus('🛰️ <b>Sedang mencari sinyal GPS...</b><br>Mohon tunggu, ini bisa memakan waktu hingga 20 detik.', 'info');
             navigator.geolocation.getCurrentPosition(success, error, {
                 enableHighAccuracy: true,
-                timeout: 20000,
+                timeout: 20000, // 20 detik
                 maximumAge: 0
             });
         });
 
         generateUrlBtn.addEventListener('click', () => {
             if (namaGeraiInput.value.trim() === '' || namaPemilikInput.value.trim() === '') {
-                alert('Harap isi Nama Gerai dan Nama Pemilik terlebih dahulu.');
+                setStatus('⚠️ <b>Data Belum Lengkap.</b><br>Harap isi Nama Gerai dan Nama Pemilik terlebih dahulu.', 'error');
                 return;
             }
             
-            mapsUrl = `http://googleusercontent.com/maps.google.com/3{coordinates.latitude},${coordinates.longitude}`;
-            setStatus(`✅ <b>Link Berhasil Dibuat!</b><br>Klik tombol hijau di bawah untuk mengirim data.`, 'success');
+            // --- PERBAIKAN: Format URL Google Maps salah, diperbaiki ke format yang benar ---
+            mapsUrl = `https://www.google.com/maps?q=${coordinates.latitude},${coordinates.longitude}`;
+            
+            setStatus(`✅ <b>Link Berhasil Dibuat!</b><br>Klik tombol hijau di bawah untuk mengirim data via WhatsApp.`, 'success');
 
             generateUrlBtn.classList.add('hidden');
             sendBtn.classList.remove('hidden');
@@ -362,7 +370,7 @@
             const namaGerai = namaGeraiInput.value.trim();
             const namaPemilik = namaPemilikInput.value.trim();
             if (namaGerai === '' || namaPemilik === '') {
-                alert('Nama Gerai dan Nama Pemilik tidak boleh kosong.');
+                setStatus('⚠️ <b>Data Belum Lengkap.</b><br>Harap isi Nama Gerai dan Nama Pemilik terlebih dahulu.', 'error');
                 return;
             }
 
