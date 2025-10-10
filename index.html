@@ -13,6 +13,7 @@
             --brand-color-dark: #ea580c;
             --success-color: #16a34a;
             --error-color: #dc2626;
+            --info-color: #4f46e5;
             --bg-light: #f8fafc;
             --bg-card: #ffffff;
             --text-dark: #1e293b;
@@ -112,18 +113,21 @@
             line-height: 1.6;
         }
         
+        /* --- PERBAIKAN UTAMA CSS ADA DI SINI --- */
         #status {
             font-size: 0.9rem;
             padding: 1rem;
             border-radius: 0.75rem;
             text-align: left;
             margin-bottom: 1.5rem;
-            display: flex;
-            align-items: center;
             line-height: 1.5;
+            /* Menggunakan flex untuk merapikan ikon dan teks */
+            display: flex;
+            /* Menengahkan ikon dan blok teks secara vertikal */
+            align-items: center; 
         }
 
-        #status.info { background-color: #eef2ff; border-left: 4px solid #4f46e5; color: #3730a3; }
+        #status.info { background-color: #eef2ff; border-left: 4px solid var(--info-color); color: #3730a3; }
         #status.success { background-color: #f0fdf4; border-left: 4px solid var(--success-color); color: #14532d; }
         #status.error { background-color: #fef2f2; border-left: 4px solid var(--error-color); color: #991b1b; }
         #status b { font-weight: 600; }
@@ -230,7 +234,7 @@
             <h1>Pendataan Lokasi Gerai</h1>
             <p>Sistem ini membutuhkan lokasi GPS yang akurat. Pastikan GPS aktif dan Anda berada di lokasi gerai.</p>
             
-            <div id="status" class="info"><b>Sistem siap mengambil titik koordinat.</b></div>
+            <div id="status"></div>
             
             <div id="initialSection">
                  <button id="getLocationBtn" class="btn">
@@ -272,12 +276,26 @@
         let coordinates = null;
         let mapsUrl = '';
 
-        // --- Fungsi UI & Status ---
+        // --- PENYEMPURNAAN: Menambahkan ikon SVG untuk setiap status ---
+        const ICONS = {
+            success: `<svg style="width:24px; height:24px; flex-shrink:0; margin-right:12px; color: var(--success-color);" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>`,
+            error: `<svg style="width:24px; height:24px; flex-shrink:0; margin-right:12px; color: var(--error-color);" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>`,
+            info: `<svg style="width:24px; height:24px; flex-shrink:0; margin-right:12px; color: var(--info-color);" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>`
+        };
+
+        // --- PERBAIKAN UTAMA JAVASCRIPT ADA DI SINI ---
         function setStatus(message, type = 'info') {
-            status.innerHTML = message;
+            // Membungkus pesan teks dalam <div> agar bisa di-layout terpisah dari ikon
+            // Ini adalah kunci agar teks bisa turun baris (multi-line) dengan rapi
+            status.innerHTML = `${ICONS[type] || ICONS['info']}<div>${message}</div>`;
             status.className = type;
         }
-        
+
+        // Set status awal saat halaman dimuat
+        document.addEventListener('DOMContentLoaded', () => {
+            setStatus("<b>Sistem siap mengambil titik koordinat.</b>", 'info');
+        });
+
         function showSpinner(show) {
             const buttonText = getLocationBtn.querySelector('span');
             if(show) {
@@ -300,7 +318,7 @@
             const accuracy = Math.round(position.coords.accuracy);
 
             if (accuracy > REQUIRED_ACCURACY_METERS) {
-                 setStatus(`❌ <b>Akurasi Lokasi Rendah!</b> <br>Akurasi Anda ${accuracy} meter. Sistem butuh akurasi di bawah ${REQUIRED_ACCURACY_METERS} meter. Coba lagi di area terbuka.`, 'error');
+                 setStatus(`<b>Akurasi Lokasi Rendah!</b> <br>Akurasi Anda ${accuracy} meter. Sistem butuh akurasi di bawah ${REQUIRED_ACCURACY_METERS} meter. Coba lagi di area terbuka.`, 'error');
                  return;
             }
 
@@ -309,8 +327,7 @@
                 longitude: position.coords.longitude
             };
             
-            // --- PERBAIKAN: Tampilan notifikasi dibuat lebih rapi dengan <br> ---
-            setStatus(`✅ <b>Lokasi Akurat Ditemukan!</b><br>Akurasi: <b>${accuracy} meter</b>.<br>Silakan lanjutkan mengisi formulir di bawah.`, 'success');
+            setStatus(`<b>Lokasi Akurat Ditemukan!</b><br>Akurasi: <b>${accuracy} meter</b>.<br>Silakan lanjutkan mengisi formulir di bawah.`, 'success');
             
             initialSection.classList.add('hidden');
             formSection.classList.remove('hidden');
@@ -321,16 +338,16 @@
             let message = '';
             switch(err.code) {
                 case err.PERMISSION_DENIED:
-                    message = "❌ <b>Izin Lokasi Ditolak.</b><br>Anda harus mengizinkan akses lokasi di pengaturan browser untuk fitur ini.";
+                    message = "<b>Izin Lokasi Ditolak.</b><br>Anda harus mengizinkan akses lokasi di pengaturan browser untuk fitur ini.";
                     break;
                 case err.POSITION_UNAVAILABLE:
-                    message = "❌ <b>Sinyal GPS Lemah.</b><br>Pastikan GPS aktif dan Anda berada di tempat dengan sinyal baik.";
+                    message = "<b>Sinyal GPS Lemah.</b><br>Pastikan GPS aktif dan Anda berada di tempat dengan sinyal baik.";
                     break;
                 case err.TIMEOUT:
-                    message = "❌ <b>Waktu Habis.</b><br>Gagal mendapatkan lokasi dalam 20 detik. Mohon coba lagi.";
+                    message = "<b>Waktu Habis.</b><br>Gagal mendapatkan lokasi dalam 20 detik. Mohon coba lagi.";
                     break;
                 default:
-                    message = "❌ <b>Terjadi Kesalahan.</b><br>Tidak dapat mengakses lokasi Anda.";
+                    message = "<b>Terjadi Kesalahan.</b><br>Tidak dapat mengakses lokasi Anda.";
                     break;
             }
             setStatus(message, 'error');
@@ -339,28 +356,27 @@
         // --- Event Listeners ---
         getLocationBtn.addEventListener('click', () => {
             if (!navigator.geolocation) {
-                setStatus('❌ <b>Browser Tidak Mendukung.</b><br>Fitur Geolocation tidak tersedia di browser Anda.', 'error');
+                setStatus('<b>Browser Tidak Mendukung.</b><br>Fitur Geolocation tidak tersedia di browser Anda.', 'error');
                 return;
             }
             showSpinner(true);
-            setStatus('🛰️ <b>Sedang mencari sinyal GPS...</b><br>Mohon tunggu, ini bisa memakan waktu hingga 20 detik.', 'info');
+            setStatus('<b>Sedang mencari sinyal GPS...</b><br>Mohon tunggu, ini bisa memakan waktu hingga 20 detik.', 'info');
             navigator.geolocation.getCurrentPosition(success, error, {
                 enableHighAccuracy: true,
-                timeout: 20000, // 20 detik
+                timeout: 20000,
                 maximumAge: 0
             });
         });
 
         generateUrlBtn.addEventListener('click', () => {
             if (namaGeraiInput.value.trim() === '' || namaPemilikInput.value.trim() === '') {
-                setStatus('⚠️ <b>Data Belum Lengkap.</b><br>Harap isi Nama Gerai dan Nama Pemilik terlebih dahulu.', 'error');
+                setStatus('<b>Data Belum Lengkap.</b><br>Harap isi Nama Gerai dan Nama Pemilik terlebih dahulu.', 'error');
                 return;
             }
             
-            // --- PERBAIKAN: Format URL Google Maps salah, diperbaiki ke format yang benar ---
             mapsUrl = `https://www.google.com/maps?q=${coordinates.latitude},${coordinates.longitude}`;
             
-            setStatus(`✅ <b>Link Berhasil Dibuat!</b><br>Klik tombol hijau di bawah untuk mengirim data via WhatsApp.`, 'success');
+            setStatus(`<b>Link Berhasil Dibuat!</b><br>Klik tombol hijau di bawah untuk mengirim data via WhatsApp.`, 'success');
 
             generateUrlBtn.classList.add('hidden');
             sendBtn.classList.remove('hidden');
@@ -370,7 +386,7 @@
             const namaGerai = namaGeraiInput.value.trim();
             const namaPemilik = namaPemilikInput.value.trim();
             if (namaGerai === '' || namaPemilik === '') {
-                setStatus('⚠️ <b>Data Belum Lengkap.</b><br>Harap isi Nama Gerai dan Nama Pemilik terlebih dahulu.', 'error');
+                setStatus('<b>Data Belum Lengkap.</b><br>Harap isi Nama Gerai dan Nama Pemilik terlebih dahulu.', 'error');
                 return;
             }
 
