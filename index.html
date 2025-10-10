@@ -20,11 +20,7 @@
             --text-light: #64748b;
             --border-color: #e2e8f0;
         }
-
-        *, *::before, *::after {
-            box-sizing: border-box;
-        }
-
+        *, *::before, *::after { box-sizing: border-box; }
         body {
             font-family: 'Inter', sans-serif;
             background-color: var(--bg-light);
@@ -34,7 +30,6 @@
             flex-direction: column;
             min-height: 100vh;
         }
-
         .header {
             width: 100%;
             background-color: var(--bg-card);
@@ -45,7 +40,6 @@
             justify-content: flex-start;
             flex-shrink: 0;
         }
-
         .header a.back-btn {
             color: var(--text-dark);
             text-decoration: none;
@@ -56,16 +50,12 @@
             border-radius: 999px;
             transition: background-color 0.2s;
         }
-        .header a.back-btn:hover {
-            background-color: var(--bg-light);
-        }
-
+        .header a.back-btn:hover { background-color: var(--bg-light); }
         .header a.back-btn svg {
             width: 1.25rem;
             height: 1.25rem;
             margin-right: 0.5rem;
         }
-
         .main-content {
             flex-grow: 1;
             width: 100%;
@@ -74,7 +64,6 @@
             justify-content: center;
             padding: 1.5rem;
         }
-
         .card {
             background-color: var(--bg-card);
             width: 100%;
@@ -84,7 +73,6 @@
             box-shadow: 0 10px 25px rgba(0,0,0,0.07);
             text-align: center;
         }
-
         .card-icon {
             width: 60px;
             height: 60px;
@@ -96,23 +84,17 @@
             justify-content: center;
             margin: 0 auto 1.5rem auto;
         }
-        .card-icon svg {
-            width: 2rem;
-            height: 2rem;
-        }
-
+        .card-icon svg { width: 2rem; height: 2rem; }
         .card h1 {
             font-size: 1.5rem;
             font-weight: 700;
             margin: 0 0 0.5rem 0;
         }
-
         .card p {
             color: var(--text-light);
             margin: 0 0 2rem 0;
             line-height: 1.6;
         }
-        
         #status {
             font-size: 0.9rem;
             padding: 1rem;
@@ -121,26 +103,22 @@
             margin-bottom: 1.5rem;
             line-height: 1.5;
             display: flex;
-            align-items: center; 
+            align-items: center;
         }
-
         #status.info { background-color: #eef2ff; border-left: 4px solid var(--info-color); color: #3730a3; }
         #status.success { background-color: #f0fdf4; border-left: 4px solid var(--success-color); color: #14532d; }
         #status.error { background-color: #fef2f2; border-left: 4px solid var(--error-color); color: #991b1b; }
         #status b { font-weight: 600; }
-
         .form-group {
             margin-bottom: 1rem;
             text-align: left;
         }
-
         .form-group label {
             display: block;
             margin-bottom: 0.5rem;
             font-weight: 500;
             color: var(--text-dark);
         }
-
         .form-group input {
             width: 100%;
             padding: 0.75rem 1rem;
@@ -149,7 +127,6 @@
             font-family: 'Inter', sans-serif;
             font-size: 1rem;
             transition: border-color 0.2s, box-shadow 0.2s;
-            /* BARIS INI MEMBUAT SEMUA INPUT MENJADI HURUF KAPITAL */
             text-transform: uppercase;
         }
         .form-group input:focus {
@@ -157,7 +134,6 @@
             border-color: var(--brand-color);
             box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.2);
         }
-
         .btn {
             background-color: var(--brand-color);
             color: white;
@@ -174,29 +150,15 @@
             align-items: center;
             justify-content: center;
         }
-
-        .btn:hover {
-            background-color: var(--brand-color-dark);
-        }
-        .btn:active {
-            transform: scale(0.98);
-        }
+        .btn:hover { background-color: var(--brand-color-dark); }
+        .btn:active { transform: scale(0.98); }
         .btn:disabled {
             background-color: #fdba74;
             cursor: not-allowed;
         }
-
-        .btn.secondary {
-            background-color: var(--success-color);
-        }
-        .btn.secondary:hover {
-            background-color: #15803d;
-        }
-
-        .hidden {
-            display: none;
-        }
-        
+        .btn.secondary { background-color: var(--success-color); }
+        .btn.secondary:hover { background-color: #15803d; }
+        .hidden { display: none; }
         .spinner {
             width: 20px;
             height: 20px;
@@ -207,13 +169,12 @@
             margin-right: 10px;
         }
         @keyframes spin { to { transform: rotate(360deg); } }
-
     </style>
 </head>
 <body>
 
     <header class="header">
-        <a href="https://www.anekamarket.my.id" class="back-btn">
+        <a href="https://www.anekamarket.my.id" class="back-btn" aria-label="Kembali ke halaman beranda">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
             </svg>
@@ -244,11 +205,11 @@
             <div id="formSection" class="hidden">
                 <div class="form-group">
                     <label for="namaGerai">Nama Gerai UMKM:</label>
-                    <input type="text" id="namaGerai" name="namaGerai" placeholder="Contoh: WARUNG BAROKAH JAYA" required>
+                    <input type="text" id="namaGerai" name="namaGerai" placeholder="Contoh: CAFE PERMAISURI" required aria-required="true">
                 </div>
                 <div class="form-group">
                     <label for="namaPemilik">Nama Pemilik Gerai:</label>
-                    <input type="text" id="namaPemilik" name="namaPemilik" placeholder="Contoh: BUDI SANTOSO" required>
+                    <input type="text" id="namaPemilik" name="namaPemilik" placeholder="Contoh: CHACHA" required aria-required="true">
                 </div>
                 
                 <button id="generateUrlBtn" class="btn">2. Buat Link Lokasi</button>
@@ -272,6 +233,7 @@
         const namaGeraiInput = document.getElementById('namaGerai');
         const namaPemilikInput = document.getElementById('namaPemilik');
 
+        // --- Variabel State ---
         let coordinates = null;
         let mapsUrl = '';
 
@@ -292,7 +254,7 @@
 
         function showSpinner(show) {
             const buttonText = getLocationBtn.querySelector('span');
-            if(show) {
+            if (show) {
                 getLocationBtn.disabled = true;
                 buttonText.textContent = 'Mencari Sinyal GPS...';
                 const spinner = document.createElement('div');
@@ -355,17 +317,31 @@
             setStatus('<b>Sedang mencari sinyal GPS...</b><br>Mohon tunggu, ini bisa memakan waktu hingga 20 detik.', 'info');
             navigator.geolocation.getCurrentPosition(success, error, {
                 enableHighAccuracy: true,
-                timeout: 20000,
-                maximumAge: 0
+                timeout: 20000, // 20 detik
+                maximumAge: 0 // Paksa pembacaan lokasi baru
             });
         });
 
-        generateUrlBtn.addEventListener('click', () => {
+        // Fungsi untuk validasi input
+        function isFormValid() {
             if (namaGeraiInput.value.trim() === '' || namaPemilikInput.value.trim() === '') {
                 setStatus('<b>Data Belum Lengkap.</b><br>Harap isi Nama Gerai dan Nama Pemilik terlebih dahulu.', 'error');
+                return false;
+            }
+            return true;
+        }
+
+        generateUrlBtn.addEventListener('click', () => {
+            if (!isFormValid()) {
                 return;
             }
             
+            /**
+             * --- PERBAIKAN UTAMA ---
+             * Menggunakan format URL Google Maps yang standar dan universal.
+             * Format ini akan membuka aplikasi Google Maps di mobile atau web di desktop
+             * dan langsung menunjukkan pin di lokasi yang ditentukan.
+             */
             mapsUrl = `https://www.google.com/maps?q=${coordinates.latitude},${coordinates.longitude}`;
             
             setStatus(`<b>Link Berhasil Dibuat!</b><br>Klik tombol hijau di bawah untuk mengirim data via WhatsApp.`, 'success');
@@ -375,19 +351,20 @@
         });
 
         sendBtn.addEventListener('click', () => {
-            // Data sudah diubah menjadi uppercase oleh CSS secara visual,
-            // namun jika Anda ingin data yang dikirim juga uppercase, gunakan .toUpperCase()
-            const namaGerai = namaGeraiInput.value.trim().toUpperCase();
-            const namaPemilik = namaPemilikInput.value.trim().toUpperCase();
-            if (namaGerai === '' || namaPemilik === '') {
-                setStatus('<b>Data Belum Lengkap.</b><br>Harap isi Nama Gerai dan Nama Pemilik terlebih dahulu.', 'error');
+            // Validasi tetap dilakukan untuk keamanan, jika-jika pengguna menghapus input setelah link dibuat
+            if (!isFormValid()) {
                 return;
             }
 
+            // Menggunakan .toUpperCase() untuk memastikan data yang dikirim adalah huruf kapital
+            const namaGerai = namaGeraiInput.value.trim().toUpperCase();
+            const namaPemilik = namaPemilikInput.value.trim().toUpperCase();
+           
             let message = `*Pendataan Lokasi UMKM Baru*\n\n*Nama Gerai:*\n${namaGerai}\n\n*Nama Pemilik:*\n${namaPemilik}\n\n*Lokasi Google Maps:*\n${mapsUrl}\n\n---\n_Pesan ini dibuat secara otomatis dari web aneka market._`;
             const encodedMessage = encodeURIComponent(message);
             const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodedMessage}`;
             
+            // Membuka WhatsApp di tab baru
             window.open(whatsappUrl, '_blank');
         });
     </script>
