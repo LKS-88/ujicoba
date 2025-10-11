@@ -479,6 +479,17 @@
             color: #004d40;
         }
         
+        /* --- [FIX TERBARU] MENCEGAH TOMBOL TERTINDIH GAMBAR DETAIL --- */
+        /* Kunci perbaikan: Mengatur parent container (.gallery-details) menjadi flex column.
+           Ini memaksa semua elemen di dalamnya (termasuk .gallery-actions dan .gallery-detail-expanded)
+           untuk tersusun secara vertikal. Saat .gallery-detail-expanded muncul,
+           ia akan secara alami berada di bawah .gallery-actions, bukan menindihnya. */
+        .gallery-details {
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1; /* Memastikan container ini mengisi sisa ruang yang tersedia di dalam card */
+        }
+        
         /* --- [PERBAIKAN & PENYEMPURNAAN] TAMPILAN DETAIL PRODUK AGAR TIDAK TERPOTONG --- */
         .gallery-detail-expanded {
             /* Menggunakan flexbox untuk tata letak vertikal yang kuat dan fleksibel.
