@@ -383,32 +383,73 @@
             color: #004d40;
         }
         
-        /* --- [PENYEMPURNAAN] LOGIKA SEMBUNYI/TAMPILKAN TOMBOL OTOMATIS --- */
+        /* --- [PERBAIKAN] LOGIKA SEMBUNYI/TAMPILKAN TOMBOL OTOMATIS --- */
         .contact-bar {
+            position: fixed; /* Posisi ditetapkan di sini */
+            right: 20px;
+            bottom: 20px;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
             transition: transform 0.4s ease-in-out;
         }
         .contact-bar.fab-hidden {
             transform: translateX(calc(100% + 20px));
         }
+
+        /* --- [PERBAIKAN & PENYEMPURNAAN] UKURAN TOMBOL MELAYANG (FAB) --- */
+        /* Penyeragaman ukuran dan transisi untuk semua FAB kiri */
+        .payment-fab, .maps-fab, .generator-fab {
+            width: 56px;
+            height: 56px;
+            font-size: 22px; /* Ukuran ikon diseragamkan */
+            transition: background-color 0.3s, transform 0.4s ease-in-out; /* Transisi transform disamakan */
+        }
         
+        /* Styling untuk tombol di dalam bar kontak kanan agar seragam */
+        .contact-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 56px;
+            height: 56px;
+            margin-bottom: 12px; /* Memberi jarak antar tombol */
+            border-radius: 50%;
+            color: white;
+            font-size: 22px;
+            text-decoration: none;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+        .contact-bar .contact-btn:last-child {
+            margin-bottom: 0; /* Menghapus margin pada tombol terakhir */
+        }
+        .contact-btn:hover {
+            transform: scale(1.1);
+        }
+        .contact-btn.whatsapp { background-color: #25D366; }
+        .contact-btn.whatsapp:hover { background-color: #128C7E; }
+        .contact-btn.phone { background-color: #007bff; }
+        .contact-btn.phone:hover { background-color: #0056b3; }
+        .contact-btn.order { background-color: #f57c00; }
+        .contact-btn.order:hover { background-color: #e67e22; }
+
         /* --- [FITUR TAMBAHAN & PERBAIKAN] TOMBOL PEMBAYARAN MENGAMBANG --- */
         .payment-fab {
             position: fixed;
             bottom: 160px; /* [PERBAIKAN] Posisi dinaikkan untuk memberi ruang bagi tombol baru */
             left: 20px;
-            width: 60px;
-            height: 60px;
             background-color: #007bff;
             color: white;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 24px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.25);
             z-index: 1000;
             text-decoration: none;
-            transition: background-color 0.3s, transform 0.4s ease-in-out; /* [PENYEMPURNAAN] Transisi diubah */
         }
         .payment-fab:hover {
             background-color: #0056b3;
@@ -447,19 +488,16 @@
             position: fixed;
             bottom: 90px; /* Posisi di antara tombol Generator dan Pembayaran */
             left: 20px;
-            width: 60px;
-            height: 60px;
             background-color: #4285F4; /* Warna khas Google */
             color: white;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 22px; /* Disesuaikan agar ikon pas */
+            font-size: 20px; /* Disesuaikan agar ikon pas */
             box-shadow: 0 4px 12px rgba(0,0,0,0.25);
             z-index: 1001; 
             text-decoration: none;
-            transition: background-color 0.3s, transform 0.4s ease-in-out; /* [PENYEMPURNAAN] Transisi diubah */
         }
         .maps-fab:hover {
             background-color: #3367D6; /* Warna lebih gelap saat hover */
@@ -475,19 +513,15 @@
             position: fixed;
             bottom: 20px;
             left: 20px;
-            width: 60px;
-            height: 60px;
             background-color: #28a745;
             color: white;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 24px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.25);
             z-index: 1002;
             cursor: pointer;
-            transition: background-color 0.3s, transform 0.4s ease-in-out; /* [PENYEMPURNAAN] Transisi diubah */
         }
         .generator-fab:hover {
             background-color: #218838;
@@ -1790,7 +1824,7 @@
             setTimeout(showNotification, 5000); 
             if(offerNotification) { offerNotification.addEventListener('click', (e) => { const t = e.target; if (t.id === 'closeNotification') hideNotification(); if (t.matches('.notification-btn')) { const a = t.dataset.action; if (a === 'close') hideNotification(); else if (a === 'next') { step1.classList.remove('active'); step2.classList.add('active'); } else if (a === 'register') { window.open('https://anekamarket.my.id/formulirpendaftaran', '_blank'); hideNotification(); } } }); }
             
-            // --- [PENYEMPURNAAN BARU] Logika untuk menyembunyikan tombol saat scroll ---
+            // --- [PENYEMPURNAAN BARU] Logika untuk menyembunyikan semua tombol saat scroll ---
             let lastScrollTop = 0;
             const fabButtons = document.querySelectorAll('.autohide-fab');
             window.addEventListener('scroll', function() {
