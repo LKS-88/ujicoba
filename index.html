@@ -503,7 +503,7 @@
         }
         
         /* ========================================================== */
-        /* START: REVISED CODE FOR RECEIPT                          */
+        /* START: REVISED AND IMPROVED CODE FOR RECEIPT               */
         /* ========================================================== */
         #receiptContainer {
             display: none;
@@ -517,7 +517,7 @@
             justify-content: center;
             align-items: flex-start; /* Align to top for better scrolling */
             overflow-y: auto;
-            padding: 20px;
+            padding: 20px 0;
         }
         
         #receiptPrint {
@@ -526,16 +526,15 @@
             font-family: 'Courier New', monospace;
             color: #000;
             width: 100%;
-            max-width: 340px; /* Slightly wider for better spacing */
+            max-width: 340px;
             margin: 20px auto;
             box-shadow: var(--shadow-lg);
-            position: relative;
+            position: relative; /* CRITICAL FIX: This makes the watermark position relative to the receipt */
             line-height: 1.5;
             -webkit-print-color-adjust: exact !important;
             print-color-adjust: exact !important;
         }
         
-        /* Watermark ini sengaja dipertahankan untuk menghormati pembuat asli */
         .receipt-watermark {
             position: absolute;
             top: 50%;
@@ -591,7 +590,7 @@
         .receipt-item-line .item-breakdown {
             display: flex;
             justify-content: space-between;
-            padding-left: 10px; /* Indent the breakdown */
+            padding-left: 10px;
         }
         
         .receipt-total {
@@ -627,7 +626,7 @@
             margin-bottom: 5px;
         }
         /* ========================================================== */
-        /* END: REVISED CODE FOR RECEIPT                            */
+        /* END: REVISED AND IMPROVED CODE FOR RECEIPT                 */
         /* ========================================================== */
         
         .ml-2 {
@@ -690,7 +689,7 @@
         }
 
         .confirmation-dialog {
-            display: none; /* Hidden by default */
+            display: none;
             position: fixed;
             top: 0;
             left: 0;
@@ -775,7 +774,13 @@
             margin-top: 5px;
         }
 
+        /* ========================================================== */
+        /* START: REVISED AND IMPROVED PRINT STYLES                   */
+        /* ========================================================== */
         @media print {
+            body, html {
+                background: #fff;
+            }
             body * {
                 visibility: hidden;
             }
@@ -787,30 +792,33 @@
                 left: 0;
                 top: 0;
                 width: 100%;
-                height: auto;
+                height: auto; /* IMPORTANT: Height is auto to prevent empty space */
                 background: none;
                 padding: 0;
                 margin: 0;
-                overflow: hidden;
+                overflow: visible;
                 z-index: 9999;
                 align-items: flex-start;
             }
             #receiptPrint {
                 width: 100%;
-                max-width: 100%;
+                max-width: 100%; /* Use full printable width */
                 box-shadow: none;
                 padding: 0;
                 margin: 0;
-                font-size: 12px;
+                font-size: 10pt; /* Adjust font size for better readability on paper */
                 color: #000;
                 -webkit-print-color-adjust: exact !important;
                 print-color-adjust: exact !important;
             }
             
             .no-print {
-                display: none !important;
+                display: none !important; /* Hide buttons when printing */
             }
         }
+        /* ========================================================== */
+        /* END: REVISED AND IMPROVED PRINT STYLES                     */
+        /* ========================================================== */
         
         @media (max-width: 768px) {
             .main-content {
@@ -861,7 +869,7 @@
         }
 
         .loading-overlay {
-            display: none; /* Hidden by default */
+            display: none;
             position: fixed;
             top: 0;
             left: 0;
@@ -1515,9 +1523,7 @@
                 $('#additionalFeeDescription').text(currentCart.additionalFeeDescription || '').toggle(!!currentCart.additionalFeeDescription);
             };
 
-            // ==========================================================
-            // START: REVISED RECEIPT GENERATION FUNCTION
-            // ==========================================================
+            // --- Receipt Generation ---
             const generateReceiptUI = (transaction) => {
                 $('#receiptStoreName').text(storeInfo.storeName);
                 $('#receiptStoreAddress').text(storeInfo.storeAddress);
@@ -1553,9 +1559,6 @@
                 
                 $('#receiptContainer').css('display', 'flex');
             };
-            // ==========================================================
-            // END: REVISED RECEIPT GENERATION FUNCTION
-            // ==========================================================
 
             const initializeApp = () => {
                 $('#storeNameHeader').text(storeInfo.storeName);
@@ -1741,35 +1744,36 @@
             $('#closeReceiptBtn').on('click', () => $('#receiptContainer').hide());
 
             // ==========================================================
-            // START: REVISED PDF DOWNLOAD FUNCTION WITH BETTER OPTIONS
+            // START: REVISED AND IMPROVED PDF DOWNLOAD FUNCTION
             // ==========================================================
             $('#downloadReceiptBtn').on('click', function() {
                 const element = document.getElementById('receiptPrint');
                 const transactionId = $('#receiptTransactionId').text().split(': ')[1];
                 
                 const opt = {
-                    margin: [5, 4, 5, 4], // Top, Left, Bottom, Right (dalam mm)
+                    margin: [5, 4, 5, 4], // Margin: Atas, Kiri, Bawah, Kanan (dalam mm)
                     filename: `struk-${transactionId}.pdf`,
                     image: { type: 'jpeg', quality: 0.98 },
                     html2canvas: { 
-                        scale: 2, // Kualitas render 2x lipat dari layar
+                        scale: 3, // Meningkatkan skala render untuk kualitas gambar yang lebih tinggi
                         useCORS: true, 
-                        dpi: 192, 
+                        dpi: 300, // Resolusi tinggi
                         letterRendering: true,
                         logging: false 
                     },
                     jsPDF: { 
                         unit: 'mm', 
-                        // Format lebar struk 72mm, tinggi otomatis menyesuaikan konten
-                        format: [72, 297], 
+                        // Format: [lebar, tinggi]. Lebar 72mm (umum untuk struk termal), tinggi 'auto' agar pas dengan konten
+                        format: [72, 'auto'], 
                         orientation: 'portrait' 
                     }
                 };
 
+                // Membuat PDF dari elemen struk dengan opsi yang sudah disempurnakan
                 html2pdf().set(opt).from(element).save();
             });
             // ==========================================================
-            // END: REVISED PDF DOWNLOAD FUNCTION
+            // END: REVISED AND IMPROVED PDF DOWNLOAD FUNCTION
             // ==========================================================
             
             // Settings logic
