@@ -383,9 +383,10 @@
             color: #004d40;
         }
         
-        /* --- [PERBAIKAN] LOGIKA SEMBUNYI/TAMPILKAN TOMBOL OTOMATIS --- */
+        /* --- [REVISI & PERBAIKAN] LOGIKA SEMBUNYI/TAMPILKAN TOMBOL OTOMATIS --- */
+        /* Container untuk semua tombol di kanan */
         .contact-bar {
-            position: fixed; /* Posisi ditetapkan di sini */
+            position: fixed;
             right: 20px;
             bottom: 20px;
             z-index: 1000;
@@ -393,27 +394,28 @@
             flex-direction: column;
             transition: transform 0.4s ease-in-out;
         }
+        /* State tersembunyi untuk container kanan */
         .contact-bar.fab-hidden {
             transform: translateX(calc(100% + 20px));
         }
 
         /* --- [PERBAIKAN & PENYEMPURNAAN] UKURAN TOMBOL MELAYANG (FAB) --- */
-        /* Penyeragaman ukuran dan transisi untuk semua FAB kiri */
-        .payment-fab, .maps-fab, .generator-fab {
+        /* Penyeragaman ukuran untuk FAB kiri (Payment) */
+        .payment-fab {
             width: 56px;
             height: 56px;
-            font-size: 22px; /* Ukuran ikon diseragamkan */
-            transition: background-color 0.3s, transform 0.4s ease-in-out; /* Transisi transform disamakan */
+            font-size: 22px;
+            transition: background-color 0.3s, transform 0.4s ease-in-out;
         }
         
-        /* Styling untuk tombol di dalam bar kontak kanan agar seragam */
+        /* Styling seragam untuk SEMUA tombol di dalam bar kontak kanan */
         .contact-btn {
             display: flex;
             align-items: center;
             justify-content: center;
             width: 56px;
             height: 56px;
-            margin-bottom: 12px; /* Memberi jarak antar tombol */
+            margin-bottom: 12px;
             border-radius: 50%;
             color: white;
             font-size: 22px;
@@ -424,22 +426,28 @@
             transition: background-color 0.3s, transform 0.3s;
         }
         .contact-bar .contact-btn:last-child {
-            margin-bottom: 0; /* Menghapus margin pada tombol terakhir */
+            margin-bottom: 0;
         }
         .contact-btn:hover {
             transform: scale(1.1);
         }
+        
+        /* Warna spesifik untuk setiap tombol di kanan */
         .contact-btn.whatsapp { background-color: #25D366; }
         .contact-btn.whatsapp:hover { background-color: #128C7E; }
         .contact-btn.phone { background-color: #007bff; }
         .contact-btn.phone:hover { background-color: #0056b3; }
         .contact-btn.order { background-color: #f57c00; }
         .contact-btn.order:hover { background-color: #e67e22; }
+        .contact-btn.maps { background-color: #4285F4; } /* Warna untuk tombol Peta */
+        .contact-btn.maps:hover { background-color: #3367D6; }
+        .contact-btn.generator { background-color: #28a745; } /* Warna untuk tombol Generator */
+        .contact-btn.generator:hover { background-color: #218838; }
 
-        /* --- [FITUR TAMBAHAN & PERBAIKAN] TOMBOL PEMBAYARAN MENGAMBANG --- */
+        /* --- [FITUR TAMBAHAN & PERBAIKAN] TOMBOL PEMBAYARAN MENGAMBANG (TETAP DI KIRI) --- */
         .payment-fab {
             position: fixed;
-            bottom: 160px; /* [PERBAIKAN] Posisi dinaikkan untuk memberi ruang bagi tombol baru */
+            bottom: 20px;
             left: 20px;
             background-color: #007bff;
             color: white;
@@ -455,7 +463,8 @@
             background-color: #0056b3;
             transform: scale(1.1);
         }
-        .payment-fab.fab-hidden { /* [PENYEMPURNAAN] State tersembunyi */
+        /* State tersembunyi untuk FAB kiri */
+        .payment-fab.fab-hidden { 
             transform: translateX(-calc(100% + 20px));
         }
         .payment-fab::before {
@@ -483,53 +492,9 @@
             }
         }
         
-        /* --- [FITUR BARU] TOMBOL PETA LOKASI MENGAMBANG --- */
-        .maps-fab {
-            position: fixed;
-            bottom: 90px; /* Posisi di antara tombol Generator dan Pembayaran */
-            left: 20px;
-            background-color: #4285F4; /* Warna khas Google */
-            color: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px; /* Disesuaikan agar ikon pas */
-            box-shadow: 0 4px 12px rgba(0,0,0,0.25);
-            z-index: 1001; 
-            text-decoration: none;
-        }
-        .maps-fab:hover {
-            background-color: #3367D6; /* Warna lebih gelap saat hover */
-            transform: scale(1.1);
-        }
-        .maps-fab.fab-hidden { /* [PENYEMPURNAAN] State tersembunyi */
-            transform: translateX(-calc(100% + 20px));
-        }
+        /* --- CSS UNTUK .maps-fab dan .generator-fab YANG LAMA DIHAPUS KARENA SUDAH DIGABUNG KE .contact-btn --- */
 
         /* --- [FITUR BARU & PENYEMPURNAAN TAMPILAN] FORM GENERATOR --- */
-        /* --- [PERBAIKAN] Posisi FAB Generator dipindah ke kiri bawah untuk menghindari tumpang tindih --- */
-        .generator-fab {
-            position: fixed;
-            bottom: 20px;
-            left: 20px;
-            background-color: #28a745;
-            color: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.25);
-            z-index: 1002;
-            cursor: pointer;
-        }
-        .generator-fab:hover {
-            background-color: #218838;
-            transform: scale(1.1);
-        }
-        .generator-fab.fab-hidden { /* [PENYEMPURNAAN] State tersembunyi */
-            transform: translateX(-calc(100% + 20px));
-        }
         .generator-modal {
             display: none;
             position: fixed;
@@ -981,19 +946,17 @@
         <button class="contact-btn order" id="quick-order" aria-label="Pesan Cepat">
             <i class="fas fa-shopping-cart"></i>
         </button>
+        <a href="https://www.anekamarket.my.id/googlemap.html" class="contact-btn maps" target="_blank" aria-label="Lihat Peta Lokasi">
+            <i class="fas fa-map-marked-alt"></i>
+        </a>
+        <button class="contact-btn generator" id="openGeneratorBtn" aria-label="Buka Generator Produk">
+            <i class="fas fa-cogs"></i> 
+        </button>
     </div>
 
     <a href="https://www.anekamarket.my.id/aplikasipembayaran" class="payment-fab autohide-fab" target="_blank" aria-label="Aplikasi Pembayaran Kasir">
         <i class="fas fa-cash-register"></i>
     </a>
-    
-    <a href="https://www.anekamarket.my.id/googlemap.html" class="maps-fab autohide-fab" target="_blank" aria-label="Lihat Peta Lokasi">
-        <i class="fas fa-map-marked-alt"></i>
-    </a>
-
-    <div class="generator-fab autohide-fab" id="openGeneratorBtn" aria-label="Buka Generator Produk">
-        <i class="fas fa-cogs"></i> 
-    </div>
     
     <footer>
         <div class="footer-container">
@@ -1826,15 +1789,16 @@
             
             // --- [PENYEMPURNAAN BARU] Logika untuk menyembunyikan semua tombol saat scroll ---
             let lastScrollTop = 0;
-            const fabButtons = document.querySelectorAll('.autohide-fab');
+            // [REVISI] Selector ini sekarang menargetkan SEMUA container tombol melayang
+            const fabContainers = document.querySelectorAll('.autohide-fab');
             window.addEventListener('scroll', function() {
                 let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
                 if (scrollTop > lastScrollTop && scrollTop > 200) {
                     // Scroll Down
-                    fabButtons.forEach(btn => btn.classList.add('fab-hidden'));
+                    fabContainers.forEach(container => container.classList.add('fab-hidden'));
                 } else {
                     // Scroll Up
-                    fabButtons.forEach(btn => btn.classList.remove('fab-hidden'));
+                    fabContainers.forEach(container => container.classList.remove('fab-hidden'));
                 }
                 lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
             }, false);
