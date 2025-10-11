@@ -479,21 +479,36 @@
             color: #004d40;
         }
         
-        /* --- [PERBAIKAN] TAMPILAN DETAIL PRODUK AGAR TIDAK TERPOTONG --- */
+        /* --- [PERBAIKAN & PENYEMPURNAAN] TAMPILAN DETAIL PRODUK AGAR TIDAK TERPOTONG --- */
         .gallery-detail-expanded {
+            /* Menggunakan flexbox untuk tata letak vertikal yang kuat dan fleksibel.
+               Ini memastikan semua elemen (gambar, deskripsi, tombol) tersusun rapi dari atas ke bawah. */
             display: flex;
-            flex-direction: column; /* Mengatur semua anak elemen (carousel, content, buttons) secara vertikal */
-            gap: 15px; /* Memberi jarak antara elemen-elemen tersebut */
+            flex-direction: column;
+            gap: 15px; /* Memberi jarak yang konsisten antar elemen di dalam detail box */
         }
-        .gallery-description {
-            height: auto; /* Biarkan tinggi menyesuaikan konten secara otomatis */
+
+        /* KUNCI PERBAIKAN:
+           Saat detail box aktif (di-klik), aturan ini akan menimpa `max-height: 1500px`
+           yang ada di file style.css. Dengan `max-height: none`, container bisa
+           mengembang setinggi apapun yang dibutuhkan oleh konten di dalamnya. */
+        .gallery-detail-expanded.active {
             max-height: none;
-            overflow: visible;
-            word-wrap: break-word; /* Memastikan teks panjang tidak meluber dan turun ke bawah */
-            white-space: pre-wrap; /* Menghormati spasi dan baris baru dari deskripsi */
         }
+
+        .gallery-description {
+            /* Memastikan area deskripsi bisa tumbuh secara dinamis sesuai panjang teks */
+            height: auto;
+            max-height: none;
+            overflow: visible; /* Mencegah konten terpotong */
+            word-wrap: break-word; /* Memaksa kata yang sangat panjang untuk pindah baris */
+            white-space: pre-wrap; /* Menjaga format seperti enter dan spasi berlebih dari data produk */
+        }
+
         .gallery-actions-expanded {
-            flex-shrink: 0; /* Mencegah container tombol menyusut dan memastikan selalu tampil */
+            /* Mencegah container tombol (WhatsApp & Telepon) agar tidak 'gepeng' atau menyusut
+               jika ada elemen lain yang memakan banyak ruang. */
+            flex-shrink: 0;
         }
         
         /* --- [REVISI & PERBAIKAN] LOGIKA SEMBUNYI/TAMPILKAN TOMBOL OTOMATIS --- */
