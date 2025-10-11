@@ -479,6 +479,23 @@
             color: #004d40;
         }
         
+        /* --- [PERBAIKAN] TAMPILAN DETAIL PRODUK AGAR TIDAK TERPOTONG --- */
+        .gallery-detail-expanded {
+            display: flex;
+            flex-direction: column; /* Mengatur semua anak elemen (carousel, content, buttons) secara vertikal */
+            gap: 15px; /* Memberi jarak antara elemen-elemen tersebut */
+        }
+        .gallery-description {
+            height: auto; /* Biarkan tinggi menyesuaikan konten secara otomatis */
+            max-height: none;
+            overflow: visible;
+            word-wrap: break-word; /* Memastikan teks panjang tidak meluber dan turun ke bawah */
+            white-space: pre-wrap; /* Menghormati spasi dan baris baru dari deskripsi */
+        }
+        .gallery-actions-expanded {
+            flex-shrink: 0; /* Mencegah container tombol menyusut dan memastikan selalu tampil */
+        }
+        
         /* --- [REVISI & PERBAIKAN] LOGIKA SEMBUNYI/TAMPILKAN TOMBOL OTOMATIS --- */
         /* Container untuk semua tombol di kanan */
         .contact-bar {
@@ -1185,13 +1202,6 @@
                         <i class="fab fa-android"></i>
                         <span>Download untuk Android</span>
                         <small>(via 4Shared)</small>
-                    </a>
-                </li>
-                <li class="coming-soon">
-                    <a href="#" onclick="return false;">
-                        <i class="fab fa-apple"></i>
-                        <span>Download untuk iOS</span>
-                        <small>(Segera Hadir)</small>
                     </a>
                 </li>
             </ul>
