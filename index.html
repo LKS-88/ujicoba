@@ -515,7 +515,7 @@
             background-color: rgba(0,0,0,0.6);
             z-index: 2000;
             justify-content: center;
-            align-items: flex-start; /* Align to top for better scrolling */
+            align-items: flex-start;
             overflow-y: auto;
             padding: 20px 0;
         }
@@ -529,7 +529,7 @@
             max-width: 340px;
             margin: 20px auto;
             box-shadow: var(--shadow-lg);
-            position: relative; /* CRITICAL FIX: This makes the watermark position relative to the receipt */
+            position: relative; 
             line-height: 1.5;
             -webkit-print-color-adjust: exact !important;
             print-color-adjust: exact !important;
@@ -792,7 +792,7 @@
                 left: 0;
                 top: 0;
                 width: 100%;
-                height: auto; /* IMPORTANT: Height is auto to prevent empty space */
+                height: auto; /* PENTING: Tinggi otomatis untuk mencegah ruang kosong */
                 background: none;
                 padding: 0;
                 margin: 0;
@@ -802,18 +802,18 @@
             }
             #receiptPrint {
                 width: 100%;
-                max-width: 100%; /* Use full printable width */
+                max-width: 100%; /* Gunakan lebar area cetak penuh */
                 box-shadow: none;
                 padding: 0;
                 margin: 0;
-                font-size: 10pt; /* Adjust font size for better readability on paper */
+                font-size: 10pt; /* Sesuaikan ukuran font agar mudah dibaca di kertas */
                 color: #000;
                 -webkit-print-color-adjust: exact !important;
                 print-color-adjust: exact !important;
             }
             
             .no-print {
-                display: none !important; /* Hide buttons when printing */
+                display: none !important; /* Sembunyikan tombol saat mencetak */
             }
         }
         /* ========================================================== */
@@ -1235,7 +1235,7 @@
     
     <div id="receiptContainer">
         <div id="receiptPrint">
-            <img src="https://raw.githubusercontent.com/LenteraKarya/transaksi/main/watermak-struk.png" class="receipt-watermark" alt="Watermark">
+            <img src="https://raw.githubusercontent.com/anekamarket/my.id/refs/heads/main/logo-anekamarket.png" class="receipt-watermark" alt="Watermark">
 
             <div class="receipt-header">
                 <div class="receipt-title" id="receiptStoreName">ONLINE STORE</div>
@@ -1755,21 +1755,20 @@
                     filename: `struk-${transactionId}.pdf`,
                     image: { type: 'jpeg', quality: 0.98 },
                     html2canvas: { 
-                        scale: 3, // Meningkatkan skala render untuk kualitas gambar yang lebih tinggi
+                        scale: 3, // Meningkatkan skala render untuk kualitas yang lebih tinggi
                         useCORS: true, 
-                        dpi: 300, // Resolusi tinggi
+                        dpi: 300, 
                         letterRendering: true,
                         logging: false 
                     },
                     jsPDF: { 
                         unit: 'mm', 
-                        // Format: [lebar, tinggi]. Lebar 72mm (umum untuk struk termal), tinggi 'auto' agar pas dengan konten
+                        // Format: [lebar, tinggi]. Lebar 72mm, tinggi 'auto' agar pas dengan konten
                         format: [72, 'auto'], 
                         orientation: 'portrait' 
                     }
                 };
 
-                // Membuat PDF dari elemen struk dengan opsi yang sudah disempurnakan
                 html2pdf().set(opt).from(element).save();
             });
             // ==========================================================
