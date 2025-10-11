@@ -382,7 +382,15 @@
             font-weight: 700;
             color: #004d40;
         }
-
+        
+        /* --- [PENYEMPURNAAN] LOGIKA SEMBUNYI/TAMPILKAN TOMBOL OTOMATIS --- */
+        .contact-bar {
+            transition: transform 0.4s ease-in-out;
+        }
+        .contact-bar.fab-hidden {
+            transform: translateX(calc(100% + 20px));
+        }
+        
         /* --- [FITUR TAMBAHAN & PERBAIKAN] TOMBOL PEMBAYARAN MENGAMBANG --- */
         .payment-fab {
             position: fixed;
@@ -400,11 +408,14 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.25);
             z-index: 1000;
             text-decoration: none;
-            transition: background-color 0.3s, transform 0.2s ease-in-out;
+            transition: background-color 0.3s, transform 0.4s ease-in-out; /* [PENYEMPURNAAN] Transisi diubah */
         }
         .payment-fab:hover {
             background-color: #0056b3;
             transform: scale(1.1);
+        }
+        .payment-fab.fab-hidden { /* [PENYEMPURNAAN] State tersembunyi */
+            transform: translateX(-calc(100% + 20px));
         }
         .payment-fab::before {
             content: '';
@@ -448,11 +459,14 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.25);
             z-index: 1001; 
             text-decoration: none;
-            transition: background-color 0.3s, transform 0.2s ease-in-out;
+            transition: background-color 0.3s, transform 0.4s ease-in-out; /* [PENYEMPURNAAN] Transisi diubah */
         }
         .maps-fab:hover {
             background-color: #3367D6; /* Warna lebih gelap saat hover */
             transform: scale(1.1);
+        }
+        .maps-fab.fab-hidden { /* [PENYEMPURNAAN] State tersembunyi */
+            transform: translateX(-calc(100% + 20px));
         }
 
         /* --- [FITUR BARU & PENYEMPURNAAN TAMPILAN] FORM GENERATOR --- */
@@ -473,11 +487,14 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.25);
             z-index: 1002;
             cursor: pointer;
-            transition: background-color 0.3s, transform 0.2s ease-in-out;
+            transition: background-color 0.3s, transform 0.4s ease-in-out; /* [PENYEMPURNAAN] Transisi diubah */
         }
         .generator-fab:hover {
             background-color: #218838;
             transform: scale(1.1);
+        }
+        .generator-fab.fab-hidden { /* [PENYEMPURNAAN] State tersembunyi */
+            transform: translateX(-calc(100% + 20px));
         }
         .generator-modal {
             display: none;
@@ -920,7 +937,7 @@
         </section>
     </div>
     
-    <div class="contact-bar">
+    <div class="contact-bar autohide-fab">
         <a href="https://wa.me/6285647709114" class="contact-btn whatsapp" target="_blank" aria-label="Hubungi via WhatsApp">
             <i class="fab fa-whatsapp"></i>
         </a>
@@ -932,15 +949,15 @@
         </button>
     </div>
 
-    <a href="https://www.anekamarket.my.id/aplikasipembayaran" class="payment-fab" target="_blank" aria-label="Aplikasi Pembayaran Kasir">
+    <a href="https://www.anekamarket.my.id/aplikasipembayaran" class="payment-fab autohide-fab" target="_blank" aria-label="Aplikasi Pembayaran Kasir">
         <i class="fas fa-cash-register"></i>
     </a>
     
-    <a href="https://www.anekamarket.my.id/googlemap.html" class="maps-fab" target="_blank" aria-label="Lihat Peta Lokasi">
+    <a href="https://www.anekamarket.my.id/googlemap.html" class="maps-fab autohide-fab" target="_blank" aria-label="Lihat Peta Lokasi">
         <i class="fas fa-map-marked-alt"></i>
     </a>
 
-    <div class="generator-fab" id="openGeneratorBtn" aria-label="Buka Generator Produk">
+    <div class="generator-fab autohide-fab" id="openGeneratorBtn" aria-label="Buka Generator Produk">
         <i class="fas fa-cogs"></i> 
     </div>
     
@@ -1772,7 +1789,22 @@
             const hideNotification = () => { if(offerNotification) { offerNotification.classList.remove('show'); sessionStorage.setItem('offerDismissed', 'true'); }}; 
             setTimeout(showNotification, 5000); 
             if(offerNotification) { offerNotification.addEventListener('click', (e) => { const t = e.target; if (t.id === 'closeNotification') hideNotification(); if (t.matches('.notification-btn')) { const a = t.dataset.action; if (a === 'close') hideNotification(); else if (a === 'next') { step1.classList.remove('active'); step2.classList.add('active'); } else if (a === 'register') { window.open('https://anekamarket.my.id/formulirpendaftaran', '_blank'); hideNotification(); } } }); }
-        
+            
+            // --- [PENYEMPURNAAN BARU] Logika untuk menyembunyikan tombol saat scroll ---
+            let lastScrollTop = 0;
+            const fabButtons = document.querySelectorAll('.autohide-fab');
+            window.addEventListener('scroll', function() {
+                let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                if (scrollTop > lastScrollTop && scrollTop > 200) {
+                    // Scroll Down
+                    fabButtons.forEach(btn => btn.classList.add('fab-hidden'));
+                } else {
+                    // Scroll Up
+                    fabButtons.forEach(btn => btn.classList.remove('fab-hidden'));
+                }
+                lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+            }, false);
+
             // --- [Penyempurnaan] Generator Logic ---
             const generatorModal = document.getElementById('generatorModal');
             const openGeneratorBtn = document.getElementById('openGeneratorBtn');
