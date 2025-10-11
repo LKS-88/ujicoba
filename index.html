@@ -535,7 +535,7 @@
             print-color-adjust: exact !important;
         }
         
-        /* This watermark is more reliable for html2pdf */
+        /* Watermark ini sengaja dipertahankan untuk menghormati pembuat asli */
         .receipt-watermark {
             position: absolute;
             top: 50%;
@@ -555,30 +555,33 @@
         .receipt-header {
             text-align: center;
             margin-bottom: 15px;
-            border-bottom: 1px dashed #000;
             padding-bottom: 10px;
         }
 
         .receipt-title {
             font-weight: bold;
-            font-size: 1.2rem;
+            font-size: 1.3rem;
             margin-bottom: 5px;
             text-transform: uppercase;
         }
 
         .receipt-address, .receipt-date, #receiptTransactionId {
-            font-size: 0.8rem;
+            font-size: 0.85rem;
             margin-bottom: 2px;
         }
 
+        .receipt-divider {
+            border-top: 1px dashed #000;
+            margin: 10px 0;
+        }
+        
         .receipt-items {
             padding: 10px 0;
-            margin-bottom: 10px;
-            border-bottom: 1px dashed #000;
+            min-height: 50px;
         }
 
         .receipt-item-line {
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             margin-bottom: 8px;
         }
         .receipt-item-line .item-name {
@@ -590,7 +593,7 @@
             justify-content: space-between;
             padding-left: 10px; /* Indent the breakdown */
         }
-
+        
         .receipt-total {
             padding-top: 5px;
             font-size: 0.9rem;
@@ -608,22 +611,18 @@
 
         .receipt-final-total {
             font-weight: bold;
-            font-size: 1rem;
-            border-top: 1px solid #000;
-            margin-top: 10px;
-            padding-top: 10px;
+            font-size: 1.1rem;
         }
 
         .receipt-footer {
             text-align: center;
             margin-top: 20px;
-            font-size: 0.8rem;
-            border-top: 1px dashed #000;
+            font-size: 0.85rem;
             padding-top: 10px;
         }
         
         .receipt-brand, .receipt-order-info {
-            font-size: 0.7rem;
+            font-size: 0.75rem;
             color: #555;
             margin-bottom: 5px;
         }
@@ -1231,17 +1230,26 @@
             <img src="https://raw.githubusercontent.com/LenteraKarya/transaksi/main/watermak-struk.png" class="receipt-watermark" alt="Watermark">
 
             <div class="receipt-header">
-                <div class="receipt-brand">www.aplikasiusaha.com</div>
-                <div class="receipt-brand">Lentera Karya Situbondo</div>
                 <div class="receipt-title" id="receiptStoreName">ONLINE STORE</div>
                 <div class="receipt-address" id="receiptStoreAddress">Kabupaten Situbondo - Provinsi Jawa Timur</div>
                 <div class="receipt-address" id="receiptStorePhone">Telp: 081234567890</div>
-                <div class="receipt-date" id="receiptDate">01/01/2023 10:00:00</div>
-                <div id="receiptTransactionId">No. Transaksi: T20230101000000</div>
             </div>
+            
+            <div class="receipt-divider"></div>
+
+            <div class="receipt-info">
+                <div class="receipt-total-row">
+                    <span id="receiptDate">01/01/2023 10:00:00</span>
+                    <span id="receiptTransactionId">T20230101000000</span>
+                </div>
+            </div>
+
+            <div class="receipt-divider"></div>
             
             <div class="receipt-items" id="receiptItems">
                 </div>
+            
+            <div class="receipt-divider"></div>
             
             <div class="receipt-total">
                 <div class="receipt-total-row">
@@ -1264,6 +1272,11 @@
                     <span>TOTAL</span>
                     <span id="receiptTotal">Rp 0</span>
                 </div>
+            </div>
+            
+            <div class="receipt-divider"></div>
+
+            <div class="receipt-payment-details">
                 <div class="receipt-total-row">
                     <span id="receiptPaymentMethod">Tunai</span>
                     <span id="receiptPaymentAmount">Rp 0</span>
@@ -1275,10 +1288,12 @@
             </div>
 
             <div class="receipt-footer">
+                <div class="receipt-divider"></div>
                 <div>Terima kasih telah berbelanja</div>
-                <div class="receipt-order-info">Order Aplikasi Payment Pro</div>
-                <div class="receipt-order-info">kirim email: info@aplikasiusaha.com</div>
-                <div>Kasir: <span id="receiptCashier">Admin</span></div>
+                 <div>Kasir: <span id="receiptCashier">Admin</span></div>
+                <br>
+                <div class="receipt-brand">www.aplikasiusaha.com</div>
+                <div class="receipt-order-info">Order Aplikasi: info@aplikasiusaha.com</div>
             </div>
             
             <div class="print-button no-print">
@@ -1507,14 +1522,14 @@
                 $('#receiptStoreName').text(storeInfo.storeName);
                 $('#receiptStoreAddress').text(storeInfo.storeAddress);
                 $('#receiptStorePhone').text(`Telp: ${storeInfo.storePhone}`);
-                $('#receiptDate').text(moment(transaction.date).format('DD/MM/YYYY HH:mm:ss'));
-                $('#receiptTransactionId').text(`No. Transaksi: ${transaction.id}`);
+                $('#receiptDate').text(moment(transaction.date).format('DD/MM/YY HH:mm'));
+                $('#receiptTransactionId').text(`No: ${transaction.id}`);
                 
                 const itemsHtml = transaction.items.map(item => `
                     <div class="receipt-item-line">
                         <div class="item-name">${item.product.name}</div>
                         <div class="item-breakdown">
-                            <span>${item.quantity} x ${formatCurrency(item.product.price)}</span>
+                            <span>${item.quantity}x @${(item.product.price || 0).toLocaleString('id-ID')}</span>
                             <span>${formatCurrency(item.product.price * item.quantity)}</span>
                         </div>
                     </div>
