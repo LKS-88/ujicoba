@@ -544,10 +544,22 @@
             gap: 15px;
             margin-top: 15px; /* Memberi jarak dari tombol di atasnya */
             animation: fadeIn 0.5s ease-in-out;
+            
+            /* [REVISI] Menambahkan flex-grow agar section ini mengisi ruang yang tersedia */
+            flex-grow: 1;
+            /* [REVISI] Menambahkan overflow dan min-height untuk mencegah konten meluap dan memastikan flexbox bekerja benar */
+            overflow: hidden;
+            min-height: 0;
         }
 
         .gallery-detail-expanded.active {
             display: flex; /* Ditampilkan saat aktif */
+        }
+        
+        /* [PENAMBAHAN] Membuat area konten (deskripsi dan spesifikasi) bisa di-scroll jika terlalu panjang */
+        .gallery-detail-expanded .gallery-content {
+            overflow-y: auto;
+            padding-right: 10px; /* Memberi sedikit ruang untuk scrollbar */
         }
         
         .gallery-description {
@@ -556,7 +568,7 @@
         }
 
         .gallery-actions-expanded {
-           margin-top: auto; /* Mendorong tombol ke bawah jika ada ruang ekstra */
+           margin-top: auto; /* Mendorong tombol ke bawah jika ada ruang ekstra, ini akan bekerja dengan benar sekarang */
            padding-top: 15px; /* Memberi jarak dari konten di atasnya */
            flex-shrink: 0; /* Mencegah container tombol agar tidak menyusut */
         }
@@ -1540,7 +1552,7 @@
         </div>
     </div>
     
-    <audio id="buttonSound" src="https://raw.githubusercontent.com/LenteraKarya/Lentera-Karya/main/assets/audio/audiotombol.mp3"></audio>
+    <audio id="buttonSound" src="https://voca.ro/1BjrRUnRSEqJ"></audio>
     
     <script>
         // --- [PERUBAHAN] DATA PRODUK KINI DALAM FORMAT JSON YANG VALID ---
