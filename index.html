@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Online Store Pro</title>
+    <title>Online Store Pro - Final Version</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
@@ -444,9 +444,6 @@
             text-align: center; margin-bottom: 20px; color: var(--primary-color); font-size: 1.5rem; font-weight: 600;
         }
         
-        /* ========================================================== */
-        /* START: FINAL REVISED CODE FOR RECEIPT LAYOUT & WATERMARK   */
-        /* ========================================================== */
         #receiptContainer {
             display: none;
             position: fixed;
@@ -468,7 +465,7 @@
             font-family: 'Courier New', monospace;
             color: #000;
             width: 100%;
-            max-width: 340px; /* Lebar struk thermal */
+            max-width: 340px;
             margin: 20px auto;
             box-shadow: var(--shadow-lg);
             line-height: 1.5;
@@ -478,7 +475,7 @@
         
         .receipt-body-content {
             position: relative;
-            z-index: 2; /* Pastikan konten di atas watermark */
+            z-index: 2;
         }
 
         .receipt-watermark {
@@ -488,7 +485,7 @@
             transform: translate(-50%, -50%);
             width: 70%;
             opacity: 0.08;
-            z-index: 1; /* Di bawah konten */
+            z-index: 1;
             pointer-events: none;
         }
 
@@ -510,9 +507,6 @@
         .receipt-final-total { font-weight: bold; font-size: 1.1rem; }
         .receipt-footer { text-align: center; margin-top: 20px; font-size: 0.85rem; }
         .receipt-brand, .receipt-order-info { font-size: 0.75rem; color: #555; margin-bottom: 5px; }
-        /* ========================================================== */
-        /* END: FINAL REVISED CODE FOR RECEIPT                        */
-        /* ========================================================== */
         
         .ml-2 { margin-left: 10px; }
         .mt-4 { margin-top: 20px; }
@@ -562,11 +556,7 @@
             color: var(--primary-color); font-weight: 500;
         }
         .additional-fee-details { display: none; margin-top: 10px; padding: 10px; background-color: #f9f9f9; border-radius: var(--rounded-sm); }
-        .additional-fee-description { font-size: 0.8rem; color: #666; margin-top: 5px; }
-
-        /* ========================================================== */
-        /* START: REVISED AND IMPROVED PRINT STYLES                   */
-        /* ========================================================== */
+        
         @media print {
             html, body {
                 width: 100%; height: 100%; background: #fff !important; margin: 0; padding: 0;
@@ -588,9 +578,6 @@
             .receipt-watermark { opacity: 0.06 !important; }
             .no-print { display: none !important; }
         }
-        /* ========================================================== */
-        /* END: REVISED AND IMPROVED PRINT STYLES                     */
-        /* ========================================================== */
         
         @media (max-width: 768px) {
             .main-content { flex-direction: column; }
@@ -1017,7 +1004,6 @@
     document.addEventListener('DOMContentLoaded', function() {
         moment.locale('id');
 
-        // --- Constants for Local Storage Keys ---
         const STORAGE_KEYS = {
             PRODUCTS: 'online_store_products_v3',
             TRANSACTIONS: 'online_store_transactions_v3',
@@ -1026,7 +1012,6 @@
             SETTINGS: 'online_store_settings_v3'
         };
         
-        // --- State Management ---
         let products = JSON.parse(localStorage.getItem(STORAGE_KEYS.PRODUCTS)) || [];
         let transactions = JSON.parse(localStorage.getItem(STORAGE_KEYS.TRANSACTIONS)) || [];
         let storeInfo = JSON.parse(localStorage.getItem(STORAGE_KEYS.STORE_INFO)) || null;
@@ -1050,7 +1035,6 @@
         };
         let currentCart = JSON.parse(localStorage.getItem(STORAGE_KEYS.CURRENT_CART)) || JSON.parse(JSON.stringify(initialCartState));
 
-        // --- UI Helper Functions ---
         const showToast = (message, type = 'info', duration = 3000) => {
             const toast = $('#toast');
             toast.removeClass('success error warning info').addClass(type);
@@ -1086,20 +1070,18 @@
         const closeModal = (modalId) => $(modalId).removeClass('show');
         const formatCurrency = (amount) => 'Rp ' + (amount || 0).toLocaleString('id-ID');
 
-        // --- Data Persistence Functions ---
         const saveProducts = () => localStorage.setItem(STORAGE_KEYS.PRODUCTS, JSON.stringify(products));
         const saveTransactions = () => localStorage.setItem(STORAGE_KEYS.TRANSACTIONS, JSON.stringify(transactions));
         const saveCurrentCart = () => localStorage.setItem(STORAGE_KEYS.CURRENT_CART, JSON.stringify(currentCart));
         const saveSettings = () => localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(settings));
         const saveStoreInfo = () => localStorage.setItem(STORAGE_KEYS.STORE_INFO, JSON.stringify(storeInfo));
 
-        // --- Core Application Logic ---
         const calculateCart = () => {
             currentCart.subtotal = currentCart.items.reduce((total, item) => total + (item.product.price * item.quantity), 0);
             
             if (currentCart.discountType === 'percentage') {
                 currentCart.discountAmount = currentCart.subtotal * (currentCart.discountValue / 100);
-            } else { // Fixed amount
+            } else {
                 currentCart.discountAmount = Math.min(currentCart.discountValue, currentCart.subtotal);
             }
 
@@ -1112,14 +1094,13 @@
         };
         
         const resetCart = () => {
-            currentCart = JSON.parse(JSON.stringify(initialCartState)); // Deep copy to reset
+            currentCart = JSON.parse(JSON.stringify(initialCartState));
             saveCurrentCart();
             updateCartUI();
             $('#paymentAmount').val('');
             $('#cash').prop('checked', true);
         };
 
-        // --- UI Rendering ---
         const updateCurrentDate = () => {
             $('#currentDate').text(moment().format('dddd, D MMMM YYYY, HH:mm'));
         };
@@ -1232,8 +1213,6 @@
             calculateCart();
             $('#mainApp').fadeIn();
         };
-
-        // --- Event Handlers ---
 
         $('#setupForm').on('submit', function(e) {
             e.preventDefault();
@@ -1380,62 +1359,45 @@
         $('#closeReceiptBtn').on('click', () => $('#receiptContainer').hide());
 
         // ========================================================== //
-        // START: PERBAIKAN DAN PENYEMPURNAAN FUNGSI UNDUH PDF        //
+        // START: FINAL REVISED PDF DOWNLOAD FUNCTION (STABLE)        //
         // ========================================================== //
-        $('#downloadReceiptBtn').on('click', function() {
+        $('#downloadReceiptBtn').on('click', async function() {
             const btn = $(this);
             const originalHtml = btn.html();
             btn.prop('disabled', true).html('<span class="spinner"></span> Mengunduh...');
-            showLoading('Membuat PDF...');
-            
+            showLoading('Mempersiapkan PDF...');
+
             const transactionId = $('#receiptTransactionId').text().replace('No: ', '');
-            
-            // 1. Kloning elemen struk untuk dimanipulasi tanpa mengubah tampilan asli
-            const element = $('#receiptPrint').clone();
-            
-            // 2. Terapkan gaya khusus untuk PDF pada elemen kloningan
-            element.css({
-                'width': '80mm',      // Atur lebar sesuai kertas thermal
-                'maxWidth': '80mm',   // Pastikan lebar tidak melebihi
-                'padding': '5px',     // Kurangi padding untuk PDF
-                'boxShadow': 'none',  // Hapus bayangan
-                'margin': '0',        // Hapus margin
-                'fontSize': '10pt'    // Sesuaikan ukuran font jika perlu
-            });
-            
-            // 3. Sembunyikan elemen kloningan dan tambahkan ke body agar bisa dirender
-            element.css({
-                'position': 'absolute',
-                'left': '-9999px',
-                'top': '0'
-            });
-            $('body').append(element);
-            
-            // 4. Konfigurasi html2pdf yang sudah dioptimalkan
+            const element = document.getElementById('receiptPrint');
+
             const opt = {
-                margin: 0,
-                filename: `struk-${transactionId}.pdf`,
-                image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { scale: 2, useCORS: true },
-                jsPDF: { unit: 'mm', format: [80, 297], orientation: 'portrait' } // Format: [lebar, tinggi], tinggi bisa disesuaikan
+                margin:       [2, 2, 2, 2], // margin kecil [atas, kiri, bawah, kanan] dalam mm
+                filename:     `struk-${transactionId}.pdf`,
+                image:        { type: 'jpeg', quality: 1.0 },
+                html2canvas:  { scale: 4, logging: false, useCORS: true, allowTaint: true },
+                jsPDF:        { unit: 'mm', format: 'a7', orientation: 'portrait' }, // Format A7 cocok untuk struk
+                pagebreak:    { mode: 'avoid-all' } // Hindari halaman terpotong
             };
 
-            // 5. Jalankan proses pembuatan PDF pada elemen kloningan
-            html2pdf().from(element[0]).set(opt).save().then(() => {
-                btn.prop('disabled', false).html(originalHtml);
-                hideLoading();
+            try {
+                // Menggunakan .from().set().toPdf().get('pdf').then().save() untuk kontrol penuh
+                const worker = html2pdf().from(element).set(opt);
+                await worker.toPdf().get('pdf').then((pdf) => {
+                    const totalPages = pdf.internal.getNumberOfPages();
+                    // Optional: bisa menambahkan footer nomor halaman jika perlu
+                }).save();
+
                 showToast('Struk berhasil diunduh.', 'success');
-                element.remove(); // Hapus elemen kloningan setelah selesai
-            }).catch(err => {
-                console.error("PDF generation error:", err);
-                showToast('Gagal mengunduh PDF.', 'error');
+            } catch (error) {
+                console.error("Gagal membuat PDF:", error);
+                showToast('Gagal mengunduh PDF. Coba lagi.', 'error');
+            } finally {
                 btn.prop('disabled', false).html(originalHtml);
                 hideLoading();
-                element.remove(); // Pastikan elemen kloningan dihapus jika terjadi error
-            });
+            }
         });
         // ========================================================== //
-        // END: PERBAIKAN DAN PENYEMPURNAAN FUNGSI UNDUH PDF          //
+        // END: FINAL REVISED PDF DOWNLOAD FUNCTION                   //
         // ========================================================== //
         
         $('#settingsButton').on('click', () => {
