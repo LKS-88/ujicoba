@@ -1708,14 +1708,13 @@
                     img.src = qrDataUrl;
                 });
             }
-
-            // --- [REVISI TOTAL] Fungsi Generate PDF Cerdas ---
+            
+            // --- [PERBAIKAN & PENYEMPURNAAN] Fungsi Generate PDF Cerdas ---
             async function generateAndDownloadReceipt(productData, orderDetails) {
                 const doc = new jsPDF();
                 const transactionId = `TRX-${productData.code}-${Date.now()}`;
                 const logoUrl = 'https://raw.githubusercontent.com/LKS-88/anekamarket/refs/heads/main/Logo-Anekamarketku.png';
                 
-                // Fungsi helper untuk mengubah URL gambar menjadi Base64
                 const toDataURL = url => fetch(url)
                     .then(response => response.blob())
                     .then(blob => new Promise((resolve, reject) => {
@@ -1728,13 +1727,10 @@
                 try {
                     const logoBase64 = await toDataURL(logoUrl);
                     
-                    // Pengaturan Dokumen
                     const pageW = doc.internal.pageSize.getWidth();
-                    const pageH = doc.internal.pageSize.getHeight();
                     const margin = 15;
                     let y = 0;
 
-                    // Pengaturan Warna
                     const brandColor = '#007bff'; const darkColor = '#212529';
                     const lightColor = '#f8f9fa'; const grayColor = '#6c757d';
                     const borderColor = '#dee2e6';
@@ -1752,22 +1748,21 @@
 
                     y = 55;
                     
-                    // --- Judul Dokumen (Dinamis Sesuai Tipe Order) ---
+                    // --- [REVISI] Judul Dokumen Dinamis Sesuai Tipe Order ---
                     doc.setFontSize(24).setFont(undefined, 'bold').setTextColor(darkColor);
-                    const docTitle = orderDetails.type === 'PRE-ORDER' ? 'BUKTI PRE-ORDER' : 'INVOICE PEMESANAN';
+                    const docTitle = orderDetails.type === 'PRE-ORDER' ? 'BUKTI PRE-ORDER' : 'NOTA PEMESANAN';
                     doc.text(docTitle, pageW / 2, y, { align: 'center' });
 
                     y += 15;
                     
-                    // --- Informasi Transaksi ---
+                    // --- [REVISI] Perbaikan Layout Informasi Transaksi ---
                     doc.setFontSize(10).setTextColor(grayColor);
                     doc.text('DITERBITKAN UNTUK:', margin, y);
                     doc.text('DETAIL TRANSAKSI:', pageW / 2 + 10, y);
                     doc.setDrawColor(borderColor);
                     doc.line(margin, y + 2, pageW - margin, y + 2);
-
                     y += 8;
-
+                    
                     doc.setFontSize(11).setFont(undefined, 'bold').setTextColor(darkColor);
                     doc.text('Pelanggan Anekamarket', margin, y);
                     
@@ -1778,15 +1773,17 @@
                         productData.seller?.name || 'N/A'
                     ];
 
+                    let transactionDetailsY = y;
                     doc.setFontSize(10).setFont(undefined, 'normal');
                     for (let i = 0; i < infoLabels.length; i++) {
                         doc.setTextColor(grayColor);
-                        doc.text(infoLabels[i], pageW / 2 + 10, y + (i * 6));
+                        doc.text(infoLabels[i], pageW / 2 + 10, transactionDetailsY);
                         doc.setTextColor(darkColor);
-                        doc.text(infoValues[i], pageW - margin, y + (i * 6), { align: 'right' });
+                        doc.text(infoValues[i], pageW - margin, transactionDetailsY, { align: 'right' });
+                        transactionDetailsY += 7; // Spasi antar baris yang lebih baik
                     }
 
-                    y += 30;
+                    y = transactionDetailsY + 10; // Posisi Y selanjutnya setelah detail transaksi
 
                     // --- Tabel Detail Item ---
                     const tableHeaderY = y;
@@ -1854,14 +1851,14 @@
                     doc.setTextColor(brandColor);
                     doc.text(finalAmount, pageW - margin, y + 8, { align: 'right' });
 
-                    // --- Footer & Disclaimer ---
-                    y = pageH - 40;
+                    // --- [REVISI] Footer & Disclaimer Sesuai Permintaan ---
+                    y = doc.internal.pageSize.getHeight() - 40;
                     doc.setDrawColor(borderColor);
                     doc.line(margin, y, pageW - margin, y);
                     y += 8;
                     
                     doc.setFontSize(8).setFont(undefined, 'italic').setTextColor(grayColor);
-                    const noteText = doc.splitTextToSize('Struk ini merupakan bukti pemesanan yang sah dan dibuat secara otomatis oleh sistem. Harap simpan struk ini untuk proses konfirmasi pembayaran dengan penjual. Ini BUKAN struk/nota pembelian final.', pageW - margin * 2 - 30);
+                    const noteText = doc.splitTextToSize('Struk ini merupakan bukti pemesanan yang sah dan dibuat secara otomatis oleh sistem. Harap simpan struk ini untuk proses konfirmasi pembayaran dengan penjual. Ini BUKAN struk/nota pembelian final yang wajib diterbitkan oleh gerai.', pageW - margin * 2 - 30);
                     doc.text(noteText, margin, y);
                     
                     const qr = qrcode(0, 'M');
@@ -1871,13 +1868,14 @@
                     const blueQrCodeImage = await colorizeQrCode(blackQrCodeImage, {r: 0, g: 123, b: 255});
                     doc.addImage(blueQrCodeImage, 'PNG', pageW - margin - 22, y, 22, 22);
 
-                    y = pageH - 10;
+                    y = doc.internal.pageSize.getHeight() - 10;
                     doc.setFontSize(8).setFont(undefined, 'normal').setTextColor(grayColor);
                     const footerText = `© ${new Date().getFullYear()} ANEKAMARKET | Developed by www.anekamarket.my.id`;
                     doc.text(footerText, pageW / 2, y, { align: 'center' });
 
-                    // --- [PENYEMPURNAAN] Auto-download dengan nama file dinamis ---
-                    doc.save(`Struk-${productData.seller.name}-${transactionId}.pdf`);
+                    // --- [REVISI] Auto-download dengan nama file dinamis ---
+                    const safeSellerName = (productData.seller.name || 'Gerai').replace(/[^a-z0-9]/gi, '_');
+                    doc.save(`Struk-${safeSellerName}-${transactionId}.pdf`);
 
                 } catch (error) { 
                     console.error("PDF Generation Error:", error);
@@ -1885,7 +1883,6 @@
                 }
             }
 
-            // --- [REVISI UTAMA] Fungsi pembuatan kartu produk diperbaiki ---
             function createProductCardHTML(product) {
                  const hasPriceVariations = product.priceVariations && product.priceVariations.length > 0;
                  
@@ -1913,7 +1910,6 @@
                     ? `<a href="${product.seller.locationLink}" target="_blank" class="btn-visit btn-location"><i class="fas fa-map-marker-alt"></i> Lokasi</a>`
                     : `<button class="btn-visit btn-location-disabled" onclick="alert('Belum Menetapkan Lokasi')"><i class="fas fa-map-marker-alt"></i> Lokasi</button>`;
 
-                // [REVISI] Tombol WhatsApp & Telepon didefinisikan di sini untuk dipindahkan
                 const whatsappButtonHTML = `<a href="https://wa.me/${product.contact?.whatsapp || ''}?text=Halo%20${encodeURIComponent(product.seller?.name || '')},%20saya%20tertarik%20dengan%20produk%20${encodeURIComponent(product.title || '')}%20(${product.code || ''})" class="btn-whatsapp" target="_blank"><i class="fab fa-whatsapp"></i> Chat</a>`;
                 const phoneButtonHTML = `<a href="tel:${product.contact?.phone || ''}" class="btn-call"><i class="fas fa-phone-alt"></i> Telepon</a>`;
 
@@ -1997,7 +1993,7 @@
                     let currentIndex = 0;
                     let slideInterval;
 
-                    if (images.length <= 1) return; // Don't start slider if only one image
+                    if (images.length <= 1) return;
 
                     const showSlide = (index) => {
                         images.forEach((img, i) => img.classList.toggle('active', i === index));
@@ -2010,7 +2006,7 @@
                     };
 
                     const startSlider = () => {
-                        stopSlider(); // Ensure no multiple intervals are running
+                        stopSlider();
                         slideInterval = setInterval(nextSlide, 3000);
                     };
 
@@ -2035,7 +2031,6 @@
             }
             initializeProductSliders();
 
-
             function initCardEventListeners(container) {
                  const updateGrandTotal = (productCard) => {
                     let grandTotal = 0;
@@ -2057,7 +2052,6 @@
                     const productCard = target.closest('.gallery-item');
                     if (!productCard) return;
 
-                    // --- [PERBAIKAN] Logika Tombol ---
                     if (target.closest('.btn-toggle-prices')) {
                         playButtonSound();
                         const btn = target.closest('.btn-toggle-prices');
@@ -2069,7 +2063,6 @@
                             : '<i class="fas fa-tags"></i> Cek Harga';
                     }
 
-                    // --- [REVISI TOTAL] Logika Tombol Detail dengan fitur auto-collapse ---
                     if (target.closest('.btn-detail')) {
                         playButtonSound();
                         const btn = target.closest('.btn-detail');
@@ -2153,22 +2146,26 @@
                         let itemsText = details.items.map(item => `   - ${item.name} (x${item.quantity})`).join('\n');
                         let totalText = `Total Harga: *${formatPrice(details.grandTotal)}*`;
                         if(details.type === 'PRE-ORDER') totalText += `\nUang Muka: *${details.dpAmount}*`;
-                        return `Halo, saya ingin memesan produk dari *${product.seller?.name || 'N/A'}*:\n\n*${product.title}*\n${itemsText}\n\nSatuan: ${details.unit}\n${totalText}\n\nBukti pemesanan sudah saya unduh. Mohon info lebih lanjut untuk proses selanjutnya. Terima kasih.`;
+                        const orderType = details.type === 'PRE-ORDER' ? 'PRE-ORDER' : 'PEMESANAN';
+                        return `Halo, saya ingin melakukan *${orderType}* untuk produk dari *${product.seller?.name || 'N/A'}*:\n\n*${product.title}*\n${itemsText}\n\nSatuan: ${details.unit}\n${totalText}\n\nBukti pemesanan sudah saya unduh. Mohon info lebih lanjut untuk proses selanjutnya. Terima kasih.`;
                     }
-
+                    
+                    // --- [REVISI] Alur proses order cerdas ---
                     const processOrder = async (type) => {
                         const orderDetails = gatherOrderDetails(type);
                         if (orderDetails) {
                             const confirmationMessage = type === 'PRE-ORDER'
-                                ? `Anda akan melakukan Pre-Order dengan total ${formatPrice(orderDetails.grandTotal)} dan DP ${orderDetails.dpAmount}.\n\nLanjutkan?`
-                                : `Anda akan memesan dengan total ${formatPrice(orderDetails.grandTotal)}.\n\nLanjutkan?`;
+                                ? `Anda akan melakukan Pre-Order dengan total ${formatPrice(orderDetails.grandTotal)} dan DP ${orderDetails.dpAmount}.\n\nSistem akan mengunduh bukti pre-order secara otomatis, lalu mengarahkan Anda ke WhatsApp penjual.\n\nLanjutkan?`
+                                : `Anda akan memesan dengan total ${formatPrice(orderDetails.grandTotal)}.\n\nSistem akan mengunduh nota pemesanan secara otomatis, lalu mengarahkan Anda ke WhatsApp penjual.\n\nLanjutkan?`;
 
                             if (confirm(confirmationMessage)) {
                                 playButtonSound();
-                                // Gunakan await untuk memastikan PDF selesai sebelum lanjut
+                                // Langkah 1: Generate dan picu unduh otomatis PDF
                                 await generateAndDownloadReceipt(productData, orderDetails);
-                                // Arahkan ke WhatsApp setelah PDF di-generate
-                                window.open(`https://wa.me/${productData.contact?.whatsapp}?text=${encodeURIComponent(generateWhatsAppMessage(productData, orderDetails))}`, '_blank');
+                                // Langkah 2: Arahkan ke WhatsApp setelah PDF diunduh
+                                setTimeout(() => {
+                                  window.open(`https://wa.me/${productData.contact?.whatsapp}?text=${encodeURIComponent(generateWhatsAppMessage(productData, orderDetails))}`, '_blank');
+                                }, 500); // Penundaan singkat untuk memastikan unduhan dimulai
                             }
                         }
                     };
@@ -2260,7 +2257,6 @@
             const contactForm = document.getElementById('contactForm'); if (contactForm) { contactForm.addEventListener('submit', function(e) { /* Biarkan default action dari formsubmit.co berjalan */ }); }
             const orderModal = document.getElementById('orderModal'); const quickOrderBtn = document.getElementById('quick-order'); if (orderModal && quickOrderBtn) { quickOrderBtn.addEventListener('click', () => { orderModal.classList.add('show'); body.style.overflow = 'hidden'; playButtonSound(); }); }
             
-            // --- [PENambahan] Logika untuk Modal Download Aplikasi ---
             const downloadAppBtn = document.getElementById('downloadAppBtn');
             const downloadModal = document.getElementById('downloadModal');
             if (downloadAppBtn && downloadModal) {
@@ -2274,12 +2270,11 @@
             
             document.querySelectorAll('.modal, .image-modal, .search-modal').forEach(modal => { modal.addEventListener('click', (e) => { if (e.target === modal || e.target.classList.contains('close-modal') || e.target.classList.contains('close-image-modal') || e.target.classList.contains('close-search-modal')) { modal.classList.remove('show'); body.style.overflow = ''; } }); });
             
-            // --- [PENYEMPURNAAN] Fungsi Notifikasi Suara ---
             const buttonSound = document.getElementById('buttonSound'); 
             function playButtonSound() { 
                 if(buttonSound) { 
                     buttonSound.currentTime = 0; 
-                    buttonSound.play().catch(() => {}); // Menangani error jika autoplay diblokir
+                    buttonSound.play().catch(() => {});
                 } 
             }
 
@@ -2339,7 +2334,6 @@
                 lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
             }, false);
 
-            // --- Generator Logic ---
             const generatorModal = document.getElementById('generatorModal');
             const openGeneratorBtn = document.getElementById('openGeneratorBtn');
             const closeGeneratorModalBtn = document.getElementById('closeGeneratorModal');
@@ -2508,7 +2502,7 @@
                         generatorPreviewContainer.style.display = 'block';
                         outputContainer.style.display = 'none';
                         initCardEventListeners(previewTarget);
-                        initializeProductSliders(); // Initialize slider for the preview
+                        initializeProductSliders();
                         generatorPreviewContainer.scrollIntoView({ behavior: 'smooth' });
                         playButtonSound();
                     } catch(e){ alert("Gagal membuat preview. Pastikan semua field wajib diisi dengan benar."); }
