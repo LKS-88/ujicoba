@@ -2129,7 +2129,11 @@
                         return `Halo, saya ingin melakukan *${orderType}* untuk produk dari *${product.seller?.name || 'N/A'}*:\n\n*${product.title}*\n${itemsText}\n\nSatuan: ${details.unit}\n${totalText}\n\nBukti pemesanan sudah saya unduh. Mohon info lebih lanjut untuk proses selanjutnya. Terima kasih.`;
                     }
                     
-                    // --- [IMPLEMENTASI & PENYEMPURNAAN] Alur proses order cerdas: Unduh Otomatis, lalu Arahkan ke WhatsApp ---
+                    // [PENYEMPURNAAN SESUAI PERMINTAAN] Alur proses order cerdas: 
+                    // 1. Unduh Struk/Nota PDF secara otomatis.
+                    // 2. Langsung arahkan ke aplikasi WhatsApp pengguna dengan pesan yang sudah diisi.
+                    // Metode `https://wa.me/...` adalah cara standar dan paling ramah pengguna untuk membuka obrolan WhatsApp secara langsung, 
+                    // ini BUKAN API yang rumit dan berfungsi di semua perangkat (ponsel & desktop).
                     const processOrder = async (type) => {
                         const orderDetails = gatherOrderDetails(type);
                         if (orderDetails) {
@@ -2139,22 +2143,28 @@
 
                             if (confirm(confirmationMessage)) {
                                 playButtonSound();
-                                // Langkah 1: Generate dan picu unduh otomatis PDF
+                                // Langkah 1: Generate dan picu unduh otomatis PDF. Fungsi ini menunggu hingga proses PDF selesai.
                                 await generateAndDownloadReceipt(productData, orderDetails);
                                 
-                                // Langkah 2: Arahkan ke WhatsApp setelah PDF diunduh
+                                // Langkah 2: Setelah PDF diunduh, arahkan pengguna ke aplikasi WhatsApp.
+                                // Penundaan singkat untuk memastikan unduhan file dimulai tanpa masalah di browser.
                                 setTimeout(() => {
+                                  // Penggunaan `wa.me` akan membuka aplikasi WhatsApp (jika terinstal) atau WhatsApp Web.
+                                  // Pesan yang sudah dibuat sebelumnya (`generateWhatsAppMessage`) akan otomatis terisi,
+                                  // memudahkan konsumen dan pelaku usaha yang awam sekalipun.
                                   window.open(`https://wa.me/${productData.contact?.whatsapp}?text=${encodeURIComponent(generateWhatsAppMessage(productData, orderDetails))}`, '_blank');
-                                }, 500); // Penundaan singkat untuk memastikan unduhan dimulai
+                                }, 500); 
                             }
                         }
                     };
 
                     if (target.closest('.btn-order')) {
+                        // Memproses pesanan langsung
                         await processOrder('PEMESANAN LANGSUNG');
                     }
                     
                     if (target.closest('.btn-preorder')) {
+                        // Memproses pesanan pre-order
                         await processOrder('PRE-ORDER');
                     }
                 });
