@@ -340,8 +340,20 @@
         
         .btn-visit { display: flex; align-items: center; justify-content: center; background-color: #28a745; color: white; padding: 8px 12px; border-radius: 5px; text-decoration: none; font-weight: 500; font-size: 0.85rem; transition: background-color 0.3s; flex: 1; text-align: center; }
         .btn-visit:hover { background-color: #218838; }
-        .gallery-actions { display: flex; gap: 10px; flex-wrap: wrap; }
-        .gallery-actions .btn-detail, .gallery-actions .btn-order, .gallery-actions .btn-preorder-toggle, .gallery-actions .btn-visit, .gallery-actions .btn-toggle-prices { flex-grow: 1; min-width: 120px; }
+        
+        /* --- [REVISI TOTAL & PERBAIKAN] LOGIKA TOMBOL DAN DESKRIPSI --- */
+        .gallery-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: auto;      /* Mendorong tombol ke bagian bawah container flex */
+            padding-top: 15px;     /* Memberi jarak dari konten di atasnya */
+            flex-shrink: 0;        /* Mencegah tombol menyusut */
+        }
+        .gallery-actions .btn-detail, .gallery-actions .btn-order, .gallery-actions .btn-preorder-toggle, .gallery-actions .btn-visit, .gallery-actions .btn-toggle-prices {
+            flex-grow: 1;
+            min-width: 120px;
+        }
         
         /* --- [REVISI TOTAL] SLIDER GAMBAR OTOMATIS --- */
         .gallery-image-container {
@@ -538,21 +550,18 @@
             padding: 20px;
         }
 
-        /* [ATURAN BARU YANG LEBIH SPESIFIK DAN KUAT] */
-        .gallery-item .gallery-details .gallery-detail-expanded {
-            display: none; /* Aturan ini sekarang lebih kuat untuk memastikan elemen tersembunyi */
+        .gallery-detail-expanded {
+            display: none; 
             flex-direction: column;
             gap: 15px;
             margin-top: 15px;
             animation: fadeIn 0.5s ease-in-out;
-            flex-grow: 1;
             overflow: hidden;
             min-height: 0;
         }
-
-        /* [ATURAN BARU YANG LEBIH SPESIFIK DAN KUAT] */
-        .gallery-item .gallery-details .gallery-detail-expanded.active {
-            display: flex; /* Ditampilkan saat aktif */
+        
+        .gallery-detail-expanded.active {
+            display: flex;
         }
         
         .gallery-detail-expanded .gallery-content {
@@ -566,7 +575,6 @@
         }
 
         .gallery-actions-expanded {
-           margin-top: auto;
            padding-top: 15px;
            flex-shrink: 0;
         }
@@ -1788,13 +1796,7 @@
                                     <button class="btn-preorder"><i class="fas fa-paper-plane"></i> Kirim Pre-Order</button>
                                 </div>
                             </div>
-                             <div class="gallery-actions">
-                                <a href="${product.seller?.link || '#'}" target="_blank" class="btn-visit"><i class="fas fa-store-alt"></i> Kunjungi Gerai</a>
-                                ${locationButtonHTML}
-                                ${hasPriceVariations ? '<button class="btn-toggle-prices"><i class="fas fa-tags"></i> Cek Harga</button>' : ''}
-                                <button class="btn-detail"><i class="fas fa-chevron-down"></i> Detail</button>
-                            </div>
-                            
+
                             <div class="gallery-detail-expanded">
                                 <div class="gallery-content">
                                     <p class="gallery-description">${product.details?.description || ''}</p>
@@ -1804,6 +1806,13 @@
                                     <a href="https://wa.me/${product.contact?.whatsapp || ''}?text=Halo%20${encodeURIComponent(product.seller?.name || '')},%20saya%20tertarik%20dengan%20produk%20${encodeURIComponent(product.title || '')}%20(${product.code || ''})" class="btn-whatsapp" target="_blank"><i class="fab fa-whatsapp"></i> Chat Whatsapp</a>
                                     <a href="tel:${product.contact?.phone || ''}" class="btn-call"><i class="fas fa-phone-alt"></i> Telepon</a>
                                 </div>
+                            </div>
+                            
+                            <div class="gallery-actions">
+                                <a href="${product.seller?.link || '#'}" target="_blank" class="btn-visit"><i class="fas fa-store-alt"></i> Kunjungi Gerai</a>
+                                ${locationButtonHTML}
+                                ${hasPriceVariations ? '<button class="btn-toggle-prices"><i class="fas fa-tags"></i> Cek Harga</button>' : ''}
+                                <button class="btn-detail"><i class="fas fa-chevron-down"></i> Detail</button>
                             </div>
                         </div>
                     </div>`;
