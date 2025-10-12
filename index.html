@@ -534,47 +534,44 @@
         .gallery-details {
             display: flex;
             flex-direction: column;
-            flex-grow: 1; /* Memastikan container ini mengisi sisa ruang yang tersedia di kartu */
+            flex-grow: 1;
             padding: 20px;
         }
-        
-        .gallery-detail-expanded {
-            display: none; /* Disembunyikan secara default */
+
+        /* [ATURAN BARU YANG LEBIH SPESIFIK DAN KUAT] */
+        .gallery-item .gallery-details .gallery-detail-expanded {
+            display: none; /* Aturan ini sekarang lebih kuat untuk memastikan elemen tersembunyi */
             flex-direction: column;
             gap: 15px;
-            margin-top: 15px; /* Memberi jarak dari tombol di atasnya */
+            margin-top: 15px;
             animation: fadeIn 0.5s ease-in-out;
-            
-            /* [REVISI] Menambahkan flex-grow agar section ini mengisi ruang yang tersedia */
             flex-grow: 1;
-            /* [REVISI] Menambahkan overflow dan min-height untuk mencegah konten meluap dan memastikan flexbox bekerja benar */
             overflow: hidden;
             min-height: 0;
         }
 
-        .gallery-detail-expanded.active {
+        /* [ATURAN BARU YANG LEBIH SPESIFIK DAN KUAT] */
+        .gallery-item .gallery-details .gallery-detail-expanded.active {
             display: flex; /* Ditampilkan saat aktif */
         }
         
-        /* [PENAMBAHAN] Membuat area konten (deskripsi dan spesifikasi) bisa di-scroll jika terlalu panjang */
         .gallery-detail-expanded .gallery-content {
             overflow-y: auto;
-            padding-right: 10px; /* Memberi sedikit ruang untuk scrollbar */
+            padding-right: 10px;
         }
         
         .gallery-description {
-            word-wrap: break-word; /* Memaksa kata yang sangat panjang untuk pindah baris */
-            white-space: pre-wrap; /* Menjaga format spasi dan baris baru dari data produk */
+            word-wrap: break-word;
+            white-space: pre-wrap;
         }
 
         .gallery-actions-expanded {
-           margin-top: auto; /* Mendorong tombol ke bawah jika ada ruang ekstra, ini akan bekerja dengan benar sekarang */
-           padding-top: 15px; /* Memberi jarak dari konten di atasnya */
-           flex-shrink: 0; /* Mencegah container tombol agar tidak menyusut */
+           margin-top: auto;
+           padding-top: 15px;
+           flex-shrink: 0;
         }
         
         /* --- [REVISI & PERBAIKAN] LOGIKA SEMBUNYI/TAMPILKAN TOMBOL OTOMATIS --- */
-        /* Container untuk semua tombol di kanan */
         .contact-bar {
             position: fixed;
             right: 20px;
@@ -584,13 +581,11 @@
             flex-direction: column;
             transition: transform 0.4s ease-in-out;
         }
-        /* State tersembunyi untuk container kanan */
         .contact-bar.fab-hidden {
             transform: translateX(calc(100% + 20px));
         }
 
         /* --- [PERBAIKAN & PENYEMPURNAAN] UKURAN TOMBOL MELAYANG (FAB) --- */
-        /* Penyeragaman ukuran untuk FAB kiri (Payment) */
         .payment-fab {
             width: 56px;
             height: 56px;
@@ -598,7 +593,6 @@
             transition: background-color 0.3s, transform 0.4s ease-in-out;
         }
         
-        /* Styling seragam untuk SEMUA tombol di dalam bar kontak kanan */
         .contact-btn {
             display: flex;
             align-items: center;
@@ -622,19 +616,17 @@
             transform: scale(1.1);
         }
         
-        /* Warna spesifik untuk setiap tombol di kanan */
         .contact-btn.whatsapp { background-color: #25D366; }
         .contact-btn.whatsapp:hover { background-color: #128C7E; }
         .contact-btn.phone { background-color: #007bff; }
         .contact-btn.phone:hover { background-color: #0056b3; }
         .contact-btn.order { background-color: #f57c00; }
         .contact-btn.order:hover { background-color: #e67e22; }
-        .contact-btn.maps { background-color: #4285F4; } /* Warna untuk tombol Peta */
+        .contact-btn.maps { background-color: #4285F4; }
         .contact-btn.maps:hover { background-color: #3367D6; }
-        .contact-btn.generator { background-color: #28a745; } /* Warna untuk tombol Generator */
+        .contact-btn.generator { background-color: #28a745; }
         .contact-btn.generator:hover { background-color: #218838; }
 
-        /* --- [FITUR TAMBAHAN & PERBAIKAN] TOMBOL PEMBAYARAN MENGAMBANG (TETAP DI KIRI) --- */
         .payment-fab {
             position: fixed;
             bottom: 20px;
@@ -653,7 +645,6 @@
             background-color: #0056b3;
             transform: scale(1.1);
         }
-        /* State tersembunyi untuk FAB kiri */
         .payment-fab.fab-hidden { 
             transform: translateX(-calc(100% + 20px));
         }
@@ -682,8 +673,6 @@
             }
         }
         
-        /* --- CSS UNTUK .maps-fab dan .generator-fab YANG LAMA DIHAPUS KARENA SUDAH DIGABUNG KE .contact-btn --- */
-
         /* --- [FITUR BARU & PENYEMPURNAAN TAMPILAN] FORM GENERATOR --- */
         .generator-modal {
             display: none;
@@ -840,43 +829,41 @@
             color: white;
         }
         
-        /* --- [PERBAIKAN & REVISI] Warna Tombol Lokasi --- */
         .btn-location {
-            background-color: #ff3333; /* Warna merah segar menyala */
+            background-color: #ff3333;
             color: white;
             border-color: #ff3333;
             transition: background-color 0.3s, border-color 0.3s;
         }
         .btn-location:hover {
-            background-color: #e60000; /* Warna merah lebih gelap saat hover */
+            background-color: #e60000;
             border-color: #e60000;
         }
         .btn-location-disabled {
-            background-color: #ff3333; /* [PERUBAHAN] Warna disamakan sesuai permintaan */
+            background-color: #ff3333;
             color: white;
             cursor: not-allowed;
             border: none;
         }
         .btn-location-disabled:hover {
-             background-color: #e60000; /* [PERUBAHAN] Warna disamakan sesuai permintaan */
+             background-color: #e60000;
         }
         
-        /* --- [PERBAIKAN] Tampilan Modal Pesan Cepat --- */
         .modal {
-            display: none; /* Disembunyikan secara default */
-            position: fixed; /* Tetap di tempat */
-            z-index: 2000; /* Tampil paling atas */
+            display: none;
+            position: fixed;
+            z-index: 2000;
             left: 0;
             top: 0;
-            width: 100%; /* Lebar penuh */
-            height: 100%; /* Tinggi penuh */
-            overflow: auto; /* Aktifkan scroll jika perlu */
-            background-color: rgba(0,0,0,0.6); /* Latar belakang gelap transparan */
-            align-items: center; /* Pusatkan vertikal */
-            justify-content: center; /* Pusatkan horizontal */
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.6);
+            align-items: center;
+            justify-content: center;
         }
         .modal.show {
-            display: flex; /* Gunakan flexbox untuk pemusatan saat tampil */
+            display: flex;
         }
         .modal-content {
             background-color: #fefefe;
@@ -888,8 +875,8 @@
             border-radius: 10px;
             position: relative;
             animation: fadeInModal 0.4s ease-out;
-            max-height: 90vh; /* Tinggi maksimal */
-            overflow-y: auto; /* Aktifkan scroll vertikal di dalam modal */
+            max-height: 90vh;
+            overflow-y: auto;
         }
         @keyframes fadeInModal {
             from { opacity: 0; transform: scale(0.9); }
@@ -915,7 +902,6 @@
             width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;
         }
         
-        /* --- [FITUR BARU] CSS UNTUK MODAL DOWNLOAD --- */
         .download-links {
             list-style: none;
             padding: 0;
@@ -966,13 +952,11 @@
              transform: none;
          }
 
-        /* --- [PERBAIKAN] Warna Teks Tagline Header & Hapus Tanda Petik --- */
         .tagline {
-            color: #FFFFFF; /* Warna putih */
+            color: #FFFFFF;
             font-weight: 600;
-            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8); /* Bayangan teks agar lebih terbaca */
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8);
         }
-        /* Mencegah pseudo-elements dari file CSS eksternal menambahkan tanda petik */
         .tagline::before, .tagline::after {
             content: none !important;
             display: none !important;
@@ -1552,7 +1536,7 @@
         </div>
     </div>
     
-    <audio id="buttonSound" src="https://voca.ro/1BjrRUnRSEqJ"></audio>
+    <audio id="buttonSound" src="https://raw.githubusercontent.com/LenteraKarya/Lentera-Karya/main/assets/audio/audiotombol.mp3"></audio>
     
     <script>
         // --- [PERUBAHAN] DATA PRODUK KINI DALAM FORMAT JSON YANG VALID ---
