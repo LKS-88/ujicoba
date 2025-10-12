@@ -12,7 +12,7 @@
             --primary-light: #e8f0fe;
             --secondary-color: #3a56d4;
             --accent-color: #5c8aff;
-            --dark-color: #1e2b3b;
+            --dark-color: #1e293b;
             --light-color: #f8fafc;
             --success-color: #10b981;
             --success-light: #d1fae5;
@@ -1009,8 +1009,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/locale/id.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script>
     document.addEventListener('DOMContentLoaded', function() {
         moment.locale('id');
@@ -1398,45 +1398,40 @@
             element.style.width = '340px';
             element.style.maxWidth = '340px';
             element.style.boxShadow = 'none';
-            element.style.margin = '0'; // Hapus margin agar canvas pas
+            element.style.margin = '0 auto'; 
 
             try {
-                // <<< PERUBAHAN FUNDAMENTAL DIMULAI DI SINI >>>
-                // Gunakan html2canvas untuk mengubah elemen menjadi 'gambar' (canvas)
+                // Pastikan library jsPDF dan html2canvas sudah dimuat
+                if (typeof jspdf === 'undefined' || typeof html2canvas === 'undefined') {
+                    throw new Error("Library PDF atau Canvas tidak ditemukan.");
+                }
+                const { jsPDF } = window.jspdf;
+
                 const canvas = await html2canvas(element, {
-                    scale: 3, // Tingkatkan skala untuk kualitas gambar/teks yang lebih tinggi
+                    scale: 3, 
                     useCORS: true,
                     logging: false
                 });
 
-                // Dapatkan data gambar dari canvas
-                const imgData = canvas.toDataURL('image/png');
-
-                // Dapatkan dimensi asli elemen dalam satuan 'point' (pt), dimana 1pt ≈ 1.333px
-                // Kita gunakan clientWidth/Height untuk ukuran yang terlihat
-                const pdfWidth = element.clientWidth;
-                const pdfHeight = element.clientHeight;
+                const imgData = canvas.toDataURL('image/jpeg', 0.9); // Gunakan jpeg untuk ukuran file lebih kecil
+                const pdfWidth = canvas.width;
+                const pdfHeight = canvas.height;
                 
-                // Buat dokumen PDF baru menggunakan jsPDF (yang tersedia dari bundle html2pdf)
-                // Format halaman dibuat kustom persis seukuran elemen struk
-                const pdf = new window.jspdf.jsPDF({
-                    orientation: 'portrait',
-                    unit: 'pt', // Gunakan 'point' agar mudah memetakan dari piksel
+                // Konversi rasio untuk PDF
+                const pdf = new jsPDF({
+                    orientation: pdfWidth > pdfHeight ? 'landscape' : 'portrait',
+                    unit: 'px',
                     format: [pdfWidth, pdfHeight]
                 });
 
-                // Tambahkan gambar canvas ke PDF, mengisi seluruh halaman
-                pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-
-                // Simpan file PDF
+                pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight);
                 pdf.save(filename);
-                // <<< PERUBAHAN FUNDAMENTAL SELESAI >>>
 
                 showToast('Struk berhasil diunduh.', 'success');
 
             } catch (error) {
-                console.error("Gagal membuat PDF dengan metode baru:", error);
-                showToast('Gagal mengunduh PDF. Silakan coba lagi.', 'error');
+                console.error("Gagal membuat PDF:", error);
+                showToast('Gagal mengunduh PDF. ' + error.message, 'error');
             } finally {
                 // Selalu kembalikan style ke kondisi semula setelah selesai
                 element.style.width = originalStyles.width;
@@ -1444,7 +1439,6 @@
                 element.style.boxShadow = originalStyles.boxShadow;
                 element.style.margin = originalStyles.margin;
 
-                // Kembalikan tombol ke keadaan semula dan sembunyikan loading
                 btn.prop('disabled', false).html(originalHtml);
                 hideLoading();
             }
