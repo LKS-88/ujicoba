@@ -82,6 +82,33 @@
     
     <style>
         /* CSS yang sudah ada tetap dipertahankan */
+        /* --- [PERBAIKAN & PENYEMPURNAAN] DESAIN GALERI PRODUK --- */
+        .gallery-grid {
+            display: grid;
+            /* [REVISI] Menggunakan grid untuk layout 2 kolom di layar besar */
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px; /* Memberi jarak antar item */
+        }
+        
+        .gallery-item {
+            /* Gaya item tetap sama, tidak perlu diubah */
+        }
+        
+        .gallery-detail-expanded {
+            display: none; 
+            flex-direction: column;
+            gap: 15px;
+            animation: fadeIn 0.5s ease-in-out;
+            overflow: hidden;
+            min-height: 0;
+        }
+        
+        /* [REVISI] Margin hanya diterapkan saat detail aktif untuk mencegah pergeseran layout */
+        .gallery-detail-expanded.active {
+            display: flex;
+            margin-top: 15px; 
+        }
+
         .search-modal.show { display: flex; }
         
         /* --- [PERBAIKAN & PENYEMPURNAAN] DESAIN PENCARIAN CERDAS --- */
@@ -582,21 +609,6 @@
             flex-grow: 1;
             padding: 20px;
         }
-
-        .gallery-detail-expanded {
-            display: none; 
-            flex-direction: column;
-            gap: 15px;
-            /* [REVISI] margin-top dipindahkan ke class .active untuk mencegah memengaruhi layout saat disembunyikan */
-            animation: fadeIn 0.5s ease-in-out;
-            overflow: hidden;
-            min-height: 0;
-        }
-        
-        .gallery-detail-expanded.active {
-            display: flex;
-            margin-top: 15px; /* [REVISI] Margin hanya diterapkan saat detail aktif */
-        }
         
         .gallery-detail-expanded .gallery-content {
             overflow-y: auto;
@@ -1012,6 +1024,10 @@
             #productGeneratorForm { grid-template-columns: 1fr; }
             .search-modal-header h2 { font-size: 1.1rem; }
             .search-modal-input { padding: 12px 15px; font-size: 1rem; }
+            /* Memastikan grid kembali ke 1 kolom di layar kecil */
+            .gallery-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
@@ -1948,10 +1964,29 @@
                             : '<i class="fas fa-tags"></i> Cek Harga';
                     }
 
+                    // --- [REVISI TOTAL] Logika Tombol Detail dengan fitur auto-collapse ---
                     if (target.closest('.btn-detail')) {
                         playButtonSound();
                         const btn = target.closest('.btn-detail');
-                        const expandedContent = productCard.querySelector('.gallery-detail-expanded');
+                        const currentCard = target.closest('.gallery-item');
+                        const expandedContent = currentCard.querySelector('.gallery-detail-expanded');
+                        const isAlreadyActive = expandedContent.classList.contains('active');
+
+                        // 1. Tutup semua panel detail yang sedang terbuka
+                        document.querySelectorAll('.gallery-detail-expanded.active').forEach(activePanel => {
+                            // Jangan tutup panel yang sama jika kita hanya ingin menutupnya
+                            if (activePanel !== expandedContent) {
+                                activePanel.classList.remove('active');
+                                const parentCard = activePanel.closest('.gallery-item');
+                                if (parentCard) {
+                                    const detailButton = parentCard.querySelector('.btn-detail');
+                                    detailButton.classList.remove('active');
+                                    detailButton.innerHTML = '<i class="fas fa-chevron-down"></i> Detail';
+                                }
+                            }
+                        });
+
+                        // 2. Toggle panel yang diklik
                         expandedContent.classList.toggle('active');
                         btn.classList.toggle('active');
                         btn.innerHTML = expandedContent.classList.contains('active') 
