@@ -12,7 +12,7 @@
             --primary-light: #e8f0fe;
             --secondary-color: #3a56d4;
             --accent-color: #5c8aff;
-            --dark-color: #1e293b;
+            --dark-color: #1e2b3b;
             --light-color: #f8fafc;
             --success-color: #10b981;
             --success-light: #d1fae5;
@@ -561,21 +561,13 @@
             /* This class is used for elements that should not appear when printing */
         }
         
-        /* =================================================================== */
-        /* START: REVISED PRINT STYLES                                         */
-        /* =================================================================== */
         @media print {
-            /* Hide every element on the page by default */
             body > *:not(#receiptContainer) {
                 display: none !important;
             }
-
-            /* Un-hide the receipt container and its content */
             #receiptContainer, #receiptContainer * {
                 visibility: visible !important;
             }
-
-            /* Style the receipt container to take up the full print page */
             #receiptContainer {
                 position: absolute !important;
                 left: 0 !important;
@@ -587,23 +579,16 @@
                 margin: 0 !important;
                 overflow: hidden !important;
             }
-
-            /* Ensure the receipt itself has no extra styling */
             #receiptPrint {
                 box-shadow: none !important;
                 margin: 0 auto !important;
                 max-width: 100% !important;
                 border: none !important;
             }
-
-            /* Hide buttons and other non-receipt elements */
             .no-print {
                 display: none !important;
             }
         }
-        /* =================================================================== */
-        /* END: REVISED PRINT STYLES                                           */
-        /* =================================================================== */
         
         @media (max-width: 768px) {
             .main-content { flex-direction: column; }
@@ -1382,7 +1367,7 @@
         });
         
         // =================================================================== //
-        // START: FUNGSI CETAK DAN UNDUH PDF YANG TELAH DIPERBAIKI TOTAL       //
+        // START: FUNGSI UNDUH PDF DENGAN METODE BARU (html2canvas + jsPDF)    //
         // =================================================================== //
         
         $('#printReceiptBtn').on('click', function() {
@@ -1399,62 +1384,73 @@
 
             const transactionId = $('#receiptTransactionId').text().replace('No: ', '');
             const filename = `struk-${transactionId}.pdf`;
-            
             const element = document.getElementById('receiptPrint');
-            
+
+            // Simpan style asli untuk dikembalikan nanti
             const originalStyles = {
                 width: element.style.width,
                 maxWidth: element.style.maxWidth,
-                boxShadow: element.style.boxShadow
+                boxShadow: element.style.boxShadow,
+                margin: element.style.margin
             };
-
-            // Terapkan style sementara untuk standarisasi lebar
-            const printWidthPx = 302; // Lebar standar kertas thermal 80mm
-            element.style.width = `${printWidthPx}px`;
-            element.style.maxWidth = `${printWidthPx}px`;
-            element.style.boxShadow = 'none';
-
-            // <<< PERBAIKAN UTAMA DIMULAI DI SINI >>>
-            // 1. Ukur tinggi konten setelah lebarnya diatur
-            const contentHeightPx = element.scrollHeight;
             
-            // 2. Konversi dimensi dari Pixel ke Milimeter untuk PDF
-            const pxToMm = 0.264583;
-            const pdfWidthMm = printWidthPx * pxToMm;
-            const pdfHeightMm = contentHeightPx * pxToMm;
-
-            const opt = {
-                margin:       4, // Margin dalam mm
-                filename:     filename,
-                image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { scale: 3, useCORS: true, letterRendering: true },
-                // 3. Buat halaman PDF dengan ukuran kustom yang sudah dihitung
-                jsPDF:        { 
-                    unit: 'mm', 
-                    orientation: 'portrait',
-                    format: [pdfWidthMm, pdfHeightMm] 
-                }
-            };
-            // <<< PERBAIKAN UTAMA SELESAI DI SINI >>>
+            // Atur style sementara agar rendering lebih konsisten
+            element.style.width = '340px';
+            element.style.maxWidth = '340px';
+            element.style.boxShadow = 'none';
+            element.style.margin = '0'; // Hapus margin agar canvas pas
 
             try {
-                await html2pdf().from(element).set(opt).save();
+                // <<< PERUBAHAN FUNDAMENTAL DIMULAI DI SINI >>>
+                // Gunakan html2canvas untuk mengubah elemen menjadi 'gambar' (canvas)
+                const canvas = await html2canvas(element, {
+                    scale: 3, // Tingkatkan skala untuk kualitas gambar/teks yang lebih tinggi
+                    useCORS: true,
+                    logging: false
+                });
+
+                // Dapatkan data gambar dari canvas
+                const imgData = canvas.toDataURL('image/png');
+
+                // Dapatkan dimensi asli elemen dalam satuan 'point' (pt), dimana 1pt ≈ 1.333px
+                // Kita gunakan clientWidth/Height untuk ukuran yang terlihat
+                const pdfWidth = element.clientWidth;
+                const pdfHeight = element.clientHeight;
+                
+                // Buat dokumen PDF baru menggunakan jsPDF (yang tersedia dari bundle html2pdf)
+                // Format halaman dibuat kustom persis seukuran elemen struk
+                const pdf = new window.jspdf.jsPDF({
+                    orientation: 'portrait',
+                    unit: 'pt', // Gunakan 'point' agar mudah memetakan dari piksel
+                    format: [pdfWidth, pdfHeight]
+                });
+
+                // Tambahkan gambar canvas ke PDF, mengisi seluruh halaman
+                pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+
+                // Simpan file PDF
+                pdf.save(filename);
+                // <<< PERUBAHAN FUNDAMENTAL SELESAI >>>
+
                 showToast('Struk berhasil diunduh.', 'success');
+
             } catch (error) {
-                console.error("Gagal membuat PDF:", error);
-                showToast('Gagal mengunduh PDF. Coba lagi.', 'error');
+                console.error("Gagal membuat PDF dengan metode baru:", error);
+                showToast('Gagal mengunduh PDF. Silakan coba lagi.', 'error');
             } finally {
-                // Selalu kembalikan style ke semula
+                // Selalu kembalikan style ke kondisi semula setelah selesai
                 element.style.width = originalStyles.width;
                 element.style.maxWidth = originalStyles.maxWidth;
                 element.style.boxShadow = originalStyles.boxShadow;
+                element.style.margin = originalStyles.margin;
 
+                // Kembalikan tombol ke keadaan semula dan sembunyikan loading
                 btn.prop('disabled', false).html(originalHtml);
                 hideLoading();
             }
         });
         // =================================================================== //
-        // END: FUNGSI CETAK DAN UNDUH PDF FINAL                               //
+        // END: FUNGSI UNDUH PDF DENGAN METODE BARU                            //
         // =================================================================== //
         
         $('#settingsButton').on('click', () => {
