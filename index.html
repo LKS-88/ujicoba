@@ -1068,7 +1068,7 @@
                     <i class="fas fa-envelope"></i> Hubungi Kami
                 </a>
             </div>
-            <a href="#services" class="scroll-down">
+            <a href="#gallery" class="scroll-down">
                 <i class="fas fa-chevron-down"></i>
             </a>
         </div>
@@ -1096,7 +1096,6 @@
             
             <div class="nav-links" id="navLinks">
                 <a href="#home">Beranda</a>
-                <a href="#services">Layanan</a>
                 <a href="#gallery">Galeri</a>
                 <a href="#contact">Kontak</a>
             </div>
@@ -1104,25 +1103,6 @@
     </nav>
     
     <div class="container">
-        <section class="services" id="services">
-            <h2 class="section-title">Layanan Kami</h2>
-            <div class="services-grid">
-                <div class="service-card">
-                    <div class="service-icon">
-                        <i class="fas fa-calendar-alt"></i>
-                    </div>
-                    <h3 class="service-title">Jasa Sewa</h3>
-                    <p>Pilihan sewa fleksibel untuk dekorasi, peralatan, dan berbagai kebutuhan acara Anda.</p>
-                </div>
-                <div class="service-card">
-                    <div class="service-icon">
-                        <i class="fas fa-bullhorn"></i>
-                    </div>
-                    <h3 class="service-title">Solusi Promosi</h3>
-                    <p>Material pemasaran kreatif dan strategi untuk meningkatkan visibilitas merek produk Anda.</p>
-                </div>
-            </div>
-        </section>
         
         <section class="gallery" id="gallery">
             <h2 class="section-title">Galeri Kami</h2>
@@ -1267,7 +1247,6 @@
                 <h3>Tautan Cepat</h3>
                 <ul class="footer-links">
                     <li><a href="#home">Beranda</a></li>
-                    <li><a href="#services">Layanan</a></li>
                     <li><a href="#gallery">Galeri</a></li>
                     <li><a href="#contact">Kontak</a></li>
                 </ul>
@@ -1755,10 +1734,10 @@
 
                     y += 15;
                     
-                    // --- [REVISI] Perbaikan Layout Informasi Transaksi ---
+                    // --- [PERBAIKAN] Perbaikan Layout Informasi Transaksi agar tidak tumpang tindih ---
                     doc.setFontSize(10).setTextColor(grayColor);
                     doc.text('DITERBITKAN UNTUK:', margin, y);
-                    doc.text('DETAIL TRANSAKSI:', pageW / 2 + 10, y);
+                    doc.text('DETAIL TRANSAKSI:', pageW / 2, y); // Posisi label kolom kanan
                     doc.setDrawColor(borderColor);
                     doc.line(margin, y + 2, pageW - margin, y + 2);
                     y += 8;
@@ -1777,10 +1756,10 @@
                     doc.setFontSize(10).setFont(undefined, 'normal');
                     for (let i = 0; i < infoLabels.length; i++) {
                         doc.setTextColor(grayColor);
-                        doc.text(infoLabels[i], pageW / 2 + 10, transactionDetailsY);
+                        doc.text(infoLabels[i], pageW / 2, transactionDetailsY); // Label dimulai dari tengah
                         doc.setTextColor(darkColor);
-                        doc.text(infoValues[i], pageW - margin, transactionDetailsY, { align: 'right' });
-                        transactionDetailsY += 7; // Spasi antar baris yang lebih baik
+                        doc.text(infoValues[i], pageW - margin, transactionDetailsY, { align: 'right' }); // Value rata kanan
+                        transactionDetailsY += 7; // Spasi antar baris
                     }
 
                     y = transactionDetailsY + 10; // Posisi Y selanjutnya setelah detail transaksi
@@ -1873,7 +1852,7 @@
                     const footerText = `© ${new Date().getFullYear()} ANEKAMARKET | Developed by www.anekamarket.my.id`;
                     doc.text(footerText, pageW / 2, y, { align: 'center' });
 
-                    // --- [REVISI] Auto-download dengan nama file dinamis ---
+                    // --- [IMPLEMENTASI] Unduh otomatis dengan nama file dinamis ---
                     const safeSellerName = (productData.seller.name || 'Gerai').replace(/[^a-z0-9]/gi, '_');
                     doc.save(`Struk-${safeSellerName}-${transactionId}.pdf`);
 
@@ -2150,7 +2129,7 @@
                         return `Halo, saya ingin melakukan *${orderType}* untuk produk dari *${product.seller?.name || 'N/A'}*:\n\n*${product.title}*\n${itemsText}\n\nSatuan: ${details.unit}\n${totalText}\n\nBukti pemesanan sudah saya unduh. Mohon info lebih lanjut untuk proses selanjutnya. Terima kasih.`;
                     }
                     
-                    // --- [REVISI] Alur proses order cerdas ---
+                    // --- [IMPLEMENTASI & PENYEMPURNAAN] Alur proses order cerdas: Unduh Otomatis, lalu Arahkan ke WhatsApp ---
                     const processOrder = async (type) => {
                         const orderDetails = gatherOrderDetails(type);
                         if (orderDetails) {
@@ -2162,6 +2141,7 @@
                                 playButtonSound();
                                 // Langkah 1: Generate dan picu unduh otomatis PDF
                                 await generateAndDownloadReceipt(productData, orderDetails);
+                                
                                 // Langkah 2: Arahkan ke WhatsApp setelah PDF diunduh
                                 setTimeout(() => {
                                   window.open(`https://wa.me/${productData.contact?.whatsapp}?text=${encodeURIComponent(generateWhatsAppMessage(productData, orderDetails))}`, '_blank');
