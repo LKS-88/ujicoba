@@ -1386,8 +1386,6 @@
         // =================================================================== //
         
         $('#printReceiptBtn').on('click', function() {
-            // Fungsi ini sekarang jauh lebih sederhana. Ini mengandalkan aturan CSS @media print
-            // untuk secara otomatis memformat halaman untuk pencetakan.
             window.print();
         });
 
@@ -1404,45 +1402,53 @@
             
             const element = document.getElementById('receiptPrint');
             
-            // Simpan style inline asli untuk dipulihkan nanti.
             const originalStyles = {
                 width: element.style.width,
                 maxWidth: element.style.maxWidth,
                 boxShadow: element.style.boxShadow
             };
 
-            // Terapkan style sementara yang dioptimalkan untuk pembuatan PDF.
-            // Ini memaksa elemen ke lebar struk standar 80mm.
-            // 80mm kira-kira 302px pada 96 DPI untuk rendering berkualitas tinggi.
-            element.style.width = '302px';
-            element.style.maxWidth = '302px';
+            // Terapkan style sementara untuk standarisasi lebar
+            const printWidthPx = 302; // Lebar standar kertas thermal 80mm
+            element.style.width = `${printWidthPx}px`;
+            element.style.maxWidth = `${printWidthPx}px`;
             element.style.boxShadow = 'none';
+
+            // <<< PERBAIKAN UTAMA DIMULAI DI SINI >>>
+            // 1. Ukur tinggi konten setelah lebarnya diatur
+            const contentHeightPx = element.scrollHeight;
+            
+            // 2. Konversi dimensi dari Pixel ke Milimeter untuk PDF
+            const pxToMm = 0.264583;
+            const pdfWidthMm = printWidthPx * pxToMm;
+            const pdfHeightMm = contentHeightPx * pxToMm;
 
             const opt = {
                 margin:       4, // Margin dalam mm
                 filename:     filename,
                 image:        { type: 'jpeg', quality: 0.98 },
                 html2canvas:  { scale: 3, useCORS: true, letterRendering: true },
-                // Bagian penting: Dengan TIDAK menentukan 'format' tetap (seperti 'a4'),
-                // html2pdf akan membuat PDF yang sesuai dengan dimensi konten,
-                // yang sempurna untuk struk dengan panjang bervariasi.
-                jsPDF:        { unit: 'mm', orientation: 'portrait' }
+                // 3. Buat halaman PDF dengan ukuran kustom yang sudah dihitung
+                jsPDF:        { 
+                    unit: 'mm', 
+                    orientation: 'portrait',
+                    format: [pdfWidthMm, pdfHeightMm] 
+                }
             };
+            // <<< PERBAIKAN UTAMA SELESAI DI SINI >>>
 
             try {
-                // Hasilkan dan simpan PDF.
                 await html2pdf().from(element).set(opt).save();
                 showToast('Struk berhasil diunduh.', 'success');
             } catch (error) {
                 console.error("Gagal membuat PDF:", error);
                 showToast('Gagal mengunduh PDF. Coba lagi.', 'error');
             } finally {
-                // SELALU pulihkan style asli, baik berhasil maupun gagal.
+                // Selalu kembalikan style ke semula
                 element.style.width = originalStyles.width;
                 element.style.maxWidth = originalStyles.maxWidth;
                 element.style.boxShadow = originalStyles.boxShadow;
 
-                // Pulihkan tombol dan sembunyikan overlay loading.
                 btn.prop('disabled', false).html(originalHtml);
                 hideLoading();
             }
