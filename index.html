@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF--8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, minimum-scale=1.0">
 
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
@@ -338,15 +338,12 @@
             transform: rotate(90deg);
         }
         
-        .btn-visit { display: flex; align-items: center; justify-content: center; background-color: #28a745; color: white; padding: 8px 12px; border-radius: 5px; text-decoration: none; font-weight: 500; font-size: 0.85rem; transition: background-color 0.3s; flex: 1; text-align: center; }
-        .btn-visit:hover { background-color: #218838; }
-        
         /* --- [REVISI TOTAL & PERBAIKAN] LOGIKA TOMBOL DAN DESKRIPSI --- */
         .gallery-actions {
             display: flex;
             gap: 10px;
             flex-wrap: wrap;
-            margin-top: auto;      /* [KUNCI PERBAIKAN] Mendorong tombol ke bagian bawah container flex */
+            margin-top: auto;      /* Mendorong tombol ke bagian bawah container flex */
             padding-top: 15px;     /* Memberi jarak dari konten di atasnya */
             flex-shrink: 0;        /* Mencegah tombol menyusut */
         }
@@ -457,7 +454,6 @@
             cursor: pointer;
             transition: var(--transition);
             border: none;
-            width: 100%;
             text-align: center;
             font-size: 0.9rem;
         }
@@ -582,23 +578,24 @@
         /* --- [PERBAIKAN FINAL] MENCEGAH TOMBOL TERTINDIH OLEH DETAIL PRODUK --- */
         .gallery-details {
             display: flex;
-            flex-direction: column; /* [KUNCI PERBAIKAN] Mengatur layout vertikal */
-            flex-grow: 1; /* [KUNCI PERBAIKAN] Memastikan kontainer mengisi sisa ruang */
+            flex-direction: column;
+            flex-grow: 1;
             padding: 20px;
         }
 
         .gallery-detail-expanded {
-            display: none; /* Sembunyikan secara default */
+            display: none; 
             flex-direction: column;
             gap: 15px;
+            /* [REVISI] margin-top dipindahkan ke class .active untuk mencegah memengaruhi layout saat disembunyikan */
             animation: fadeIn 0.5s ease-in-out;
             overflow: hidden;
             min-height: 0;
         }
         
         .gallery-detail-expanded.active {
-            display: flex; /* Tampilkan saat aktif */
-            margin-top: 15px; /* Beri jarak hanya saat aktif */
+            display: flex;
+            margin-top: 15px; /* [REVISI] Margin hanya diterapkan saat detail aktif */
         }
         
         .gallery-detail-expanded .gallery-content {
@@ -610,6 +607,13 @@
             word-wrap: break-word;
             white-space: pre-wrap;
         }
+        
+        /* Dihapus karena tidak lagi diperlukan setelah tombol dipindah
+        .gallery-actions-expanded {
+           padding-top: 15px;
+           flex-shrink: 0;
+        }
+        */
         
         /* --- [REVISI & PERBAIKAN] LOGIKA SEMBUNYI/TAMPILKAN TOMBOL OTOMATIS --- */
         .contact-bar {
@@ -869,6 +873,15 @@
             color: white;
         }
         
+        .btn-visit { 
+            background-color: #28a745; 
+            color: white; 
+            text-decoration: none; 
+            font-weight: 500; 
+            transition: background-color 0.3s; 
+        }
+        .btn-visit:hover { background-color: #218838; }
+
         .btn-location {
             background-color: #ff3333;
             color: white;
@@ -1758,6 +1771,7 @@
                 }
             }
 
+            // --- [REVISI UTAMA] Fungsi pembuatan kartu produk diperbaiki ---
             function createProductCardHTML(product) {
                  const hasPriceVariations = product.priceVariations && product.priceVariations.length > 0;
                  
@@ -1785,7 +1799,7 @@
                     ? `<a href="${product.seller.locationLink}" target="_blank" class="btn-visit btn-location"><i class="fas fa-map-marker-alt"></i> Lokasi</a>`
                     : `<button class="btn-visit btn-location-disabled" onclick="alert('Belum Menetapkan Lokasi')"><i class="fas fa-map-marker-alt"></i> Lokasi</button>`;
 
-                // [PERBAIKAN] Tombol WhatsApp & Telepon didefinisikan di sini untuk dipindahkan ke baris utama
+                // [REVISI] Tombol WhatsApp & Telepon didefinisikan di sini untuk dipindahkan
                 const whatsappButtonHTML = `<a href="https://wa.me/${product.contact?.whatsapp || ''}?text=Halo%20${encodeURIComponent(product.seller?.name || '')},%20saya%20tertarik%20dengan%20produk%20${encodeURIComponent(product.title || '')}%20(${product.code || ''})" class="btn-whatsapp" target="_blank"><i class="fab fa-whatsapp"></i> Chat</a>`;
                 const phoneButtonHTML = `<a href="tel:${product.contact?.phone || ''}" class="btn-call"><i class="fas fa-phone-alt"></i> Telepon</a>`;
 
@@ -1851,7 +1865,6 @@
                         </div>
                     </div>`;
             }
-
 
             const galleryGrid = document.getElementById('gallery-grid');
             const body = document.body;
@@ -1930,7 +1943,9 @@
                     const productCard = target.closest('.gallery-item');
                     if (!productCard) return;
 
+                    // --- [PERBAIKAN] Logika Tombol ---
                     if (target.closest('.btn-toggle-prices')) {
+                        playButtonSound();
                         const btn = target.closest('.btn-toggle-prices');
                         const priceSection = productCard.querySelector('.price-section-collapsible');
                         priceSection.classList.toggle('show');
@@ -1938,10 +1953,21 @@
                         btn.innerHTML = priceSection.classList.contains('show') 
                             ? '<i class="fas fa-eye-slash"></i> Sembunyikan Harga' 
                             : '<i class="fas fa-tags"></i> Cek Harga';
+                    }
+
+                    if (target.closest('.btn-detail')) {
                         playButtonSound();
+                        const btn = target.closest('.btn-detail');
+                        const expandedContent = productCard.querySelector('.gallery-detail-expanded');
+                        expandedContent.classList.toggle('active');
+                        btn.classList.toggle('active');
+                        btn.innerHTML = expandedContent.classList.contains('active') 
+                            ? '<i class="fas fa-chevron-up"></i> Sembunyikan' 
+                            : '<i class="fas fa-chevron-down"></i> Detail';
                     }
 
                     if (target.classList.contains('quantity-btn')) {
+                        playButtonSound();
                         const btn = target;
                         const input = btn.parentElement.querySelector('.quantity-input');
                         let value = parseInt(input.value, 10) || 0;
@@ -1949,23 +1975,17 @@
                         else if (btn.classList.contains('minus') && value > 0) value--;
                         input.value = value;
                         updateGrandTotal(productCard);
-                        playButtonSound();
-                    }
-
-                    if (target.closest('.btn-detail')) { 
-                        const btn = target.closest('.btn-detail'); 
-                        const expandedContent = productCard.querySelector('.gallery-detail-expanded');
-                        expandedContent.classList.toggle('active'); btn.classList.toggle('active');
-                        btn.innerHTML = expandedContent.classList.contains('active') ? '<i class="fas fa-chevron-up"></i> Sembunyikan' : '<i class="fas fa-chevron-down"></i> Detail';
-                        playButtonSound(); 
                     }
                     
                     if (target.closest('.btn-preorder-toggle')) {
+                        playButtonSound();
                         const btn = target.closest('.btn-preorder-toggle');
                         const preorderForm = productCard.querySelector('.preorder-form');
-                        preorderForm.classList.toggle('active'); btn.classList.toggle('active');
-                        btn.innerHTML = preorderForm.classList.contains('active') ? '<i class="fas fa-times"></i> Batal Pre-Order' : '<i class="fas fa-calendar-check"></i> Pre-Order';
-                        playButtonSound();
+                        preorderForm.classList.toggle('active');
+                        btn.classList.toggle('active');
+                        btn.innerHTML = preorderForm.classList.contains('active') 
+                            ? '<i class="fas fa-times"></i> Batal Pre-Order' 
+                            : '<i class="fas fa-calendar-check"></i> Pre-Order';
                     }
                     
                     const productId = productCard.dataset.id;
@@ -2100,7 +2120,7 @@
             const mobileMenuToggle = document.getElementById('mobileMenuToggle'); const navLinks = document.getElementById('navLinks'); if (mobileMenuToggle && navLinks) { mobileMenuToggle.addEventListener('click', () => { navLinks.classList.toggle('active'); mobileMenuToggle.innerHTML = navLinks.classList.contains('active') ? '<i class="fas fa-times"></i>' : '<i class="fas fa-bars"></i>'; playButtonSound(); }); navLinks.addEventListener('click', (e) => { if (e.target.tagName === 'A') { navLinks.classList.remove('active'); mobileMenuToggle.innerHTML = '<i class="fas fa-bars"></i>'; } }); }
             const searchToggle = document.getElementById('searchToggle'); const navSearch = document.getElementById('navSearch'); if(searchToggle && navSearch) { searchToggle.addEventListener('click', () => { navSearch.classList.toggle('active'); playButtonSound(); }); }
             const productCategories = document.querySelector('.product-categories'); const categoryTabs = document.querySelector('.category-tabs'); let activeCategory = 'all'; let activeType = 'all';
-            function applyFilters() { document.querySelectorAll('.gallery-item').forEach(item => { const iC = item.dataset.category; const iT = item.dataset.type; const cM = activeCategory === 'all' || iC === activeCategory; const tM = activeType === 'all' || iT === activeType || (iT === 'all' && activeType !== 'rental' && activeType !== 'promo' && activeType !== 'jasa') ; item.style.display = (cM && tM) ? 'block' : 'none'; }); }
+            function applyFilters() { document.querySelectorAll('.gallery-item').forEach(item => { const iC = item.dataset.category; const iT = item.dataset.type; const cM = activeCategory === 'all' || iC === activeCategory; const tM = activeType === 'all' || iT === activeType || (iT === 'all' && activeType !== 'rental' && activeType !== 'promo' && activeType !== 'jasa') ; item.style.display = (cM && tM) ? 'flex' : 'none'; }); }
             if (productCategories) { productCategories.addEventListener('click', e => { if (e.target.classList.contains('product-category-btn')) { productCategories.querySelectorAll('.product-category-btn').forEach(btn => btn.classList.remove('active')); e.target.classList.add('active'); activeCategory = e.target.dataset.category; applyFilters(); playButtonSound(); } }); }
             if (categoryTabs) { categoryTabs.addEventListener('click', e => { if (e.target.classList.contains('category-btn')) { categoryTabs.querySelectorAll('.category-btn').forEach(btn => btn.classList.remove('active')); e.target.classList.add('active'); activeType = e.target.dataset.type; applyFilters(); playButtonSound(); } }); }
             const contactForm = document.getElementById('contactForm'); if (contactForm) { contactForm.addEventListener('submit', function(e) { /* Biarkan default action dari formsubmit.co berjalan */ }); }
