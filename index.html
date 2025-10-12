@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Online Store Pro - Final Version</title>
+    <title>Online Store Pro - Versi Final Absolut</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
@@ -1358,47 +1358,67 @@
         $('#printReceiptBtn').on('click', () => window.print());
         $('#closeReceiptBtn').on('click', () => $('#receiptContainer').hide());
 
-        // ========================================================== //
-        // START: FINAL REVISED PDF DOWNLOAD FUNCTION (STABLE)        //
-        // ========================================================== //
+        // =================================================================== //
+        // START: FUNGSI UNDUH PDF FINAL DENGAN PENGUKURAN TINGGI OTOMATIS     //
+        // =================================================================== //
         $('#downloadReceiptBtn').on('click', async function() {
             const btn = $(this);
             const originalHtml = btn.html();
             btn.prop('disabled', true).html('<span class="spinner"></span> Mengunduh...');
-            showLoading('Mempersiapkan PDF...');
+            showLoading('Membuat PDF...');
 
             const transactionId = $('#receiptTransactionId').text().replace('No: ', '');
-            const element = document.getElementById('receiptPrint');
+            
+            // 1. Kloning elemen struk untuk diukur dan dirender secara terpisah
+            const elementToRender = $('#receiptPrint').clone();
+            
+            // 2. Buat wadah tak terlihat untuk proses rendering
+            const renderContainer = $('<div>').css({
+                position: 'absolute',
+                left: '-9999px', // Posisikan jauh di luar layar
+                top: 0,
+                width: '80mm', // Paksa lebar render sesuai lebar kertas PDF
+                'font-family': "'Courier New', monospace"
+            }).append(elementToRender);
+
+            $('body').append(renderContainer);
+
+            // 3. Hitung tinggi konten yang sebenarnya (dalam pixel)
+            const heightInPx = renderContainer[0].scrollHeight;
+
+            // 4. Konversi tinggi dari pixel ke milimeter (1mm = 3.78px) dan beri sedikit ruang ekstra
+            const heightInMm = (heightInPx / 3.78) + 5; 
 
             const opt = {
-                margin:       [2, 2, 2, 2], // margin kecil [atas, kiri, bawah, kanan] dalam mm
-                filename:     `struk-${transactionId}.pdf`,
-                image:        { type: 'jpeg', quality: 1.0 },
-                html2canvas:  { scale: 4, logging: false, useCORS: true, allowTaint: true },
-                jsPDF:        { unit: 'mm', format: 'a7', orientation: 'portrait' }, // Format A7 cocok untuk struk
-                pagebreak:    { mode: 'avoid-all' } // Hindari halaman terpotong
+                margin: 2, // Margin 2mm di semua sisi
+                filename: `struk-${transactionId}.pdf`,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 3, useCORS: true },
+                jsPDF: { 
+                    unit: 'mm', 
+                    // 5. Gunakan format kustom dengan tinggi dinamis yang sudah dihitung
+                    format: [80, heightInMm], 
+                    orientation: 'portrait' 
+                }
             };
 
             try {
-                // Menggunakan .from().set().toPdf().get('pdf').then().save() untuk kontrol penuh
-                const worker = html2pdf().from(element).set(opt);
-                await worker.toPdf().get('pdf').then((pdf) => {
-                    const totalPages = pdf.internal.getNumberOfPages();
-                    // Optional: bisa menambahkan footer nomor halaman jika perlu
-                }).save();
-
+                // 6. Generate PDF dari elemen yang sudah dirender di wadah tak terlihat
+                await html2pdf().from(renderContainer[0]).set(opt).save();
                 showToast('Struk berhasil diunduh.', 'success');
             } catch (error) {
                 console.error("Gagal membuat PDF:", error);
                 showToast('Gagal mengunduh PDF. Coba lagi.', 'error');
             } finally {
+                // 7. Selalu hapus wadah sementara dan pulihkan tombol setelah selesai
+                renderContainer.remove();
                 btn.prop('disabled', false).html(originalHtml);
                 hideLoading();
             }
         });
-        // ========================================================== //
-        // END: FINAL REVISED PDF DOWNLOAD FUNCTION                   //
-        // ========================================================== //
+        // =================================================================== //
+        // END: FUNGSI UNDUH PDF FINAL                                         //
+        // =================================================================== //
         
         $('#settingsButton').on('click', () => {
             $('#taxRate').val(settings.taxRate);
