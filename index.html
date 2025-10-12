@@ -498,7 +498,7 @@
         .receipt-divider { border-top: 1px dashed #000; margin: 10px 0; }
         .receipt-info { font-size: 0.85rem; }
         .receipt-info-row { display: flex; justify-content: space-between; }
-        .receipt-items { padding: 10px 0; min-height: 50px; }
+        .receipt-items { padding: 10px 0; } /* PERBAIKAN: Menghapus min-height */
 
         .receipt-item-line { font-size: 0.9rem; margin-bottom: 8px; }
         .receipt-item-line .item-name { word-break: break-word; margin-bottom: 3px; }
@@ -920,7 +920,7 @@
     
     <div id="receiptContainer">
         <div id="receiptPrint">
-             <img src="https://raw.githubusercontent.com/anekamarket/my.id/refs/heads/main/logo-anekamarket.png"receipt-watermark" alt="Watermark">
+             <img src="https://raw.githubusercontent.com/anekamarket/my.id/refs/heads/main/logo-anekamarket.png" class="receipt-watermark" alt="Watermark">
             <div class="receipt-body-content">
                 <div class="receipt-header">
                     <div class="receipt-title" id="receiptStoreName">NAMA TOKO</div>
@@ -939,8 +939,8 @@
                 <div class="receipt-divider"></div>
                 <div class="receipt-total">
                     <div class="receipt-total-row"><span>Subtotal</span><span id="receiptSubtotal">Rp 0</span></div>
-                    <div class="receipt-total-row"><span>Diskon</span><span id="receiptDiscount">Rp 0</span></div>
-                    <div class="receipt-total-row"><span>Pajak (<span id="receiptTaxPercentage">0</span>%)</span><span id="receiptTax">Rp 0</span></div>
+                    <div class="receipt-total-row" id="receiptDiscountRow"><span>Diskon</span><span id="receiptDiscount">Rp 0</span></div>
+                    <div class="receipt-total-row" id="receiptTaxRow"><span>Pajak (<span id="receiptTaxPercentage">0</span>%)</span><span id="receiptTax">Rp 0</span></div>
                     <div class="receipt-total-row" id="receiptAdditionalFeeItem" style="display: none;">
                         <span id="receiptAdditionalFeeLabel">Biaya Tambahan</span>
                         <span id="receiptAdditionalFeeValue">Rp 0</span>
@@ -1097,7 +1097,6 @@
         const calculateCart = () => {
             currentCart.subtotal = currentCart.items.reduce((total, item) => total + (item.product.price * item.quantity), 0);
             
-            // IMPROVEMENT: Discount calculation is now based on the current cart's state, not global settings.
             if (currentCart.discountType === 'percentage') {
                 currentCart.discountAmount = currentCart.subtotal * (currentCart.discountValue / 100);
             } else { // Fixed amount
@@ -1207,10 +1206,14 @@
             $('#receiptDiscount').text(formatCurrency(transaction.discountAmount));
             $('#receiptTaxPercentage').text(settings.taxRate);
             $('#receiptTax').text(formatCurrency(transaction.tax));
+
+            // PERBAIKAN: Sembunyikan baris diskon, pajak, & biaya tambahan jika nilainya 0
+            $('#receiptDiscountRow').toggle(transaction.discountAmount > 0);
+            $('#receiptTaxRow').toggle(transaction.tax > 0);
+            $('#receiptAdditionalFeeItem').toggle(transaction.additionalFee > 0);
             
             $('#receiptAdditionalFeeLabel').text(transaction.additionalFeeDescription || 'Biaya Tambahan');
             $('#receiptAdditionalFeeValue').text(formatCurrency(transaction.additionalFee));
-            $('#receiptAdditionalFeeItem').toggle(transaction.additionalFee > 0);
             
             $('#receiptTotal').text(formatCurrency(transaction.total));
             const paymentMethodText = { cash: 'Tunai', transfer: 'Transfer', ewallet: 'E-Wallet' };
@@ -1260,7 +1263,7 @@
         // Product Management
         $('#addProductBtn').on('click', () => {
             $('#productModalTitle').text('Tambah Produk');
-            $('#productForm')[0].reset(); // FIX: This now works correctly
+            $('#productForm')[0].reset();
             $('#productId').val('');
             $('.error-message').hide();
             openModal('#productModal');
@@ -1391,21 +1394,23 @@
             const element = document.getElementById('receiptPrint');
             const transactionId = $('#receiptTransactionId').text().replace('No: ', '');
             
+            // PERBAIKAN: Menghapus format [80, 200] agar tinggi PDF dinamis
             const opt = {
                 margin:       [5, 5, 5, 5],
                 filename:     `struk-${transactionId}.pdf`,
                 image:        { type: 'jpeg', quality: 0.98 },
                 html2canvas:  { scale: 3, useCORS: true, dpi: 300, letterRendering: true },
-                jsPDF:        { unit: 'mm', format: [80, 200], orientation: 'portrait' }
+                jsPDF:        { unit: 'mm', orientation: 'portrait' } 
             };
 
             html2pdf().set(opt).from(element).save().then(() => {
-                btn.prop('disabled', false).html(originalHtml);
+                btn.prop('disabled', false).html('<i class="fas fa-download"></i> Download PDF');
                 hideLoading(); showToast('Struk berhasil diunduh.', 'success');
             }).catch(err => {
                 console.error("PDF generation error:", err);
                 showToast('Gagal mengunduh PDF.', 'error');
-                btn.prop('disabled', false).html(originalHtml); hideLoading();
+                btn.prop('disabled', false).html('<i class="fas fa-download"></i> Download PDF'); 
+                hideLoading();
             });
         });
         
@@ -1496,7 +1501,6 @@
         });
 
         $('#setDiscountBtn').click(() => {
-            // Populate modal with default settings or current cart discount
             $('#transactionDiscountType').val(currentCart.discountValue > 0 ? currentCart.discountType : settings.defaultDiscountType);
             $('#transactionDiscountValue').val(currentCart.discountValue > 0 ? currentCart.discountValue : settings.defaultDiscountValue);
             $('#discountValueError').hide();
