@@ -531,10 +531,6 @@
         }
         
         /* --- [PERBAIKAN FINAL] MENCEGAH TOMBOL TERTINDIH OLEH DETAIL PRODUK --- */
-        /* Kunci perbaikan utama: Mengatur container '.gallery-details' menjadi flexbox dengan arah vertikal (column).
-           Ini memaksa semua elemen di dalamnya (termasuk tombol-tombol dan blok detail) untuk
-           tersusun secara rapi dari atas ke bawah. Saat blok detail muncul, ia akan secara
-           alami mendorong konten di bawahnya, bukan menindihnya. */
         .gallery-details {
             display: flex;
             flex-direction: column;
@@ -546,7 +542,7 @@
             display: none; /* Disembunyikan secara default */
             flex-direction: column;
             gap: 15px;
-            margin-top: 15px;
+            margin-top: 15px; /* Memberi jarak dari tombol di atasnya */
             animation: fadeIn 0.5s ease-in-out;
         }
 
@@ -1922,11 +1918,6 @@
                         const expandedContent = productCard.querySelector('.gallery-detail-expanded');
                         expandedContent.classList.toggle('active'); btn.classList.toggle('active');
                         btn.innerHTML = expandedContent.classList.contains('active') ? '<i class="fas fa-chevron-up"></i> Sembunyikan' : '<i class="fas fa-chevron-down"></i> Detail';
-                        if (expandedContent.classList.contains('active')) {
-                            setTimeout(() => {
-                                expandedContent.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-                            }, 300);
-                        }
                         playButtonSound(); 
                     }
                     
