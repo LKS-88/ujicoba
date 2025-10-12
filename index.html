@@ -346,7 +346,7 @@
             display: flex;
             gap: 10px;
             flex-wrap: wrap;
-            margin-top: auto;      /* Mendorong tombol ke bagian bawah container flex */
+            margin-top: auto;      /* [KUNCI PERBAIKAN] Mendorong tombol ke bagian bawah container flex */
             padding-top: 15px;     /* Memberi jarak dari konten di atasnya */
             flex-shrink: 0;        /* Mencegah tombol menyusut */
         }
@@ -582,24 +582,23 @@
         /* --- [PERBAIKAN FINAL] MENCEGAH TOMBOL TERTINDIH OLEH DETAIL PRODUK --- */
         .gallery-details {
             display: flex;
-            flex-direction: column;
-            flex-grow: 1;
+            flex-direction: column; /* [KUNCI PERBAIKAN] Mengatur layout vertikal */
+            flex-grow: 1; /* [KUNCI PERBAIKAN] Memastikan kontainer mengisi sisa ruang */
             padding: 20px;
         }
 
         .gallery-detail-expanded {
-            display: none; 
+            display: none; /* Sembunyikan secara default */
             flex-direction: column;
             gap: 15px;
-            /* [REVISI] margin-top dipindahkan ke class .active untuk mencegah memengaruhi layout saat disembunyikan */
             animation: fadeIn 0.5s ease-in-out;
             overflow: hidden;
             min-height: 0;
         }
         
         .gallery-detail-expanded.active {
-            display: flex;
-            margin-top: 15px; /* [REVISI] Margin hanya diterapkan saat detail aktif */
+            display: flex; /* Tampilkan saat aktif */
+            margin-top: 15px; /* Beri jarak hanya saat aktif */
         }
         
         .gallery-detail-expanded .gallery-content {
@@ -611,13 +610,6 @@
             word-wrap: break-word;
             white-space: pre-wrap;
         }
-        
-        /* Dihapus karena tidak lagi diperlukan setelah tombol dipindah
-        .gallery-actions-expanded {
-           padding-top: 15px;
-           flex-shrink: 0;
-        }
-        */
         
         /* --- [REVISI & PERBAIKAN] LOGIKA SEMBUNYI/TAMPILKAN TOMBOL OTOMATIS --- */
         .contact-bar {
@@ -1793,7 +1785,7 @@
                     ? `<a href="${product.seller.locationLink}" target="_blank" class="btn-visit btn-location"><i class="fas fa-map-marker-alt"></i> Lokasi</a>`
                     : `<button class="btn-visit btn-location-disabled" onclick="alert('Belum Menetapkan Lokasi')"><i class="fas fa-map-marker-alt"></i> Lokasi</button>`;
 
-                // [REVISI] Tombol WhatsApp & Telepon didefinisikan di sini untuk dipindahkan
+                // [PERBAIKAN] Tombol WhatsApp & Telepon didefinisikan di sini untuk dipindahkan ke baris utama
                 const whatsappButtonHTML = `<a href="https://wa.me/${product.contact?.whatsapp || ''}?text=Halo%20${encodeURIComponent(product.seller?.name || '')},%20saya%20tertarik%20dengan%20produk%20${encodeURIComponent(product.title || '')}%20(${product.code || ''})" class="btn-whatsapp" target="_blank"><i class="fab fa-whatsapp"></i> Chat</a>`;
                 const phoneButtonHTML = `<a href="tel:${product.contact?.phone || ''}" class="btn-call"><i class="fas fa-phone-alt"></i> Telepon</a>`;
 
