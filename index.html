@@ -350,11 +350,48 @@
             padding-top: 15px;     /* Memberi jarak dari konten di atasnya */
             flex-shrink: 0;        /* Mencegah tombol menyusut */
         }
-        .gallery-actions .btn-detail, .gallery-actions .btn-order, .gallery-actions .btn-preorder-toggle, .gallery-actions .btn-visit, .gallery-actions .btn-toggle-prices {
+
+        /* [REVISI] Selector diperbarui untuk semua tombol di dalam .gallery-actions */
+        .gallery-actions .btn-detail, 
+        .gallery-actions .btn-order, 
+        .gallery-actions .btn-preorder-toggle, 
+        .gallery-actions .btn-visit, 
+        .gallery-actions .btn-toggle-prices,
+        .gallery-actions .btn-whatsapp,
+        .gallery-actions .btn-call {
             flex-grow: 1;
-            min-width: 120px;
+            min-width: 120px; /* Lebar minimum untuk tombol */
+            text-decoration: none; /* Menghapus garis bawah dari link */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px; /* Jarak antara ikon dan teks */
+            font-size: 0.85rem;
+            padding: 10px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
         }
         
+        /* [BARU] Styling untuk tombol WhatsApp dan Telepon yang dipindahkan */
+        .gallery-actions .btn-whatsapp {
+            background-color: #25D366;
+            color: white;
+        }
+        .gallery-actions .btn-whatsapp:hover {
+            background-color: #128C7E;
+            transform: translateY(-2px);
+        }
+        .gallery-actions .btn-call {
+            background-color: #4285F4; /* Warna biru yang berbeda */
+            color: white;
+        }
+        .gallery-actions .btn-call:hover {
+            background-color: #3367D6;
+            transform: translateY(-2px);
+        }
+
         /* --- [REVISI TOTAL] SLIDER GAMBAR OTOMATIS --- */
         .gallery-image-container {
             position: relative;
@@ -554,7 +591,7 @@
             display: none; 
             flex-direction: column;
             gap: 15px;
-            margin-top: 15px;
+            /* [REVISI] margin-top dipindahkan ke class .active untuk mencegah memengaruhi layout saat disembunyikan */
             animation: fadeIn 0.5s ease-in-out;
             overflow: hidden;
             min-height: 0;
@@ -562,6 +599,7 @@
         
         .gallery-detail-expanded.active {
             display: flex;
+            margin-top: 15px; /* [REVISI] Margin hanya diterapkan saat detail aktif */
         }
         
         .gallery-detail-expanded .gallery-content {
@@ -573,11 +611,13 @@
             word-wrap: break-word;
             white-space: pre-wrap;
         }
-
+        
+        /* Dihapus karena tidak lagi diperlukan setelah tombol dipindah
         .gallery-actions-expanded {
            padding-top: 15px;
            flex-shrink: 0;
         }
+        */
         
         /* --- [REVISI & PERBAIKAN] LOGIKA SEMBUNYI/TAMPILKAN TOMBOL OTOMATIS --- */
         .contact-bar {
@@ -1753,6 +1793,10 @@
                     ? `<a href="${product.seller.locationLink}" target="_blank" class="btn-visit btn-location"><i class="fas fa-map-marker-alt"></i> Lokasi</a>`
                     : `<button class="btn-visit btn-location-disabled" onclick="alert('Belum Menetapkan Lokasi')"><i class="fas fa-map-marker-alt"></i> Lokasi</button>`;
 
+                // [REVISI] Tombol WhatsApp & Telepon didefinisikan di sini untuk dipindahkan
+                const whatsappButtonHTML = `<a href="https://wa.me/${product.contact?.whatsapp || ''}?text=Halo%20${encodeURIComponent(product.seller?.name || '')},%20saya%20tertarik%20dengan%20produk%20${encodeURIComponent(product.title || '')}%20(${product.code || ''})" class="btn-whatsapp" target="_blank"><i class="fab fa-whatsapp"></i> Chat</a>`;
+                const phoneButtonHTML = `<a href="tel:${product.contact?.phone || ''}" class="btn-call"><i class="fas fa-phone-alt"></i> Telepon</a>`;
+
                 const allImages = [product.mainImage, ...(product.details?.images || [])].filter(Boolean);
                 const imagesHTML = allImages.map((img, index) =>
                     `<img src="${img}" alt="${product.title} - Gambar ${index + 1}" class="gallery-slider-image ${index === 0 ? 'active' : ''}" loading="lazy">`
@@ -1802,16 +1846,14 @@
                                     <p class="gallery-description">${product.details?.description || ''}</p>
                                     <div class="gallery-specs">${detailSpecsHTML}</div>
                                 </div>
-                                <div class="gallery-actions-expanded">
-                                    <a href="https://wa.me/${product.contact?.whatsapp || ''}?text=Halo%20${encodeURIComponent(product.seller?.name || '')},%20saya%20tertarik%20dengan%20produk%20${encodeURIComponent(product.title || '')}%20(${product.code || ''})" class="btn-whatsapp" target="_blank"><i class="fab fa-whatsapp"></i> Chat Whatsapp</a>
-                                    <a href="tel:${product.contact?.phone || ''}" class="btn-call"><i class="fas fa-phone-alt"></i> Telepon</a>
-                                </div>
                             </div>
                             
                             <div class="gallery-actions">
                                 <a href="${product.seller?.link || '#'}" target="_blank" class="btn-visit"><i class="fas fa-store-alt"></i> Kunjungi Gerai</a>
                                 ${locationButtonHTML}
                                 ${hasPriceVariations ? '<button class="btn-toggle-prices"><i class="fas fa-tags"></i> Cek Harga</button>' : ''}
+                                ${whatsappButtonHTML}
+                                ${phoneButtonHTML}
                                 <button class="btn-detail"><i class="fas fa-chevron-down"></i> Detail</button>
                             </div>
                         </div>
