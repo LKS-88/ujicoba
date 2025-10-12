@@ -1386,8 +1386,8 @@
         // =================================================================== //
         
         $('#printReceiptBtn').on('click', function() {
-            // This function is now much simpler. It relies on the @media print CSS rules
-            // to automatically format the page for printing. No more DOM manipulation needed.
+            // Fungsi ini sekarang jauh lebih sederhana. Ini mengandalkan aturan CSS @media print
+            // untuk secara otomatis memformat halaman untuk pencetakan.
             window.print();
         });
 
@@ -1404,45 +1404,45 @@
             
             const element = document.getElementById('receiptPrint');
             
-            // Store the original inline styles to restore them later.
+            // Simpan style inline asli untuk dipulihkan nanti.
             const originalStyles = {
                 width: element.style.width,
                 maxWidth: element.style.maxWidth,
                 boxShadow: element.style.boxShadow
             };
 
-            // Temporarily apply styles optimized for PDF generation.
-            // This forces the element to a standard 80mm receipt width.
-            // 80mm is roughly 302px at 96 DPI for high-quality rendering.
+            // Terapkan style sementara yang dioptimalkan untuk pembuatan PDF.
+            // Ini memaksa elemen ke lebar struk standar 80mm.
+            // 80mm kira-kira 302px pada 96 DPI untuk rendering berkualitas tinggi.
             element.style.width = '302px';
             element.style.maxWidth = '302px';
             element.style.boxShadow = 'none';
 
             const opt = {
-                margin:       4, // Margin in mm
+                margin:       4, // Margin dalam mm
                 filename:     filename,
                 image:        { type: 'jpeg', quality: 0.98 },
                 html2canvas:  { scale: 3, useCORS: true, letterRendering: true },
-                // The crucial part: By NOT specifying a fixed 'format' (like 'a7'),
-                // html2pdf will create a PDF that fits the content's dimensions,
-                // which is perfect for receipts of varying lengths.
+                // Bagian penting: Dengan TIDAK menentukan 'format' tetap (seperti 'a4'),
+                // html2pdf akan membuat PDF yang sesuai dengan dimensi konten,
+                // yang sempurna untuk struk dengan panjang bervariasi.
                 jsPDF:        { unit: 'mm', orientation: 'portrait' }
             };
 
             try {
-                // Generate and save the PDF.
+                // Hasilkan dan simpan PDF.
                 await html2pdf().from(element).set(opt).save();
                 showToast('Struk berhasil diunduh.', 'success');
             } catch (error) {
                 console.error("Gagal membuat PDF:", error);
                 showToast('Gagal mengunduh PDF. Coba lagi.', 'error');
             } finally {
-                // ALWAYS restore the original styles, whether it succeeded or failed.
+                // SELALU pulihkan style asli, baik berhasil maupun gagal.
                 element.style.width = originalStyles.width;
                 element.style.maxWidth = originalStyles.maxWidth;
                 element.style.boxShadow = originalStyles.boxShadow;
 
-                // Restore the button and hide the loading overlay.
+                // Pulihkan tombol dan sembunyikan overlay loading.
                 btn.prop('disabled', false).html(originalHtml);
                 hideLoading();
             }
