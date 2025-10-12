@@ -608,13 +608,6 @@
             white-space: pre-wrap;
         }
         
-        /* Dihapus karena tidak lagi diperlukan setelah tombol dipindah
-        .gallery-actions-expanded {
-           padding-top: 15px;
-           flex-shrink: 0;
-        }
-        */
-        
         /* --- [REVISI & PERBAIKAN] LOGIKA SEMBUNYI/TAMPILKAN TOMBOL OTOMATIS --- */
         .contact-bar {
             position: fixed;
@@ -1855,11 +1848,11 @@
                             </div>
                             
                             <div class="gallery-actions">
+                                ${whatsappButtonHTML}
+                                ${phoneButtonHTML}
                                 <a href="${product.seller?.link || '#'}" target="_blank" class="btn-visit"><i class="fas fa-store-alt"></i> Kunjungi Gerai</a>
                                 ${locationButtonHTML}
                                 ${hasPriceVariations ? '<button class="btn-toggle-prices"><i class="fas fa-tags"></i> Cek Harga</button>' : ''}
-                                ${whatsappButtonHTML}
-                                ${phoneButtonHTML}
                                 <button class="btn-detail"><i class="fas fa-chevron-down"></i> Detail</button>
                             </div>
                         </div>
