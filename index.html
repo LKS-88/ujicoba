@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Generator QR Code Ultimate v6.0 (Disempurnakan)</title>
+    <title>Generator QR Code Ultimate v7.0 (Disempurnakan)</title>
     <script type="text/javascript" src="https://unpkg.com/qr-code-styling@1.5.0/lib/qr-code-styling.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -141,11 +141,41 @@
              display: grid; grid-template-columns: 1fr 1fr; gap: 15px;
         }
         .color-picker-wrapper { display: flex; align-items: center; gap: 10px; }
-        .color-picker-wrapper input[type="color"] { width: 40px; height: 40px; border: none; padding: 0; border-radius: 8px; cursor: pointer; background: none; }
-        .color-picker-wrapper input[type="text"] { width: 100%; border: 2px solid #dfe6e9; border-radius: 8px; padding: 8px; font-family: 'Poppins', sans-serif; }
+        .color-picker-wrapper input[type="color"] { width: 40px; height: 40px; border: none; padding: 0; border-radius: 8px; cursor: pointer; background: none; -webkit-appearance: none; }
+        .color-picker-wrapper input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; }
+        .color-picker-wrapper input[type="color"]::-webkit-color-swatch { border: 1px solid #dfe6e9; border-radius: 8px; }
+
+        .color-picker-wrapper input[type="text"] {
+            width: 100%;
+            border: 2px solid #dfe6e9;
+            border-radius: 8px;
+            padding: 8px 10px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            text-transform: uppercase;
+        }
         
         .slider-group label { display: block; margin-bottom: 5px; }
         .slider-group input[type="range"] { width: 100%; }
+
+        /* --- Sempurnakan Transisi untuk Kontrol Warna --- */
+        .collapsible {
+            display: grid;
+            overflow: hidden;
+            transition: all 0.4s ease-in-out;
+            max-height: 500px; /* Nilai awal yang cukup besar */
+            opacity: 1;
+        }
+        .collapsible.is-hidden {
+            max-height: 0;
+            opacity: 0;
+            margin-top: 0 !important;
+            transform: scaleY(0);
+            pointer-events: none;
+        }
+        #color-end-group { transition: all 0.4s ease-in-out; opacity: 1; }
+        #color-end-group.is-hidden { opacity: 0; pointer-events: none; transform: scale(0); }
+
 
         .btn {
             background-image: linear-gradient(45deg, var(--primary-color) 0%, var(--secondary-color) 100%);
@@ -179,7 +209,7 @@
             display: none; animation: fadeIn 0.5s; transition: all 0.4s ease;
         }
         #presentation-frame .frame-header { font-size: 20px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 20px; }
-        #qr-code-canvas-wrapper { background: var(--white-color); padding: 20px; border-radius: var(--border-radius); display: inline-block; }
+        #qr-code-canvas-wrapper { background: var(--white-color); padding: 20px; border-radius: var(--border-radius); display: inline-block; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
         #presentation-frame .frame-footer { margin-top: 15px; font-size: 12px; word-break: break-all; }
         
         /* Frame Templates */
@@ -195,7 +225,6 @@
         
         .download-btn { background: var(--dark-color); display: none; margin-top: 20px; }
         .divider { border-top: 1px solid #f0f0f0; margin: 25px 0; }
-        .hidden { display: none; }
         
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
@@ -204,7 +233,7 @@
 
     <div class="container">
         <div class="header">
-            <h1>Generator QR Ultimate v6.0</h1>
+            <h1>Generator QR Ultimate v7.0</h1>
             <p>Kustomisasi dan Buat QR Code Profesional Anda</p>
         </div>
         
@@ -240,6 +269,8 @@
                     <select id="corner-dot-style-select">
                         <option value="dot" selected>Bulat</option>
                         <option value="square">Kotak</option>
+                        <option value="classy">Klasik</option>
+                        <option value="classy-rounded">Klasik Modern</option>
                     </select>
                 </div>
                 <div class="control-group">
@@ -267,15 +298,21 @@
                 <div class="grid-2">
                     <div class="control-group">
                         <label id="color-start-label">Warna Awal Gradien</label>
-                        <div class="color-picker-wrapper"><input type="color" id="color-start" value="#4CAF50"></div>
+                        <div class="color-picker-wrapper">
+                            <input type="color" id="color-start" value="#4CAF50">
+                            <input type="text" id="color-start-hex" value="#4CAF50">
+                        </div>
                     </div>
                      <div class="control-group" id="color-end-group">
                         <label>Warna Akhir Gradien</label>
-                        <div class="color-picker-wrapper"><input type="color" id="color-end" value="#007bff"></div>
+                        <div class="color-picker-wrapper">
+                            <input type="color" id="color-end" value="#007bff">
+                            <input type="text" id="color-end-hex" value="#007BFF">
+                        </div>
                     </div>
                 </div>
                 
-                <div id="gradient-options" class="customization-grid" style="margin-top:15px">
+                <div id="gradient-options" class="collapsible" style="margin-top:15px">
                     <div class="control-group">
                         <label for="gradient-type-select">Tipe Gradien</label>
                         <select id="gradient-type-select">
@@ -331,8 +368,10 @@
         // --- Elemen Kontrol Warna Cerdas ---
         const colorModeSelector = document.getElementById('color-mode-select');
         const colorStartInput = document.getElementById('color-start');
+        const colorStartHexInput = document.getElementById('color-start-hex');
         const colorStartLabel = document.getElementById('color-start-label');
         const colorEndInput = document.getElementById('color-end');
+        const colorEndHexInput = document.getElementById('color-end-hex');
         const colorEndGroup = document.getElementById('color-end-group');
         const gradientOptions = document.getElementById('gradient-options');
         const gradientTypeSelector = document.getElementById('gradient-type-select');
@@ -367,12 +406,27 @@
             messageBox.className = `message-box ${type}`;
             messageBox.innerHTML = `<strong>${title}</strong><br>${text}`;
         }
-        
+
+        // --- SINKRONISASI KONTROL WARNA CERDAS ---
+        function syncColorInputs(colorPicker, hexInput) {
+            hexInput.addEventListener('input', (e) => {
+                const hex = e.target.value;
+                if (/^#([0-9A-F]{3}){1,2}$/i.test(hex)) {
+                    colorPicker.value = hex;
+                }
+            });
+            colorPicker.addEventListener('input', (e) => {
+                hexInput.value = e.target.value.toUpperCase();
+            });
+        }
+        syncColorInputs(colorStartInput, colorStartHexInput);
+        syncColorInputs(colorEndInput, colorEndHexInput);
+
         // --- Event Listener untuk Kontrol Warna Cerdas ---
         colorModeSelector.addEventListener('change', () => {
             const isGradient = colorModeSelector.value === 'gradient';
-            gradientOptions.style.display = isGradient ? 'grid' : 'none';
-            colorEndGroup.style.display = isGradient ? 'flex' : 'none';
+            gradientOptions.classList.toggle('is-hidden', !isGradient);
+            colorEndGroup.classList.toggle('is-hidden', !isGradient);
             colorStartLabel.textContent = isGradient ? 'Warna Awal Gradien' : 'Warna Titik';
         });
 
@@ -411,19 +465,21 @@
                 return;
             }
             
-            // --- LOGIKA BARU: Penentuan Opsi Warna Berdasarkan Mode ---
+            // --- LOGIKA WARNA YANG DISEMPURNAKAN ---
+            // Logika ini memastikan warna solid atau gradien diterapkan secara konsisten
+            // ke semua bagian QR Code untuk mencegah artefak visual atau "belepotan".
             let colorOptions;
             if (colorModeSelector.value === 'solid') {
-                // Mode Solid: Menggunakan satu warna, sangat stabil dan anti-belepotan
+                // Mode Solid: Menggunakan satu warna, sangat stabil.
                 colorOptions = {
                     color: colorStartInput.value
                 };
             } else {
-                // Mode Gradien: Menggunakan konfigurasi gradien
+                // Mode Gradien: Menggunakan konfigurasi gradien.
                 colorOptions = {
                     gradient: {
                         type: gradientTypeSelector.value,
-                        rotation: (gradientRotationInput.value * Math.PI) / 180,
+                        rotation: gradientRotationInput.value * (Math.PI / 180), // Konversi derajat ke radian
                         colorStops: [
                             { offset: 0, color: colorStartInput.value },
                             { offset: 1, color: colorEndInput.value }
@@ -445,7 +501,7 @@
                     backgroundOptions: { color: "#ffffff" },
                     imageOptions: { crossOrigin: "anonymous", margin: 4, imageSize: 0.4 },
                     
-                    // --- PERBAIKAN KUNCI: Aplikasi warna konsisten ke semua elemen ---
+                    // --- KUNCI PERBAIKAN: Aplikasi warna konsisten ke semua elemen ---
                     cornersSquareOptions: { 
                         type: cornerSquareStyleSelector.value, 
                         ...colorOptions // Terapkan tema warna yang SAMA ke sudut luar
@@ -475,7 +531,7 @@
         downloadBtn.addEventListener('click', () => {
             html2canvas(presentationFrame, {
                 backgroundColor: null,
-                scale: 3 // Meningkatkan resolusi gambar
+                scale: 3 // Meningkatkan resolusi gambar menjadi 3x lebih tajam
             }).then(canvas => {
                 const link = document.createElement('a');
                 link.download = 'QR-Code-Ultimate.png';
