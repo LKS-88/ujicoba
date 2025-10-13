@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Generator QR Code Ultimate v7.1 (Optimized)</title>
+    <title>Generator QR Code Ultimate v7.2 (Disempurnakan)</title>
     <script type="text/javascript" src="https://unpkg.com/qr-code-styling@1.5.0/lib/qr-code-styling.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -19,7 +19,7 @@
             --danger-color: #e74c3c;
             --warning-color: #f39c12;
             --border-radius: 12px;
-            --box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            --box-shadow: 0 10px B30px rgba(0, 0, 0, 0.08);
         }
 
         body {
@@ -117,13 +117,13 @@
             font-size: 14px;
         }
         
-        /* --- PENYEMPURNAAN UI: Peringatan Cerdas --- */
         .control-group .smart-warning {
             font-size: 12px;
             color: var(--warning-color);
             font-weight: 600;
-            display: none; /* Sembunyi secara default */
+            display: none;
             margin-top: 4px;
+            animation: fadeIn 0.5s;
         }
 
         .control-group select, .control-group input[type="file"] {
@@ -148,10 +148,26 @@
         }
         
         .color-controls .grid-2 {
-             display: grid; grid-template-columns: 1fr 1fr; gap: 15px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            align-items: flex-end;
         }
-        .color-picker-wrapper { display: flex; align-items: center; gap: 10px; }
-        .color-picker-wrapper input[type="color"] { width: 40px; height: 40px; border: none; padding: 0; border-radius: 8px; cursor: pointer; background: none; -webkit-appearance: none; }
+        .color-picker-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .color-picker-wrapper input[type="color"] {
+            min-width: 40px;
+            height: 40px;
+            border: none;
+            padding: 0;
+            border-radius: 8px;
+            cursor: pointer;
+            background: none;
+            -webkit-appearance: none;
+        }
         .color-picker-wrapper input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; }
         .color-picker-wrapper input[type="color"]::-webkit-color-swatch { border: 1px solid #dfe6e9; border-radius: 8px; }
 
@@ -165,6 +181,9 @@
             text-transform: uppercase;
         }
         
+        .slider-group {
+            grid-column: 1 / -1; /* Make slider span full width */
+        }
         .slider-group label { display: block; margin-bottom: 5px; }
         .slider-group input[type="range"] { width: 100%; }
         
@@ -174,17 +193,27 @@
             transition: all 0.4s ease-in-out;
             max-height: 500px; 
             opacity: 1;
+            transform-origin: top;
         }
         .collapsible.is-hidden {
             max-height: 0;
             opacity: 0;
             margin-top: 0 !important;
+            padding-top: 0;
+            padding-bottom: 0;
             transform: scaleY(0);
             pointer-events: none;
         }
-        #color-end-group { transition: all 0.4s ease-in-out; opacity: 1; }
-        #color-end-group.is-hidden { opacity: 0; pointer-events: none; transform: scale(0); }
-
+        #color-end-group {
+            transition: all 0.4s ease-in-out;
+            opacity: 1;
+            transform-origin: center;
+        }
+        #color-end-group.is-hidden {
+            opacity: 0;
+            pointer-events: none;
+            transform: scale(0.8);
+        }
 
         .btn {
             background-image: linear-gradient(45deg, var(--primary-color) 0%, var(--secondary-color) 100%);
@@ -199,6 +228,10 @@
             transition: all 0.3s ease;
             text-transform: uppercase;
             letter-spacing: 1px;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
         }
         
         .btn:hover {
@@ -231,7 +264,11 @@
         .template-gradien-modern .frame-header { color: var(--white-color); text-shadow: 0 2px 4px rgba(0,0,0,0.2); }
         .template-gradien-modern .frame-footer { color: rgba(255, 255, 255, 0.85); }
         
-        .download-btn { background: var(--dark-color); display: none; margin-top: 20px; }
+        .download-btn {
+            background-image: linear-gradient(45deg, #34495e 0%, #2c3e50 100%);
+            display: none;
+            margin-top: 20px;
+        }
         .divider { border-top: 1px solid #f0f0f0; margin: 25px 0; }
         
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
@@ -241,7 +278,7 @@
 
     <div class="container">
         <div class="header">
-            <h1>Generator QR Ultimate v7.1</h1>
+            <h1>Generator QR Ultimate v7.2</h1>
             <p>Kustomisasi dan Buat QR Code Profesional Anda</p>
         </div>
         
@@ -250,7 +287,7 @@
         </div>
         
         <div class="customization-panel">
-            <div class="panel-header"><i class="fas fa="palette"></i> Panel Kustomisasi</div>
+            <div class="panel-header"><i class="fas fa-palette"></i> Panel Kustomisasi</div>
             
             <div class="customization-grid">
                 <div class="control-group">
@@ -278,8 +315,6 @@
                     <select id="corner-dot-style-select">
                         <option value="dot" selected>Bulat</option>
                         <option value="square">Kotak</option>
-                        <option value="classy">Klasik</option>
-                        <option value="classy-rounded">Klasik Modern</option>
                     </select>
                 </div>
                 <div class="control-group">
@@ -321,7 +356,7 @@
                     </div>
                 </div>
                 
-                <div id="gradient-options" class="collapsible" style="margin-top:15px">
+                <div id="gradient-options" class="collapsible" style="margin-top:20px">
                     <div class="customization-grid">
                         <div class="control-group">
                             <label for="gradient-type-select">Tipe Gradien</label>
@@ -344,11 +379,10 @@
                 <label for="logo-upload">Ganti Logo Default (Opsional)</label>
                 <input type="file" id="logo-upload" accept="image/png, image/jpeg, image/svg+xml">
             </div>
-
         </div>
 
         <div id="message-box" class="message-box"></div>
-        <button id="generate-btn" class="btn">Buat QR Code</button>
+        <button id="generate-btn" class="btn"><i class="fas fa-qrcode"></i> Buat QR Code</button>
         
         <div id="presentation-frame">
             <div class="frame-header">PINDAI SAYA</div>
@@ -356,190 +390,208 @@
             <div id="frame-footer-url" class="frame-footer"></div>
         </div>
         
-        <button id="download-btn" class="btn download-btn">Download Gambar (PNG)</button>
+        <button id="download-btn" class="btn download-btn"><i class="fas fa-download"></i> Download Gambar (PNG)</button>
     </div>
 
     <script type="text/javascript">
-        // --- Elemen DOM ---
-        const generateBtn = document.getElementById('generate-btn');
-        const downloadBtn = document.getElementById('download-btn');
-        const urlInput = document.getElementById('url-input');
-        const messageBox = document.getElementById('message-box');
-        const presentationFrame = document.getElementById('presentation-frame');
-        const qrCanvasWrapper = document.getElementById('qr-code-canvas-wrapper');
-        const frameFooterUrl = document.getElementById('frame-footer-url');
-        
-        // --- Elemen Kustomisasi ---
-        const dotStyleSelector = document.getElementById('dot-style-select');
-        const dotStyleWarning = document.getElementById('dot-style-warning'); // Peringatan Cerdas
-        const cornerSquareStyleSelector = document.getElementById('corner-square-style-select');
-        const cornerDotStyleSelector = document.getElementById('corner-dot-style-select');
-        const frameDesignSelector = document.getElementById('frame-design-select');
-        const logoUploadInput = document.getElementById('logo-upload');
-        
-        // --- Elemen Kontrol Warna Cerdas ---
-        const colorModeSelector = document.getElementById('color-mode-select');
-        const colorStartInput = document.getElementById('color-start');
-        const colorStartHexInput = document.getElementById('color-start-hex');
-        const colorStartLabel = document.getElementById('color-start-label');
-        const colorEndInput = document.getElementById('color-end');
-        const colorEndHexInput = document.getElementById('color-end-hex');
-        const colorEndGroup = document.getElementById('color-end-group');
-        const gradientOptions = document.getElementById('gradient-options');
-        const gradientTypeSelector = document.getElementById('gradient-type-select');
-        const gradientRotationInput = document.getElementById('gradient-rotation');
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- Elemen DOM ---
+            const generateBtn = document.getElementById('generate-btn');
+            const downloadBtn = document.getElementById('download-btn');
+            const urlInput = document.getElementById('url-input');
+            const messageBox = document.getElementById('message-box');
+            const presentationFrame = document.getElementById('presentation-frame');
+            const qrCanvasWrapper = document.getElementById('qr-code-canvas-wrapper');
+            const frameFooterUrl = document.getElementById('frame-footer-url');
+            
+            // --- Elemen Kustomisasi ---
+            const dotStyleSelector = document.getElementById('dot-style-select');
+            const dotStyleWarning = document.getElementById('dot-style-warning');
+            const cornerSquareStyleSelector = document.getElementById('corner-square-style-select');
+            const cornerDotStyleSelector = document.getElementById('corner-dot-style-select');
+            const frameDesignSelector = document.getElementById('frame-design-select');
+            const logoUploadInput = document.getElementById('logo-upload');
+            
+            // --- Elemen Kontrol Warna Cerdas ---
+            const colorModeSelector = document.getElementById('color-mode-select');
+            const colorStartInput = document.getElementById('color-start');
+            const colorStartHexInput = document.getElementById('color-start-hex');
+            const colorStartLabel = document.getElementById('color-start-label');
+            const colorEndInput = document.getElementById('color-end');
+            const colorEndHexInput = document.getElementById('color-end-hex');
+            const colorEndGroup = document.getElementById('color-end-group');
+            const gradientOptions = document.getElementById('gradient-options');
+            const gradientTypeSelector = document.getElementById('gradient-type-select');
+            const gradientRotationInput = document.getElementById('gradient-rotation');
 
-        // --- Variabel Global ---
-        let uploadedLogo = null;
-        const defaultLogo = "https://raw.githubusercontent.com/anekamarket/my.id/refs/heads/main/logo-anekamarket.png";
+            // --- Variabel Global ---
+            let uploadedLogo = null;
+            const defaultLogo = "https://raw.githubusercontent.com/anekamarket/my.id/refs/heads/main/logo-anekamarket.png";
 
-        // --- Sistem Filter Keamanan ---
-        const forbiddenCategories = {
-            "Konten Judi Online": ['judi', 'slot', 'poker', 'casino', 'togel', 'sbo', 'bet', 'sbobet'],
-            "Konten Dewasa/Pornografi": ['porn', 'sex', 'xxx', 'bokep', 'adult', 'nude', 'bugil'],
-            "Penipuan (Scam/Phishing)": ['scam', 'phishing', 'tipu', 'penipuan', 'giveaway', 'hadiah gratis'],
-            "Malware/Virus Berbahaya": ['malware', 'virus', 'trojan', 'ransomware', 'spyware']
-        };
-        
-        function checkUrlSafety(url) {
-            const lowerCaseUrl = url.toLowerCase();
-            for (const category in forbiddenCategories) {
-                for (const keyword of forbiddenCategories[category]) {
-                    if (lowerCaseUrl.includes(keyword)) {
-                        return { safe: false, category: category, keyword: keyword };
+            // --- Sistem Filter Keamanan ---
+            const forbiddenCategories = {
+                "Konten Judi Online": ['judi', 'slot', 'poker', 'casino', 'togel', 'sbo', 'bet', 'sbobet'],
+                "Konten Dewasa/Pornografi": ['porn', 'sex', 'xxx', 'bokep', 'adult', 'nude', 'bugil'],
+                "Penipuan (Scam/Phishing)": ['scam', 'phishing', 'tipu', 'penipuan', 'giveaway', 'hadiah gratis'],
+                "Malware/Virus Berbahaya": ['malware', 'virus', 'trojan', 'ransomware', 'spyware']
+            };
+            
+            function checkUrlSafety(url) {
+                const lowerCaseUrl = url.toLowerCase();
+                for (const category in forbiddenCategories) {
+                    for (const keyword of forbiddenCategories[category]) {
+                        if (lowerCaseUrl.includes(keyword)) {
+                            return { safe: false, category: category, keyword: keyword };
+                        }
                     }
                 }
-            }
-            return { safe: true };
-        }
-        
-        function displayMessage(type, title, text) {
-            messageBox.style.display = 'block';
-            messageBox.className = `message-box ${type}`;
-            messageBox.innerHTML = `<strong>${title}</strong><br>${text}`;
-        }
-
-        function syncColorInputs(colorPicker, hexInput) {
-            hexInput.addEventListener('input', (e) => {
-                const hex = e.target.value;
-                if (/^#([0-9A-F]{3}){1,2}$/i.test(hex)) {
-                    colorPicker.value = hex;
-                }
-            });
-            colorPicker.addEventListener('input', (e) => {
-                hexInput.value = e.target.value.toUpperCase();
-            });
-        }
-        syncColorInputs(colorStartInput, colorStartHexInput);
-        syncColorInputs(colorEndInput, colorEndHexInput);
-
-        // --- PENYEMPURNAAN: Logika Peringatan Cerdas ---
-        function checkSmartWarning() {
-            const isDots = dotStyleSelector.value === 'dots';
-            const isGradient = colorModeSelector.value === 'gradient';
-            dotStyleWarning.style.display = (isDots && isGradient) ? 'block' : 'none';
-        }
-        dotStyleSelector.addEventListener('change', checkSmartWarning);
-        colorModeSelector.addEventListener('change', () => {
-            const isGradient = colorModeSelector.value === 'gradient';
-            gradientOptions.classList.toggle('is-hidden', !isGradient);
-            colorEndGroup.classList.toggle('is-hidden', !isGradient);
-            colorStartLabel.textContent = isGradient ? 'Warna Awal Gradien' : 'Warna Titik';
-            checkSmartWarning(); // Periksa kembali saat mode warna berubah
-        });
-
-        logoUploadInput.addEventListener('change', (event) => {
-            if (event.target.files && event.target.files[0]) {
-                const reader = new FileReader();
-                reader.onload = (e) => { uploadedLogo = e.target.result; };
-                reader.readAsDataURL(event.target.files[0]);
-            }
-        });
-
-        generateBtn.addEventListener('click', () => {
-            let url = urlInput.value.trim();
-            
-            presentationFrame.style.display = 'none';
-            qrCanvasWrapper.innerHTML = '';
-            messageBox.style.display = 'none';
-            downloadBtn.style.display = 'none';
-
-            if (!url) {
-                displayMessage('error', 'Input Kosong!', 'Mohon masukkan URL yang valid.');
-                return;
-            }
-            if (!/^https?:\/\//i.test(url)) {
-                url = 'https://' + url;
-            }
-
-            const safetyCheck = checkUrlSafety(url);
-            if (!safetyCheck.safe) {
-                const title = `URL Ditolak: Terdeteksi ${safetyCheck.category}`;
-                const text = `Sistem menemukan kata kunci terlarang ('${safetyCheck.keyword}'). Demi keamanan, URL ini tidak dapat diproses.`;
-                displayMessage('error', title, text);
-                return;
+                return { safe: true };
             }
             
-            let colorOptions;
-            if (colorModeSelector.value === 'solid') {
-                colorOptions = { color: colorStartInput.value };
-            } else {
-                colorOptions = {
-                    gradient: {
-                        type: gradientTypeSelector.value,
-                        rotation: gradientRotationInput.value * (Math.PI / 180),
-                        colorStops: [
-                            { offset: 0, color: colorStartInput.value },
-                            { offset: 1, color: colorEndInput.value }
-                        ]
+            function displayMessage(type, title, text) {
+                messageBox.style.display = 'block';
+                messageBox.className = `message-box ${type}`;
+                messageBox.innerHTML = `<strong>${title}</strong><br>${text}`;
+            }
+
+            function syncColorInputs(colorPicker, hexInput) {
+                hexInput.addEventListener('input', (e) => {
+                    let hex = e.target.value.toUpperCase();
+                    if (!hex.startsWith('#')) {
+                        hex = '#' + hex;
                     }
-                };
-            }
-
-            try {
-                const qrCode = new QRCodeStyling({
-                    width: 250,
-                    height: 250,
-                    data: url,
-                    image: uploadedLogo || defaultLogo,
-                    backgroundOptions: { color: "#ffffff" },
-                    imageOptions: { crossOrigin: "anonymous", margin: 4, imageSize: 0.4 },
-                    
-                    // --- KUNCI UTAMA MENCEGAH "BELEPOTAN" ---
-                    // Dengan menggunakan objek `colorOptions` yang sama untuk semua bagian,
-                    // kita memastikan library menerapkan pewarnaan secara konsisten.
-                    // Ini adalah cara paling efektif untuk meminimalisir goresan/artefak
-                    // pada style yang kompleks seperti 'dots' dengan gradien.
-                    dotsOptions: { 
-                        type: dotStyleSelector.value,
-                        ...colorOptions 
-                    },
-                    cornersSquareOptions: { 
-                        type: cornerSquareStyleSelector.value, 
-                        ...colorOptions
-                    },
-                    cornersDotOptions: { 
-                        type: cornerDotStyleSelector.value,
-                        ...colorOptions
+                    if (/^#([0-9A-F]{3}){1,2}$/i.test(hex)) {
+                        colorPicker.value = hex;
                     }
                 });
-                
-                presentationFrame.className = frameDesignSelector.value;
-                qrCanvasWrapper.innerHTML = '';
-                qrCode.append(qrCanvasWrapper);
-                frameFooterUrl.textContent = url;
-                presentationFrame.style.display = 'block';
-                downloadBtn.style.display = 'block';
-            
-            } catch (error) {
-                displayMessage('error', 'Terjadi Kesalahan', 'Gagal membuat QR Code. Pastikan format URL sudah benar.');
-                console.error(error);
+                colorPicker.addEventListener('input', (e) => {
+                    hexInput.value = e.target.value.toUpperCase();
+                });
             }
-        });
+            syncColorInputs(colorStartInput, colorStartHexInput);
+            syncColorInputs(colorEndInput, colorEndHexInput);
 
-        downloadBtn.addEventListener('click', () => {
-            html2canvas(presentationFrame, {
-                backgroundColor: null,
-                scale: 3
-            }).then(canvas => {
-                const link =
+            function checkSmartWarning() {
+                const isDots = dotStyleSelector.value === 'dots';
+                const isGradient = colorModeSelector.value === 'gradient';
+                dotStyleWarning.style.display = (isDots && isGradient) ? 'block' : 'none';
+            }
+
+            colorModeSelector.addEventListener('change', () => {
+                const isGradient = colorModeSelector.value === 'gradient';
+                gradientOptions.classList.toggle('is-hidden', !isGradient);
+                colorEndGroup.classList.toggle('is-hidden', !isGradient);
+                colorStartLabel.textContent = isGradient ? 'Warna Awal Gradien' : 'Warna Titik';
+                checkSmartWarning();
+            });
+            dotStyleSelector.addEventListener('change', checkSmartWarning);
+
+            logoUploadInput.addEventListener('change', (event) => {
+                if (event.target.files && event.target.files[0]) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => { uploadedLogo = e.target.result; };
+                    reader.readAsDataURL(event.target.files[0]);
+                } else {
+                    uploadedLogo = null;
+                }
+            });
+
+            generateBtn.addEventListener('click', () => {
+                let url = urlInput.value.trim();
+                
+                presentationFrame.style.display = 'none';
+                qrCanvasWrapper.innerHTML = '';
+                messageBox.style.display = 'none';
+                downloadBtn.style.display = 'none';
+
+                if (!url) {
+                    displayMessage('error', 'Input Kosong!', 'Mohon masukkan URL yang valid.');
+                    return;
+                }
+                if (!/^https?:\/\//i.test(url)) {
+                    url = 'https://' + url;
+                }
+
+                const safetyCheck = checkUrlSafety(url);
+                if (!safetyCheck.safe) {
+                    const title = `URL Ditolak: Terdeteksi ${safetyCheck.category}`;
+                    const text = `Sistem menemukan kata kunci terlarang ('${safetyCheck.keyword}'). Demi keamanan, URL ini tidak dapat diproses.`;
+                    displayMessage('error', title, text);
+                    return;
+                }
+                
+                let colorOptions;
+                if (colorModeSelector.value === 'solid') {
+                    colorOptions = { color: colorStartInput.value };
+                } else {
+                    colorOptions = {
+                        gradient: {
+                            type: gradientTypeSelector.value,
+                            rotation: gradientRotationInput.value * (Math.PI / 180),
+                            colorStops: [
+                                { offset: 0, color: colorStartInput.value },
+                                { offset: 1, color: colorEndInput.value }
+                            ]
+                        }
+                    };
+                }
+
+                try {
+                    const qrCode = new QRCodeStyling({
+                        width: 250,
+                        height: 250,
+                        data: url,
+                        image: uploadedLogo || defaultLogo,
+                        backgroundOptions: { color: "#ffffff" },
+                        imageOptions: { crossOrigin: "anonymous", margin: 4, imageSize: 0.4 },
+                        
+                        // KUNCI UTAMA MENCEGAH "BELEPOTAN":
+                        // Dengan menggunakan objek `colorOptions` yang sama untuk semua bagian,
+                        // library akan menerapkan pewarnaan secara konsisten. Ini adalah cara
+                        // paling efektif untuk meminimalisir goresan/artefak pada style
+                        // kompleks (seperti 'dots') saat menggunakan gradien.
+                        dotsOptions: { 
+                            type: dotStyleSelector.value,
+                            ...colorOptions 
+                        },
+                        cornersSquareOptions: { 
+                            type: cornerSquareStyleSelector.value, 
+                            ...colorOptions
+                        },
+                        cornersDotOptions: { 
+                            type: cornerDotStyleSelector.value,
+                            ...colorOptions
+                        }
+                    });
+                    
+                    presentationFrame.className = frameDesignSelector.value;
+                    qrCanvasWrapper.innerHTML = '';
+                    qrCode.append(qrCanvasWrapper);
+                    frameFooterUrl.textContent = url;
+                    presentationFrame.style.display = 'block';
+                    downloadBtn.style.display = 'inline-flex';
+                
+                } catch (error) {
+                    displayMessage('error', 'Terjadi Kesalahan', 'Gagal membuat QR Code. Pastikan format URL sudah benar.');
+                    console.error("QR Code Generation Error:", error);
+                }
+            });
+
+            downloadBtn.addEventListener('click', () => {
+                html2canvas(presentationFrame, {
+                    backgroundColor: null, // Transparent background for the capture
+                    scale: 3 // Higher scale for better resolution
+                }).then(canvas => {
+                    const link = document.createElement('a');
+                    link.download = `qr-code-${Date.now()}.png`;
+                    link.href = canvas.toDataURL("image/png");
+                    link.click();
+                }).catch(error => {
+                    displayMessage('error', 'Gagal Mengunduh', 'Terjadi kesalahan saat mencoba membuat file gambar.');
+                    console.error("Download Error:", error);
+                });
+            });
+        });
+    </script>
+</body>
+</html>
