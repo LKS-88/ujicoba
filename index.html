@@ -3,20 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Generator QR Code Premium v2.0</title>
+    <title>Generator QR Code Premium v3.0</title>
     <script type="text/javascript" src="https://unpkg.com/qr-code-styling@1.5.0/lib/qr-code-styling.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
 
         :root {
-            --primary-color: #4CAF50; /* Warna hijau dari aneka market */
-            --secondary-color: #007bff; /* Warna biru dari aplikasi usaha */
+            --primary-color: #4CAF50;
+            --secondary-color: #007bff;
             --dark-color: #2c3e50;
             --light-color: #f4f7f6;
             --white-color: #fff;
             --danger-color: #e74c3c;
             --border-radius: 12px;
-            --box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            --box-shadow: 0 10px S30px rgba(0, 0, 0, 0.08);
         }
 
         body {
@@ -27,29 +28,29 @@
             min-height: 100vh;
             margin: 0;
             background: var(--light-color);
+            padding: 20px;
         }
 
         .container {
             background: var(--white-color);
-            padding: 30px 40px;
+            padding: 40px;
             border-radius: var(--border-radius);
             box-shadow: var(--box-shadow);
             width: 100%;
-            max-width: 480px;
+            max-width: 520px;
             text-align: center;
-            transition: all 0.3s ease;
         }
 
         .header h1 {
             font-weight: 700;
-            font-size: 26px;
+            font-size: 28px;
             color: var(--dark-color);
             margin: 0 0 10px 0;
         }
-
+        
         .header p {
             margin: 0 0 30px 0;
-            font-size: 15px;
+            font-size: 16px;
             color: #7f8c8d;
         }
 
@@ -66,7 +67,6 @@
         #url-input:focus {
             outline: none;
             border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.2);
         }
 
         .btn {
@@ -84,62 +84,68 @@
             letter-spacing: 1px;
             margin-top: 20px;
         }
-
+        
         .btn:hover {
             box-shadow: 0 8px 20px rgba(0, 123, 255, 0.3);
             transform: translateY(-3px);
         }
-
-        #qr-code-container {
-            margin-top: 30px;
-            padding: 20px;
-            min-height: 250px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            transition: opacity 0.5s ease;
-        }
         
-        #qr-code-container canvas {
-            border-radius: var(--border-radius);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-
         .message-box {
             padding: 15px;
             margin-top: 20px;
             border-radius: var(--border-radius);
             font-weight: 600;
-            display: none; /* Sembunyi secara default */
+            display: none;
             animation: fadeIn 0.5s;
         }
-
+        
         .message-box.error {
             background-color: #fadbd8;
             color: var(--danger-color);
             border: 1px solid var(--danger-color);
         }
-        
-        .message-box p {
-            margin: 0;
-            font-size: 14px;
-        }
-        
-        .message-box strong {
-            display: block;
-            margin-bottom: 5px;
-        }
 
+        /* --- DESAIN BARU: BINGKAI PRESENTASI --- */
+        #presentation-frame {
+            margin-top: 30px;
+            padding: 25px;
+            border-radius: var(--border-radius);
+            background: var(--dark-color);
+            display: none; /* Sembunyi sampai QR dibuat */
+            animation: fadeIn 0.5s;
+        }
+        
+        #presentation-frame .frame-header {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--white-color);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+        }
+        
+        #qr-code-canvas-wrapper {
+            background: var(--white-color);
+            padding: 20px;
+            border-radius: var(--border-radius);
+        }
+        
+        #presentation-frame .frame-footer {
+            margin-top: 15px;
+            font-size: 12px;
+            color: #bdc3c7;
+            word-break: break-all;
+        }
+        
         .download-btn {
             background: var(--dark-color);
-            display: none; /* Sembunyi secara default */
+            display: none;
         }
         
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-10px); }
+            from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
-
     </style>
 </head>
 <body>
@@ -147,18 +153,21 @@
     <div class="container">
         <div class="header">
             <h1>Generator QR Premium</h1>
-            <p>Buat QR Code canggih dengan filter keamanan</p>
+            <p>Buat QR Code Profesional dengan Bingkai Eksklusif</p>
         </div>
         
-        <input type="text" id="url-input" placeholder="Contoh: www.anekamarket.my.id">
-
+        <input type="text" id="url-input" placeholder="Masukkan URL 'Magic Link' atau URL biasa">
         <div id="message-box" class="message-box"></div>
-
         <button id="generate-btn" class="btn">Buat QR Code</button>
         
-        <div id="qr-code-container"></div>
+        <div id="presentation-frame">
+            <div class="frame-header">PINDAI SAYA</div>
+            <div id="qr-code-canvas-wrapper">
+                </div>
+            <div id="frame-footer-url" class="frame-footer"></div>
+        </div>
         
-        <button id="download-btn" class="btn download-btn">Download PNG</button>
+        <button id="download-btn" class="btn download-btn">Download Gambar (PNG)</button>
     </div>
 
     <script type="text/javascript">
@@ -166,29 +175,25 @@
         const generateBtn = document.getElementById('generate-btn');
         const downloadBtn = document.getElementById('download-btn');
         const urlInput = document.getElementById('url-input');
-        const qrContainer = document.getElementById('qr-code-container');
         const messageBox = document.getElementById('message-box');
-        
-        let qrCode;
+        const presentationFrame = document.getElementById('presentation-frame');
+        const qrCanvasWrapper = document.getElementById('qr-code-canvas-wrapper');
+        const frameFooterUrl = document.getElementById('frame-footer-url');
 
-        // --- Sistem Filter Keamanan Cerdas (v2.0) ---
+        // --- Sistem Filter Keamanan (Sama seperti v2.0) ---
         const forbiddenCategories = {
             "Konten Judi Online": ['judi', 'slot', 'poker', 'casino', 'togel', 'sbo', 'bet', 'sbobet'],
             "Konten Dewasa/Pornografi": ['porn', 'sex', 'xxx', 'bokep', 'adult', 'nude', 'bugil'],
             "Penipuan (Scam/Phishing)": ['scam', 'phishing', 'tipu', 'penipuan', 'giveaway', 'hadiah gratis'],
             "Malware/Virus Berbahaya": ['malware', 'virus', 'trojan', 'ransomware', 'spyware']
         };
-
+        
         function checkUrlSafety(url) {
             const lowerCaseUrl = url.toLowerCase();
             for (const category in forbiddenCategories) {
                 for (const keyword of forbiddenCategories[category]) {
                     if (lowerCaseUrl.includes(keyword)) {
-                        return { 
-                            safe: false, 
-                            category: category,
-                            keyword: keyword
-                        };
+                        return { safe: false, category: category, keyword: keyword };
                     }
                 }
             }
@@ -198,88 +203,78 @@
         function displayMessage(type, title, text) {
             messageBox.style.display = 'block';
             messageBox.className = `message-box ${type}`;
-            messageBox.innerHTML = `<p><strong>${title}</strong>${text}</p>`;
+            messageBox.innerHTML = `<p><strong>${title}</strong><br>${text}</p>`;
         }
 
         generateBtn.addEventListener('click', () => {
             let url = urlInput.value.trim();
             
-            // --- Reset Tampilan ---
-            qrContainer.innerHTML = '';
+            // Reset Tampilan
+            presentationFrame.style.display = 'none';
+            qrCanvasWrapper.innerHTML = '';
             messageBox.style.display = 'none';
             downloadBtn.style.display = 'none';
 
-            // --- 1. Validasi dan Auto-Format URL ---
             if (!url) {
-                displayMessage('error', 'Input Kosong!', 'Mohon masukkan URL yang ingin Anda ubah menjadi QR Code.');
+                displayMessage('error', 'Input Kosong!', 'Mohon masukkan URL yang valid.');
                 return;
             }
-
-            // Otomatis tambahkan https:// jika tidak ada (untuk input seperti www.google.com)
             if (!/^https?:\/\//i.test(url)) {
                 url = 'https://' + url;
             }
 
-            // --- 2. Filter Keamanan dengan Notifikasi Detail ---
             const safetyCheck = checkUrlSafety(url);
             if (!safetyCheck.safe) {
                 const title = `URL Ditolak: Terdeteksi ${safetyCheck.category}`;
-                const text = `Sistem kami menemukan kata kunci yang tidak diizinkan ('${safetyCheck.keyword}') dalam URL Anda. Demi keamanan, URL ini tidak dapat diproses.`;
+                const text = `Sistem menemukan kata kunci terlarang ('${safetyCheck.keyword}'). Demi keamanan, URL ini tidak dapat diproses.`;
                 displayMessage('error', title, text);
                 return;
             }
 
-            // --- 3. Generate QR Code dengan Desain Premium Baru ---
+            // --- Generate QR Code ---
             try {
-                qrCode = new QRCodeStyling({
-                    width: 280,
-                    height: 280,
+                const qrCode = new QRCodeStyling({
+                    width: 250,
+                    height: 250,
                     data: url,
                     image: "https://raw.githubusercontent.com/anekamarket/my.id/refs/heads/main/logo-anekamarket.png",
-                    // DESAIN BARU & MEWAH
                     dotsOptions: {
-                        type: "classy-rounded", // Bentuk titik lebih elegan
-                        gradient: {
-                            type: "linear",
-                            rotation: 0.785, // Rotasi gradien 45 derajat
-                            colorStops: [
-                                { offset: 0, color: '#4CAF50' }, // Hijau
-                                { offset: 1, color: '#007bff' }  // Biru
-                            ]
-                        }
+                        type: "classy-rounded",
+                        gradient: { type: "linear", rotation: 0.785, colorStops: [{ offset: 0, color: '#4CAF50' }, { offset: 1, color: '#007bff' }] }
                     },
-                    backgroundOptions: {
-                        color: "#ffffff",
-                    },
-                    // UKURAN LOGO LEBIH BESAR
-                    imageOptions: {
-                        crossOrigin: "anonymous",
-                        margin: 4,
-                        imageSize: 0.4 // Ukuran logo 40% dari QR Code (lebih besar)
-                    },
-                    cornersSquareOptions: {
-                        type: "extra-rounded",
-                        color: "#2c3e50" // Warna sudut lebih gelap & netral
-                    },
-                    cornersDotOptions: {
-                        type: "dot",
-                        color: "#34495e"
-                    }
+                    backgroundOptions: { color: "#ffffff" },
+                    imageOptions: { crossOrigin: "anonymous", margin: 4, imageSize: 0.4 },
+                    cornersSquareOptions: { type: "extra-rounded", color: "#2c3e50" },
+                    cornersDotOptions: { type: "dot", color: "#34495e" }
                 });
-
-                qrCode.append(qrContainer);
+                
+                // Tampilkan QR Code di dalam bingkai
+                qrCanvasWrapper.innerHTML = '';
+                qrCode.append(qrCanvasWrapper);
+                
+                // Tampilkan URL di footer bingkai
+                frameFooterUrl.textContent = url;
+                
+                // Tampilkan seluruh bingkai dan tombol download
+                presentationFrame.style.display = 'block';
                 downloadBtn.style.display = 'block';
             
             } catch (error) {
                 displayMessage('error', 'Terjadi Kesalahan', 'Gagal membuat QR Code. Pastikan format URL sudah benar.');
-                console.error(error);
             }
         });
 
         downloadBtn.addEventListener('click', () => {
-            if (qrCode) {
-                qrCode.download({ name: 'QR-Code-Premium', extension: 'png' });
-            }
+            // Gunakan html2canvas untuk mengambil screenshot dari bingkai presentasi
+            html2canvas(presentationFrame, {
+                backgroundColor: null, // Latar belakang transparan
+                scale: 3 // Meningkatkan resolusi gambar 3x lipat
+            }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = 'QR-Code-Premium.png';
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            });
         });
     </script>
 </body>
