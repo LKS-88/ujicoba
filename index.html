@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Generator QR Code Ultimate v5.5 (Revisi)</title>
+    <title>Generator QR Code Ultimate v6.0 (Disempurnakan)</title>
     <script type="text/javascript" src="https://unpkg.com/qr-code-styling@1.5.0/lib/qr-code-styling.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -18,7 +18,7 @@
             --white-color: #fff;
             --danger-color: #e74c3c;
             --border-radius: 12px;
-            --box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            --box-shadow: 0 10px D30px rgba(0, 0, 0, 0.08);
         }
 
         body {
@@ -106,13 +106,13 @@
         .control-group {
             display: flex;
             flex-direction: column;
+            gap: 8px;
         }
 
         .control-group label {
             font-weight: 600;
             color: var(--dark-color);
             display: block;
-            margin-bottom: 8px;
             font-size: 14px;
         }
 
@@ -195,6 +195,7 @@
         
         .download-btn { background: var(--dark-color); display: none; margin-top: 20px; }
         .divider { border-top: 1px solid #f0f0f0; margin: 25px 0; }
+        .hidden { display: none; }
         
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
@@ -203,7 +204,7 @@
 
     <div class="container">
         <div class="header">
-            <h1>Generator QR Ultimate v5.5</h1>
+            <h1>Generator QR Ultimate v6.0</h1>
             <p>Kustomisasi dan Buat QR Code Profesional Anda</p>
         </div>
         
@@ -218,8 +219,8 @@
                 <div class="control-group">
                     <label for="dot-style-select">Gaya Titik</label>
                     <select id="dot-style-select">
-                        <option value="dots">Bulat (Lingkaran)</option>
                         <option value="rounded" selected>Kotak Halus</option>
+                        <option value="dots">Bulat (Lingkaran)</option>
                         <option value="classy">Klasik</option>
                         <option value="classy-rounded">Klasik Modern</option>
                         <option value="square">Kotak</option>
@@ -230,8 +231,8 @@
                     <label for="corner-square-style-select">Gaya Mata Sudut (Luar)</label>
                     <select id="corner-square-style-select">
                         <option value="extra-rounded" selected>Sangat Bulat</option>
-                        <option value="dot">Bulat</option>
                         <option value="square">Kotak</option>
+                        <option value="dot">Bulat</option>
                     </select>
                 </div>
                  <div class="control-group">
@@ -255,17 +256,26 @@
 
             <div class="panel-header"><i class="fas fa-swatchbook"></i> Kontrol Warna Cerdas</div>
             <div class="color-controls">
+                <div class="control-group" style="margin-bottom: 20px;">
+                    <label for="color-mode-select">Mode Warna</label>
+                    <select id="color-mode-select">
+                        <option value="gradient" selected>Warna Gradien</option>
+                        <option value="solid">Warna Solid (Anti Belepotan)</option>
+                    </select>
+                </div>
+
                 <div class="grid-2">
                     <div class="control-group">
-                        <label>Warna Awal</label>
+                        <label id="color-start-label">Warna Awal Gradien</label>
                         <div class="color-picker-wrapper"><input type="color" id="color-start" value="#4CAF50"></div>
                     </div>
-                     <div class="control-group">
-                        <label>Warna Akhir (Gradien)</label>
+                     <div class="control-group" id="color-end-group">
+                        <label>Warna Akhir Gradien</label>
                         <div class="color-picker-wrapper"><input type="color" id="color-end" value="#007bff"></div>
                     </div>
                 </div>
-                <div class="customization-grid" style="margin-top:15px">
+                
+                <div id="gradient-options" class="customization-grid" style="margin-top:15px">
                     <div class="control-group">
                         <label for="gradient-type-select">Tipe Gradien</label>
                         <select id="gradient-type-select">
@@ -317,8 +327,14 @@
         const cornerDotStyleSelector = document.getElementById('corner-dot-style-select');
         const frameDesignSelector = document.getElementById('frame-design-select');
         const logoUploadInput = document.getElementById('logo-upload');
+        
+        // --- Elemen Kontrol Warna Cerdas ---
+        const colorModeSelector = document.getElementById('color-mode-select');
         const colorStartInput = document.getElementById('color-start');
+        const colorStartLabel = document.getElementById('color-start-label');
         const colorEndInput = document.getElementById('color-end');
+        const colorEndGroup = document.getElementById('color-end-group');
+        const gradientOptions = document.getElementById('gradient-options');
         const gradientTypeSelector = document.getElementById('gradient-type-select');
         const gradientRotationInput = document.getElementById('gradient-rotation');
 
@@ -351,6 +367,14 @@
             messageBox.className = `message-box ${type}`;
             messageBox.innerHTML = `<strong>${title}</strong><br>${text}`;
         }
+        
+        // --- Event Listener untuk Kontrol Warna Cerdas ---
+        colorModeSelector.addEventListener('change', () => {
+            const isGradient = colorModeSelector.value === 'gradient';
+            gradientOptions.style.display = isGradient ? 'grid' : 'none';
+            colorEndGroup.style.display = isGradient ? 'flex' : 'none';
+            colorStartLabel.textContent = isGradient ? 'Warna Awal Gradien' : 'Warna Titik';
+        });
 
         logoUploadInput.addEventListener('change', (event) => {
             if (event.target.files && event.target.files[0]) {
@@ -387,41 +411,48 @@
                 return;
             }
             
-            // --- PENGATURAN WARNA CERDAS ---
-            const colorOptions = {
-                dotsOptions: {
+            // --- LOGIKA BARU: Penentuan Opsi Warna Berdasarkan Mode ---
+            let colorOptions;
+            if (colorModeSelector.value === 'solid') {
+                // Mode Solid: Menggunakan satu warna, sangat stabil dan anti-belepotan
+                colorOptions = {
+                    color: colorStartInput.value
+                };
+            } else {
+                // Mode Gradien: Menggunakan konfigurasi gradien
+                colorOptions = {
                     gradient: {
                         type: gradientTypeSelector.value,
-                        rotation: (gradientRotationInput.value * Math.PI) / 180, // Convert degree to radian
+                        rotation: (gradientRotationInput.value * Math.PI) / 180,
                         colorStops: [
                             { offset: 0, color: colorStartInput.value },
                             { offset: 1, color: colorEndInput.value }
                         ]
                     }
-                }
-            };
+                };
+            }
 
             try {
                 const qrCode = new QRCodeStyling({
                     width: 250,
                     height: 250,
                     data: url,
-                    image: uploadedLogo || defaultLogo, // Gunakan logo unggahan, atau default jika tidak ada
+                    image: uploadedLogo || defaultLogo,
                     dotsOptions: {
                         type: dotStyleSelector.value,
-                        ...colorOptions.dotsOptions // Terapkan tema warna (solid/gradient) ke titik utama
+                        ...colorOptions // Terapkan tema warna (solid/gradient)
                     },
                     backgroundOptions: { color: "#ffffff" },
                     imageOptions: { crossOrigin: "anonymous", margin: 4, imageSize: 0.4 },
                     
-                    // --- PERBAIKAN KUNCI: APLIKASI WARNA KONSISTEN (ANTI BELEPOTAN) ---
+                    // --- PERBAIKAN KUNCI: Aplikasi warna konsisten ke semua elemen ---
                     cornersSquareOptions: { 
                         type: cornerSquareStyleSelector.value, 
-                        ...colorOptions.dotsOptions // Terapkan tema warna yang SAMA ke sudut luar
+                        ...colorOptions // Terapkan tema warna yang SAMA ke sudut luar
                     },
                     cornersDotOptions: { 
                         type: cornerDotStyleSelector.value,
-                        ...colorOptions.dotsOptions // Terapkan tema warna yang SAMA ke sudut dalam
+                        ...colorOptions // Terapkan tema warna yang SAMA ke sudut dalam
                     }
                 });
                 
@@ -443,8 +474,8 @@
 
         downloadBtn.addEventListener('click', () => {
             html2canvas(presentationFrame, {
-                backgroundColor: null, // Latar belakang transparan untuk tangkapan layar
-                scale: 3 // Meningkatkan resolusi gambar hasil unduhan
+                backgroundColor: null,
+                scale: 3 // Meningkatkan resolusi gambar
             }).then(canvas => {
                 const link = document.createElement('a');
                 link.download = 'QR-Code-Ultimate.png';
@@ -452,6 +483,9 @@
                 link.click();
             });
         });
+        
+        // Panggil event change sekali di awal untuk mengatur tampilan form sesuai mode default
+        colorModeSelector.dispatchEvent(new Event('change'));
     </script>
 </body>
 </html>
