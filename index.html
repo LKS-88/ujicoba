@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Generator QR Code Premium v3.1</title>
+    <title>Generator QR Code Ultimate v4.0</title>
     <script type="text/javascript" src="https://unpkg.com/qr-code-styling@1.5.0/lib/qr-code-styling.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
@@ -24,11 +24,12 @@
             font-family: 'Poppins', sans-serif;
             display: flex;
             justify-content: center;
-            align-items: center;
+            align-items: flex-start; /* Ubah agar container tidak selalu di tengah vertikal */
             min-height: 100vh;
             margin: 0;
             background: var(--light-color);
-            padding: 20px;
+            padding: 40px 20px;
+            box-sizing: border-box;
         }
 
         .container {
@@ -37,7 +38,7 @@
             border-radius: var(--border-radius);
             box-shadow: var(--box-shadow);
             width: 100%;
-            max-width: 520px;
+            max-width: 550px;
             text-align: center;
         }
 
@@ -54,19 +55,11 @@
             color: #7f8c8d;
         }
 
-        .input-group, .customization-group {
+        .input-group {
             margin-bottom: 20px;
-            text-align: left;
         }
 
-        .customization-group label {
-            font-weight: 600;
-            color: var(--dark-color);
-            display: block;
-            margin-bottom: 8px;
-        }
-
-        #url-input, #design-select {
+        #url-input {
             width: 100%;
             padding: 15px;
             border: 2px solid #dfe6e9;
@@ -76,11 +69,64 @@
             transition: border-color 0.3s ease;
         }
 
-        #url-input:focus, #design-select:focus {
+        #url-input:focus {
             outline: none;
             border-color: var(--primary-color);
         }
+        
+        /* Panel Kustomisasi Baru */
+        .customization-panel {
+            border: 2px solid #f0f0f0;
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin-top: 25px;
+            margin-bottom: 20px;
+            text-align: left;
+        }
 
+        .customization-panel h3 {
+            text-align: center;
+            margin-top: 0;
+            margin-bottom: 25px;
+            color: var(--dark-color);
+            font-size: 18px;
+        }
+
+        .customization-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        .control-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .control-group label {
+            font-weight: 600;
+            color: var(--dark-color);
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .control-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #dfe6e9;
+            border-radius: var(--border-radius);
+            font-size: 14px;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease;
+            background-color: #fff;
+        }
+
+        .control-group select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+        
         .btn {
             background-image: linear-gradient(45deg, var(--primary-color) 0%, var(--secondary-color) 100%);
             color: var(--white-color);
@@ -94,7 +140,6 @@
             transition: all 0.3s ease;
             text-transform: uppercase;
             letter-spacing: 1px;
-            margin-top: 10px;
         }
         
         .btn:hover {
@@ -122,78 +167,54 @@
             margin-top: 30px;
             padding: 25px;
             border-radius: var(--border-radius);
-            display: none; /* Sembunyi sampai QR dibuat */
-            animation: fadeIn 0.5s;
-            transition: background 0.3s ease, border 0.3s ease;
-        }
-        
-        #presentation-frame .frame-header {
-            font-size: 20px;
-            font-weight: 700;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            margin-bottom: 20px;
-        }
-        
-        #qr-code-canvas-wrapper {
-            background: var(--white-color);
-            padding: 20px;
-            border-radius: var(--border-radius);
-            display: inline-block; /* Agar pas dengan ukuran QR */
-        }
-        
-        #presentation-frame .frame-footer {
-            margin-top: 15px;
-            font-size: 12px;
-            word-break: break-all;
-        }
-        
-        /* --- TEMPLATE 1: EKSKLUSIF HITAM --- */
-        #presentation-frame.template-eksklusif-hitam {
-            background: var(--dark-color);
-        }
-        #presentation-frame.template-eksklusif-hitam .frame-header {
-            color: var(--white-color);
-        }
-        #presentation-frame.template-eksklusif-hitam .frame-footer {
-            color: #bdc3c7;
-        }
-
-        /* --- TEMPLATE 2: MINIMALIS PUTIH --- */
-        #presentation-frame.template-minimalis-putih {
-            background: var(--white-color);
-            border: 2px solid #e0e6ed;
-        }
-        #presentation-frame.template-minimalis-putih .frame-header {
-            color: var(--dark-color);
-        }
-        #presentation-frame.template-minimalis-putih #qr-code-canvas-wrapper {
-            padding: 10px; /* Padding lebih kecil */
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-        }
-        #presentation-frame.template-minimalis-putih .frame-footer {
-            color: #7f8c8d;
-        }
-        
-        /* --- TEMPLATE 3: GRADIEN MODERN --- */
-        #presentation-frame.template-gradien-modern {
-            background-image: linear-gradient(45deg, var(--primary-color) 0%, var(--secondary-color) 100%);
-        }
-        #presentation-frame.template-gradien-modern .frame-header {
-            color: var(--white-color);
-            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
-        }
-        #presentation-frame.template-gradien-modern #qr-code-canvas-wrapper {
-             box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-        }
-        #presentation-frame.template-gradien-modern .frame-footer {
-            color: rgba(255, 255, 255, 0.85);
-        }
-        
-        .download-btn {
-            background: var(--dark-color);
             display: none;
+            animation: fadeIn 0.5s;
+            transition: all 0.4s ease;
         }
+        #presentation-frame .frame-header {
+            font-size: 20px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 20px;
+        }
+        #qr-code-canvas-wrapper {
+            background: var(--white-color); padding: 20px; border-radius: var(--border-radius); display: inline-block;
+        }
+        #presentation-frame .frame-footer {
+            margin-top: 15px; font-size: 12px; word-break: break-all;
+        }
+        
+        /* --- KOLEKSI TEMPLATE BINGKAI --- */
+        .template-eksklusif-hitam { background: var(--dark-color); }
+        .template-eksklusif-hitam .frame-header { color: var(--white-color); }
+        .template-eksklusif-hitam .frame-footer { color: #bdc3c7; }
+
+        .template-minimalis-putih { background: var(--white-color); border: 2px solid #e0e6ed; }
+        .template-minimalis-putih .frame-header { color: var(--dark-color); }
+        .template-minimalis-putih .frame-footer { color: #7f8c8d; }
+        
+        .template-gradien-modern { background-image: linear-gradient(45deg, var(--primary-color) 0%, var(--secondary-color) 100%); }
+        .template-gradien-modern .frame-header { color: var(--white-color); text-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+        .template-gradien-modern .frame-footer { color: rgba(255, 255, 255, 0.85); }
+        
+        .template-ocean-blue { background: #e0f7fa; border: 2px solid #0077b6; }
+        .template-ocean-blue .frame-header { color: #023e8a; }
+        .template-ocean-blue .frame-footer { color: #0077b6; }
+
+        .template-elegant-gold { background: #fffbeb; border: 2px solid #facc15; }
+        .template-elegant-gold .frame-header { color: #b45309; }
+        .template-elegant-gold .frame-footer { color: #ca8a04; }
+
+        .template-red-alert { background: #ffebee; border: 2px solid #c62828; }
+        .template-red-alert .frame-header { color: #b71c1c; }
+        .template-red-alert .frame-footer { color: #d32f2f; }
+        
+        .template-nature-green { background: #f0fdf4; border: 2px solid #16a34a; }
+        .template-nature-green .frame-header { color: #15803d; }
+        .template-nature-green .frame-footer { color: #16a34a; }
+        
+        .template-simple-grey { background: #f8f9fa; border: 2px solid #dee2e6; }
+        .template-simple-grey .frame-header { color: #495057; }
+        .template-simple-grey .frame-footer { color: #6c757d; }
+        
+        .download-btn { background: var(--dark-color); display: none; margin-top: 20px; }
         
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
@@ -205,23 +226,55 @@
 
     <div class="container">
         <div class="header">
-            <h1>Generator QR Premium</h1>
-            <p>Buat QR Code Profesional dengan Bingkai Eksklusif</p>
+            <h1>Generator QR Ultimate</h1>
+            <p>Kustomisasi dan Buat QR Code Profesional Anda</p>
         </div>
         
         <div class="input-group">
             <input type="text" id="url-input" placeholder="Masukkan URL 'Magic Link' atau URL biasa">
         </div>
-
-        <div class="customization-group">
-            <label for="design-select">Pilih Desain Bingkai:</label>
-            <select id="design-select">
-                <option value="template-eksklusif-hitam" selected>Eksklusif Hitam</option>
-                <option value="template-minimalis-putih">Minimalis Putih</option>
-                <option value="template-gradien-modern">Gradien Modern</option>
-            </select>
-        </div>
         
+        <div class="customization-panel">
+            <h3>Panel Kustomisasi</h3>
+            <div class="customization-grid">
+                <div class="control-group">
+                    <label for="dot-style-select">Gaya Titik</label>
+                    <select id="dot-style-select">
+                        <option value="dots" selected>Bulat (Lingkaran)</option>
+                        <option value="rounded">Kotak Halus</option>
+                        <option value="classy-rounded">Klasik Modern</option>
+                        <option value="square">Kotak</option>
+                        <option value="extra-rounded">Sangat Bulat</option>
+                    </select>
+                </div>
+                <div class="control-group">
+                    <label for="color-theme-select">Tema Warna</label>
+                    <select id="color-theme-select">
+                        <option value="grad-default" selected>Gradien Hijau-Biru</option>
+                        <option value="solid-black">Hitam Solid</option>
+                        <option value="solid-navy">Biru Dongker Solid</option>
+                        <option value="grad-ocean">Gradien Lautan</option>
+                        <option value="grad-sunset">Gradien Senja</option>
+                        <option value="solid-forest">Hijau Hutan</option>
+                        <option value="grad-passion">Gradien Merah</option>
+                    </select>
+                </div>
+            </div>
+            <div class="control-group" style="margin-top: 20px;">
+                <label for="frame-design-select">Desain Bingkai</label>
+                <select id="frame-design-select">
+                    <option value="template-eksklusif-hitam" selected>Eksklusif Hitam</option>
+                    <option value="template-minimalis-putih">Minimalis Putih</option>
+                    <option value="template-gradien-modern">Gradien Modern</option>
+                    <option value="template-ocean-blue">Ocean Blue</option>
+                    <option value="template-elegant-gold">Elegant Gold</option>
+                    <option value="template-red-alert">Red Alert</option>
+                    <option value="template-nature-green">Nature Green</option>
+                    <option value="template-simple-grey">Simple Grey</option>
+                </select>
+            </div>
+        </div>
+
         <div id="message-box" class="message-box"></div>
         <button id="generate-btn" class="btn">Buat QR Code</button>
         
@@ -243,9 +296,24 @@
         const presentationFrame = document.getElementById('presentation-frame');
         const qrCanvasWrapper = document.getElementById('qr-code-canvas-wrapper');
         const frameFooterUrl = document.getElementById('frame-footer-url');
-        const designSelector = document.getElementById('design-select'); // Baru
+        
+        // --- Elemen Kustomisasi Baru ---
+        const dotStyleSelector = document.getElementById('dot-style-select');
+        const colorThemeSelector = document.getElementById('color-theme-select');
+        const frameDesignSelector = document.getElementById('frame-design-select');
 
-        // --- Sistem Filter Keamanan (Sama seperti v2.0) ---
+        // --- Database Tema Warna ---
+        const colorThemes = {
+            'grad-default': { gradient: { type: 'linear', rotation: 0.785, colorStops: [{ offset: 0, color: '#4CAF50' }, { offset: 1, color: '#007bff' }] } },
+            'solid-black': { color: '#000000' },
+            'solid-navy': { color: '#001f3f' },
+            'grad-ocean': { gradient: { type: 'linear', rotation: 0.785, colorStops: [{ offset: 0, color: '#2193b0' }, { offset: 1, color: '#6dd5ed' }] } },
+            'grad-sunset': { gradient: { type: 'linear', rotation: 0.785, colorStops: [{ offset: 0, color: '#ff4e50' }, { offset: 1, color: '#f9d423' }] } },
+            'solid-forest': { color: '#1A535C' },
+            'grad-passion': { gradient: { type: 'linear', rotation: 0.785, colorStops: [{ offset: 0, color: '#e52d27' }, { offset: 1, color: '#b31217' }] } }
+        };
+        
+        // --- Sistem Filter Keamanan ---
         const forbiddenCategories = {
             "Konten Judi Online": ['judi', 'slot', 'poker', 'casino', 'togel', 'sbo', 'bet', 'sbobet'],
             "Konten Dewasa/Pornografi": ['porn', 'sex', 'xxx', 'bokep', 'adult', 'nude', 'bugil'],
@@ -273,7 +341,11 @@
 
         generateBtn.addEventListener('click', () => {
             let url = urlInput.value.trim();
-            const selectedDesign = designSelector.value; // Ambil nilai desain yang dipilih
+            
+            // Ambil nilai dari semua pilihan kustomisasi
+            const selectedDotStyle = dotStyleSelector.value;
+            const selectedColorTheme = colorThemes[colorThemeSelector.value];
+            const selectedFrameDesign = frameDesignSelector.value;
             
             // Reset Tampilan
             presentationFrame.style.display = 'none';
@@ -297,7 +369,7 @@
                 return;
             }
 
-            // --- Generate QR Code ---
+            // --- Generate QR Code dengan Opsi Dinamis ---
             try {
                 const qrCode = new QRCodeStyling({
                     width: 250,
@@ -305,8 +377,8 @@
                     data: url,
                     image: "https://raw.githubusercontent.com/anekamarket/my.id/refs/heads/main/logo-anekamarket.png",
                     dotsOptions: {
-                        type: "classy-rounded",
-                        gradient: { type: "linear", rotation: 0.785, colorStops: [{ offset: 0, color: '#4CAF50' }, { offset: 1, color: '#007bff' }] }
+                        type: selectedDotStyle, // Gunakan gaya titik yang dipilih
+                        ...selectedColorTheme // Gunakan tema warna yang dipilih (color atau gradient)
                     },
                     backgroundOptions: { color: "#ffffff" },
                     imageOptions: { crossOrigin: "anonymous", margin: 4, imageSize: 0.4 },
@@ -314,33 +386,29 @@
                     cornersDotOptions: { type: "dot", color: "#34495e" }
                 });
                 
-                // Terapkan class desain yang dipilih ke elemen bingkai
-                presentationFrame.className = selectedDesign;
+                presentationFrame.className = selectedFrameDesign; // Terapkan class desain bingkai
                 
-                // Tampilkan QR Code di dalam bingkai
                 qrCanvasWrapper.innerHTML = '';
                 qrCode.append(qrCanvasWrapper);
                 
-                // Tampilkan URL di footer bingkai
                 frameFooterUrl.textContent = url;
                 
-                // Tampilkan seluruh bingkai dan tombol download
                 presentationFrame.style.display = 'block';
                 downloadBtn.style.display = 'block';
             
             } catch (error) {
                 displayMessage('error', 'Terjadi Kesalahan', 'Gagal membuat QR Code. Pastikan format URL sudah benar.');
+                console.error(error);
             }
         });
 
         downloadBtn.addEventListener('click', () => {
-            // Gunakan html2canvas untuk mengambil screenshot dari bingkai presentasi
             html2canvas(presentationFrame, {
                 backgroundColor: null, // Latar belakang transparan
-                scale: 3 // Meningkatkan resolusi gambar 3x lipat
+                scale: 3 // Meningkatkan resolusi gambar
             }).then(canvas => {
                 const link = document.createElement('a');
-                link.download = 'QR-Code-Premium.png';
+                link.download = 'QR-Code-Ultimate.png';
                 link.href = canvas.toDataURL('image/png');
                 link.click();
             });
