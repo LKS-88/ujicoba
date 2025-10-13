@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Generator QR Code Ultimate v4.0</title>
+    <title>Generator QR Code Ultimate v5.0 (Ditingkatkan)</title>
     <script type="text/javascript" src="https://unpkg.com/qr-code-styling@1.5.0/lib/qr-code-styling.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
@@ -24,7 +24,7 @@
             font-family: 'Poppins', sans-serif;
             display: flex;
             justify-content: center;
-            align-items: flex-start; /* Ubah agar container tidak selalu di tengah vertikal */
+            align-items: flex-start;
             min-height: 100vh;
             margin: 0;
             background: var(--light-color);
@@ -74,7 +74,6 @@
             border-color: var(--primary-color);
         }
         
-        /* Panel Kustomisasi Baru */
         .customization-panel {
             border: 2px solid #f0f0f0;
             border-radius: var(--border-radius);
@@ -154,6 +153,7 @@
             font-weight: 600;
             display: none;
             animation: fadeIn 0.5s;
+            text-align: left;
         }
         
         .message-box.error {
@@ -162,7 +162,6 @@
             border: 1px solid var(--danger-color);
         }
 
-        /* --- DESAIN BINGKAI PRESENTASI --- */
         #presentation-frame {
             margin-top: 30px;
             padding: 25px;
@@ -181,7 +180,6 @@
             margin-top: 15px; font-size: 12px; word-break: break-all;
         }
         
-        /* --- KOLEKSI TEMPLATE BINGKAI --- */
         .template-eksklusif-hitam { background: var(--dark-color); }
         .template-eksklusif-hitam .frame-header { color: var(--white-color); }
         .template-eksklusif-hitam .frame-footer { color: #bdc3c7; }
@@ -297,7 +295,7 @@
         const qrCanvasWrapper = document.getElementById('qr-code-canvas-wrapper');
         const frameFooterUrl = document.getElementById('frame-footer-url');
         
-        // --- Elemen Kustomisasi Baru ---
+        // --- Elemen Kustomisasi ---
         const dotStyleSelector = document.getElementById('dot-style-select');
         const colorThemeSelector = document.getElementById('color-theme-select');
         const frameDesignSelector = document.getElementById('frame-design-select');
@@ -336,13 +334,12 @@
         function displayMessage(type, title, text) {
             messageBox.style.display = 'block';
             messageBox.className = `message-box ${type}`;
-            messageBox.innerHTML = `<p><strong>${title}</strong><br>${text}</p>`;
+            messageBox.innerHTML = `<strong>${title}</strong><br>${text}`;
         }
 
         generateBtn.addEventListener('click', () => {
             let url = urlInput.value.trim();
             
-            // Ambil nilai dari semua pilihan kustomisasi
             const selectedDotStyle = dotStyleSelector.value;
             const selectedColorTheme = colorThemes[colorThemeSelector.value];
             const selectedFrameDesign = frameDesignSelector.value;
@@ -369,7 +366,6 @@
                 return;
             }
 
-            // --- Generate QR Code dengan Opsi Dinamis ---
             try {
                 const qrCode = new QRCodeStyling({
                     width: 250,
@@ -377,16 +373,28 @@
                     data: url,
                     image: "https://raw.githubusercontent.com/anekamarket/my.id/refs/heads/main/logo-anekamarket.png",
                     dotsOptions: {
-                        type: selectedDotStyle, // Gunakan gaya titik yang dipilih
-                        ...selectedColorTheme // Gunakan tema warna yang dipilih (color atau gradient)
+                        type: selectedDotStyle,
+                        ...selectedColorTheme // Terapkan tema warna (solid/gradient) ke titik utama
                     },
                     backgroundOptions: { color: "#ffffff" },
                     imageOptions: { crossOrigin: "anonymous", margin: 4, imageSize: 0.4 },
-                    cornersSquareOptions: { type: "extra-rounded", color: "#2c3e50" },
-                    cornersDotOptions: { type: "dot", color: "#34495e" }
+                    
+                    // --- PERBAIKAN KUNCI DIMULAI DI SINI ---
+                    // Alasan: Sebelumnya, warna sudut (corners) statis/hardcoded.
+                    // Perbaikan: Sekarang, warna sudut (corners) juga mengambil dari tema warna yang dipilih (selectedColorTheme).
+                    // Hasil: Warna seluruh elemen QR code menjadi serasi dan konsisten, tidak "belepotan".
+                    cornersSquareOptions: { 
+                        type: "extra-rounded", 
+                        ...selectedColorTheme // Terapkan tema warna yang sama ke sudut luar
+                    },
+                    cornersDotOptions: { 
+                        type: "dot", 
+                        ...selectedColorTheme // Terapkan tema warna yang sama ke sudut dalam
+                    }
+                    // --- PERBAIKAN SELESAI ---
                 });
                 
-                presentationFrame.className = selectedFrameDesign; // Terapkan class desain bingkai
+                presentationFrame.className = selectedFrameDesign;
                 
                 qrCanvasWrapper.innerHTML = '';
                 qrCode.append(qrCanvasWrapper);
@@ -404,8 +412,8 @@
 
         downloadBtn.addEventListener('click', () => {
             html2canvas(presentationFrame, {
-                backgroundColor: null, // Latar belakang transparan
-                scale: 3 // Meningkatkan resolusi gambar
+                backgroundColor: null, // Latar belakang transparan untuk tangkapan layar
+                scale: 3 // Meningkatkan resolusi gambar hasil unduhan
             }).then(canvas => {
                 const link = document.createElement('a');
                 link.download = 'QR-Code-Ultimate.png';
