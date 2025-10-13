@@ -3,15 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Generator QR Code Ultimate v5.0 (Ditingkatkan)</title>
+    <title>Generator QR Code Ultimate v6.0 - Edisi Profesional</title>
     <script type="text/javascript" src="https://unpkg.com/qr-code-styling@1.5.0/lib/qr-code-styling.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
 
         :root {
-            --primary-color: #4CAF50;
-            --secondary-color: #007bff;
+            --primary-color: #007bff;
+            --secondary-color: #4CAF50;
             --dark-color: #2c3e50;
             --light-color: #f4f7f6;
             --white-color: #fff;
@@ -22,301 +23,275 @@
 
         body {
             font-family: 'Poppins', sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            min-height: 100vh;
-            margin: 0;
             background: var(--light-color);
-            padding: 40px 20px;
-            box-sizing: border-box;
-        }
-
-        .container {
-            background: var(--white-color);
-            padding: 40px;
-            border-radius: var(--border-radius);
-            box-shadow: var(--box-shadow);
-            width: 100%;
-            max-width: 550px;
-            text-align: center;
-        }
-
-        .header h1 {
-            font-weight: 700;
-            font-size: 28px;
-            color: var(--dark-color);
-            margin: 0 0 10px 0;
-        }
-        
-        .header p {
-            margin: 0 0 30px 0;
-            font-size: 16px;
-            color: #7f8c8d;
-        }
-
-        .input-group {
-            margin-bottom: 20px;
-        }
-
-        #url-input {
-            width: 100%;
-            padding: 15px;
-            border: 2px solid #dfe6e9;
-            border-radius: var(--border-radius);
-            font-size: 16px;
-            box-sizing: border-box;
-            transition: border-color 0.3s ease;
-        }
-
-        #url-input:focus {
-            outline: none;
-            border-color: var(--primary-color);
-        }
-        
-        .customization-panel {
-            border: 2px solid #f0f0f0;
-            border-radius: var(--border-radius);
+            margin: 0;
             padding: 20px;
-            margin-top: 25px;
-            margin-bottom: 20px;
-            text-align: left;
         }
 
-        .customization-panel h3 {
-            text-align: center;
-            margin-top: 0;
-            margin-bottom: 25px;
-            color: var(--dark-color);
-            font-size: 18px;
-        }
-
-        .customization-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-        }
-        
-        .control-group {
+        .main-container {
             display: flex;
             flex-direction: column;
+            gap: 30px;
+            max-width: 1200px;
+            margin: 20px auto;
+        }
+        
+        @media (min-width: 992px) {
+            .main-container {
+                flex-direction: row;
+            }
         }
 
-        .control-group label {
-            font-weight: 600;
-            color: var(--dark-color);
-            display: block;
-            margin-bottom: 8px;
-            font-size: 14px;
-        }
-
-        .control-group select {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #dfe6e9;
+        .control-panel {
+            flex: 1;
+            background: var(--white-color);
+            padding: 30px;
             border-radius: var(--border-radius);
-            font-size: 14px;
-            box-sizing: border-box;
-            transition: border-color 0.3s ease;
-            background-color: #fff;
+            box-shadow: var(--box-shadow);
         }
 
-        .control-group select:focus {
-            outline: none;
-            border-color: var(--primary-color);
+        .preview-panel {
+            flex: 0 0 400px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: sticky;
+            top: 20px;
         }
         
-        .btn {
-            background-image: linear-gradient(45deg, var(--primary-color) 0%, var(--secondary-color) 100%);
-            color: var(--white-color);
-            border: none;
-            padding: 16px 20px;
-            width: 100%;
-            border-radius: var(--border-radius);
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
+        .header { text-align: center; margin-bottom: 25px; }
+        .header h1 { font-size: 26px; color: var(--dark-color); margin: 0 0 5px; }
+        .header p { font-size: 15px; color: #7f8c8d; margin: 0; }
+
+        /* Tabs Styling */
+        .tabs { display: flex; border-bottom: 2px solid #eee; margin-bottom: 20px; }
+        .tab-link { padding: 10px 15px; cursor: pointer; color: #7f8c8d; font-weight: 600; border-bottom: 3px solid transparent; transition: all 0.3s ease; }
+        .tab-link.active { color: var(--primary-color); border-bottom-color: var(--primary-color); }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; animation: fadeIn 0.5s; }
         
-        .btn:hover {
-            box-shadow: 0 8px 20px rgba(0, 123, 255, 0.3);
-            transform: translateY(-3px);
-        }
-        
-        .message-box {
-            padding: 15px;
-            margin-top: 20px;
-            border-radius: var(--border-radius);
-            font-weight: 600;
-            display: none;
-            animation: fadeIn 0.5s;
-            text-align: left;
-        }
-        
-        .message-box.error {
-            background-color: #fadbd8;
-            color: var(--danger-color);
-            border: 1px solid var(--danger-color);
+        .accordion-header {
+            font-size: 16px; font-weight: 600; color: var(--dark-color);
+            margin-top: 25px; margin-bottom: 15px; display: flex; align-items: center; gap: 8px;
         }
 
+        .control-group { margin-bottom: 18px; }
+        .control-group label { font-weight: 600; color: var(--dark-color); display: block; margin-bottom: 8px; font-size: 14px; }
+        .control-group input[type="text"],
+        .control-group input[type="password"],
+        .control-group input[type="file"],
+        .control-group select,
+        .control-group textarea {
+            width: 100%; padding: 12px; border: 2px solid #dfe6e9; border-radius: var(--border-radius);
+            font-size: 14px; box-sizing: border-box; transition: border-color 0.3s ease;
+        }
+        .control-group input:focus, .control-group select:focus, .control-group textarea:focus { outline: none; border-color: var(--primary-color); }
+        textarea { resize: vertical; min-height: 80px; }
+        
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .color-picker-wrapper { display: flex; align-items: center; gap: 10px; }
+        .color-picker-wrapper input[type="color"] { width: 40px; height: 40px; border: none; border-radius: 8px; cursor: pointer; background: none; }
+        
+        /* Preview Panel */
         #presentation-frame {
-            margin-top: 30px;
-            padding: 25px;
-            border-radius: var(--border-radius);
-            display: none;
-            animation: fadeIn 0.5s;
-            transition: all 0.4s ease;
+            padding: 25px; border-radius: var(--border-radius);
+            transition: all 0.4s ease; text-align: center; width: 100%;
         }
-        #presentation-frame .frame-header {
-            font-size: 20px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 20px;
-        }
-        #qr-code-canvas-wrapper {
-            background: var(--white-color); padding: 20px; border-radius: var(--border-radius); display: inline-block;
-        }
-        #presentation-frame .frame-footer {
-            margin-top: 15px; font-size: 12px; word-break: break-all;
-        }
+        #presentation-frame .frame-header { font-size: 20px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 20px; }
+        #qr-code-canvas-wrapper { background: var(--white-color); padding: 15px; border-radius: var(--border-radius); display: inline-block; }
+        #presentation-frame .frame-footer { margin-top: 15px; font-size: 12px; word-break: break-all; }
         
+        /* Frame Templates (sama seperti sebelumnya) */
         .template-eksklusif-hitam { background: var(--dark-color); }
         .template-eksklusif-hitam .frame-header { color: var(--white-color); }
         .template-eksklusif-hitam .frame-footer { color: #bdc3c7; }
-
         .template-minimalis-putih { background: var(--white-color); border: 2px solid #e0e6ed; }
         .template-minimalis-putih .frame-header { color: var(--dark-color); }
         .template-minimalis-putih .frame-footer { color: #7f8c8d; }
-        
         .template-gradien-modern { background-image: linear-gradient(45deg, var(--primary-color) 0%, var(--secondary-color) 100%); }
         .template-gradien-modern .frame-header { color: var(--white-color); text-shadow: 0 2px 4px rgba(0,0,0,0.2); }
         .template-gradien-modern .frame-footer { color: rgba(255, 255, 255, 0.85); }
         
-        .template-ocean-blue { background: #e0f7fa; border: 2px solid #0077b6; }
-        .template-ocean-blue .frame-header { color: #023e8a; }
-        .template-ocean-blue .frame-footer { color: #0077b6; }
-
-        .template-elegant-gold { background: #fffbeb; border: 2px solid #facc15; }
-        .template-elegant-gold .frame-header { color: #b45309; }
-        .template-elegant-gold .frame-footer { color: #ca8a04; }
-
-        .template-red-alert { background: #ffebee; border: 2px solid #c62828; }
-        .template-red-alert .frame-header { color: #b71c1c; }
-        .template-red-alert .frame-footer { color: #d32f2f; }
-        
-        .template-nature-green { background: #f0fdf4; border: 2px solid #16a34a; }
-        .template-nature-green .frame-header { color: #15803d; }
-        .template-nature-green .frame-footer { color: #16a34a; }
-        
-        .template-simple-grey { background: #f8f9fa; border: 2px solid #dee2e6; }
-        .template-simple-grey .frame-header { color: #495057; }
-        .template-simple-grey .frame-footer { color: #6c757d; }
-        
-        .download-btn { background: var(--dark-color); display: none; margin-top: 20px; }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+        /* Download Buttons */
+        .download-buttons { margin-top: 20px; display: flex; gap: 10px; width:100%;}
+        .btn {
+            background-image: linear-gradient(45deg, var(--primary-color) 0%, #0056b3 100%); color: var(--white-color); border: none;
+            padding: 12px 15px; border-radius: var(--border-radius); font-size: 15px; font-weight: 600; cursor: pointer;
+            transition: all 0.3s ease; text-transform: uppercase; letter-spacing: 1px; flex: 1;
         }
+        .btn:hover { box-shadow: 0 8px 20px rgba(0, 123, 255, 0.3); transform: translateY(-3px); }
+        .btn-secondary { background-image: linear-gradient(45deg, #6c757d 0%, var(--dark-color) 100%);}
+        
+        .message-box { padding: 15px; margin-top: 20px; border-radius: var(--border-radius); font-weight: 600; display: none; animation: fadeIn 0.5s; text-align: left; }
+        .message-box.error { background-color: #fadbd8; color: var(--danger-color); border: 1px solid var(--danger-color); }
+        
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <div class="header">
-            <h1>Generator QR Ultimate</h1>
-            <p>Kustomisasi dan Buat QR Code Profesional Anda</p>
-        </div>
-        
-        <div class="input-group">
-            <input type="text" id="url-input" placeholder="Masukkan URL 'Magic Link' atau URL biasa">
-        </div>
-        
-        <div class="customization-panel">
-            <h3>Panel Kustomisasi</h3>
-            <div class="customization-grid">
+    <div class="main-container">
+        <div class="control-panel">
+            <div class="header">
+                <h1>Generator QR Ultimate v6.0</h1>
+                <p>Buat QR Code Profesional dengan Pratinjau Langsung</p>
+            </div>
+
+            <div class="tabs">
+                <span class="tab-link active" onclick="openTab('content')"><i class="fas fa-keyboard"></i> Konten</span>
+                <span class="tab-link" onclick="openTab('styling')"><i class="fas fa-palette"></i> Gaya & Warna</span>
+                <span class="tab-link" onclick="openTab('logo')"><i class="fas fa-image"></i> Logo</span>
+                <span class="tab-link" onclick="openTab('frame')"><i class="fas fa-expand-arrows-alt"></i> Bingkai</span>
+            </div>
+
+            <div id="content" class="tab-content active">
                 <div class="control-group">
-                    <label for="dot-style-select">Gaya Titik</label>
-                    <select id="dot-style-select">
-                        <option value="dots" selected>Bulat (Lingkaran)</option>
-                        <option value="rounded">Kotak Halus</option>
-                        <option value="classy-rounded">Klasik Modern</option>
-                        <option value="square">Kotak</option>
-                        <option value="extra-rounded">Sangat Bulat</option>
+                    <label for="qr-type">Tipe QR Code</label>
+                    <select id="qr-type" class="control">
+                        <option value="url" selected>URL (Tautan Web)</option>
+                        <option value="text">Teks Biasa</option>
+                        <option value="wifi">Jaringan Wi-Fi</option>
                     </select>
                 </div>
+                
+                <div id="input-url" class="qr-input-group">
+                    <div class="control-group">
+                        <label for="url-input">URL Anda</label>
+                        <input type="text" id="url-input" class="control" placeholder="Contoh: https://www.google.com">
+                    </div>
+                </div>
+
+                <div id="input-text" class="qr-input-group" style="display: none;">
+                    <div class="control-group">
+                        <label for="text-input">Teks Anda</label>
+                        <textarea id="text-input" class="control" placeholder="Masukkan teks apapun di sini..."></textarea>
+                    </div>
+                </div>
+
+                <div id="input-wifi" class="qr-input-group" style="display: none;">
+                    <div class="control-group">
+                        <label for="wifi-ssid">Nama Jaringan (SSID)</label>
+                        <input type="text" id="wifi-ssid" class="control" placeholder="NamaWiFiSaya">
+                    </div>
+                    <div class="control-group">
+                        <label for="wifi-pass">Password</label>
+                        <input type="password" id="wifi-pass" class="control" placeholder="PasswordRahasia">
+                    </div>
+                    <div class="control-group">
+                        <label for="wifi-encryption">Enkripsi</label>
+                        <select id="wifi-encryption" class="control">
+                            <option value="WPA" selected>WPA/WPA2</option>
+                            <option value="WEP">WEP</option>
+                            <option value="nopass">Tidak Ada</option>
+                        </select>
+                    </div>
+                </div>
+                 <div id="message-box" class="message-box"></div>
+            </div>
+
+            <div id="styling" class="tab-content">
+                <div class="accordion-header"><i class="fas fa-paint-brush"></i> Warna Titik (Dots)</div>
+                 <div class="grid-2">
+                    <div class="control-group">
+                        <label>Warna Mulai</label>
+                        <div class="color-picker-wrapper">
+                            <input type="color" id="color-start" class="control" value="#4CAF50">
+                            <input type="text" id="color-start-hex" class="control" value="#4CAF50">
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label>Warna Akhir (Gradien)</label>
+                        <div class="color-picker-wrapper">
+                            <input type="color" id="color-end" class="control" value="#007bff">
+                            <input type="text" id="color-end-hex" class="control" value="#007bff">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-header"><i class="fas fa-shapes"></i> Gaya Bentuk</div>
+                <div class="grid-2">
+                    <div class="control-group">
+                        <label for="dot-style">Gaya Titik</label>
+                        <select id="dot-style" class="control">
+                            <option value="dots">Bulat</option>
+                            <option value="rounded" selected>Kotak Halus</option>
+                            <option value="classy-rounded">Klasik Modern</option>
+                            <option value="square">Kotak</option>
+                            <option value="extra-rounded">Sangat Bulat</option>
+                        </select>
+                    </div>
+                     <div class="control-group">
+                        <label for="corner-square-style">Gaya Mata Sudut</label>
+                        <select id="corner-square-style" class="control">
+                            <option value="">Default</option>
+                            <option value="dot">Bulat</option>
+                            <option value="square">Kotak</option>
+                            <option value="extra-rounded" selected>Sangat Bulat</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="accordion-header"><i class="fas fa-shield-alt"></i> Tingkat Lanjut</div>
                 <div class="control-group">
-                    <label for="color-theme-select">Tema Warna</label>
-                    <select id="color-theme-select">
-                        <option value="grad-default" selected>Gradien Hijau-Biru</option>
-                        <option value="solid-black">Hitam Solid</option>
-                        <option value="solid-navy">Biru Dongker Solid</option>
-                        <option value="grad-ocean">Gradien Lautan</option>
-                        <option value="grad-sunset">Gradien Senja</option>
-                        <option value="solid-forest">Hijau Hutan</option>
-                        <option value="grad-passion">Gradien Merah</option>
+                    <label for="error-correction">Tingkat Koreksi Kesalahan</label>
+                    <select id="error-correction" class="control">
+                        <option value="L">Rendah (Low)</option>
+                        <option value="M" selected>Sedang (Medium)</option>
+                        <option value="Q">Cukup (Quartile)</option>
+                        <option value="H">Tinggi (High)</option>
                     </select>
                 </div>
             </div>
-            <div class="control-group" style="margin-top: 20px;">
-                <label for="frame-design-select">Desain Bingkai</label>
-                <select id="frame-design-select">
-                    <option value="template-eksklusif-hitam" selected>Eksklusif Hitam</option>
-                    <option value="template-minimalis-putih">Minimalis Putih</option>
-                    <option value="template-gradien-modern">Gradien Modern</option>
-                    <option value="template-ocean-blue">Ocean Blue</option>
-                    <option value="template-elegant-gold">Elegant Gold</option>
-                    <option value="template-red-alert">Red Alert</option>
-                    <option value="template-nature-green">Nature Green</option>
-                    <option value="template-simple-grey">Simple Grey</option>
-                </select>
+
+            <div id="logo" class="tab-content">
+                <div class="control-group">
+                    <label for="logo-upload">Unggah Logo Anda (Opsional)</label>
+                    <input type="file" id="logo-upload" class="control" accept="image/png, image/jpeg, image/svg+xml">
+                </div>
+            </div>
+
+            <div id="frame" class="tab-content">
+                <div class="control-group">
+                    <label for="frame-design-select">Desain Bingkai</label>
+                    <select id="frame-design-select" class="control">
+                        <option value="template-minimalis-putih">Minimalis Putih</option>
+                        <option value="template-eksklusif-hitam" selected>Eksklusif Hitam</option>
+                        <option value="template-gradien-modern">Gradien Modern</option>
+                    </select>
+                </div>
             </div>
         </div>
 
-        <div id="message-box" class="message-box"></div>
-        <button id="generate-btn" class="btn">Buat QR Code</button>
-        
-        <div id="presentation-frame">
-            <div class="frame-header">PINDAI SAYA</div>
-            <div id="qr-code-canvas-wrapper"></div>
-            <div id="frame-footer-url" class="frame-footer"></div>
+        <div class="preview-panel">
+            <div id="presentation-frame" class="template-eksklusif-hitam">
+                <div class="frame-header">PINDAI SAYA</div>
+                <div id="qr-code-canvas-wrapper"></div>
+                <div id="frame-footer-url" class="frame-footer"></div>
+            </div>
+            <div class="download-buttons">
+                 <button id="download-png-btn" class="btn"><i class="fas fa-file-image"></i> PNG</button>
+                 <button id="download-svg-btn" class="btn btn-secondary"><i class="fas fa-file-code"></i> SVG</button>
+            </div>
         </div>
-        
-        <button id="download-btn" class="btn download-btn">Download Gambar (PNG)</button>
     </div>
 
     <script type="text/javascript">
-        // --- Elemen DOM ---
-        const generateBtn = document.getElementById('generate-btn');
-        const downloadBtn = document.getElementById('download-btn');
-        const urlInput = document.getElementById('url-input');
-        const messageBox = document.getElementById('message-box');
+        // --- Global Elements & State ---
+        let qrCodeInstance = null;
+        let logoImage = null;
+
+        const controls = document.querySelectorAll('.control');
         const presentationFrame = document.getElementById('presentation-frame');
         const qrCanvasWrapper = document.getElementById('qr-code-canvas-wrapper');
         const frameFooterUrl = document.getElementById('frame-footer-url');
-        
-        // --- Elemen Kustomisasi ---
-        const dotStyleSelector = document.getElementById('dot-style-select');
-        const colorThemeSelector = document.getElementById('color-theme-select');
-        const frameDesignSelector = document.getElementById('frame-design-select');
+        const messageBox = document.getElementById('message-box');
 
-        // --- Database Tema Warna ---
-        const colorThemes = {
-            'grad-default': { gradient: { type: 'linear', rotation: 0.785, colorStops: [{ offset: 0, color: '#4CAF50' }, { offset: 1, color: '#007bff' }] } },
-            'solid-black': { color: '#000000' },
-            'solid-navy': { color: '#001f3f' },
-            'grad-ocean': { gradient: { type: 'linear', rotation: 0.785, colorStops: [{ offset: 0, color: '#2193b0' }, { offset: 1, color: '#6dd5ed' }] } },
-            'grad-sunset': { gradient: { type: 'linear', rotation: 0.785, colorStops: [{ offset: 0, color: '#ff4e50' }, { offset: 1, color: '#f9d423' }] } },
-            'solid-forest': { color: '#1A535C' },
-            'grad-passion': { gradient: { type: 'linear', rotation: 0.785, colorStops: [{ offset: 0, color: '#e52d27' }, { offset: 1, color: '#b31217' }] } }
-        };
-        
-        // --- Sistem Filter Keamanan ---
+        // --- Security Filter ---
         const forbiddenCategories = {
             "Konten Judi Online": ['judi', 'slot', 'poker', 'casino', 'togel', 'sbo', 'bet', 'sbobet'],
             "Konten Dewasa/Pornografi": ['porn', 'sex', 'xxx', 'bokep', 'adult', 'nude', 'bugil'],
             "Penipuan (Scam/Phishing)": ['scam', 'phishing', 'tipu', 'penipuan', 'giveaway', 'hadiah gratis'],
-            "Malware/Virus Berbahaya": ['malware', 'virus', 'trojan', 'ransomware', 'spyware']
         };
         
         function checkUrlSafety(url) {
@@ -330,97 +305,174 @@
             }
             return { safe: true };
         }
+
+        // --- Core QR Code Logic ---
+        function getQrData() {
+            const type = document.getElementById('qr-type').value;
+            let data = '';
+
+            messageBox.style.display = 'none';
+
+            switch (type) {
+                case 'url':
+                    let url = document.getElementById('url-input').value.trim();
+                    if (url && !/^https?:\/\//i.test(url)) {
+                        url = 'https://' + url;
+                    }
+                    const safetyCheck = checkUrlSafety(url);
+                    if (!safetyCheck.safe) {
+                        displayMessage('error', `URL Ditolak: Terdeteksi ${safetyCheck.category}`, `Sistem menemukan kata kunci ('${safetyCheck.keyword}') yang tidak diizinkan.`);
+                        return null;
+                    }
+                    data = url;
+                    frameFooterUrl.textContent = url.replace(/^https?:\/\//, '');
+                    break;
+                case 'text':
+                    data = document.getElementById('text-input').value;
+                    frameFooterUrl.textContent = "Pindai untuk melihat teks";
+                    break;
+                case 'wifi':
+                    const ssid = document.getElementById('wifi-ssid').value;
+                    const pass = document.getElementById('wifi-pass').value;
+                    const enc = document.getElementById('wifi-encryption').value;
+                    if (!ssid) return null;
+                    data = `WIFI:T:${enc};S:${ssid};P:${pass};;`;
+                    frameFooterUrl.textContent = `Hubungkan ke Wi-Fi: ${ssid}`;
+                    break;
+            }
+            return data || " "; // Return a space if data is empty to avoid errors
+        }
+
+        function updateQrCode() {
+            const qrData = getQrData();
+            if (!qrData) {
+                 qrCanvasWrapper.innerHTML = ''; // Clear preview if data is invalid
+                 return;
+            }
+
+            const options = {
+                width: 280,
+                height: 280,
+                data: qrData,
+                image: logoImage,
+                dotsOptions: {
+                    type: document.getElementById('dot-style').value,
+                    gradient: {
+                        type: 'linear',
+                        rotation: 0.785, // 45 degrees
+                        colorStops: [
+                            { offset: 0, color: document.getElementById('color-start').value },
+                            { offset: 1, color: document.getElementById('color-end').value }
+                        ]
+                    }
+                },
+                backgroundOptions: { color: "#ffffff" },
+                imageOptions: { crossOrigin: "anonymous", margin: 5, imageSize: 0.4 },
+                cornersSquareOptions: { 
+                    type: document.getElementById('corner-square-style').value,
+                    gradient: {
+                        type: 'linear',
+                        rotation: 0.785,
+                        colorStops: [
+                            { offset: 0, color: document.getElementById('color-start').value },
+                            { offset: 1, color: document.getElementById('color-end').value }
+                        ]
+                    }
+                },
+                cornersDotOptions: {
+                    gradient: {
+                        type: 'linear',
+                        rotation: 0.785,
+                        colorStops: [
+                            { offset: 0, color: document.getElementById('color-start').value },
+                            { offset: 1, color: document.getElementById('color-end').value }
+                        ]
+                    }
+                },
+                qrOptions: {
+                    errorCorrectionLevel: document.getElementById('error-correction').value
+                }
+            };
+
+            if (!qrCodeInstance) {
+                qrCodeInstance = new QRCodeStyling(options);
+                qrCodeInstance.append(qrCanvasWrapper);
+            } else {
+                qrCodeInstance.update(options);
+            }
+        }
         
+        // --- UI & Event Listeners ---
+        function openTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-link').forEach(link => link.classList.remove('active'));
+            document.getElementById(tabName).classList.add('active');
+            event.currentTarget.classList.add('active');
+        }
+
+        document.getElementById('qr-type').addEventListener('change', (e) => {
+            document.querySelectorAll('.qr-input-group').forEach(group => group.style.display = 'none');
+            document.getElementById(`input-${e.target.value}`).style.display = 'block';
+            updateQrCode();
+        });
+
+        document.getElementById('logo-upload').addEventListener('change', (e) => {
+            if (e.target.files && e.target.files[0]) {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    logoImage = event.target.result;
+                    updateQrCode();
+                }
+                reader.readAsDataURL(e.target.files[0]);
+            }
+        });
+        
+        document.getElementById('frame-design-select').addEventListener('change', (e) => {
+            presentationFrame.className = e.target.value;
+        });
+
+        document.getElementById('download-png-btn').addEventListener('click', () => {
+             html2canvas(presentationFrame, { backgroundColor: null, scale: 3 })
+             .then(canvas => {
+                const link = document.createElement('a');
+                link.download = 'QRCode-Ultimate.png';
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            });
+        });
+        
+        document.getElementById('download-svg-btn').addEventListener('click', () => {
+            if(qrCodeInstance) {
+                qrCodeInstance.getRawData('svg').then((blob) => {
+                    const url = URL.createObjectURL(blob);
+                    const link = document.createElement('a');
+                    link.download = 'QRCode-Ultimate.svg';
+                    link.href = url;
+                    link.click();
+                    URL.revokeObjectURL(url);
+                });
+            }
+        });
+        
+        function syncColorInputs(source, targetId) {
+            document.getElementById(targetId).value = source.value;
+        }
+
+        document.getElementById('color-start').addEventListener('input', (e) => syncColorInputs(e.target, 'color-start-hex'));
+        document.getElementById('color-end').addEventListener('input', (e) => syncColorInputs(e.target, 'color-end-hex'));
+        document.getElementById('color-start-hex').addEventListener('input', (e) => syncColorInputs(e.target, 'color-start'));
+        document.getElementById('color-end-hex').addEventListener('input', (e) => syncColorInputs(e.target, 'color-end'));
+
         function displayMessage(type, title, text) {
             messageBox.style.display = 'block';
             messageBox.className = `message-box ${type}`;
             messageBox.innerHTML = `<strong>${title}</strong><br>${text}`;
         }
 
-        generateBtn.addEventListener('click', () => {
-            let url = urlInput.value.trim();
-            
-            const selectedDotStyle = dotStyleSelector.value;
-            const selectedColorTheme = colorThemes[colorThemeSelector.value];
-            const selectedFrameDesign = frameDesignSelector.value;
-            
-            // Reset Tampilan
-            presentationFrame.style.display = 'none';
-            qrCanvasWrapper.innerHTML = '';
-            messageBox.style.display = 'none';
-            downloadBtn.style.display = 'none';
+        // --- Initial Load ---
+        controls.forEach(control => control.addEventListener('input', updateQrCode));
+        window.addEventListener('load', updateQrCode);
 
-            if (!url) {
-                displayMessage('error', 'Input Kosong!', 'Mohon masukkan URL yang valid.');
-                return;
-            }
-            if (!/^https?:\/\//i.test(url)) {
-                url = 'https://' + url;
-            }
-
-            const safetyCheck = checkUrlSafety(url);
-            if (!safetyCheck.safe) {
-                const title = `URL Ditolak: Terdeteksi ${safetyCheck.category}`;
-                const text = `Sistem menemukan kata kunci terlarang ('${safetyCheck.keyword}'). Demi keamanan, URL ini tidak dapat diproses.`;
-                displayMessage('error', title, text);
-                return;
-            }
-
-            try {
-                const qrCode = new QRCodeStyling({
-                    width: 250,
-                    height: 250,
-                    data: url,
-                    image: "https://raw.githubusercontent.com/anekamarket/my.id/refs/heads/main/logo-anekamarket.png",
-                    dotsOptions: {
-                        type: selectedDotStyle,
-                        ...selectedColorTheme // Terapkan tema warna (solid/gradient) ke titik utama
-                    },
-                    backgroundOptions: { color: "#ffffff" },
-                    imageOptions: { crossOrigin: "anonymous", margin: 4, imageSize: 0.4 },
-                    
-                    // --- PERBAIKAN KUNCI DIMULAI DI SINI ---
-                    // Alasan: Sebelumnya, warna sudut (corners) statis/hardcoded.
-                    // Perbaikan: Sekarang, warna sudut (corners) juga mengambil dari tema warna yang dipilih (selectedColorTheme).
-                    // Hasil: Warna seluruh elemen QR code menjadi serasi dan konsisten, tidak "belepotan".
-                    cornersSquareOptions: { 
-                        type: "extra-rounded", 
-                        ...selectedColorTheme // Terapkan tema warna yang sama ke sudut luar
-                    },
-                    cornersDotOptions: { 
-                        type: "dot", 
-                        ...selectedColorTheme // Terapkan tema warna yang sama ke sudut dalam
-                    }
-                    // --- PERBAIKAN SELESAI ---
-                });
-                
-                presentationFrame.className = selectedFrameDesign;
-                
-                qrCanvasWrapper.innerHTML = '';
-                qrCode.append(qrCanvasWrapper);
-                
-                frameFooterUrl.textContent = url;
-                
-                presentationFrame.style.display = 'block';
-                downloadBtn.style.display = 'block';
-            
-            } catch (error) {
-                displayMessage('error', 'Terjadi Kesalahan', 'Gagal membuat QR Code. Pastikan format URL sudah benar.');
-                console.error(error);
-            }
-        });
-
-        downloadBtn.addEventListener('click', () => {
-            html2canvas(presentationFrame, {
-                backgroundColor: null, // Latar belakang transparan untuk tangkapan layar
-                scale: 3 // Meningkatkan resolusi gambar hasil unduhan
-            }).then(canvas => {
-                const link = document.createElement('a');
-                link.download = 'QR-Code-Ultimate.png';
-                link.href = canvas.toDataURL('image/png');
-                link.click();
-            });
-        });
     </script>
 </body>
 </html>
