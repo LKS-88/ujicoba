@@ -13,8 +13,6 @@ const products = [
 {"id":"RIC-2025-0810","category":"snack","type":"promo","seller":{"name":"Regginang Situbondo Ibu Ican","link":"https://anekamarket.my.id/rengginang-situbondo-ibu-ican","locationLink":"https://www.google.com/maps?q=-7.6393021,113.9997534"},"badge":{"text":"Harga Hemat","type":"promo"},"mainImage":"https://i.imgur.com/H3Lc1Qt.jpeg","title":"RENGGINANG ANEKA RASA","code":"RIC-2025-0810","price":18000,"originalPrice":20000,"discount":"10%","priceVariations":[{"name":"Renggginang Rasa Terasi","price":8000},{"name":"Renggginang Rasa Bawang","price":8000},{"name":"Renggginang Rasa Udang","price":8000},{"name":"Renggginang Rasa Cumi","price":8000},{"name":"Renggginang Rasa Mix","price":19000}],"units":["pack 450gram"],"defaultUnit":"pack","details":{"description":"<br><b>Rengginang Gurih Renyah</b> – <strong>Cita Rasa Tradisional yang Tak Pernah Lekang oleh Waktu</strong>\n\nNikmati kelezatan rengginang khas Nusantara yang dibuat dari beras ketan pilihan, diproses secara higienis, dan digoreng hingga renyah sempurna. \n\nCocok sebagai camilan keluarga, teman minum teh, atau oleh-oleh khas yang menggugah selera. Tersedia dalam berbagai varian rasa: Terasi,bawang,Udang dan Cumi pasti ketagihan!","images":["https://i.imgur.com/mtQc5pc.jpeg","https://i.imgur.com/EuC9Np2.jpeg","https://i.imgur.com/yGCEh0n.jpeg","https://i.imgur.com/ACGxe8H.jpeg"],"specs":[]},"contact":{"whatsapp":"6282338341476","phone":"+6282338341476"}}
 ];
 
-// PERBAIKAN: Mengembalikan 'DOMContentLoaded' untuk memastikan
-// semua skrip (termasuk library) 100% dimuat sebelum kode ini berjalan.
 document.addEventListener('DOMContentLoaded', () => {
     const { jsPDF } = window.jspdf;
     
@@ -439,18 +437,43 @@ document.addEventListener('DOMContentLoaded', () => {
                     : '<i class="fas fa-tags"></i> Cek Harga';
             }
 
+            // ==============================================
+            // PERBAIKAN LOGIKA TOMBOL DETAIL (ACCORDION)
+            // ==============================================
             if (target.closest('.btn-detail')) {
                 playButtonSound();
                 const btn = target.closest('.btn-detail');
                 const currentCard = target.closest('.gallery-item');
                 const expandedContent = currentCard.querySelector('.gallery-detail-expanded');
-                
-                expandedContent.classList.toggle('active');
-                btn.classList.toggle('active');
-                btn.innerHTML = expandedContent.classList.contains('active') 
-                    ? '<i class="fas fa-chevron-up"></i> Sembunyikan' 
-                    : '<i class="fas fa-chevron-down"></i> Detail';
+                const isOpening = !expandedContent.classList.contains('active');
+
+                // Tutup semua detail card yang lain terlebih dahulu
+                document.querySelectorAll('.gallery-item').forEach(otherCard => {
+                    if (otherCard !== currentCard) {
+                        const otherExpandedContent = otherCard.querySelector('.gallery-detail-expanded');
+                        const otherBtn = otherCard.querySelector('.btn-detail');
+                        if (otherExpandedContent && otherBtn && otherExpandedContent.classList.contains('active')) {
+                            otherExpandedContent.classList.remove('active');
+                            otherBtn.classList.remove('active');
+                            otherBtn.innerHTML = '<i class="fas fa-chevron-down"></i> Detail';
+                        }
+                    }
+                });
+
+                // Buka atau tutup card yang sedang diklik
+                if (isOpening) {
+                    expandedContent.classList.add('active');
+                    btn.classList.add('active');
+                    btn.innerHTML = '<i class="fas fa-chevron-up"></i> Sembunyikan';
+                } else {
+                    expandedContent.classList.remove('active');
+                    btn.classList.remove('active');
+                    btn.innerHTML = '<i class="fas fa-chevron-down"></i> Detail';
+                }
             }
+            // ==============================================
+            // AKHIR DARI PERBAIKAN
+            // ==============================================
 
             if (target.classList.contains('quantity-btn')) {
                 playButtonSound();
