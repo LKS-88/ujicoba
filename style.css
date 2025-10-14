@@ -13,6 +13,7 @@
     --warning: #ffc107;
     --danger: #dc3545;
     --white: #FFFFFF;
+    --red-bright: #FF3B3B; /* Warna baru untuk tombol lokasi */
     --transition: all 0.3s ease;
     --shadow-sm: 0 1px 3px rgba(0,0,0,0.05), 0 1px 2px rgba(0,0,0,0.1);
     --shadow-md: 0 4px 6px rgba(0,0,0,0.05), 0 1px 3px rgba(0,0,0,0.06);
@@ -304,21 +305,50 @@ nav {
     border-color: var(--primary-dark);
 }
 
-.btn-outline {
-    background-color: transparent;
+/* ==============================================
+  PERBAIKAN DESAIN TOMBOL HEADER SESUAI PERMINTAAN
+  ==============================================
+*/
+.header-buttons .btn {
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-radius: 50px;
+    padding: 14px 28px;
+    border: 2px solid transparent;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.header-buttons .btn:hover {
+    transform: translateY(-4px) scale(1.05);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+}
+
+.header-buttons .btn:active {
+    transform: translateY(-1px) scale(1);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
+}
+
+.header-buttons .btn-primary {
+    background: linear-gradient(45deg, var(--accent), var(--accent-dark));
     color: var(--white);
-    border-color: var(--white);
+    border-color: transparent;
 }
 
 .header-buttons .btn-outline {
-    background-color: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(5px);
+    background-color: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    border-color: rgba(255, 255, 255, 0.8);
+    color: var(--white);
 }
 
-.btn-outline:hover {
-    background-color: var(--white);
-    color: var(--primary);
+.header-buttons .btn-outline:hover {
+    background-color: rgba(255, 255, 255, 0.3);
+    border-color: var(--white);
+    color: var(--white);
 }
+/* AKHIR DARI PERBAIKAN TOMBOL HEADER */
 
 /* --- Konten Utama & Section --- */
 .container { max-width: 1200px; margin: 0 auto; padding: 0 1.5rem; }
@@ -454,9 +484,26 @@ section { padding: 4rem 0; }
 .btn-call:hover { background-color: #3367D6; border-color: #3367D6; }
 .btn-visit { background-color: var(--success); color: white; border-color: var(--success); }
 .btn-visit:hover { background-color: #218838; border-color: #218838; }
-.btn-location { background-color: var(--danger); color: white; border-color: var(--danger); }
-.btn-location:hover { background-color: #c82333; border-color: #c82333; }
-.btn-location-disabled { background-color: #ccc; color: #666; cursor: not-allowed; border-color: #ccc; }
+
+/* ==============================================
+  PERBAIKAN TOMBOL LOKASI SESUAI PERMINTAAN
+  ==============================================
+*/
+.btn-location, .btn-location-disabled {
+    background-color: var(--red-bright);
+    color: white;
+    border-color: var(--red-bright);
+}
+.btn-location:hover {
+    background-color: #D32F2F; /* Warna merah lebih gelap saat hover */
+    border-color: #D32F2F;
+}
+.btn-location-disabled {
+    cursor: not-allowed;
+    opacity: 0.85; /* Sedikit redup tapi tetap merah */
+}
+/* AKHIR DARI PERBAIKAN TOMBOL LOKASI */
+
 .btn-toggle-prices { background-color: var(--warning); color: var(--text); border-color: var(--warning); }
 .btn-toggle-prices:hover { background-color: #e0a800; border-color: #e0a800; }
 .btn-toggle-prices.active { background-color: var(--danger); color: white; border-color: var(--danger); }
