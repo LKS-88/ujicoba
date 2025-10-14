@@ -943,11 +943,11 @@
                 const detailSpecsHTML = (product.details?.specs || []).map(spec => `<div class="spec-item"><span class="spec-label">${spec.label || ''}:</span><span class="spec-value">${spec.value || ''}</span></div>`).join('');
                 
                 const locationButtonHTML = product.seller?.locationLink
-                    ? `<a href="${product.seller.locationLink}" target="_blank" class="btn-visit btn-location"><i class="fas fa-map-marker-alt"></i> Lokasi</a>`
-                    : `<button class="btn-visit btn-location-disabled" onclick="alert('Belum Menetapkan Lokasi')"><i class="fas fa-map-marker-alt"></i> Lokasi</button>`;
+                    ? `<a href="${product.seller.locationLink}" target="_blank" class="btn btn-location"><i class="fas fa-map-marker-alt"></i> Lokasi</a>`
+                    : `<button class="btn btn-location-disabled" onclick="alert('Belum Menetapkan Lokasi')"><i class="fas fa-map-marker-alt"></i> Lokasi</button>`;
 
-                const whatsappButtonHTML = `<a href="https://wa.me/${product.contact?.whatsapp || ''}?text=Halo%20${encodeURIComponent(product.seller?.name || '')},%20saya%20tertarik%20dengan%20produk%20${encodeURIComponent(product.title || '')}%20(${product.code || ''})" class="btn-whatsapp" target="_blank"><i class="fab fa-whatsapp"></i> Chat</a>`;
-                const phoneButtonHTML = `<a href="tel:${product.contact?.phone || ''}" class="btn-call"><i class="fas fa-phone-alt"></i> Telepon</a>`;
+                const whatsappButtonHTML = `<a href="https://wa.me/${product.contact?.whatsapp || ''}?text=Halo%20${encodeURIComponent(product.seller?.name || '')},%20saya%20tertarik%20dengan%20produk%20${encodeURIComponent(product.title || '')}%20(${product.code || ''})" class="btn btn-whatsapp" target="_blank"><i class="fab fa-whatsapp"></i> Chat</a>`;
+                const phoneButtonHTML = `<a href="tel:${product.contact?.phone || ''}" class="btn btn-call"><i class="fas fa-phone-alt"></i> Telepon</a>`;
 
                 const allImages = [product.mainImage, ...(product.details?.images || [])].filter(Boolean);
                 const imagesHTML = allImages.map((img, index) =>
@@ -982,14 +982,14 @@
                                     <span class="total-price-value">${formatPrice(0)}</span>
                                 </div>
                                 <div class="gallery-actions" style="margin-top: 15px;">
-                                     <button class="btn-order"><i class="fas fa-shopping-cart"></i> Pesan</button>
-                                     <button class="btn-preorder-toggle"><i class="fas fa-calendar-check"></i> Pre-Order</button>
+                                     <button class="btn btn-order"><i class="fas fa-shopping-cart"></i> Pesan</button>
+                                     <button class="btn btn-preorder-toggle"><i class="fas fa-calendar-check"></i> Pre-Order</button>
                                 </div>
                                 <div class="preorder-form">
                                     <div class="preorder-title"><i class="fas fa-money-bill-wave"></i><span>Form Uang Muka (DP)</span></div>
                                     <input type="number" class="preorder-input" placeholder="Masukkan nominal DP (minimal 40%)">
                                     <p class="preorder-note">* Untuk pre-order, harap masukkan nominal uang muka minimal 40% dari total harga. Kami akan menghubungi Anda untuk konfirmasi lebih lanjut.</p>
-                                    <button class="btn-preorder"><i class="fas fa-paper-plane"></i> Kirim Pre-Order</button>
+                                    <button class="btn btn-preorder"><i class="fas fa-paper-plane"></i> Kirim Pre-Order</button>
                                 </div>
                             </div>
 
@@ -1003,10 +1003,10 @@
                             <div class="gallery-actions">
                                 ${whatsappButtonHTML}
                                 ${phoneButtonHTML}
-                                <a href="${product.seller?.link || '#'}" target="_blank" class="btn-visit"><i class="fas fa-store-alt"></i> Kunjungi Gerai</a>
+                                <a href="${product.seller?.link || '#'}" target="_blank" class="btn btn-visit"><i class="fas fa-store-alt"></i> Kunjungi Gerai</a>
                                 ${locationButtonHTML}
-                                ${hasPriceVariations ? '<button class="btn-toggle-prices"><i class="fas fa-tags"></i> Cek Harga</button>' : ''}
-                                <button class="btn-detail"><i class="fas fa-chevron-down"></i> Detail</button>
+                                ${hasPriceVariations ? '<button class="btn btn-toggle-prices"><i class="fas fa-tags"></i> Cek Harga</button>' : ''}
+                                <button class="btn btn-detail"><i class="fas fa-chevron-down"></i> Detail</button>
                             </div>
                         </div>
                     </div>`;
