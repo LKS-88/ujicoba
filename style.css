@@ -806,7 +806,7 @@ footer {
 .btn-close-modal { padding: 10px 20px; background-color: #6c757d; color: var(--white); border: none; border-radius: 5px; cursor: pointer; }
 
 /* ==============================================
-  PENYEMPURNAAN DESAIN MODAL
+  PENYEMPURNAAN DESAIN MODAL (REVISI)
 ============================================== */
 
 /* --- Modal Pesan Cepat --- */
@@ -823,12 +823,12 @@ footer {
 .quick-order-content .form-group textarea::placeholder { color: #aaa; }
 .btn-submit-order { width: 100%; padding: 15px; font-size: 1.1rem; text-transform: uppercase; letter-spacing: 1px; }
 
-/* --- Modal Download Aplikasi --- */
+/* --- Modal Download Aplikasi (Tampilan Baru Profesional) --- */
 .download-modal-content {
     max-width: 450px;
     padding: 0;
     text-align: center;
-    overflow: hidden; /* Tambahkan ini agar border-radius header terlihat */
+    overflow: hidden;
 }
 .download-modal-header {
     background: linear-gradient(135deg, var(--primary), var(--dark));
@@ -871,6 +871,7 @@ footer {
     list-style: none;
     text-align: left;
     margin-bottom: 30px;
+    padding-left: 0;
 }
 .download-modal-body ul li {
     margin-bottom: 12px;
