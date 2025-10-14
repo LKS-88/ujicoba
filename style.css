@@ -980,21 +980,22 @@ footer {
 @media (max-width: 768px) {
     /* PENYESUAIAN HEADER UNTUK MOBILE */
     .header-content {
-        padding: 2rem 1rem; /* Mengurangi padding samping */
+        padding: 2rem 1rem; 
     }
     .logo img {
-        height: 80px; /* Menyesuaikan ukuran logo */
+        height: 80px;
     }
     .logo span {
-        font-size: 2.5rem; /* Menyesuaikan ukuran teks logo */
+        font-size: 2.5rem;
     }
     .tagline {
-        font-size: 1.2rem; /* Menyesuaikan ukuran tagline */
+        font-size: 1.2rem;
         margin-bottom: 2rem;
     }
     .header-search {
         margin-bottom: 2rem;
     }
+    
     /* INI ADALAH BAGIAN UTAMA PERBAIKAN TOMBOL */
     .header-buttons {
         flex-direction: column; /* Mengubah susunan tombol menjadi vertikal */
