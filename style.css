@@ -967,7 +967,7 @@ footer {
 #generatedScriptOutput { background-color: #2d2d2d; color: #f8f8f2; padding: 20px; border-radius: 8px; white-space: pre; overflow-x: auto; }
 #previewTarget .gallery-item { box-shadow: 0 8px 25px rgba(0,0,0,0.1); margin: 0 auto; max-width: 400px; }
 
-/* Responsivitas */
+/* --- Perbaikan & Penyempurnaan Responsif --- */
 @media (max-width: 992px) {
     .footer-container {
         grid-template-columns: 1fr 1fr;
@@ -978,6 +978,38 @@ footer {
 }
 
 @media (max-width: 768px) {
+    /* PENYESUAIAN HEADER UNTUK MOBILE */
+    .header-content {
+        padding: 2rem 1rem; /* Mengurangi padding samping */
+    }
+    .logo img {
+        height: 80px; /* Menyesuaikan ukuran logo */
+    }
+    .logo span {
+        font-size: 2.5rem; /* Menyesuaikan ukuran teks logo */
+    }
+    .tagline {
+        font-size: 1.2rem; /* Menyesuaikan ukuran tagline */
+        margin-bottom: 2rem;
+    }
+    .header-search {
+        margin-bottom: 2rem;
+    }
+    /* INI ADALAH BAGIAN UTAMA PERBAIKAN TOMBOL */
+    .header-buttons {
+        flex-direction: column; /* Mengubah susunan tombol menjadi vertikal */
+        align-items: center;   /* Memusatkan tombol di tengah */
+        gap: 1rem;             /* Menjaga jarak antar tombol */
+        width: 100%;           /* Memastikan kontainer mengambil lebar penuh */
+    }
+    .header-buttons .btn {
+        width: 90%;             /* Membuat lebar tombol lebih konsisten */
+        max-width: 400px;       /* Memberi batas lebar maksimal */
+        padding: 14px 20px;     /* Sedikit menyesuaikan padding */
+        font-size: 1rem;        /* Menyesuaikan ukuran font agar pas */
+    }
+    /* AKHIR DARI PERBAIKAN TOMBOL */
+    
     .nav-search { display: none; }
     .search-toggle, .mobile-menu-toggle { display: block; }
     .nav-links {
@@ -991,6 +1023,9 @@ footer {
     .gallery-grid { grid-template-columns: 1fr; }
     #productGeneratorForm { grid-template-columns: 1fr; }
     .footer-container {
+        grid-template-columns: 1fr;
+    }
+    .contact-container {
         grid-template-columns: 1fr;
     }
 }
