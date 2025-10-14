@@ -944,7 +944,7 @@
                 
                 const locationButtonHTML = product.seller?.locationLink
                     ? `<a href="${product.seller.locationLink}" target="_blank" class="btn btn-location"><i class="fas fa-map-marker-alt"></i> Lokasi</a>`
-                    : `<button class="btn btn-location-disabled" onclick="alert('Belum Menetapkan Lokasi')"><i class="fas fa-map-marker-alt"></i> Lokasi</button>`;
+                    : `<button class="btn btn-location-disabled"><i class="fas fa-map-marker-alt"></i> Lokasi</button>`;
 
                 const whatsappButtonHTML = `<a href="https://wa.me/${product.contact?.whatsapp || ''}?text=Halo%20${encodeURIComponent(product.seller?.name || '')},%20saya%20tertarik%20dengan%20produk%20${encodeURIComponent(product.title || '')}%20(${product.code || ''})" class="btn btn-whatsapp" target="_blank"><i class="fab fa-whatsapp"></i> Chat</a>`;
                 const phoneButtonHTML = `<a href="tel:${product.contact?.phone || ''}" class="btn btn-call"><i class="fas fa-phone-alt"></i> Telepon</a>`;
