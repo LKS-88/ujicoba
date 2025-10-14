@@ -317,10 +317,10 @@
                 </a>
                 <p>Platform publikasi dan promosi produk UMKM, jasa, dan sewa. Komitmen kami adalah mendukung pertumbuhan usaha lokal dengan memberikan solusi digital yang mudah dan efektif.</p>
                 <div class="social-links">
-                    <a href="https://www.facebook.com/share/15JeidyjDPs/" target="_blank" rel="noopener noreferrer" aria-label="Kunjungi Facebook kami"><i class="fab fa-facebook-f"></i></a>
-                    <a href="https://www.instagram.com/lentera_karya_situbondo?igsh=MTh3M3NmcThtNDhyeQ==" target="_blank" rel="noopener noreferrer" aria-label="Kunjungi Instagram kami"><i class="fab fa-instagram"></i></a>
-                    <a href="https://wa.me/6285647709114" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
-                    <a href="https://www.tiktok.com/@aplikasiusaha?_t=ZS-90X4nfhndoI&_r=1" target="_blank" rel="noopener noreferrer" aria-label="Kunjungi TikTok kami"><i class="fab fa-tiktok"></i></a>
+                    <a href="https://www.facebook.com/share/15JeidyjDPs/" target="_blank" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="https://www.instagram.com/lentera_karya_situbondo?igsh=MTh3M3NmcThtNDhyeQ==" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="https://wa.me/6285647709114" target="_blank" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+                    <a href="https://www.tiktok.com/@aplikasiusaha?_t=ZS-90X4nfhndoI&_r=1" target="_blank" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
                 </div>
             </div>
             
@@ -357,34 +357,34 @@
     </footer>
     
     <div class="modal" id="orderModal">
-        <div class="modal-content">
+        <div class="modal-content quick-order-content">
             <div class="modal-header">
                 <h2><i class="fas fa-shipping-fast"></i> Pesan Cepat</h2>
                 <span class="close-modal" aria-label="Tutup">×</span>
             </div>
             <div class="modal-body">
-                <p class="modal-intro-text">Isi form di bawah ini dan tim kami akan segera menghubungi Anda untuk konfirmasi pesanan.</p>
+                <p class="modal-subtitle">Isi form di bawah ini dan tim kami akan segera menghubungi Anda untuk konfirmasi pesanan.</p>
                 <form id="quickOrderForm" action="https://formsubmit.co/admin@anekamarket.my.id" method="POST">
-                    <input type="hidden" name="_subject" value="Pesan Cepat dari Website">
+                    <input type="hidden" name="_subject" value="Pesan Cepat dari Website Anekamarket">
                     <input type="hidden" name="_captcha" value="false">
                     <div class="form-group">
-                        <label for="quick-name">Nama Anda</label>
-                        <input type="text" id="quick-name" name="name" required>
+                        <label for="quick-name"><i class="fas fa-user"></i> Nama Anda</label>
+                        <input type="text" id="quick-name" name="name" placeholder="Contoh: Budi Santoso" required>
                     </div>
                     <div class="form-group">
-                        <label for="quick-phone">Nomor Telepon</label>
-                        <input type="tel" id="quick-phone" name="phone" required>
+                        <label for="quick-phone"><i class="fas fa-phone-alt"></i> Nomor Telepon (WhatsApp)</label>
+                        <input type="tel" id="quick-phone" name="phone" placeholder="Contoh: 081234567890" required>
                     </div>
                     <div class="form-group">
-                        <label for="quick-item">Produk yang Diminati</label>
-                        <input type="text" id="quick-item" name="product" required>
+                        <label for="quick-item"><i class="fas fa-box-open"></i> Produk yang Diminati</label>
+                        <input type="text" id="quick-item" name="product" placeholder="Contoh: Paket Ternak Ayam, Garam Krosok" required>
                     </div>
                     <div class="form-group">
-                        <label for="quick-message">Detail Tambahan</label>
-                        <textarea id="quick-message" name="message"></textarea>
+                        <label for="quick-message"><i class="fas fa-pen"></i> Detail Tambahan (Opsional)</label>
+                        <textarea id="quick-message" name="message" placeholder="Contoh: Saya butuh 10 ekor ayam, mohon info pengiriman ke area Panji."></textarea>
                     </div>
-                    <button type="submit" class="btn btn-primary" id="quickOrderSubmitBtn">
-                        <i class="fas fa-paper-plane"></i> <span>Kirim Permintaan</span>
+                    <button type="submit" class="btn btn-primary btn-submit-order">
+                        <i class="fas fa-paper-plane"></i> Kirim Permintaan
                     </button>
                 </form>
             </div>
@@ -400,21 +400,26 @@
                 <p>Dapatkan kemudahan akses produk dan layanan UMKM langsung dari genggaman Anda.</p>
             </div>
             <div class="download-modal-body">
-                <p>Fitur Unggulan:</p>
+                <h3>Fitur Unggulan Aplikasi:</h3>
                 <ul>
-                    <li><i class="fas fa-check-circle"></i> Notifikasi promo terbaru.</li>
+                    <li><i class="fas fa-check-circle"></i> Notifikasi promo dan produk terbaru.</li>
                     <li><i class="fas fa-check-circle"></i> Pemesanan lebih cepat dan mudah.</li>
                     <li><i class="fas fa-check-circle"></i> Terhubung langsung dengan penjual.</li>
+                    <li><i class="fas fa-check-circle"></i> Tampilan yang ramah pengguna.</li>
                 </ul>
                 <a href="https://www.4shared.com/mobile/mAUL3Dg4ge/APLIKASI_ANEKAMARKET.html" class="btn-download" target="_blank" rel="noopener noreferrer">
-                    <i class="fas fa-download"></i>
-                    <span>Download untuk Android</span>
-                    <small>(via 4Shared)</small>
+                    <div class="btn-download-icon">
+                        <i class="fas fa-download"></i>
+                    </div>
+                    <div class="btn-download-text">
+                        <span>Download untuk Android</span>
+                        <small>Aman & Terpercaya via 4Shared</small>
+                    </div>
                 </a>
             </div>
         </div>
     </div>
-
+    
     <div class="search-modal" id="searchModal">
         <div class="search-modal-content">
             <div class="search-modal-header">
