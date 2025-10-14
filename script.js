@@ -393,7 +393,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     document.getElementById('zoomedImage').src = img.src;
                     document.getElementById('imageModal').classList.add('show');
                     body.style.overflow = 'hidden';
-                    playButtonSound();
+                    playNotificationSound(); // REVISI: Menggunakan suara notifikasi
                 });
             });
 
@@ -437,9 +437,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     : '<i class="fas fa-tags"></i> Cek Harga';
             }
 
-            // ==============================================
-            // PERBAIKAN LOGIKA TOMBOL DETAIL (ACCORDION)
-            // ==============================================
             if (target.closest('.btn-detail')) {
                 playButtonSound();
                 const btn = target.closest('.btn-detail');
@@ -447,7 +444,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 const expandedContent = currentCard.querySelector('.gallery-detail-expanded');
                 const isOpening = !expandedContent.classList.contains('active');
 
-                // Tutup semua detail card yang lain terlebih dahulu
                 document.querySelectorAll('.gallery-item').forEach(otherCard => {
                     if (otherCard !== currentCard) {
                         const otherExpandedContent = otherCard.querySelector('.gallery-detail-expanded');
@@ -460,7 +456,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 });
 
-                // Buka atau tutup card yang sedang diklik
                 if (isOpening) {
                     expandedContent.classList.add('active');
                     btn.classList.add('active');
@@ -471,9 +466,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     btn.innerHTML = '<i class="fas fa-chevron-down"></i> Detail';
                 }
             }
-            // ==============================================
-            // AKHIR DARI PERBAIKAN
-            // ==============================================
 
             if (target.classList.contains('quantity-btn')) {
                 playButtonSound();
@@ -577,7 +569,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const searchModal = document.getElementById('searchModal'); const searchModalInput = document.getElementById('searchModalInput'); const searchResults = document.getElementById('searchResults'); const headerSearchInput = document.getElementById('headerSearchInput'); const headerSearchBtn = document.getElementById('headerSearchBtn'); const navSearchInput = document.getElementById('navSearchInput'); const navSearchBtn = document.getElementById('navSearchBtn'); const searchFilters = document.getElementById('searchFilters');
     const btnCloseSearchModal = document.querySelector('.btn-close-modal');
 
-    function openSearchModal(query = '') { if(searchModal) { searchModal.classList.add('show'); body.style.overflow = 'hidden'; searchModalInput.value = query; searchModalInput.focus(); performSearch(query); } }
+    function openSearchModal(query = '') { if(searchModal) { playNotificationSound(); searchModal.classList.add('show'); body.style.overflow = 'hidden'; searchModalInput.value = query; searchModalInput.focus(); performSearch(query); } }
     function closeSearchModal() { if(searchModal) { searchModal.classList.remove('show'); body.style.overflow = ''; } }
     
     function performSearch(query) { 
@@ -639,7 +631,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (productCategories) { productCategories.addEventListener('click', e => { if (e.target.classList.contains('product-category-btn')) { productCategories.querySelectorAll('.product-category-btn').forEach(btn => btn.classList.remove('active')); e.target.classList.add('active'); activeCategory = e.target.dataset.category; applyFilters(); playButtonSound(); } }); }
     if (categoryTabs) { categoryTabs.addEventListener('click', e => { if (e.target.classList.contains('category-btn')) { categoryTabs.querySelectorAll('.category-btn').forEach(btn => btn.classList.remove('active')); e.target.classList.add('active'); activeType = e.target.dataset.type; applyFilters(); playButtonSound(); } }); }
     const contactForm = document.getElementById('contactForm'); if (contactForm) { contactForm.addEventListener('submit', function(e) { /* Biarkan default action dari formsubmit.co berjalan */ }); }
-    const orderModal = document.getElementById('orderModal'); const quickOrderBtn = document.getElementById('quick-order'); if (orderModal && quickOrderBtn) { quickOrderBtn.addEventListener('click', () => { orderModal.classList.add('show'); body.style.overflow = 'hidden'; playButtonSound(); }); }
+    const orderModal = document.getElementById('orderModal'); const quickOrderBtn = document.getElementById('quick-order'); if (orderModal && quickOrderBtn) { quickOrderBtn.addEventListener('click', () => { orderModal.classList.add('show'); body.style.overflow = 'hidden'; playNotificationSound(); }); } // REVISI: Menggunakan suara notifikasi
     
     const downloadAppBtn = document.getElementById('downloadAppBtn');
     const downloadModal = document.getElementById('downloadModal');
@@ -648,7 +640,7 @@ document.addEventListener('DOMContentLoaded', () => {
             e.preventDefault();
             downloadModal.classList.add('show');
             body.style.overflow = 'hidden';
-            playButtonSound();
+            playNotificationSound(); // REVISI: Menggunakan suara notifikasi
         });
     }
     
@@ -694,7 +686,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }, false);
 
     const generatorModal = document.getElementById('generatorModal'); const openGeneratorBtn = document.getElementById('openGeneratorBtn'); const closeGeneratorModalBtn = document.getElementById('closeGeneratorModal'); const generatorForm = document.getElementById('productGeneratorForm'); const priceVariationsContainer = document.getElementById('priceVariationsContainer'); const specsContainer = document.getElementById('specsContainer'); const addPriceVariationBtn = document.getElementById('addPriceVariationBtn'); const addSpecBtn = document.getElementById('addSpecBtn'); const outputContainer = document.getElementById('generatorOutputContainer'); const outputElement = document.getElementById('generatedScriptOutput'); const outputWrapper = document.getElementById('generatedScriptWrapper'); const copyScriptBtn = document.getElementById('copyScriptBtn'); const downloadScriptBtn = document.getElementById('downloadScriptBtn'); const toggleVisibilityBtn = document.getElementById('toggleScriptVisibilityBtn'); const importScriptBtn = document.getElementById('importScriptBtn'); const genImporter = document.getElementById('gen-importer'); const previewProductBtn = document.getElementById('previewProductBtn'); const generatorPreviewContainer = document.getElementById('generatorPreviewContainer'); const previewTarget = document.getElementById('previewTarget');
-    const openGeneratorModal = () => { if(generatorModal) { generatorModal.classList.add('show'); body.style.overflow = 'hidden'; }};
+    const openGeneratorModal = () => { if(generatorModal) { playNotificationSound(); generatorModal.classList.add('show'); body.style.overflow = 'hidden'; }}; // REVISI: Menambahkan suara notifikasi
     const closeGeneratorModal = () => { if(generatorModal) { generatorModal.classList.remove('show'); body.style.overflow = ''; }};
     if (openGeneratorBtn) { openGeneratorBtn.addEventListener('click', () => { playButtonSound(); const password = prompt("Masukkan password untuk mengakses generator:"); if (password === "LKS.1945") { openGeneratorModal(); } else if (password !== null) { alert("Password salah. Akses ditolak."); } }); }
     if(closeGeneratorModalBtn) closeGeneratorModalBtn.addEventListener('click', closeGeneratorModal);
