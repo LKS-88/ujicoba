@@ -54,16 +54,17 @@
 
     <style>
         :root {
-            --primary-color: #3461FD;
-            --dark-blue: #0A2A75;
-            --text-primary: #2c3e50;
-            --text-secondary: #5a6a7a;
-            --background-start: #0f2027;
-            --background-mid: #203a43;
-            --background-end: #2c5364;
-            --card-background: rgba(255, 255, 255, 0.98);
-            --shadow-color: rgba(0, 26, 87, 0.1);
+            --primary-color: #5E56F1;
+            --primary-gradient: linear-gradient(90deg, #5E56F1, #7047EA);
+            --dark-blue: #1A237E;
+            --text-primary: #212529;
+            --text-secondary: #6c757d;
+            --background-start: #f8f9fa;
+            --background-end: #e9ecef;
+            --card-background: #ffffff;
+            --shadow-color: rgba(94, 86, 241, 0.12);
             --progress-bar-bg: #e9ecef;
+            --particle-color: #adb5bd;
         }
 
         @keyframes fadeInUp {
@@ -80,9 +81,7 @@
             font-family: 'Poppins', sans-serif;
             color: var(--text-primary);
             margin: 0;
-            padding: 20px;
-            box-sizing: border-box;
-            overflow: hidden; /* Mencegah scroll karena partikel */
+            background-color: var(--background-start);
         }
 
         #particles-js {
@@ -91,9 +90,8 @@
             height: 100%;
             top: 0;
             left: 0;
-            z-index: -1;
-            background-color: var(--background-start);
-            background-image: linear-gradient(135deg, var(--background-start), var(--background-mid), var(--background-end));
+            z-index: 0;
+            background-image: linear-gradient(135deg, var(--background-start), var(--background-end));
         }
 
         .content-wrapper {
@@ -101,66 +99,50 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            text-align: center;
+            padding: 40px 20px; /* Padding untuk mencegah konten menempel di tepi layar */
+            box-sizing: border-box;
             position: relative;
             z-index: 1;
         }
 
         .container {
-            max-width: 720px;
+            max-width: 800px;
             width: 100%;
             padding: 50px 40px;
             background-color: var(--card-background);
-            backdrop-filter: blur(10px);
             border-radius: 24px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 25px 60px var(--shadow-color);
+            box-shadow: 0 25px 50px -12px var(--shadow-color);
             opacity: 0;
-            animation: fadeInUp 1s ease-out forwards;
+            animation: fadeInUp 0.8s ease-out forwards;
+            animation-delay: 0.1s;
         }
 
         .logo {
-            width: 120px;
+            width: 110px;
             height: auto;
             margin-bottom: 25px;
-            animation: fadeInUp 1s ease-out 0.2s forwards;
-            opacity: 0;
         }
 
         h1 {
-            font-size: 2.8em;
+            font-size: 2.6em;
             font-weight: 700;
             color: var(--dark-blue);
             margin: 0 0 15px;
-            animation: fadeInUp 1s ease-out 0.4s forwards;
-            opacity: 0;
         }
 
         p.subtitle {
-            font-size: 1.2em;
+            font-size: 1.15em;
             color: var(--text-secondary);
             line-height: 1.7;
-            margin-bottom: 40px;
-            max-width: 600px;
+            margin-bottom: 50px;
+            max-width: 620px;
             margin-left: auto;
             margin-right: auto;
-            animation: fadeInUp 1s ease-out 0.6s forwards;
-            opacity: 0;
         }
 
         .features {
-            text-align: left;
-            margin-bottom: 45px;
-            animation: fadeInUp 1s ease-out 0.8s forwards;
-            opacity: 0;
-        }
-
-        .features h2 {
             text-align: center;
-            font-size: 1.5em;
-            color: var(--text-primary);
-            margin-bottom: 30px;
-            font-weight: 600;
+            margin-bottom: 50px;
         }
 
         .features ul {
@@ -168,46 +150,57 @@
             padding: 0;
             margin: 0;
             display: grid;
-            gap: 20px;
+            gap: 25px;
         }
 
         .features li {
+            text-align: left;
             display: flex;
-            align-items: center;
-            font-size: 1.1em;
-            color: var(--text-secondary);
-            background-color: #f8faff;
-            padding: 15px;
-            border-radius: 12px;
+            align-items: flex-start;
+            padding: 20px;
+            background-color: var(--background-start);
+            border-radius: 16px;
+            border: 1px solid var(--background-end);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
-        
+
         .features li:hover {
             transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(52, 97, 253, 0.15);
+            box-shadow: 0 10px 20px var(--shadow-color);
         }
 
         .features li .icon {
             flex-shrink: 0;
-            width: 32px;
-            height: 32px;
+            width: 48px;
+            height: 48px;
             margin-right: 20px;
-            color: var(--primary-color);
-            background-color: #e8edff;
-            border-radius: 8px;
+            color: #fff;
+            background: var(--primary-gradient);
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
         }
         .features li .icon svg {
-            width: 20px;
-            height: 20px;
+            width: 24px;
+            height: 24px;
+        }
+        
+        .feature-text h3 {
+            margin: 0 0 5px;
+            font-size: 1.1em;
+            color: var(--dark-blue);
+        }
+
+        .feature-text p {
+            margin: 0;
+            font-size: 0.95em;
+            color: var(--text-secondary);
+            line-height: 1.6;
         }
 
         .redirect-container {
             margin-top: 20px;
-            animation: fadeInUp 1s ease-out 1s forwards;
-            opacity: 0;
         }
 
         .redirect-message {
@@ -222,12 +215,12 @@
             background-color: var(--progress-bar-bg);
             border-radius: 5px;
             overflow: hidden;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
         
         .progress-bar {
             height: 100%;
-            background: linear-gradient(90deg, var(--primary-color), #6585ff);
+            background: var(--primary-gradient);
             border-radius: 5px;
             animation: progressBar 25s linear forwards; /* Durasi 25 detik */
         }
@@ -237,7 +230,7 @@
             text-decoration: none;
             font-weight: 600;
             font-size: 1em;
-            transition: color 0.3s ease, text-decoration 0.3s ease;
+            transition: color 0.3s ease;
         }
 
         a.manual-link:hover {
@@ -245,15 +238,20 @@
             text-decoration: underline;
         }
         
-        /* ============== DESAIN RESPONSIVE UNTUK SMARTPHONE ============== */
-        @media (max-width: 768px) {
-            body { padding: 15px; }
+        /* ============== DESAIN RESPONSIVE ============== */
+        @media (max-width: 767px) {
+            .content-wrapper { padding: 20px 15px; }
             .container { padding: 40px 25px; }
-            h1 { font-size: 2.2em; }
+            h1 { font-size: 2.1em; }
             p.subtitle { font-size: 1.05em; }
-            .features h2 { font-size: 1.3em; }
-            .features ul { display: flex; flex-direction: column; }
-            .features li { font-size: 1em; padding: 12px 15px; }
+            .features li { flex-direction: column; align-items: center; text-align: center; }
+            .features li .icon { margin-right: 0; margin-bottom: 15px; }
+        }
+        
+        @media (min-width: 768px) {
+            .features ul {
+                grid-template-columns: repeat(3, 1fr);
+            }
         }
     </style>
 </head>
@@ -263,42 +261,51 @@
 
     <div class="content-wrapper">
         <div class="container">
-            <img src="https://raw.githubusercontent.com/LKS-88/anekamarket/refs/heads/main/Logo-Anekamarketku.png" alt="Logo ANEKAMARKET" class="logo">
-            <h1>Selamat Datang di ANEKAMARKET</h1>
-            <p class="subtitle">Gerbang digital Anda untuk terhubung dengan ribuan produk, jasa, dan layanan sewa dari UMKM terbaik di seluruh Indonesia.</p>
+            <div style="text-align: center;">
+                <img src="https://raw.githubusercontent.com/LKS-88/anekamarket/refs/heads/main/Logo-Anekamarketku.png" alt="Logo ANEKAMARKET" class="logo">
+                <h1>Selamat Datang di ANEKAMARKET</h1>
+                <p class="subtitle">Gerbang digital Anda untuk terhubung dengan ribuan produk, jasa, dan layanan sewa dari UMKM terbaik di seluruh Indonesia.</p>
+            </div>
 
             <div class="features">
-                <h2>Temukan Semua Kebutuhan Anda</h2>
                 <ul>
                     <li>
-                        <span class="icon">
+                        <div class="icon">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M9.568 3H5.25A2.25 2.25 0 003 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 005.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 009.568 3z" />
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9.568 3H5.25A2.25 2.25 0 003 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 005.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 009.568 3z" /><path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6z" />
                             </svg>
-                        </span>
-                        <strong>Produk Lokal Berkualitas:</strong> Dari hasil tani, kuliner, hingga kerajinan tangan otentik.
+                        </div>
+                        <div class="feature-text">
+                            <h3>Jelajahi Produk Lokal</h3>
+                            <p>Dari hasil tani, kuliner, hingga kerajinan tangan otentik khas nusantara.</p>
+                        </div>
                     </li>
                     <li>
-                        <span class="icon">
+                        <div class="icon">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                              <path stroke-linecap="round" stroke-linejoin="round" d="M11.42 15.17L17.25 21A2.652 2.652 0 0021 17.25l-5.877-5.877M11.42 15.17l2.471-2.471a2.652 2.652 0 00-3.75-3.75L7.845 11.42M11.42 15.17L5.877 21m6.082-6.082L9 17.25m.99-3.79l4.06-4.06a1.5 1.5 0 00-2.122-2.122L7.845 11.42m6.082-6.082L21 3m-3.291 3.291l-6.082 6.082" />
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M11.42 15.17L17.25 21A2.652 2.652 0 0021 17.25l-5.877-5.877M11.42 15.17l2.471-2.471a2.652 2.652 0 00-3.75-3.75L7.845 11.42M11.42 15.17L5.877 21m6.082-6.082L9 17.25m.99-3.79l4.06-4.06a1.5 1.5 0 00-2.122-2.122L7.845 11.42m6.082-6.082L21 3m-3.291 3.291l-6.082 6.082" />
                             </svg>
-                        </span>
-                        <strong>Jasa Profesional:</strong> Temukan tenaga ahli untuk perbaikan, proyek kreatif, dan kebutuhan lainnya.
+                        </div>
+                        <div class="feature-text">
+                            <h3>Temukan Jasa Ahli</h3>
+                            <p>Temukan tenaga profesional untuk perbaikan, proyek kreatif, dan berbagai kebutuhan lainnya.</p>
+                        </div>
                     </li>
                     <li>
-                        <span class="icon">
+                        <div class="icon">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 5.25a3 3 0 013 3m3 0a6 6 0 01-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1121.75 8.25z" />
                             </svg>
-                        </span>
-                        <strong>Layanan Sewa Terjangkau:</strong> Penuhi berbagai keperluan dengan harga transparan dan kompetitif.
+                        </div>
+                        <div class="feature-text">
+                            <h3>Sewa Kebutuhan Anda</h3>
+                            <p>Penuhi berbagai keperluan acara atau harian dengan harga yang transparan dan kompetitif.</p>
+                        </div>
                     </li>
                 </ul>
             </div>
 
-            <div class="redirect-container">
+            <div class="redirect-container" style="text-align: center;">
                 <p class="redirect-message">Anda akan diarahkan secara otomatis ke marketplace kami...</p>
                 <div class="progress-bar-container">
                     <div class="progress-bar"></div>
@@ -314,18 +321,18 @@
         // Konfigurasi Particles.js
         particlesJS('particles-js', {
             "particles": {
-                "number": { "value": 60, "density": { "enable": true, "value_area": 800 } },
-                "color": { "value": "#ffffff" },
-                "shape": { "type": "circle", "stroke": { "width": 0, "color": "#000000" } },
+                "number": { "value": 50, "density": { "enable": true, "value_area": 800 } },
+                "color": { "value": "#adb5bd" }, /* Warna partikel diubah */
+                "shape": { "type": "circle" },
                 "opacity": { "value": 0.5, "random": true, "anim": { "enable": true, "speed": 1, "opacity_min": 0.1, "sync": false } },
-                "size": { "value": 3, "random": true, "anim": { "enable": false } },
-                "line_linked": { "enable": true, "distance": 150, "color": "#ffffff", "opacity": 0.4, "width": 1 },
-                "move": { "enable": true, "speed": 2, "direction": "none", "random": false, "straight": false, "out_mode": "out", "bounce": false }
+                "size": { "value": 3, "random": true },
+                "line_linked": { "enable": true, "distance": 150, "color": "#ced4da", "opacity": 0.4, "width": 1 }, /* Warna garis diubah */
+                "move": { "enable": true, "speed": 1.5, "direction": "none", "random": false, "straight": false, "out_mode": "out", "bounce": false }
             },
             "interactivity": {
                 "detect_on": "canvas",
                 "events": { "onhover": { "enable": true, "mode": "grab" }, "onclick": { "enable": false }, "resize": true },
-                "modes": { "grab": { "distance": 140, "line_linked": { "opacity": 1 } } }
+                "modes": { "grab": { "distance": 140, "line_linked": { "opacity": 0.7 } } }
             },
             "retina_detect": true
         });
