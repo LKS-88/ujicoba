@@ -54,17 +54,16 @@
 
     <style>
         :root {
-            /* Palet Warna Baru yang Disempurnakan */
-            --primary-color: #3A78F2; /* Biru profesional yang kuat */
-            --primary-gradient: linear-gradient(90deg, #3A78F2, #5C95F7); /* Gradien yang lebih halus dan cerah */
-            --dark-blue: #1D2B48; /* Navy yang dalam dan elegan */
-            --text-primary: #2c3e50; /* Slate gelap yang lebih lembut dan mudah dibaca */
-            --text-secondary: #5A6774; /* Abu-abu yang sedikit lebih gelap untuk aksesibilitas */
-            --background-start: #F8F9FA; /* Latar belakang yang sangat terang dan bersih */
-            --background-end: #FFFFFF; /* Memudar ke putih bersih */
-            --card-background: #ffffff;
-            --shadow-color: rgba(58, 120, 242, 0.15); /* Bayangan yang lebih lembut namun tetap terlihat */
-            --progress-bar-bg: #e0e6ed; /* Latar belakang progress bar yang lebih jelas */
+            --primary-color: #3A78F2;
+            --primary-gradient: linear-gradient(90deg, #3A78F2, #5C95F7);
+            --dark-blue: #1D2B48;
+            --text-primary: #2c3e50;
+            --text-secondary: #5A6774;
+            --background-start: #F4F7FC;
+            --background-end: #E6EDF8;
+            --card-background: rgba(255, 255, 255, 0.85); /* Sedikit transparan untuk efek modern */
+            --shadow-color: rgba(58, 120, 242, 0.15);
+            --progress-bar-bg: #e0e6ed;
         }
 
         @keyframes fadeInUp {
@@ -77,11 +76,27 @@
             to { width: 0%; }
         }
 
+        /* == ANIMASI GRADASI BERGERAK UNTUK TEKS JUDUL == */
+        @keyframes animated-gradient-text {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        /* == ANIMASI GRADASI UNTUK LATAR BELAKANG == */
+        @keyframes animated-background {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
         body {
             font-family: 'Poppins', sans-serif;
             color: var(--text-primary);
             margin: 0;
-            background-color: var(--background-start);
+            background: linear-gradient(-45deg, var(--background-start), var(--background-end), #DDE7F5, #F4F7FC);
+            background-size: 400% 400%;
+            animation: animated-background 20s ease infinite; /* Menerapkan animasi pada body */
         }
 
         #particles-js {
@@ -91,7 +106,6 @@
             top: 0;
             left: 0;
             z-index: 0;
-            background-image: linear-gradient(135deg, var(--background-start), var(--background-end));
         }
 
         .content-wrapper {
@@ -112,6 +126,8 @@
             background-color: var(--card-background);
             border-radius: 24px;
             box-shadow: 0 25px 50px -12px var(--shadow-color);
+            border: 1px solid rgba(255, 255, 255, 0.5); /* Border halus untuk efek glassmorphism */
+            backdrop-filter: blur(10px); /* Efek blur untuk latar belakang kartu */
             opacity: 0;
             animation: fadeInUp 0.8s ease-out forwards;
             animation-delay: 0.1s;
@@ -126,8 +142,15 @@
         h1 {
             font-size: 2.6em;
             font-weight: 700;
-            color: var(--dark-blue);
             margin: 0 0 15px;
+            /* == STYLE UNTUK TEKS GRADASI BERGERAK == */
+            background: linear-gradient(90deg, #5E56F1, #3A78F2, #49D3F2, #5E56F1);
+            background-size: 200% auto;
+            color: #000;
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: animated-gradient-text 5s linear infinite;
         }
 
         p.subtitle {
@@ -158,9 +181,9 @@
             display: flex;
             align-items: flex-start;
             padding: 20px;
-            background-color: var(--background-start);
+            background-color: #F8F9FA;
             border-radius: 16px;
-            border: 1px solid #e9ecef; /* Warna border yang halus */
+            border: 1px solid #e9ecef;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
@@ -180,6 +203,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            box-shadow: 0 4px 10px rgba(58, 120, 242, 0.3);
         }
         .features li .icon svg {
             width: 24px;
@@ -238,10 +262,9 @@
             text-decoration: underline;
         }
         
-        /* ============== DESAIN RESPONSIVE ============== */
         @media (max-width: 767px) {
             .content-wrapper { padding: 20px 15px; }
-            .container { padding: 40px 25px; }
+            .container { padding: 40px 25px; backdrop-filter: none; background-color: rgba(255, 255, 255, 0.95); }
             h1 { font-size: 2.1em; }
             p.subtitle { font-size: 1.05em; }
             .features li { flex-direction: column; align-items: center; text-align: center; }
@@ -318,15 +341,14 @@
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
 
     <script>
-        // Konfigurasi Particles.js dengan warna baru
         particlesJS('particles-js', {
             "particles": {
                 "number": { "value": 50, "density": { "enable": true, "value_area": 800 } },
-                "color": { "value": "#AAB8C2" }, /* Warna partikel yang disesuaikan */
+                "color": { "value": "#AAB8C2" },
                 "shape": { "type": "circle" },
                 "opacity": { "value": 0.5, "random": true, "anim": { "enable": true, "speed": 1, "opacity_min": 0.1, "sync": false } },
                 "size": { "value": 3, "random": true },
-                "line_linked": { "enable": true, "distance": 150, "color": "#CAD5E0", "opacity": 0.4, "width": 1 }, /* Warna garis yang disesuaikan */
+                "line_linked": { "enable": true, "distance": 150, "color": "#CAD5E0", "opacity": 0.4, "width": 1 },
                 "move": { "enable": true, "speed": 1.5, "direction": "none", "random": false, "straight": false, "out_mode": "out", "bounce": false }
             },
             "interactivity": {
@@ -337,10 +359,9 @@
             "retina_detect": true
         });
 
-        // Fallback redirect jika meta refresh gagal.
         setTimeout(() => {
             window.location.href = "https://www.anekamarket.my.id/";
-        }, 25000); // Durasi 25 detik
+        }, 25000);
     </script>
 
 </body>
