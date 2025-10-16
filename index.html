@@ -54,17 +54,17 @@
 
     <style>
         :root {
-            --primary-color: #5E56F1;
-            --primary-gradient: linear-gradient(90deg, #5E56F1, #7047EA);
-            --dark-blue: #1A237E;
-            --text-primary: #212529;
-            --text-secondary: #6c757d;
-            --background-start: #f8f9fa;
-            --background-end: #e9ecef;
+            /* Palet Warna Baru yang Disempurnakan */
+            --primary-color: #3A78F2; /* Biru profesional yang kuat */
+            --primary-gradient: linear-gradient(90deg, #3A78F2, #5C95F7); /* Gradien yang lebih halus dan cerah */
+            --dark-blue: #1D2B48; /* Navy yang dalam dan elegan */
+            --text-primary: #2c3e50; /* Slate gelap yang lebih lembut dan mudah dibaca */
+            --text-secondary: #5A6774; /* Abu-abu yang sedikit lebih gelap untuk aksesibilitas */
+            --background-start: #F8F9FA; /* Latar belakang yang sangat terang dan bersih */
+            --background-end: #FFFFFF; /* Memudar ke putih bersih */
             --card-background: #ffffff;
-            --shadow-color: rgba(94, 86, 241, 0.12);
-            --progress-bar-bg: #e9ecef;
-            --particle-color: #adb5bd;
+            --shadow-color: rgba(58, 120, 242, 0.15); /* Bayangan yang lebih lembut namun tetap terlihat */
+            --progress-bar-bg: #e0e6ed; /* Latar belakang progress bar yang lebih jelas */
         }
 
         @keyframes fadeInUp {
@@ -99,7 +99,7 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            padding: 40px 20px; /* Padding untuk mencegah konten menempel di tepi layar */
+            padding: 40px 20px;
             box-sizing: border-box;
             position: relative;
             z-index: 1;
@@ -160,7 +160,7 @@
             padding: 20px;
             background-color: var(--background-start);
             border-radius: 16px;
-            border: 1px solid var(--background-end);
+            border: 1px solid #e9ecef; /* Warna border yang halus */
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
@@ -222,7 +222,7 @@
             height: 100%;
             background: var(--primary-gradient);
             border-radius: 5px;
-            animation: progressBar 25s linear forwards; /* Durasi 25 detik */
+            animation: progressBar 25s linear forwards;
         }
 
         a.manual-link {
@@ -318,15 +318,15 @@
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
 
     <script>
-        // Konfigurasi Particles.js
+        // Konfigurasi Particles.js dengan warna baru
         particlesJS('particles-js', {
             "particles": {
                 "number": { "value": 50, "density": { "enable": true, "value_area": 800 } },
-                "color": { "value": "#adb5bd" }, /* Warna partikel diubah */
+                "color": { "value": "#AAB8C2" }, /* Warna partikel yang disesuaikan */
                 "shape": { "type": "circle" },
                 "opacity": { "value": 0.5, "random": true, "anim": { "enable": true, "speed": 1, "opacity_min": 0.1, "sync": false } },
                 "size": { "value": 3, "random": true },
-                "line_linked": { "enable": true, "distance": 150, "color": "#ced4da", "opacity": 0.4, "width": 1 }, /* Warna garis diubah */
+                "line_linked": { "enable": true, "distance": 150, "color": "#CAD5E0", "opacity": 0.4, "width": 1 }, /* Warna garis yang disesuaikan */
                 "move": { "enable": true, "speed": 1.5, "direction": "none", "random": false, "straight": false, "out_mode": "out", "bounce": false }
             },
             "interactivity": {
