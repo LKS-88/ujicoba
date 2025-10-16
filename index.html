@@ -3,464 +3,88 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Temukan peluang karir dan lowongan kerja terbaru di Situbondo bersama Lentera Karya Situbondo. Bergabunglah dengan tim profesional kami.">
-    <meta name="keywords" content="lowongan kerja, karir, situbondo, lentera karya, loker, pekerjaan">
-    <meta name="author" content="Lentera Karya Situbondo">
-    <meta property="og:title" content="Peluang Karir | Lentera Karya Situbondo">
-    <meta property="og:description" content="Membangun masa depan karir Anda bersama kami. Lihat lowongan kerja terbaru dari mitra-mitra terbaik di Situbondo.">
+
+    <title>ANEKAMARKET - Platform Jual Beli UMKM Lokal</title>
+    <meta name="description" content="Selamat datang di ANEKAMARKET (Aneka Market). Platform jual beli online untuk menemukan produk UMKM, jasa, dan sewa terbaik di Indonesia. Kunjungi situs resmi kami sekarang.">
+    
+    <meta http-equiv="refresh" content="0;url=https://www.anekamarket.my.id/">
+
+    <link rel="canonical" href="https://www.anekamarket.my.id/">
+
+    <meta property="og:title" content="ANEKAMARKET - Platform Jual Beli UMKM Lokal">
+    <meta property="og:description" content="Temukan dan dukung ribuan produk UMKM, jasa, dan sewa dari seluruh Indonesia di ANEKAMARKET (Aneka Market).">
+    <meta property="og:url" content="https://www.anekamarket.my.id/">
+    <meta property="og:image" content="https://raw.githubusercontent.com/LKS-88/anekamarket/refs/heads/main/Logo-Anekamarketku.png">
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://www.anekamarket.my.id">
-    <meta property="og:image" content="https://i.imgur.com/gSoJ02v.jpeg">
-    <title>Lowongan Kerja | Lentera Karya Situbondo</title>
-    
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="icon" href="https://raw.githubusercontent.com/LKS-88/anekamarket/refs/heads/main/Logo-Anekamarketku.png" type="image/png">
-    
+
     <style>
-        /* --- Variabel Warna & Desain dari Contoh --- */
-        :root {
-            --primary: #4A90E2; /* Biru modern */
-            --primary-dark: #357ABD;
-            --secondary: #50E3C2; /* Hijau mint sebagai aksen */
-            --dark: #1A2533; /* Biru navy yang dalam */
-            --light: #F7F9FC; /* Abu-abu kebiruan yang sangat terang */
-            --white: #ffffff;
-            --text-dark: #2c3e50;
-            --text-light: #7f8c8d;
-            --font-primary: 'Poppins', sans-serif;
-            --font-secondary: 'Playfair Display', serif;
-            --shadow-subtle: 0 4px 12px rgba(0, 0, 0, 0.05);
-            --shadow-medium: 0 10px 30px rgba(41, 51, 61, 0.1);
-            --shadow-strong: 0 15px 40px rgba(41, 51, 61, 0.15);
-            --border-radius-md: 12px;
-            --border-radius-lg: 20px;
-            --transition-smooth: 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
-            --border-color: #EAEFF5;
-        }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        html { scroll-behavior: smooth; }
-
         body {
-            font-family: var(--font-primary);
-            background-color: var(--white);
-            color: var(--text-dark);
-            line-height: 1.7;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-        }
-
-        .container { max-width: 1200px; margin: auto; padding: 0 20px; }
-
-        /* --- Header --- */
-        header#home {
-            position: relative;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f0f2f5;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             height: 100vh;
-            color: var(--white);
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            margin: 0;
             text-align: center;
-            background: url('https://i.imgur.com/gSoJ02v.jpeg') no-repeat center center/cover;
-            overflow: hidden;
-        }
-        
-        header#home::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: url('https://i.imgur.com/gSoJ02v.jpeg') no-repeat center center/cover;
-            animation: kenburns 20s ease-in-out infinite alternate;
-        }
-        @keyframes kenburns {
-            from { transform: scale(1.05); }
-            to { transform: scale(1.15); }
-        }
-
-        .header-overlay {
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: linear-gradient(45deg, rgba(26, 37, 51, 0.85), rgba(74, 144, 226, 0.7));
-        }
-
-        .header-content {
-            position: relative;
-            z-index: 2;
             padding: 20px;
-            animation: fadeIn 1.5s var(--transition-smooth);
         }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 1.5rem;
-        }
-
-        .logo i {
-            font-size: 60px;
-            margin-right: 20px;
-            text-shadow: 0 0 30px rgba(255,255,255,0.3);
-        }
-
-        .logo span {
-            font-size: 3.5rem;
-            font-weight: 700;
-            font-family: var(--font-secondary);
-            text-shadow: 0 4px 10px rgba(0,0,0,0.5);
-        }
-
-        .tagline {
-            font-size: 1.5rem;
-            margin-bottom: 2.5rem;
-            font-weight: 300;
-            letter-spacing: 1.5px;
-            opacity: 0.9;
-            max-width: 700px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-        
-        .btn {
-            padding: 15px 35px;
-            border-radius: 50px;
-            text-decoration: none;
-            font-weight: 600;
-            margin: 0 10px;
-            transition: all var(--transition-smooth);
-            border: 2px solid transparent;
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            box-shadow: var(--shadow-medium);
-        }
-
-        .btn-primary {
-            background: linear-gradient(45deg, var(--primary), var(--secondary));
-            color: var(--white);
-        }
-        .btn-primary:hover {
-             transform: translateY(-5px) scale(1.03);
-             box-shadow: var(--shadow-strong);
-        }
-
-        .btn-outline {
-            border-color: var(--white);
-            color: var(--white);
-            background-color: transparent;
-            backdrop-filter: blur(5px);
-        }
-        .btn-outline:hover {
-            background-color: var(--white);
-            color: var(--dark);
-            transform: translateY(-5px) scale(1.03);
-            box-shadow: var(--shadow-strong);
-        }
-        
-        /* --- Navbar --- */
-        nav#navbar {
-            position: sticky; top: 0;
-            width: 100%; z-index: 1000;
-            background-color: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            box-shadow: var(--shadow-subtle);
-            padding: 15px 0;
-            transition: all var(--transition-smooth);
-        }
-        
-        nav#navbar.scrolled {
-            background-color: rgba(255, 255, 255, 0.98);
-            box-shadow: var(--shadow-medium);
-        }
-        
-        .nav-container { display: flex; justify-content: space-between; align-items: center; max-width: 1200px; margin: auto; padding: 0 20px; }
-        .nav-logo { display: flex; align-items: center; text-decoration: none; color: var(--dark); font-weight: 700; font-size: 1.4rem; font-family: var(--font-secondary); }
-        .nav-logo i { margin-right: 12px; color: var(--primary); }
-        .nav-links { display: flex; align-items: center; }
-        .nav-links a {
-            color: var(--text-dark); text-decoration: none; margin: 0 20px;
-            font-weight: 500; position: relative; padding: 5px 0;
-            transition: color var(--transition-smooth);
-        }
-        .nav-links a::after {
-            content: ''; position: absolute; bottom: -2px; left: 0; width: 0; height: 2px;
-            background: linear-gradient(90deg, var(--primary), var(--secondary));
-            transition: width var(--transition-smooth); border-radius: 2px;
-        }
-        .nav-links a:hover { color: var(--primary); }
-        .nav-links a:hover::after { width: 100%; }
-        .mobile-menu-toggle { display: none; color: var(--dark); font-size: 1.8rem; background: none; border: none; cursor: pointer; }
-        
-        /* --- Bagian Utama --- */
-        .page-section { padding: 100px 0; }
-        .bg-light { background-color: var(--light); }
-        
-        .section-title {
-            text-align: center; margin-bottom: 70px;
-            font-family: var(--font-secondary); font-size: 3.5rem;
-            color: var(--dark);
-        }
-        .section-title::after {
-            content: ''; display: block; width: 90px; height: 4px;
-            background: linear-gradient(90deg, var(--primary), var(--secondary));
-            margin: 20px auto 0; border-radius: 5px;
-        }
-
-        /* --- Kontainer Info Lowongan Kosong --- */
-        .no-jobs-container {
-            text-align: center;
-            padding: 60px 40px;
-            background-color: var(--white);
-            border-radius: var(--border-radius-lg);
-            box-shadow: var(--shadow-medium);
-            margin: 0 auto;
-            max-width: 800px;
-            border: 1px solid var(--border-color);
-            transition: all var(--transition-smooth);
-        }
-
-        .no-jobs-container:hover {
-            transform: translateY(-10px);
-            box-shadow: var(--shadow-strong);
-        }
-
-        .no-jobs-container .icon {
-            font-size: 6rem;
-            color: var(--primary);
-            margin-bottom: 30px;
-            line-height: 1;
-            display: block;
-        }
-
-        .no-jobs-container h3 {
-            font-family: var(--font-secondary);
-            font-size: 2.5rem;
-            color: var(--dark);
-            margin-bottom: 15px;
-        }
-
-        .no-jobs-container p {
-            color: var(--text-light);
-            font-size: 1.1rem;
+        .container {
             max-width: 600px;
-            margin: 0 auto 30px auto;
-            line-height: 1.8;
+            padding: 40px;
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
-
-        /* --- Footer --- */
-        footer {
-            background-color: var(--dark); color: var(--light);
-            padding: 80px 0 40px 0;
+        h1 {
+            font-size: 1.5em;
+            margin-bottom: 20px;
         }
-        .footer-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; max-width: 1200px; margin: auto; padding: 0 20px; }
-        .footer-logo { display: flex; align-items: center; margin-bottom: 15px; }
-        .footer-logo i { font-size: 40px; margin-right: 15px; }
-        .footer-logo span { font-size: 1.8rem; font-weight: 700; font-family: var(--font-secondary); }
-        .footer-col h3 {
-            font-family: var(--font-secondary); margin-bottom: 25px; font-size: 1.5rem;
-            position: relative; padding-bottom: 10px; color: var(--white);
+        p {
+            font-size: 1.1em;
+            line-height: 1.6;
         }
-        .footer-col h3::after {
-            content: ''; position: absolute; left: 0; bottom: 0;
-            width: 50px; height: 3px;
-            background: linear-gradient(90deg, var(--primary), var(--secondary));
+        a {
+            color: #007bff;
+            text-decoration: none;
+            font-weight: bold;
         }
-        .footer-links { list-style: none; }
-        .footer-links li { margin-bottom: 12px; }
-        .footer-links a { color: #bdc3c7; text-decoration: none; transition: all var(--transition-smooth); }
-        .footer-links a:hover { color: var(--white); padding-left: 8px; }
-        
-        .copyright {
-            text-align: center; margin-top: 60px;
-            border-top: 1px solid #34495e; padding-top: 30px;
-            font-size: 0.9rem; color: #95a5a6;
+        a:hover {
+            text-decoration: underline;
         }
-        .copyright a { color: #bdc3c7; text-decoration: none; }
-        .copyright a:hover { text-decoration: underline; color: var(--white); }
-        
-        /* --- Tombol Back to Top --- */
-        .back-to-top {
-            position: fixed; bottom: 20px; right: 20px;
-            z-index: 999; width: 50px; height: 50px;
-            background: var(--primary); color: var(--white);
-            border: none; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 1.5rem; cursor: pointer;
-            box-shadow: var(--shadow-medium);
-            opacity: 0; visibility: hidden;
-            transform: translateY(20px);
-            transition: all 0.4s ease;
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 2s linear infinite;
+            margin: 20px auto;
         }
-        .back-to-top.visible {
-            opacity: 1; visibility: visible; transform: translateY(0);
-        }
-        .back-to-top:hover {
-            background-color: var(--primary-dark);
-            transform: scale(1.1);
-        }
-
-        /* --- Responsif --- */
-        @media (max-width: 992px) {
-            .logo span { font-size: 2.8rem; }
-            .tagline { font-size: 1.3rem; }
-            .section-title { font-size: 3rem; }
-        }
-
-        @media (max-width: 768px) {
-            .nav-links {
-                display: none; flex-direction: column;
-                position: absolute; top: 100%; left: 0; width: 100%;
-                background-color: var(--white); box-shadow: var(--shadow-medium);
-                padding: 10px 0;
-            }
-            .nav-links.active { display: flex; }
-            .nav-links a { padding: 15px; text-align: center; border-bottom: 1px solid var(--border-color); width: 100%; margin: 0; }
-            .mobile-menu-toggle { display: block; }
-            .logo span { font-size: 2.2rem; }
-            .logo i { font-size: 50px;}
-            .header-content { padding: 10px; }
-            .tagline { font-size: 1.1rem; }
-            .header-buttons { display: flex; flex-direction: column; align-items: center; }
-            .header-buttons .btn { margin: 10px 0; width: 80%; text-align: center; justify-content: center;}
-            .section-title { font-size: 2.5rem; }
-            .footer-container { text-align: center; }
-            .footer-col h3::after { left: 50%; transform: translateX(-50%); }
-            .no-jobs-container h3 { font-size: 2rem; }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
     </style>
 </head>
 <body>
 
-    <header id="home">
-        <div class="header-overlay"></div>
-        <div class="header-content">
-            <div class="logo">
-                <i class="fas fa-building"></i>
-                <span>Lentera Karya Situbondo</span>
-            </div>
-            <p class="tagline">Membuka Gerbang Peluang Karir Terbaik di Situbondo. Temukan Masa Depan Anda Bersama Kami.</p>
-            
-            <div class="header-buttons">
-                <a href="#lowongan" class="btn btn-primary">
-                    <i class="fas fa-search"></i> Lihat Peluang Karir
-                </a>
-                <a href="https://wa.me/6281336314392" target="_blank" rel="noopener noreferrer" class="btn btn-outline">
-                    <i class="fab fa-whatsapp"></i> Hubungi Tim HR
-                </a>
-            </div>
-        </div>
-    </header>
-    
-    <nav id="navbar">
-        <div class="nav-container">
-            <a href="#home" class="nav-logo">
-                <i class="fas fa-briefcase"></i>
-                <span>Lentera Karya</span>
-            </a>
-            
-            <div class="nav-links" id="navLinks">
-                <a href="#home">Beranda</a>
-                <a href="#lowongan">Lowongan</a>
-                <a href="https://www.anekamarket.my.id" target="_blank">Tentang Kami</a>
-                <a href="https://wa.me/6281336314392" target="_blank">Kontak</a>
-            </div>
+    <div class="container">
+        <h1>Anda sedang dialihkan ke ANEKAMARKET...</h1>
+        <div class="loader"></div>
+        <p>
+            Jika halaman tidak berpindah secara otomatis, silakan klik tautan di bawah ini:
+        </p>
+        <p>
+            <a href="https://www.anekamarket.my.id/">Lanjutkan ke www.anekamarket.my.id</a>
+        </p>
+    </div>
 
-            <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Buka Menu">
-                <i class="fas fa-bars"></i>
-            </button>
-        </div>
-    </nav>
-    
-    <main>
-        <section class="page-section" id="lowongan">
-             <div class="container">
-                <h2 class="section-title">Peluang Karir Terbaru</h2>
-                
-                <div class="no-jobs-container">
-                    <span class="icon"><i class="fas fa-folder-open"></i></span>
-                    <h3>Belum Ada Lowongan Tersedia</h3>
-                    <p>
-                        Saat ini kami belum membuka posisi baru. Namun, kami selalu mencari talenta-talenta berbakat seperti Anda.
-                        Silakan kunjungi halaman ini secara berkala untuk informasi terbaru.
-                    </p>
-                    <a href="https://wa.me/6281336314392?text=Halo%2C%20saya%20tertarik%20untuk%20mengirimkan%20CV%20saya%20untuk%20peluang%20karir%20di%20masa%20depan." class="btn btn-primary" target="_blank" rel="noopener noreferrer">
-                        <i class="fas fa-paper-plane"></i> Kirim CV Anda
-                    </a>
-                </div>
-            </div>   
-        </section>
-    </main>
-    
-    <a href="#home" class="back-to-top" aria-label="Kembali ke atas">
-        <i class="fas fa-arrow-up"></i>
-    </a>
-    
-    <footer>
-        <div class="footer-container">
-            <div class="footer-col footer-about">
-                <div class="footer-logo">
-                    <i class="fas fa-briefcase"></i>
-                    <span>Lentera Karya</span>
-                </div>
-                <p>Lentera Karya Situbondo adalah platform yang berdedikasi untuk menjembatani talenta lokal dengan peluang karir terbaik dari berbagai mitra usaha terpercaya di Situbondo.</p>
-            </div>
-            
-            <div class="footer-col">
-                <h3>Tautan Cepat</h3>
-                <ul class="footer-links">
-                    <li><a href="#home">Beranda</a></li>
-                    <li><a href="#lowongan">Lowongan</a></li>
-                    <li><a href="https://www.anekamarket.my.id" target="_blank">Tentang Kami</a></li>
-                    <li><a href="https://wa.me/6281336314392" target="_blank">Kontak</a></li>
-                </ul>
-            </div>
-            
-            <div class="footer-col">
-                <h3>Info Lebih Lanjut</h3>
-                <p>Kunjungi website utama kami untuk informasi lengkap mengenai layanan dan mitra kami.</p>
-                <a href="https://www.anekamarket.my.id" class="btn btn-primary" style="margin-top: 15px;" target="_blank" rel="noopener noreferrer">Kunjungi Anekamarket</a>
-            </div>
-        </div>
-        
-        <div class="copyright">
-            © 2025 Lentera Karya Situbondo. Didukung oleh <a href="https://www.anekamarket.my.id" target="_blank" rel="noopener noreferrer">anekamarket.my.id</a>.
-        </div>
-    </footer>
-    
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // Script untuk menu mobile
-            const mobileMenuToggle = document.getElementById('mobileMenuToggle');
-            const navLinks = document.getElementById('navLinks');
-            if (mobileMenuToggle && navLinks) {
-                mobileMenuToggle.addEventListener('click', () => {
-                    navLinks.classList.toggle('active');
-                });
-            }
-
-            // Script untuk efek scroll pada navbar dan tombol back-to-top
-            const navbar = document.getElementById('navbar');
-            const backToTopBtn = document.querySelector('.back-to-top');
-            window.addEventListener('scroll', () => {
-                if (window.scrollY > 50) {
-                    if (navbar) navbar.classList.add('scrolled');
-                    if (backToTopBtn) backToTopBtn.classList.add('visible');
-                } else {
-                    if (navbar) navbar.classList.remove('scrolled');
-                    if (backToTopBtn) backToTopBtn.classList.remove('visible');
-                }
-            });
-        });
+        // Fallback redirection in case the meta tag fails
+        window.location.replace("https://www.anekamarket.my.id/");
     </script>
+
 </body>
 </html>
