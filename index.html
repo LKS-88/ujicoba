@@ -278,24 +278,13 @@
             text-align: center;
         }
 
-        .notification {
-            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            background: var(--white-color); color: var(--dark-color);
-            padding: 40px; border-radius: var(--border-radius);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            text-align: center; z-index: 1000; display: none;
-            max-width: 400px; width: 90%;
-            animation: fadeIn 0.5s ease-out;
-        }
-        .overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background-color: rgba(0, 0, 0, 0.6); backdrop-filter: blur(5px);
-            z-index: 999; display: none;
-        }
+        /* Pop-up notifikasi tidak lagi digunakan, diganti dengan layar sukses inline */
+        .notification { display: none; }
+        .overlay { display: none; }
+
         .error-message, .status-message { color: var(--error-color); font-size: 0.8rem; margin-top: 5px; font-weight: 500; display: none; }
         .status-message { color: var(--dark-color); }
 
-        @keyframes fadeIn { from { opacity: 0; transform: translate(-50%, -60%); } to { opacity: 1; transform: translate(-50%, -50%); } }
         @media (max-width: 768px) {
             .form-row { grid-template-columns: 1fr; gap: 0; }
             .header h1 { font-size: 1.5rem; }
@@ -313,7 +302,7 @@
             <p>Bergabunglah dengan komunitas bisnis terdepan di Situbondo</p>
         </div>
         
-        <div class="form-container">
+        <div class="form-container" id="form-container">
             <form id="registrationForm">
                 <div class="form-section">
                     <h3>1. Data Pribadi</h3>
@@ -393,16 +382,10 @@
         </div>
     </div>
     
-    <div class="overlay" id="overlay"></div>
-    <div class="notification" id="successNotification">
-        <h2>Pendaftaran Berhasil!</h2>
-        <p>Terima kasih telah bergabung. Data Anda akan segera kami proses.</p>
-        <button class="btn btn-primary" id="okButton" style="background: var(--success-color);">OK</button>
-    </div>
-
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <script type="text/javascript">
         (function() {
+            // Kunci publik Anda sudah benar
             emailjs.init({ publicKey: "O0CF5tp-jRja9rZ4k" });
         })();
     </script>
@@ -410,9 +393,13 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // --- KONFIGURASI PENTING ---
-            const apiKeyImgBB = '0e598ab24278f062969e6d0ec810d518'; // API Key dari kode Anda
+            const apiKeyImgBB = '0e598ab24278f062969e6d0ec810d518'; // API Key ImgBB Anda
+            const nomorWhatsAppTujuan = '6285647709114'; // Nomor WA Tujuan
+            const serviceID_emailjs = 'JSservice_qx*****'; // GANTI DENGAN SERVICE ID ANDA
+            const templateID_emailjs = 'template_xxxxxxxx'; // GANTI DENGAN TEMPLATE ID ANDA
 
             // --- Elemen Form ---
+            const formContainer = document.getElementById('form-container');
             const form = document.getElementById('registrationForm');
             const submitBtn = document.getElementById('submitBtn');
             const kategoriSelect = document.getElementById('kategori_usaha');
@@ -425,6 +412,9 @@
             const getLocationBtn = document.getElementById('getLocationBtn');
             const locationStatus = document.getElementById('location-status');
             
+            // --- [BARU] Variabel global untuk menyimpan pesan WA
+            let finalWhatsAppMessage = '';
+
             // --- Fungsi Inisialisasi Form ---
             function generateIdPermohonan() {
                 const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
@@ -441,13 +431,13 @@
                     day: '2-digit', month: 'long', year: 'numeric',
                     hour: '2-digit', minute: '2-digit'
                 };
-                return now.toLocaleDateString('id-ID', options).replace(/\./g, ':');
+                return now.toLocaleString('id-ID', options).replace(/\./g, ':');
             }
             
             document.getElementById('id_permohonan').value = generateIdPermohonan();
             document.getElementById('tanggal_pendaftaran').value = setTanggalPendaftaran();
             
-            // --- Event Listener Form ---
+            // --- Event Listener Form (Semua fitur ini tetap ada) ---
             kategoriSelect.addEventListener('change', function() {
                 lainnyaGroup.style.display = this.value === 'Lainnya' ? 'block' : 'none';
                 if (this.value === 'Lainnya') {
@@ -490,7 +480,7 @@
                     function(position) {
                         const lat = position.coords.latitude;
                         const lon = position.coords.longitude;
-                        const mapsUrl = `https://www.google.com/maps?q=$${lat},${lon}`;
+                        const mapsUrl = `http://googleusercontent.com/maps.google.com/3{lat},${lon}`;
                         mapsInput.value = mapsUrl;
                         mapsInput.setAttribute('required', 'required');
                         locationStatus.textContent = 'Lokasi berhasil dideteksi!';
@@ -523,7 +513,7 @@
             
             form.addEventListener('input', validateForm);
             
-            // --- Validasi Form ---
+            // --- Validasi Form (Fitur ini tetap ada) ---
             function validateForm() {
                 let allValid = true;
                 const requiredFields = form.querySelectorAll('[required]');
@@ -611,26 +601,24 @@
                 }
             }
 
-            // --- [BARU] Fungsi Upload Gambar ke ImgBB ---
+            // --- Fungsi Upload Gambar (Fitur ini tetap ada) ---
             async function uploadFileToImgBB(file) {
                 const formData = new FormData();
                 formData.append('image', file);
-
                 try {
                     const response = await fetch(`https://api.imgbb.com/1/upload?key=${apiKeyImgBB}`, {
                         method: 'POST',
                         body: formData,
                     });
                     const result = await response.json();
-                    
                     if (result.success) {
-                        return result.data.url; // Mengembalikan URL gambar
+                        return result.data.url;
                     } else {
                         throw new Error(result.error.message || 'Gagal mengunggah gambar ke ImgBB.');
                     }
                 } catch (error) {
                     console.error('Error uploading to ImgBB:', error);
-                    throw error; // Melempar error agar bisa ditangkap oleh submit handler
+                    throw error;
                 }
             }
             
@@ -639,36 +627,54 @@
                 e.preventDefault();
                 if (validateForm()) {
                     submitBtn.disabled = true;
-                    submitBtn.innerHTML = 'Mengunggah KTP...'; // Feedback ke pengguna
+                    submitBtn.innerHTML = 'Mengunggah KTP...';
 
                     try {
-                        // 1. Dapatkan file KTP
                         const ktpFile = document.getElementById('foto_ktp').files[0];
-                        
-                        // 2. Panggil fungsi upload dan tunggu hasilnya
                         const ktpUrl = await uploadFileToImgBB(ktpFile); 
 
                         if (ktpUrl) {
-                            // 3. Jika berhasil, lanjutkan pengiriman
-                            submitBtn.innerHTML = 'Mengirim Data...';
+                            submitBtn.innerHTML = 'Menyiapkan Data...';
                             
-                            sendEmail(ktpUrl); // Kirim email dengan URL KTP
-                            sendWhatsApp(ktpUrl); // Kirim WA dengan URL KTP
+                            // 1. Siapkan data
+                            const params = getTemplateParams(ktpUrl);
+                            
+                            // 2. Kirim email di latar belakang
+                            sendEmail(params); 
+                            
+                            // 3. Buat pesan WA dan simpan di variabel global
+                            const message = `*PENDAFTARAN MITRA ANEKAMARKET*
 
-                            // 4. Tampilkan notifikasi sukses
-                            document.getElementById('overlay').style.display = 'block';
-                            document.getElementById('successNotification').style.display = 'block';
-                        } else {
-                            // Ini seharusnya tidak terjadi jika throw error bekerja
-                            throw new Error('URL KTP tidak diterima dari server.');
+*Data Pribadi:*
+• Nama: ${params.nama}
+• NIK: ${params.nik}
+• Alamat: ${params.alamat}
+• WhatsApp: ${params.whatsapp}
+• Email: ${params.email}
+• Link Foto KTP: ${ktpUrl}
+
+*Data Usaha:*
+• Nama Usaha: ${params.nama_usaha}
+• Alamat Usaha: ${params.alamat_usaha}
+• Kategori Usaha: ${params.kategori_usaha}
+• Lokasi Maps: ${params.lokasi_maps}
+
+*Data Sistem:*
+• ID Permohonan: ${params.id_permohonan}
+• Tanggal Pendaftaran: ${params.tanggal_pendaftaran}
+
+_Saya menyatakan bahwa semua data di atas adalah benar dan dapat dipertanggungjawabkan._
+Terima kasih telah mendaftar di ANEKAMARKET!`;
+                            
+                            finalWhatsAppMessage = encodeURIComponent(message);
+
+                            // 4. [BARU] Tampilkan layar sukses pengganti form
+                            showSuccessScreen();
                         }
 
                     } catch (error) {
-                        // 5. Jika upload gagal, beri tahu pengguna
                         console.error('Proses submit gagal:', error);
-                        alert('Gagal mengunggah KTP. Mohon periksa koneksi Anda dan coba lagi. Pesan Error: ' + error.message);
-                        
-                        // Kembalikan tombol ke keadaan semula
+                        alert('Gagal mengunggah KTP. Mohon periksa koneksi Anda dan coba lagi. Pesan Error: 'B' + error.message);
                         submitBtn.disabled = false;
                         submitBtn.innerHTML = `
                             Kirim Pendaftaran
@@ -679,7 +685,7 @@
                 }
             });
 
-            // --- [DIPERBARUI] Fungsi Pengiriman ---
+            // --- Fungsi Pengumpulan Data (Fitur ini tetap ada) ---
             function getTemplateParams(ktpUrl) {
                 let kategoriUsaha = document.getElementById('kategori_usaha').value;
                 if (kategoriUsaha === 'Lainnya') {
@@ -703,58 +709,59 @@
                 };
             }
 
-            function sendEmail(ktpUrl) {
-                const serviceID = 'JSservice_qx*****'; // GANTI DENGAN SERVICE ID ANDA
-                const templateID = 'template_xxxxxxxx'; // GANTI DENGAN TEMPLATE ID ANDA
-                
-                // Menggunakan templateParams object, bukan 'form'
-                const templateParams = getTemplateParams(ktpUrl);
-
-                emailjs.send(serviceID, templateID, templateParams)
+            // --- Fungsi Kirim Email (Fitur ini tetap ada) ---
+            // PERHATIKAN: Ganti 'serviceID_emailjs' dan 'templateID_emailjs' di atas
+            function sendEmail(templateParams) {
+                emailjs.send(serviceID_emailjs, templateID_emailjs, templateParams)
                     .then(() => console.log('Email berhasil terkirim!'))
                     .catch(err => {
                         console.error('Gagal mengirim email. Error: ', JSON.stringify(err));
-                        // Tidak perlu alert di sini karena notifikasi sukses utama akan muncul
                     });
             }
             
-            function sendWhatsApp(ktpUrl) {
-                const params = getTemplateParams(ktpUrl); // Menggunakan data yang sudah dikumpulkan
-                
-                const message = `*PENDAFTARAN MITRA ANEKAMARKET*
-
-*Data Pribadi:*
-• Nama: ${params.nama}
-• NIK: ${params.nik}
-• Alamat: ${params.alamat}
-• WhatsApp: ${params.whatsapp}
-• Email: ${params.email}
-• Link Foto KTP: ${ktpUrl}
-
-*Data Usaha:*
-• Nama Usaha: ${params.nama_usaha}
-• Alamat Usaha: ${params.alamat_usaha}
-• Kategori Usaha: ${params.kategori_usaha}
-• Lokasi Maps: ${params.lokasi_maps}
-
-*Data Sistem:*
-• ID Permohonan: ${params.id_permohonan}
-• Tanggal Pendaftaran: ${params.tanggal_pendaftaran}
-
-_Saya menyatakan bahwa semua data di atas adalah benar dan dapat dipertanggungjawabkan._
-Terima kasih telah mendaftar di ANEKAMARKET!`;
-                
-                const encodedMessage = encodeURIComponent(message);
-                const whatsappURL = `https://wa.me/6285647709114?text=${encodedMessage}`;
-                window.open(whatsappURL, '_blank');
+            // --- [BARU] Fungsi Layar Sukses ---
+            // Ini menggantikan pop-up notifikasi yang lama
+            function showSuccessScreen() {
+                formContainer.innerHTML = `
+                    <div style="text-align: center; padding: 40px 20px;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" fill="var(--success-color)" class="bi bi-check-circle-fill" viewBox="0 0 16 16">
+                           <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+                        </svg>
+                        <h2 style="color: var(--dark-color); font-size: 1.8rem; font-family: 'Poppins', sans-serif; margin-top: 20px;">Pendaftaran Berhasil!</h2>
+                        <p style="font-size: 1rem; color: var(--gray-color); margin-top: 15px; margin-bottom: 30px;">
+                            Terima kasih telah bergabung. Data Anda telah kami simpan.
+                            <br><br>
+                            <strong>Langkah terakhir:</strong> Silakan kirim konfirmasi pendaftaran Anda kepada kami melalui WhatsApp.
+                        </p>
+                        <button type="button" class="btn btn-primary" id="sendWaButton" style="background: #25D366; box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3);">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-whatsapp" viewBox="0 0 16 16">
+                               <path d="M13.601 2.326A7.854 7.854 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.933 7.933 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.898 7.898 0 0 0 13.6 2.326zM7.994 14.521a6.573 6.573 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.557 6.557 0 0 1 1.928 4.66c-.004 3.626-2.957 6.584-6.591 6.584zM10.118 8.584c-.197-.1-.8-.396-1.02-.459-.22-.063-.38-.099-.54.099-.16.198-.5.63-.61.751-.12.122-.23.138-.43.038-.2-.099-.84-.31-1.59-1.02-.58-.55-1.01-1.23-1.13-1.43-.12-.2-.02-.3.07-.401.08-.09.19-.23.29-.33.1-.1.13-.17.2-.28.07-.1.03-.18-.02-.28-.05-.1-.54-1.28- .73-1.75-.19-.47-.38-.4-.54-.4-.16-.007-.34-.007-.5-.007-.16 0-.43.063-.66.33-.22.27-.85.83-.85 2.02 0 1.18.87 2.34 1 2.49.12.15 1.7 2.58 4.13 3.63.58.25 1.03.4 1.38.52.36.12.68.1.92.06.27-.05.8-.33.91-.65.12-.32.12-.58.08-.65-.05-.07-.17-.12-.37-.22z"/>
+                            </svg>
+                            Kirim Konfirmasi via WhatsApp
+                        </button>
+                    </div>
+                `;
+                // Tambahkan listener ke tombol WA yang baru dibuat
+                document.getElementById('sendWaButton').addEventListener('click', sendWhatsApp);
             }
             
-            // --- Notifikasi Sukses ---
-            document.getElementById('okButton').addEventListener('click', function() {
-                document.getElementById('overlay').style.display = 'none';
-                document.getElementById('successNotification').style.display = 'none';
-                window.location.href = 'https://www.anekamarket.my.id';
-            });
+            // --- [DIPERBARUI] Fungsi Kirim WA ---
+            // Sekarang hanya membuka URL yang sudah disiapkan dan mengarahkan pengguna
+            function sendWhatsApp() {
+                if (finalWhatsAppMessage) {
+                    const whatsappURL = `https://wa.me/${nomorWhatsAppTujuan}?text=${finalWhatsAppMessage}`;
+                    window.open(whatsappURL, '_blank');
+                }
+                
+                // Mengarahkan pengguna setelah mereka mengklik tombol WA
+                // Ini menggantikan fungsi "okButton" dari pop-up lama
+                setTimeout(() => {
+                    window.location.href = 'https://www.anekamarket.my.id';
+                }, 1000); // Beri jeda 1 detik agar tab WA sempat terbuka
+            }
+            
+            // Listener untuk okButton lama sudah tidak diperlukan karena diganti oleh sendWaButton
+            // document.getElementById('okButton').addEventListener('click', ...);
         });
     </script>
 </body>
