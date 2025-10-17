@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Formulir Pendaftaran & Perjanjian Mitra ANEKAMARKET</title>
     
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     
@@ -312,7 +311,6 @@
 
         /* --- [BAGIAN 2: CSS DARI perjanjian.html] --- */
         
-        /* Container khusus untuk perjanjian */
         #agreement-form-container {
             font-family: 'Source Sans Pro', sans-serif;
             line-height: 1.5;
@@ -327,7 +325,6 @@
             box-shadow: none;
         }
         
-        /* Premium Border Effect */
         #agreement-form-container::before {
             content: "";
             position: absolute;
@@ -340,11 +337,10 @@
             z-index: 1;
         }
         
-        /* Watermark Styles */
         #agreement-form-container .watermark {
             position: absolute;
             opacity: 0.03;
-            font-size: 80px; /* Disesuaikan */
+            font-size: 80px;
             font-weight: bold;
             color: #000;
             transform: rotate(-45deg);
@@ -358,7 +354,6 @@
             letter-spacing: 3px;
         }
         
-        /* Header Styles - VERSI PREMIUM */
         #agreement-form-container .header {
             text-align: center;
             margin-bottom: 20px;
@@ -414,7 +409,6 @@
             margin: 10px 0;
         }
         
-        /* Document Title Styles */
         #agreement-form-container .document-title {
             text-align: center;
             font-size: 20px;
@@ -438,7 +432,6 @@
             font-size: 14px;
         }
         
-        /* Parties Styles */
         #agreement-form-container .parties {
             margin-bottom: 25px;
         }
@@ -464,7 +457,6 @@
             font-size: 14px;
         }
         
-        /* Article Styles */
         #agreement-form-container .article {
             margin-bottom: 20px;
             position: relative;
@@ -492,7 +484,6 @@
             list-style-position: inside;
         }
         
-        /* Signature Area Styles */
         #agreement-form-container .signature-area {
             margin-top: 40px;
             display: flex;
@@ -546,7 +537,6 @@
             font-size: 14px;
         }
         
-        /* Form Styles */
         .no-print {
             margin-bottom: 30px;
             padding: 20px;
@@ -601,7 +591,6 @@
             margin-top: 20px;
         }
         
-        /* Menggunakan style .btn dari index.html agar seragam */
         .button-group button {
             background-color: #1a3d7c;
             color: white;
@@ -614,8 +603,8 @@
             flex: 1;
             min-width: 180px;
             font-weight: 600;
-            margin-top: 0; /* Reset margin-top */
-            width: auto; /* Reset width */
+            margin-top: 0;
+            width: auto;
         }
         
         .button-group button:hover {
@@ -631,7 +620,6 @@
         .button-group button.whatsapp { background-color: #25D366; }
         .button-group button.whatsapp:hover { background-color: #1da851; }
         
-        /* Menyembunyikan grup tombol (Sesuai permintaan) */
         #agreement-form-container .no-print .button-group {
             display: none;
         }
@@ -654,7 +642,6 @@
             font-size: 14px;
         }
         
-        /* Security Pattern */
         #agreement-form-container .security-pattern {
             position: absolute;
             width: 100%;
@@ -667,7 +654,6 @@
             background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23000000' fill-opacity='0.1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
         }
         
-        /* Form Input Display in Document */
         #agreement-form-container .form-input {
             font-weight: 600;
             color: #1a3d7c;
@@ -677,12 +663,10 @@
             min-height: 20px;
         }
         
-        /* Page Number for Print */
         #agreement-form-container .page-number {
             display: none;
         }
 
-        /* Tombol Navigasi Step */
         .step-navigation {
             display: flex;
             justify-content: space-between;
@@ -749,7 +733,6 @@
                 overflow: visible !important;
             }
             
-            /* Sembunyikan semua kecuali dokumen perjanjian */
             .no-print, #registration-container, .header:not(#agreement-form-container .header), .step-navigation, #submitBtn, #nextBtn, #prevBtn, #finalSubmitBtn {
                 display: none !important;
             }
@@ -996,7 +979,6 @@
         <div id="agreement-container" style="display: none;">
             <div id="agreement-form-container">
                 <div class="security-pattern"></div>
-                
                 <div class="watermark">LENTERA KARYA SITUBONDO</div>
                 
                 <div class="form-container">
@@ -1024,14 +1006,13 @@
                         
                         <div class="form-group">
                             <label for="nomor_telepon">Nomor Telepon (dari Langkah 1):</label>
-                            <input type="tel" id="nomor_telepon" name="nomor_telepon" required pattern="08\d{10,11}" maxlength="13" placeholder="Contoh: 081234567890" readonly style="background-color: #f0f0f0;">
-                            <div id="nomor_telepon_error" class="error-message agreement-error">Nomor harus diawali 08 dan 12-13 digit</div>
+                            <input type="tel" id="nomor_telepon" name="nomor_telepon" required readonly style="background-color: #f0f0f0;">
+                            <div id="nomor_telepon_error" class="error-message agreement-error">Nomor telepon harus valid</div>
                         </div>
                         
                         <div class="form-group">
                             <label for="tanggal_pendaftaran_perjanjian">Tanggal Pendaftaran:</label>
                             <input type="date" id="tanggal_pendaftaran_perjanjian" name="tanggal_pendaftaran_perjanjian" required readonly style="background-color: #f0f0f0;">
-                            <div id="tanggal_pendaftaran_perjanjian_error" class="error-message agreement-error">Tanggal harus diisi</div>
                         </div>
                         
                         <div class="form-group">
@@ -1042,26 +1023,13 @@
                         <div class="form-group">
                             <label for="nama_umkm">Nama UMKM (dari Langkah 1):</label>
                             <input type="text" id="nama_umkm" name="nama_umkm" class="uppercase" required readonly style="background-color: #f0f0f0;">
-                            <div id="nama_umkm_error" class="error-message agreement-error">Nama UMKM harus diisi</div>
                         </div>
                         
                         <div class="form-group">
-                            <label for="kategori_layanan" class="required">Kategori Layanan:</label>
-                            <select id="kategori_layanan" name="kategori_layanan" required>
+                            <label for="kategori_layanan" class="required">Kategori Layanan (dari Langkah 1):</label>
+                            <select id="kategori_layanan" name="kategori_layanan" required disabled style="background-color: #f0f0f0;">
                                 <option value="">-- Pilih Kategori --</option>
-                                <option value="UMKM">UMKM</option>
-                                <option value="Jasa Service">Jasa Service</option>
-                                <option value="Kuliner">Kuliner</option>
-                                <option value="Warung atau Resto">Warung atau Resto</option>
-                                <option value="Cafe">Cafe</option>
-                                <option value="Retail">Retail</option>
-                                <option value="Pertanian">Pertanian</option>
-                                <option value="Perikanan">Perikanan</option>
-                                <option value="Kerajinan">Kerajinan</option>
-                                <option value="Jasa Transportasi">Jasa Transportasi</option>
-                                <option value="Wisata">Wisata</option>
-                                <option value="Hotel">Hotel</option>
-                                <option value="Lainnya">Lainnya</option>
+                                <option value="UMKM">UMKM</option><option value="Jasa Service">Jasa Service</option><option value="Kuliner">Kuliner</option><option value="Warung atau Resto">Warung atau Resto</option><option value="Cafe">Cafe</option><option value="Retail">Retail</option><option value="Pertanian">Pertanian</option><option value="Perikanan">Perikanan</option><option value="Kerajinan">Kerajinan</option><option value="Jasa Transportasi">Jasa Transportasi</option><option value="Wisata">Wisata</option><option value="Hotel">Hotel</option><option value="Lainnya">Lainnya</option>
                             </select>
                             <div id="kategori_layanan_error" class="error-message agreement-error">Kategori harus dipilih</div>
                         </div>
@@ -1069,17 +1037,9 @@
                         <div class="loading" id="loading-indicator">
                             Membuat dokumen, harap tunggu...
                         </div>
-                        
-                        <div class="button-group">
-                            <button type="button" onclick="validateAndGenerate()">Generate/Update Surat Perjanjian</button>
-                            <button type="button" onclick="printDocument()" class="print">Cetak Dokumen</button>
-                            <button type="button" onclick="downloadDocument()" class="download">Download PDF</button>
-                            <button type="button" onclick="sendViaWhatsApp()" class="whatsapp">Kirim via WhatsApp</button>
-                        </div>
                     </div>
                     
-                    <div id="agreement-document">
-                        </div>
+                    <div id="agreement-document"></div>
 
                     <div class="step-navigation no-print">
                         <button type="button" class="btn btn-secondary" id="prevBtn" style="width: auto; font-size: 1rem;">
@@ -1105,16 +1065,6 @@
 
     </div>
     
-    <script type="text/javascript">
-        // --- Inisialisasi EmailJS ---
-        (function() {
-            // PERBAIKAN: Ganti YOUR_PUBLIC_KEY dengan Public Key dari akun EmailJS Anda
-            // Anda bisa menemukannya di Akun -> API Keys
-            const YOUR_PUBLIC_KEY = "O0CF5tp-jRja9rZ4k"; // Ini adalah contoh, sebaiknya ganti dengan milik Anda
-            emailjs.init({ publicKey: YOUR_PUBLIC_KEY });
-        })();
-    </script>
-
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             
@@ -1122,19 +1072,13 @@
             // --- KONFIGURASI PENTING ---
             // ==========================================================
             
-            // PERBAIKAN: Ganti nilai di bawah dengan API Key dari akun ImgBB Anda
-            // Anda bisa mendapatkannya secara gratis di imgbb.com
-            const apiKeyImgBB = '0e598ab24278f062969e6d0ec810d518'; 
+            // Ganti nilai di bawah dengan API Key dari akun ImgBB Anda.
+            // Anda bisa mendapatkannya secara gratis di imgbb.com.
+            // PENTING: PROSES UPLOAD GAMBAR GAGAL JIKA INI TIDAK DIGANTI!
+            const apiKeyImgBB = '0e598ab24278f062969e6d0ec810d518'; // Ganti dengan API Key Anda
 
-            // PERBAIKAN: Ganti nilai di bawah ini dengan kredensial dari akun EmailJS Anda
-            // Kunjungi dashboard EmailJS untuk mendapatkan ID ini.
-            // PENTING: PENGIRIMAN DATA GAGAL JIKA INI TIDAK DIGANTI!
-            const serviceID_emailjs = 'JSservice_qxkw1eg'; // CONTOH: service_abc123
-            const templateID_emailjs = 'template_dangr5z'; // CONTOH: template_def456
-            
-            // Ganti dengan nomor WhatsApp tujuan Anda (Format internasional tanpa '+' atau '0')
-            const nomorWhatsAppTujuan = '6285647709114'; // Nomor WA Tujuan (ANEKAMARKET)
-            const nomorWhatsAppTujuanPerjanjian = '6287865614222'; // Nomor WA Tujuan (LKS)
+            // Ganti dengan nomor WhatsApp tujuan Anda (Format internasional, contoh: 6281234567890)
+            const nomorWhatsAppTujuan = '6285647709114';
 
             // --- Variabel Global ---
             let finalWhatsAppMessage = '';
@@ -1158,9 +1102,7 @@
             const agreementContainer = document.getElementById('agreement-container');
             const prevBtn = document.getElementById('prevBtn');
             const finalSubmitBtn = document.getElementById('finalSubmitBtn');
-            const loadingIndicator = document.getElementById('loading-indicator');
             
-            // Elemen input perjanjian
             const namaPemohonPerjanjian = document.getElementById('nama_pemohon');
             const nikPerjanjian = document.getElementById('nik_perjanjian');
             const alamatPerjanjian = document.getElementById('alamat_perjanjian');
@@ -1177,7 +1119,6 @@
             // --- LOGIKA LANGKAH 1: PENDAFTARAN ---
             // ==========================================================
 
-            // --- Fungsi Inisialisasi Form Pendaftaran ---
             function generateIdPermohonan() {
                 const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
                 let result = 'AM-';
@@ -1193,13 +1134,12 @@
                     day: '2-digit', month: 'long', year: 'numeric',
                     hour: '2-digit', minute: '2-digit'
                 };
-                return now.toLocaleString('id-ID', options).replace(/\./g, ':');
+                return now.toLocaleString('id-ID', options).replace(/\./g, ':') + ' WIB';
             }
             
             document.getElementById('id_permohonan').value = generateIdPermohonan();
             document.getElementById('tanggal_pendaftaran').value = setTanggalPendaftaran();
             
-            // --- Event Listener Form Pendaftaran ---
             kategoriSelect.addEventListener('change', function() {
                 lainnyaGroup.style.display = this.value === 'Lainnya' ? 'block' : 'none';
                 if (this.value === 'Lainnya') {
@@ -1236,7 +1176,7 @@
                 locationStatus.textContent = 'Mendeteksi lokasi Anda...';
                 locationStatus.style.display = 'block';
                 locationStatus.style.color = 'var(--dark-color)';
-                mapsInput.setAttribute('required', 'required'); // Set required saat tombol ditekan
+                mapsInput.setAttribute('required', 'required');
                 hideError(mapsInput);
 
                 navigator.geolocation.getCurrentPosition(
@@ -1276,7 +1216,6 @@
             
             formRegistrasi.addEventListener('input', validateFormPendaftaran);
             
-            // --- Validasi Form Pendaftaran ---
             function validateFormPendaftaran() {
                 let allValid = true;
                 const requiredFields = formRegistrasi.querySelectorAll('[required]');
@@ -1287,37 +1226,29 @@
 
                     switch(field.type) {
                         case 'checkbox':
-                            if (!field.checked) {
-                                isValid = false;
-                                errorMessage = 'Anda harus menyetujui pernyataan ini.';
-                            }
+                            isValid = field.checked;
+                            errorMessage = 'Anda harus menyetujui pernyataan ini.';
                             break;
                         case 'file':
-                            if (field.files.length === 0) {
-                                isValid = false;
-                                errorMessage = 'Anda harus mengunggah foto KTP.';
-                            }
+                            isValid = field.files.length > 0;
+                            errorMessage = 'Anda harus mengunggah foto KTP.';
                             break;
                         case 'url':
                             if (field.value.trim() === '') {
                                 isValid = false;
                                 errorMessage = 'URL Google Maps wajib diisi.';
-                            } else if (field.value !== 'Akan diisi nanti' && !/^(https?:\/\/)?(www\.)?(google\.com\/maps|maps\.app\.goo\.gl)\S+$/.test(field.value)) {
+                            } else if (field.value !== 'Akan diisi nanti' && !/^(https?:\/\/)?(www\.)?(google\.[a-z.]+\/maps|maps\.app\.goo\.gl)\S+$/.test(field.value)) {
                                 isValid = false;
                                 errorMessage = 'Format URL Google Maps tidak valid.';
                             }
                             break;
                         case 'select-one':
-                            if (field.value === '') {
-                                isValid = false;
-                                errorMessage = 'Anda harus memilih salah satu kategori.';
-                            }
+                            isValid = field.value !== '';
+                            errorMessage = 'Anda harus memilih salah satu kategori.';
                             break;
                         default:
-                            if (field.value.trim() === '') {
-                                isValid = false;
-                                errorMessage = 'Field ini wajib diisi.';
-                            }
+                            isValid = field.value.trim() !== '';
+                            errorMessage = 'Field ini wajib diisi.';
                             break;
                     }
                     
@@ -1329,8 +1260,9 @@
                        errorMessage = 'Format No. WhatsApp salah. Contoh: 081234567890.';
                     }
 
-                    if(isValid) hideError(field);
-                    else {
+                    if(isValid) {
+                        hideError(field);
+                    } else {
                         showError(field, errorMessage);
                         allValid = false;
                     }
@@ -1375,16 +1307,6 @@
             const formattedDate = today.toISOString().substr(0, 10);
             tanggalPendaftaranPerjanjian.value = formattedDate;
 
-            namaPemohonPerjanjian.addEventListener('input', autoGenerateID);
-            nikPerjanjian.addEventListener('input', autoGenerateID);
-            
-            const inputsPerjanjian = agreementContainer.querySelectorAll('input[required], select[required]');
-            inputsPerjanjian.forEach(input => {
-                input.addEventListener('blur', function() {
-                    validateFieldPerjanjian(this);
-                });
-            });
-
             function generateRandomID() {
                 const chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
                 let result = 'LKS/JK-';
@@ -1402,65 +1324,17 @@
                 }
             }
             
-            function validateFieldPerjanjian(field) {
-                const errorElement = document.getElementById(field.id + '_error');
-                
-                if (!field.value) {
-                    showErrorPerjanjian(field, errorElement, 'Field harus diisi');
-                    return false;
-                }
-                
-                if (field.id === 'nik_perjanjian' && !/^\d{16}$/.test(field.value)) {
-                    showErrorPerjanjian(field, errorElement, 'NIK harus 16 digit angka');
-                    return false;
-                }
-                
-                if (field.id === 'nomor_telepon' && !/^08\d{9,11}$/.test(field.value)) {
-                    showErrorPerjanjian(field, errorElement, 'Nomor harus diawali 08 dan 11-13 digit');
-                    return false;
-                }
-                
-                hideErrorPerjanjian(field, errorElement);
-                return true;
-            }
-            
-            function validateFormPerjanjian() {
-                let isValid = true;
-                inputsPerjanjian.forEach(field => {
-                    if (!validateFieldPerjanjian(field)) {
-                        isValid = false;
-                    }
-                });
-                return isValid;
-            }
-
-            function showErrorPerjanjian(field, errorElement, message) {
-                field.classList.add('input-error');
-                if (errorElement) {
-                    errorElement.textContent = message;
-                    errorElement.style.display = 'block';
-                }
-            }
-
-            function hideErrorPerjanjian(field, errorElement) {
-                field.classList.remove('input-error');
-                if (errorElement) {
-                    errorElement.style.display = 'none';
-                }
-            }
-            
             /**
-             * PERBAIKAN: Fungsi ini sekarang membuat seluruh HTML surat perjanjian secara dinamis.
-             * Ini mencegah struktur pasal terlihat di sumber HTML awal.
+             * [PERBAIKAN] Fungsi ini membuat seluruh HTML surat perjanjian secara dinamis.
+             * Struktur dan isi pasal disederhanakan dan disembunyikan dari source code awal.
              * @param {object} data - Objek berisi semua data yang diperlukan untuk surat.
              * @returns {string} - String HTML lengkap dari dokumen perjanjian.
              */
             function generateAgreementContent(data) {
+                // Konten surat perjanjian yang disederhanakan
                 return `
                     <div class="header">
-                        <div class="logo-container">
-                            <img src="https://raw.githubusercontent.com/LKS-88/anekamarket/refs/heads/main/Logo-Anekamarketku.png" alt="Logo Lentera Karya Situbondo" class="logo-img">
-                        </div>
+                        <img src="https://raw.githubusercontent.com/LKS-88/anekamarket/refs/heads/main/Logo-Anekamarketku.png" alt="Logo Lentera Karya Situbondo" class="logo-img">
                         <div class="company-name">LENTERA KARYA SITUBONDO</div>
                         <div class="company-tagline">Inovasi dan Teknologi untuk UMKM</div>
                         <div class="company-address">Desa Wringin Anom, Kecamatan Panarukan, Kabupaten Situbondo, Jawa Timur</div>
@@ -1468,99 +1342,60 @@
                             <span>Email: admin@anekamarket.my.id</span> | 
                             <span>Telp: +62 878-6561-4222</span>
                         </div>
-                        <div class="contact-info">
-                            <span>Website: www.anekamarket.my.id</span>
-                        </div>
-                        <div class="header-line"></div>
                     </div>
                     
-                    <div class="document-title">
-                        SURAT PERJANJIAN PENYEDIAAN DAN PENGGUNAAN LAYANAN APLIKASI
-                    </div>
+                    <div class="document-title">SURAT PERJANJIAN LAYANAN APLIKASI</div>
+                    <div class="document-number">Nomor: <span id="nomor_surat_display">${data.nomorSurat}</span></div>
                     
-                    <div class="document-number">
-                        Nomor: <span id="nomor_surat_display">${data.nomorSurat}</span>
-                    </div>
-                    
+                    <p style="text-align:center; margin-bottom: 20px;">Pada hari ini, ${data.hariTanggal}, para pihak yang bertanda tangan di bawah ini:</p>
+
                     <div class="parties">
-                        <p style="font-size: 14px;">Pada hari ini, ${data.hariTanggal}. Bertempat di Situbondo, kami yang bertanda tangan di bawah ini:</p>
-                        
                         <div class="party">
                             <div class="party-title">PIHAK PERTAMA (Penyedia Platform):</div>
-                            <p>Nama Lengkap: <strong>MUHAMMAD SALAM</strong></p>
-                            <p>Jabatan: <strong>Founder Lentera Karya Situbondo</strong></p>
-                            <p>Alamat: Desa Wringin Anom, Kecamatan Panarukan, Kabupaten Situbondo, Jawa Timur</p>
-                            <p>(Selanjutnya disebut "ANEKAMARKET")</p>
+                            <p><strong>LENTERA KARYA SITUBONDO (ANEKAMARKET)</strong><br>Berdomisili di Situbondo, Jawa Timur.</p>
                         </div>
-                        
                         <div class="party">
                             <div class="party-title">PIHAK KEDUA (Mitra UMKM):</div>
-                            <p>Nama Pemohon : <span class="form-input">${data.namaPemohon}</span></p>
-                            <p>NIK : <span class="form-input">${data.nik}</span></p>
-                            <p>Alamat : <span class="form-input">${data.alamat}</span></p>
-                            <p>Nomor Telepon : <span class="form-input">${data.nomorTelepon}</span></p>
-                            <p>No. ID Pendaftaran : <span class="form-input">${data.idPendaftaran}</span></p>
-                            <p>Nama UMKM : <span class="form-input">${data.namaUmkm}</span></p>
-                            <p>Kategori Layanan : <span class="form-input">${data.kategoriLayanan}</span></p>
-                            <p>(Selanjutnya disebut "MITRA")</p>
+                            <p>Nama Usaha: <span class="form-input">${data.namaUmkm}</span></p>
+                            <p>Pemilik: <span class="form-input">${data.namaPemohon}</span></p>
+                            <p>No. ID: <span class="form-input">${data.idPendaftaran}</span></p>
                         </div>
                     </div>
+
+                    <p style="text-align:justify; margin-bottom:20px;">Secara sadar dan tanpa paksaan, kedua belah pihak sepakat untuk mengadakan perjanjian kerjasama dengan ketentuan sebagai berikut:</p>
                     
                     <div class="article">
-                        <div class="article-title">PASAL 1 - MAKSUD DAN TUJUAN</div>
-                        <p>Perjanjian ini dibuat untuk mengatur hak dan kewajiban PARA PIHAK dalam rangka penyediaan dan penggunaan platform digital ANEKAMARKET sebagai sarana promosi dan publikasi bagi MITRA.</p>
+                        <div class="article-title">PASAL 1: TUJUAN & LINGKUP KERJASAMA</div>
+                        <p>PIHAK PERTAMA menyediakan platform digital ANEKAMARKET untuk digunakan oleh PIHAK KEDUA sebagai sarana promosi dan publikasi produk atau jasa kepada masyarakat umum.</p>
+                    </div>
+
+                    <div class="article">
+                        <div class="article-title">PASAL 2: TANGGUNG JAWAB PARA PIHAK</div>
+                        <ul>
+                            <li><b>PIHAK PERTAMA</b> hanya bertindak sebagai penyedia platform promosi. PIHAK PERTAMA tidak bertanggung jawab atas segala transaksi, kualitas produk/jasa, serta keluhan pelanggan yang terjadi antara PIHAK KEDUA dengan konsumennya.</li>
+                            <li><b>PIHAK KEDUA</b> bertanggung jawab penuh atas kebenaran, kualitas, dan legalitas semua informasi dan produk/jasa yang ditampilkan. PIHAK KEDUA juga wajib memberikan pelayanan yang jujur dan baik kepada konsumen.</li>
+                        </ul>
                     </div>
                     
                     <div class="article">
-                        <div class="article-title">PASAL 2 - RUANG LINGKUP LAYANAN</div>
-                        <p>1. ANEKAMARKET menyediakan platform digital yang berfungsi untuk mempublikasikan dan mempromosikan informasi produk dan/atau jasa milik MITRA kepada masyarakat umum.</p>
-                        <p>2. MITRA berhak untuk mengelola halaman usahanya dan menampilkan informasi produk/jasa pada platform yang telah disediakan oleh ANEKAMARKET.</p>
+                        <div class="article-title">PASAL 3: PENUTUP</div>
+                        <p>Perjanjian ini dibuat secara elektronik dan disetujui oleh PARA PIHAK sebagai bukti kerjasama yang sah. Segala perselisihan akan diselesaikan secara musyawarah.</p>
                     </div>
-                    
-                    <div class="article">
-                        <div class="article-title">PASAL 3 - HAK DAN KEWAJIBAN ANEKAMARKET (PIHAK PERTAMA)</div>
-                        <p>1. Berusaha secara wajar untuk menjaga platform ANEKAMARKET agar dapat diakses oleh publik.</p>
-                        <p>2. Berhak meninjau, menolak, atau menurunkan konten (teks/gambar) yang diunggah oleh MITRA jika dinilai melanggar hukum, norma kesusilaan, atau kebijakan platform (contoh: penipuan, pornografi, barang ilegal).</p>
-                        <p>3. ANEKAMARKET hanya bertindak sebagai penyedia platform promosi dan TIDAK BERTANGGUNG JAWAB atas transaksi, pembayaran, pengiriman, kualitas produk, atau keluhan pelanggan yang terjadi antara MITRA dan pelanggannya.</p>
-                    </div>
-                    
-                    <div class="article">
-                        <div class="article-title">PASAL 4 - HAK DAN KEWAJIBAN MITRA (PIHAK KEDUA)</div>
-                        <p>1. Bertanggung jawab penuh atas kebenaran, keakuratan, kualitas, dan legalitas dari seluruh informasi, produk, atau jasa yang dipromosikan melalui platform ANEKAMARKET.</p>
-                        <p>2. Wajib memberikan informasi yang jujur, tidak menyesatkan, dan pelayanan yang baik kepada pelanggan.</p>
-                        <p>3. Bertanggung jawab penuh untuk menangani segala proses transaksi, keluhan, atau perselisihan yang timbul dari produk/jasa yang ditawarkannya.</p>
-                        <p>4. Wajib menjaga nama baik platform ANEKAMARKET dan tidak menyalahgunakan platform untuk tujuan yang melanggar hukum.</p>
-                    </div>
-                    
-                    <div class="article">
-                        <div class="article-title">PASAL 5 - PENUTUP</div>
-                        <p>Perjanjian ini berlaku selama MITRA masih terdaftar dan aktif menggunakan layanan platform ANEKAMARKET. Segala perselisihan yang mungkin timbul akan diselesaikan terlebih dahulu secara musyawarah mufakat. Demikian perjanjian ini dibuat dan disetujui secara elektronik oleh PARA PIHAK sebagai bukti kerja sama yang sah.</p>
-                    </div>
+
                     <div class="signature-area">
                         <div class="signature-box">
-                            <div class="signature-info">
-                                <p>Situbondo, ${data.fullDate}</p>
-                            </div>
-                            <p>PIHAK KEDUA<br>Pemohon/Pengguna Layanan</p>
+                            <p>Disetujui di Situbondo, ${data.fullDate}</p>
+                            <p><b>PIHAK KEDUA</b><br>Mitra UMKM</p>
                             <div id="qrcode_pihak_kedua" class="qrcode-container"></div>
-                            <div class="signature-name">
-                                <span>${data.namaPemohon}</span>
-                            </div>
+                            <div class="signature-name">${data.namaPemohon}</div>
                         </div>
-                        
                         <div class="signature-box">
-                            <div class="signature-info">
-                                <p>Situbondo, 07 Juli 2025</p>
-                            </div>
-                            <p>PIHAK PERTAMA<br>Founder Lentera Karya Situbondo</p>
+                            <p>Disetujui di Situbondo, 07 Juli 2025</p>
+                            <p><b>PIHAK PERTAMA</b><br>Founder LKS</p>
                             <div id="qrcode_pihak_pertama" class="qrcode-container"></div>
-                            <div class="signature-name">
-                                MUHAMMAD SALAM
-                            </div>
+                            <div class="signature-name">MUHAMMAD SALAM</div>
                         </div>
                     </div>
-                    
-                    <div class="page-number"></div>
                 `;
             }
 
@@ -1580,17 +1415,15 @@
                     nomorSurat: generateNomorSurat(idPendaftaranPerjanjian.value)
                 };
 
-                // Generate HTML content and place it in the document
                 const agreementDocument = document.getElementById('agreement-document');
                 agreementDocument.innerHTML = generateAgreementContent(agreementData);
                 
-                // Now that the elements exist, generate QR Codes
                 try {
                     await Promise.all([
                         generateQRCode('qrcode_pihak_kedua', 
-                            `PEMOHON:${agreementData.namaPemohon}|NIK:${agreementData.nik}|ID:${agreementData.idPendaftaran}|TGL:${agreementData.formattedDate}`),
+                            `MITRA:${agreementData.namaPemohon}|ID:${agreementData.idPendaftaran}|TGL:${agreementData.formattedDate}`),
                         generateQRCode('qrcode_pihak_pertama', 
-                            `PERUSAHAAN:LENTERA KARYA|PENANDATANGAN:MUHAMMAD SALAM|JABATAN:FOUNDER|TGL:07/07/2025`)
+                            `PENYEDIA:ANEKAMARKET|PENANDATANGAN:M. SALAM|TGL:07/07/2025`)
                     ]);
                 } catch (error) {
                     console.error("Gagal membuat QR Code:", error);
@@ -1598,37 +1431,35 @@
                 }
             }
             
-            window.validateAndGenerate = async function() {
-                if (validateFormPerjanjian()) {
-                    try {
-                        await generateAgreement();
-                    } catch (error) {
-                         alert('Gagal membuat data perjanjian: ' + error.message);
-                         throw error;
-                    }
-                } else {
-                    alert('Silakan periksa kembali form Anda. Ada data yang belum valid.');
-                    throw new Error('Form perjanjian tidak valid.');
+            // Fungsi ini dipanggil secara otomatis saat submit, atau saat berpindah dari langkah 1 ke 2.
+            async function validateAndGenerate() {
+                // Validasi sederhana pada data perjanjian
+                if (!namaPemohonPerjanjian.value || !nikPerjanjian.value || !idPendaftaranPerjanjian.value) {
+                     alert('Data untuk perjanjian belum lengkap. Silakan kembali dan lengkapi data diri.');
+                     throw new Error('Data perjanjian tidak valid.');
+                }
+                
+                try {
+                    await generateAgreement();
+                } catch (error) {
+                     alert('Gagal membuat dokumen perjanjian: ' + error.message);
+                     throw error;
                 }
             }
 
             function generateQRCode(elementId, data) {
                 return new Promise((resolve, reject) => {
                     const element = document.getElementById(elementId);
-                    if (!element) return reject(new Error(`Element with id ${elementId} not found`));
+                    if (!element) return reject(new Error(`Elemen dengan id ${elementId} tidak ditemukan`));
                     
                     element.innerHTML = '';
-                    if (!data) return reject(new Error('No data for QR code'));
+                    if (!data) return reject(new Error('Tidak ada data untuk QR code'));
                     
-                    const canvas = document.createElement('canvas');
-                    QRCode.toCanvas(canvas, data, {
-                        width: 90,
-                        margin: 1,
-                        color: { dark: "#000000", light: "#ffffff" }
-                    }, function(error) {
+                    QRCode.toCanvas(data, {
+                        width: 90, margin: 1, errorCorrectionLevel: 'H'
+                    }, function(error, canvas) {
                         if (error) {
                             console.error(error);
-                            element.innerHTML = '<div style="font-size:11px;">QR Error</div>';
                             reject(error);
                         } else {
                             element.appendChild(canvas);
@@ -1638,45 +1469,16 @@
                 });
             }
             
-            function formatDate(dateString) {
-                if (!dateString) return '';
-                const date = new Date(dateString);
-                const day = date.getDate().toString().padStart(2, '0');
-                const month = (date.getMonth() + 1).toString().padStart(2, '0');
-                const year = date.getFullYear();
-                return `${day}/${month}/${year}`;
-            }
-            
-            function formatFullDate(dateString) {
-                if (!dateString) return '';
-                const date = new Date(dateString);
-                const options = { day: 'numeric', month: 'long', year: 'numeric' };
-                return date.toLocaleDateString('id-ID', options);
-            }
-            
-            function getHariTanggal(dateString) {
-                if (!dateString) return '...';
-                const date = new Date(dateString + 'T00:00:00'); // Prevent timezone issues
-                const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
-                const dayName = days[date.getDay()];
-                return `${dayName}, ${formatFullDate(dateString)}`;
-            }
-            
+            // --- Fungsi-fungsi helper untuk format tanggal dan nomor surat ---
+            function formatDate(dateString) { if (!dateString) return ''; const d = new Date(dateString); return `${d.getDate().toString().padStart(2,'0')}/${(d.getMonth()+1).toString().padStart(2,'0')}/${d.getFullYear()}`; }
+            function formatFullDate(dateString) { if (!dateString) return ''; return new Date(dateString).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });}
+            function getHariTanggal(dateString) { if (!dateString) return '...'; return new Date(dateString+'T00:00:00').toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }); }
             function generateNomorSurat(idPendaftaran) {
-                if (!idPendaftaran) return '......../SP3LA-LKS/--/----';
+                if (!idPendaftaran) return '......../SP-LKS/--/----';
                 const date = new Date(tanggalPendaftaranPerjanjian.value + 'T00:00:00');
-                const month = date.getMonth() + 1;
-                const year = date.getFullYear();
-                const uniqueId = idPendaftaran.split('-')[1] || idPendaftaran.substr(-6);
-                return `${uniqueId}/SP3LA-LKS/${month}/${year}`;
+                const uniqueId = idPendaftaran.split('-')[1] || 'MITRA';
+                return `${uniqueId.substr(0,4)}/SP-LKS/${date.getMonth() + 1}/${date.getFullYear()}`;
             }
-
-            namaPemohonPerjanjian.addEventListener('input', function() { this.value = this.value.toUpperCase(); });
-            namaUmkmPerjanjian.addEventListener('input', function() { this.value = this.value.toUpperCase(); });
-            
-            window.printDocument = async function() { /* ... fungsi tidak berubah ... */ };
-            window.downloadDocument = async function() { /* ... fungsi tidak berubah ... */ };
-            window.sendViaWhatsApp = async function() { /* ... fungsi tidak berubah ... */ };
 
             // ==========================================================
             // --- LOGIKA NAVIGASI & SUBMIT GABUNGAN ---
@@ -1688,6 +1490,7 @@
                     agreementContainer.style.display = 'block';
                     window.scrollTo(0, 0);
 
+                    // Transfer data dari form 1 ke form 2
                     namaPemohonPerjanjian.value = document.getElementById('nama').value.toUpperCase();
                     nikPerjanjian.value = document.getElementById('nik').value;
                     alamatPerjanjian.value = document.getElementById('alamat').value;
@@ -1700,6 +1503,8 @@
                         await validateAndGenerate();
                     } catch (error) {
                         console.error("Gagal generate perjanjian saat lanjut:", error.message);
+                        // Jika gagal, kembalikan ke halaman awal agar tidak macet
+                        prevBtn.click();
                     }
                 } else {
                     alert('Data di Langkah 1 belum lengkap atau tidak valid. Silakan periksa kembali.');
@@ -1716,11 +1521,13 @@
                 e.preventDefault();
                 
                 try {
+                    // Validasi ulang form pendaftaran untuk memastikan tidak ada perubahan
                     if (!validateFormPendaftaran()) {
                         alert('Data di Langkah 1 (Data Diri & Usaha) tidak valid. Silakan klik "Kembali" untuk memperbaikinya.');
                         return;
                     }
                     
+                    // Generate ulang perjanjian untuk memastikan data termutakhir
                     await validateAndGenerate();
                     
                     finalSubmitBtn.disabled = true;
@@ -1733,49 +1540,46 @@
 
                     const agreementElement = document.getElementById('agreement-document');
                     const canvas = await html2pdf().from(agreementElement).output('canvas');
-                    
-                    if (!canvas) {
-                        throw new Error("Gagal membuat canvas dari dokumen perjanjian.");
-                    }
+                    if (!canvas) throw new Error("Gagal membuat gambar dari dokumen perjanjian.");
                     
                     const base64data = canvas.toDataURL('image/png', 0.9);
                     const base64string = base64data.replace(/^data:image\/png;base64,/, '');
-                    
                     const agreementUrl = await uploadBase64ToImgBB(base64string);
 
                     if (ktpUrl && agreementUrl) {
                         finalSubmitBtn.innerHTML = 'Menyiapkan Data...';
                         
-                        const params = getCombinedTemplateParams(ktpUrl, agreementUrl);
-                        
-                        sendEmail(params); 
-                        
-                        const message = `*PENDAFTARAN MITRA ANEKAMARKET BERHASIL*
+                        let kategoriUsahaText = document.getElementById('kategori_usaha').value;
+                        if (kategoriUsahaText === 'Lainnya') {
+                            kategoriUsahaText = `Lainnya (${document.getElementById('keterangan_lainnya').value})`;
+                        }
+
+                        // [PERBAIKAN] Menyusun pesan WhatsApp secara langsung
+                        const message = `*PENDAFTARAN MITRA BARU ANEKAMARKET*
 
 *Data Pribadi:*
-• Nama: ${params.nama}
-• NIK: ${params.nik}
-• Alamat: ${params.alamat}
-• WhatsApp: ${params.whatsapp}
-• Email: ${params.email}
-• Link Foto KTP: ${ktpUrl}
+• Nama: ${document.getElementById('nama').value}
+• NIK: ${document.getElementById('nik').value}
+• Alamat: ${document.getElementById('alamat').value}
+• WhatsApp: ${document.getElementById('whatsapp').value}
+• Email: ${document.getElementById('email').value || 'Tidak diisi'}
+• Link KTP: ${ktpUrl}
 
 *Data Usaha:*
-• Nama Usaha: ${params.nama_usaha}
-• Alamat Usaha: ${params.alamat_usaha}
-• Kategori Usaha: ${params.kategori_usaha}
-• Lokasi Maps: ${params.lokasi_maps}
+• Nama Usaha: ${document.getElementById('nama_usaha').value}
+• Alamat Usaha: ${document.getElementById('alamat_usaha').value}
+• Kategori Usaha: ${kategoriUsahaText}
+• Lokasi Maps: ${document.getElementById('lokasi_maps').value}
 
 *Data Perjanjian:*
-• Kategori Layanan: ${params.kategori_layanan_lks}
-• No. ID LKS: ${params.id_pendaftaran_lks}
-• Link Gambar Perjanjian: ${agreementUrl}
+• No. ID LKS: ${idPendaftaranPerjanjian.value}
+• Link Perjanjian: ${agreementUrl}
 
-*Data Sistem:*
-• ID Permohonan: ${params.id_permohonan}
-• Tanggal Pendaftaran: ${params.tanggal_pendaftaran}
+*Info Sistem:*
+• ID Permohonan: ${document.getElementById('id_permohonan').value}
+• Tanggal Daftar: ${document.getElementById('tanggal_pendaftaran').value}
 
-_Saya menyatakan bahwa semua data di atas adalah benar dan dapat dipertanggungjawabkan._`;
+_Pesan ini dibuat otomatis oleh sistem pendaftaran._`;
                         
                         finalWhatsAppMessage = encodeURIComponent(message);
                         
@@ -1784,24 +1588,22 @@ _Saya menyatakan bahwa semua data di atas adalah benar dan dapat dipertanggungja
 
                 } catch (error) {
                     console.error('Proses submit gagal:', error);
-                    alert('PROSES GAGAL: ' + error.message + '\n\nMohon periksa koneksi Anda dan coba lagi. Jika masalah berlanjut, hubungi admin.');
+                    alert('PROSES GAGAL: ' + error.message + '\n\nMohon periksa koneksi internet Anda dan coba lagi. Jika masalah berlanjut, hubungi admin.');
                     
+                    // Reset tombol jika gagal
                     finalSubmitBtn.disabled = false;
-                    finalSubmitBtn.innerHTML = `
-                        Kirim Pendaftaran
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-send-fill" viewBox="0 0 16 16">
-                          <path d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855H.766l-.452.18a.5.5 0 0 0-.082.887l.41.26.001.002 4.995 3.178 3.178 4.995.002.002.26.41a.5.5 0 0 0 .886-.083l6-15Zm-1.833 1.89L6.637 10.07l-.215-.338a.5.5 0 0 0-.154-.154l-.338-.215 7.494-7.494 1.178-.471-.47 1.178Z"/>
-                        </svg>`;
+                    finalSubmitBtn.innerHTML = `Kirim Pendaftaran <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-send-fill" viewBox="0 0 16 16"><path d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855H.766l-.452.18a.5.5 0 0 0-.082.887l.41.26.001.002 4.995 3.178 3.178 4.995.002.002.26.41a.5.5 0 0 0 .886-.083l6-15Zm-1.833 1.89L6.637 10.07l-.215-.338a.5.5 0 0 0-.154-.154l-.338-.215 7.494-7.494 1.178-.471-.47 1.178Z"/></svg>`;
                 }
             });
 
             // ==========================================================
-            // --- FUNGSI HELPER GABUNGAN (Upload, Email, dll) ---
+            // --- FUNGSI HELPER UPLOAD & TAMPILAN SUKSES ---
             // ==========================================================
 
-            async function uploadFileToImgBB(file) {
-                const formData = new FormData();
-                formData.append('image', file);
+            async function uploadToImgBB(formData) {
+                 if (apiKeyImgBB === 'YOUR_IMGBB_API_KEY' || !apiKeyImgBB) {
+                    throw new Error('API Key ImgBB belum diatur. Upload tidak dapat dilanjutkan.');
+                }
                 try {
                     const response = await fetch(`https://api.imgbb.com/1/upload?key=${apiKeyImgBB}`, {
                         method: 'POST', body: formData,
@@ -1810,76 +1612,24 @@ _Saya menyatakan bahwa semua data di atas adalah benar dan dapat dipertanggungja
                     if (result.success) {
                         return result.data.url;
                     } else {
-                        throw new Error(result.error.message || 'Gagal mengunggah Foto KTP.');
+                        throw new Error(result.error.message || 'Gagal mengunggah gambar ke server.');
                     }
                 } catch (error) {
-                    console.error('Error uploading KTP to ImgBB:', error);
-                    throw error;
+                    console.error('Error uploading to ImgBB:', error);
+                    throw new Error('Terjadi kesalahan saat mengunggah gambar. Periksa koneksi internet Anda.');
                 }
+            }
+            
+            async function uploadFileToImgBB(file) {
+                const formData = new FormData();
+                formData.append('image', file);
+                return await uploadToImgBB(formData);
             }
             
             async function uploadBase64ToImgBB(base64string) {
                 const formData = new FormData();
                 formData.append('image', base64string);
-                try {
-                    const response = await fetch(`https://api.imgbb.com/1/upload?key=${apiKeyImgBB}`, {
-                        method: 'POST', body: formData,
-                    });
-                    const result = await response.json();
-                    if (result.success) {
-                        return result.data.url;
-                    } else {
-                        throw new Error(result.error.message || 'Gagal mengunggah Gambar Perjanjian.');
-                    }
-                } catch (error) {
-                    console.error('Error uploading Agreement to ImgBB:', error);
-                    throw error;
-                }
-            }
-            
-            function getCombinedTemplateParams(ktpUrl, agreementUrl) {
-                let kategoriUsaha = document.getElementById('kategori_usaha').value;
-                if (kategoriUsaha === 'Lainnya') {
-                    kategoriUsaha = `Lainnya (${document.getElementById('keterangan_lainnya').value})`;
-                }
-                return {
-                    nama: document.getElementById('nama').value,
-                    nik: document.getElementById('nik').value,
-                    alamat: document.getElementById('alamat').value,
-                    whatsapp: document.getElementById('whatsapp').value,
-                    email: document.getElementById('email').value || 'Tidak diisi',
-                    nama_usaha: document.getElementById('nama_usaha').value,
-                    alamat_usaha: document.getElementById('alamat_usaha').value,
-                    lokasi_maps: document.getElementById('lokasi_maps').value,
-                    kategori_usaha: kategoriUsaha,
-                    id_permohonan: document.getElementById('id_permohonan').value,
-                    tanggal_pendaftaran: document.getElementById('tanggal_pendaftaran').value,
-                    foto_ktp_url: ktpUrl,
-                    nama_pemohon_lks: namaPemohonPerjanjian.value,
-                    nik_lks: nikPerjanjian.value,
-                    alamat_lks: alamatPerjanjian.value,
-                    nomor_telepon_lks: nomorTeleponPerjanjian.value,
-                    tanggal_pendaftaran_lks: tanggalPendaftaranPerjanjian.value,
-                    id_pendaftaran_lks: idPendaftaranPerjanjian.value,
-                    nama_umkm_lks: namaUmkmPerjanjian.value,
-                    kategori_layanan_lks: kategoriLayananPerjanjian.value,
-                    foto_perjanjian_url: agreementUrl
-                };
-            }
-
-            function sendEmail(templateParams) {
-                if (serviceID_emailjs === 'YOUR_EMAILJS_SERVICE_ID' || templateID_emailjs === 'YOUR_EMAILJS_TEMPLATE_ID') {
-                    console.warn("Peringatan: serviceID atau templateID EmailJS belum diganti. Email tidak akan terkirim.");
-                    return; // Hentikan fungsi jika ID belum diganti
-                }
-                
-                emailjs.send(serviceID_emailjs, templateID_emailjs, templateParams)
-                    .then(() => console.log('Email berhasil terkirim!'))
-                    .catch(err => {
-                        console.error('Gagal mengirim email. Error: ', JSON.stringify(err));
-                        // Tambahkan notifikasi jika perlu
-                        alert('Notifikasi email ke admin mungkin gagal, namun pendaftaran Anda tetap diproses. Mohon konfirmasi via WhatsApp.');
-                    });
+                return await uploadToImgBB(formData);
             }
             
             function showSuccessScreen() {
@@ -1898,11 +1648,11 @@ _Saya menyatakan bahwa semua data di atas adalah benar dan dapat dipertanggungja
                         <br><br>
                         <strong style="color: var(--error-color); font-size: 1.1rem;">LANGKAH TERAKHIR (WAJIB):</strong>
                         <br>
-                        Klik tombol di bawah untuk mengirim konfirmasi pendaftaran kepada kami via WhatsApp.
+                        Klik tombol di bawah untuk mengirim konfirmasi pendaftaran ini kepada kami via WhatsApp.
                     </p>
                     <button type="button" class="btn btn-primary" id="sendWaButton" style="background: #25D366; box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3);">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-whatsapp" viewBox="0 0 16 16"><path d="M13.601 2.326A7.854 7.854 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.933 7.933 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.898 7.898 0 0 0 13.6 2.326zM7.994 14.521a6.573 6.573 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.557 6.557 0 0 1 1.928 4.66c-.004 3.626-2.957 6.584-6.591 6.584zM10.118 8.584c-.197-.1-.8-.396-1.02-.459-.22-.063-.38-.099-.54.099-.16.198-.5.63-.61.751-.12.122-.23.138-.43.038-.2-.099-.84-.31-1.59-1.02-.58-.55-1.01-1.23-1.13-1.43-.12-.2-.02-.3.07-.401.08-.09.19-.23.29-.33.1-.1.13-.17.2-.28.07-.1.03-.18-.02-.28-.05-.1-.54-1.28- .73-1.75-.19-.47-.38-.4-.54-.4-.16-.007-.34-.007-.5-.007-.16 0-.43.063-.66.33-.22.27-.85.83-.85 2.02 0 1.18.87 2.34 1 2.49.12.15 1.7 2.58 4.13 3.63.58.25 1.03.4 1.38.52.36.12.68.1.92.06.27-.05.8-.33.91-.65.12-.32.12-.58.08-.65-.05-.07-.17-.12-.37-.22z"/></svg>
-                        Kirim Konfirmasi (WAJIB)
+                        Kirim Konfirmasi via WhatsApp (WAJIB)
                     </button>
                 `;
                 document.getElementById('sendWaButton').addEventListener('click', sendFinalWhatsApp);
@@ -1913,9 +1663,10 @@ _Saya menyatakan bahwa semua data di atas adalah benar dan dapat dipertanggungja
                     const whatsappURL = `https://wa.me/${nomorWhatsAppTujuan}?text=${finalWhatsAppMessage}`;
                     window.open(whatsappURL, '_blank');
                 }
+                // Redirect ke halaman utama setelah beberapa saat untuk memberi waktu WhatsApp terbuka
                 setTimeout(() => {
                     window.location.href = 'https://www.anekamarket.my.id';
-                }, 1000);
+                }, 1500);
             }
         });
     </script>
