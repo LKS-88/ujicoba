@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Upload Gambar & Kirim ke WhatsApp (Versi Baru)</title>
+    <title>Upload Gambar & Kirim ke WhatsApp (Diperbaiki)</title>
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
@@ -117,8 +117,7 @@
 <script>
     // --- KONFIGURASI PENTING ---
     const nomorWhatsApp = '6287865614222';
-    // GANTI API KEY DI BAWAH INI DENGAN API KEY ANDA DARI api.imgbb.com
-    const apiKeyImgBB = '0e598ab24278f062969e6d0ec810d518';
+    const apiKeyImgBB = '0e598ab24278f062969e6d0ec810d518'; // API Key Anda sudah benar
 
     // --- Elemen HTML ---
     const uploadInput = document.getElementById('upload-input');
@@ -152,12 +151,6 @@
 
     // --- Event Listener saat tombol Kirim di-klik ---
     kirimButton.addEventListener('click', async function() {
-        if (apiKeyImgBB === '0e598ab24278f062969e6d0ec810d518') {
-            statusPesan.textContent = 'Error: Mohon masukkan API Key ImgBB Anda di dalam kode.';
-            statusPesan.className = 'status-gagal';
-            return;
-        }
-
         if (!fileTerpilih) {
             alert('Silakan pilih gambar terlebih dahulu.');
             return;
