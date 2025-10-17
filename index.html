@@ -336,7 +336,7 @@
                         <div class="location-warning" id="location-warning">
                             <strong>Penting:</strong> Untuk akurasi, dapatkan titik lokasi saat Anda berada di tempat usaha.
                         </div>
-                        <input type="url" id="lokasi_maps" name="lokasi_maps" placeholder="Contoh: https://www.google.com/maps?q=-7.7,114.0" required>
+                        <input type="url" id="lokasi_maps" name="lokasi_maps" placeholder="Contoh: https://www.google.com/maps?q=-8,113" required>
                         <div class="location-button-group">
                             <button type="button" class="btn btn-location" id="getLocationBtn">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-geo-alt-fill" viewBox="0 0 16 16"><path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"/></svg>
@@ -385,7 +385,6 @@
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <script type="text/javascript">
         (function() {
-            // Kunci publik Anda sudah benar
             emailjs.init({ publicKey: "O0CF5tp-jRja9rZ4k" });
         })();
     </script>
@@ -412,7 +411,6 @@
             const getLocationBtn = document.getElementById('getLocationBtn');
             const locationStatus = document.getElementById('location-status');
             
-            // --- [BARU] Variabel global untuk menyimpan pesan WA
             let finalWhatsAppMessage = '';
 
             // --- Fungsi Inisialisasi Form ---
@@ -437,7 +435,7 @@
             document.getElementById('id_permohonan').value = generateIdPermohonan();
             document.getElementById('tanggal_pendaftaran').value = setTanggalPendaftaran();
             
-            // --- Event Listener Form (Semua fitur ini tetap ada) ---
+            // --- Event Listener Form ---
             kategoriSelect.addEventListener('change', function() {
                 lainnyaGroup.style.display = this.value === 'Lainnya' ? 'block' : 'none';
                 if (this.value === 'Lainnya') {
@@ -450,6 +448,7 @@
                 validateForm();
             });
             
+            // Fitur upload foto (pemilihan file) - INI BERFUNGSI
             ktpInput.addEventListener('change', function() {
                 fileNameDisplay.textContent = this.files.length > 0 ? this.files[0].name : '';
                 validateForm();
@@ -463,6 +462,7 @@
                 validateForm();
             });
 
+            // Fitur GPS - INI SEKARANG BERFUNGSI
             getLocationBtn.addEventListener('click', function() {
                 if (!navigator.geolocation) {
                     locationStatus.textContent = 'Geolocation tidak didukung oleh browser Anda.';
@@ -480,7 +480,11 @@
                     function(position) {
                         const lat = position.coords.latitude;
                         const lon = position.coords.longitude;
-                        const mapsUrl = `http://googleusercontent.com/maps.google.com/3{lat},${lon}`;
+                        
+                        // [PERBAIKAN 1]: Typo '3{lat}' telah diperbaiki menjadi '${lat}'
+                        // Saya juga mengganti ke URL standar Google Maps agar lebih universal
+                        const mapsUrl = `https://www.google.com/maps?q=${lat},${lon}`; 
+                        
                         mapsInput.value = mapsUrl;
                         mapsInput.setAttribute('required', 'required');
                         locationStatus.textContent = 'Lokasi berhasil dideteksi!';
@@ -513,7 +517,7 @@
             
             form.addEventListener('input', validateForm);
             
-            // --- Validasi Form (Fitur ini tetap ada) ---
+            // --- Validasi Form ---
             function validateForm() {
                 let allValid = true;
                 const requiredFields = form.querySelectorAll('[required]');
@@ -538,7 +542,8 @@
                                 errorMessage = 'Field ini wajib diisi.';
                             } else if (field.value !== 'Akan diisi nanti' && !/^(https?:\/\/)?(www\.)?(google\.com\/maps|maps\.app\.goo\.gl)\S+$/.test(field.value)) {
                                 isValid = false;
-                                errorMessage = 'Format URL Google Maps tidak valid.';
+                                // Menyesuaikan pesan error karena format URL GPS diubah
+                                errorMessage = 'Format URL Google Maps tidak valid. Coba gunakan tombol lokasi.';
                             }
                             break;
                         case 'select-one':
@@ -601,7 +606,7 @@
                 }
             }
 
-            // --- Fungsi Upload Gambar (Fitur ini tetap ada) ---
+            // --- Fungsi Upload Gambar ---
             async function uploadFileToImgBB(file) {
                 const formData = new FormData();
                 formData.append('image', file);
@@ -622,7 +627,7 @@
                 }
             }
             
-            // --- [DIPERBARUI] Submit Handler (Async) ---
+            // --- Submit Handler (Async) ---
             form.addEventListener('submit', async function(e) {
                 e.preventDefault();
                 if (validateForm()) {
@@ -635,14 +640,9 @@
 
                         if (ktpUrl) {
                             submitBtn.innerHTML = 'Menyiapkan Data...';
-                            
-                            // 1. Siapkan data
                             const params = getTemplateParams(ktpUrl);
-                            
-                            // 2. Kirim email di latar belakang
                             sendEmail(params); 
                             
-                            // 3. Buat pesan WA dan simpan di variabel global
                             const message = `*PENDAFTARAN MITRA ANEKAMARKET*
 
 *Data Pribadi:*
@@ -667,14 +667,15 @@ _Saya menyatakan bahwa semua data di atas adalah benar dan dapat dipertanggungja
 Terima kasih telah mendaftar di ANEKAMARKET!`;
                             
                             finalWhatsAppMessage = encodeURIComponent(message);
-
-                            // 4. [BARU] Tampilkan layar sukses pengganti form
                             showSuccessScreen();
                         }
 
                     } catch (error) {
                         console.error('Proses submit gagal:', error);
-                        alert('Gagal mengunggah KTP. Mohon periksa koneksi Anda dan coba lagi. Pesan Error: 'B' + error.message);
+                        
+                        // [PERBAIKAN 2]: Typo 'B' + error.message telah diperbaiki
+                        alert('Gagal mengunggah KTP. Mohon periksa koneksi Anda dan coba lagi. Pesan Error: ' + error.message);
+                        
                         submitBtn.disabled = false;
                         submitBtn.innerHTML = `
                             Kirim Pendaftaran
@@ -685,7 +686,7 @@ Terima kasih telah mendaftar di ANEKAMARKET!`;
                 }
             });
 
-            // --- Fungsi Pengumpulan Data (Fitur ini tetap ada) ---
+            // --- Fungsi Pengumpulan Data ---
             function getTemplateParams(ktpUrl) {
                 let kategoriUsaha = document.getElementById('kategori_usaha').value;
                 if (kategoriUsaha === 'Lainnya') {
@@ -705,13 +706,18 @@ Terima kasih telah mendaftar di ANEKAMARKET!`;
                     kategori_usaha: kategoriUsaha,
                     id_permohonan: document.getElementById('id_permohonan').value,
                     tanggal_pendaftaran: document.getElementById('tanggal_pendaftaran').value,
-                    foto_ktp_url: ktpUrl // Data baru: URL KTP
+                    foto_ktp_url: ktpUrl
                 };
             }
 
-            // --- Fungsi Kirim Email (Fitur ini tetap ada) ---
-            // PERHATIKAN: Ganti 'serviceID_emailjs' dan 'templateID_emailjs' di atas
+            // --- Fungsi Kirim Email ---
             function sendEmail(templateParams) {
+                // Pastikan Anda mengganti ID ini dengan ID Anda yang benar
+                if (serviceID_emailjs === 'JSservice_qx*****' || templateID_emailjs === 'template_xxxxxxxx') {
+                    console.warn("Peringatan: serviceID_emailjs atau templateID_emailjs belum diganti. Email tidak akan terkirim.");
+                    return; // Hentikan pengiriman email jika ID masih placeholder
+                }
+                
                 emailjs.send(serviceID_emailjs, templateID_emailjs, templateParams)
                     .then(() => console.log('Email berhasil terkirim!'))
                     .catch(err => {
@@ -719,8 +725,7 @@ Terima kasih telah mendaftar di ANEKAMARKET!`;
                     });
             }
             
-            // --- [BARU] Fungsi Layar Sukses ---
-            // Ini menggantikan pop-up notifikasi yang lama
+            // --- Fungsi Layar Sukses (Solusi Pop-up Blocker) ---
             function showSuccessScreen() {
                 formContainer.innerHTML = `
                     <div style="text-align: center; padding: 40px 20px;">
@@ -741,27 +746,19 @@ Terima kasih telah mendaftar di ANEKAMARKET!`;
                         </button>
                     </div>
                 `;
-                // Tambahkan listener ke tombol WA yang baru dibuat
                 document.getElementById('sendWaButton').addEventListener('click', sendWhatsApp);
             }
             
-            // --- [DIPERBARUI] Fungsi Kirim WA ---
-            // Sekarang hanya membuka URL yang sudah disiapkan dan mengarahkan pengguna
+            // --- Fungsi Kirim WA ---
             function sendWhatsApp() {
                 if (finalWhatsAppMessage) {
                     const whatsappURL = `https://wa.me/${nomorWhatsAppTujuan}?text=${finalWhatsAppMessage}`;
                     window.open(whatsappURL, '_blank');
                 }
-                
-                // Mengarahkan pengguna setelah mereka mengklik tombol WA
-                // Ini menggantikan fungsi "okButton" dari pop-up lama
                 setTimeout(() => {
                     window.location.href = 'https://www.anekamarket.my.id';
-                }, 1000); // Beri jeda 1 detik agar tab WA sempat terbuka
+                }, 1000);
             }
-            
-            // Listener untuk okButton lama sudah tidak diperlukan karena diganti oleh sendWaButton
-            // document.getElementById('okButton').addEventListener('click', ...);
         });
     </script>
 </body>
