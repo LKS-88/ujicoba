@@ -929,7 +929,7 @@
                             <div class="location-warning" id="location-warning">
                                 <strong>Penting:</strong> Untuk akurasi, dapatkan titik lokasi saat Anda berada di tempat usaha.
                             </div>
-                            <input type="url" id="lokasi_maps" name="lokasi_maps" placeholder="Contoh: https://maps.app.goo.gl/..." required>
+                            <input type="url" id="lokasi_maps" name="lokasi_maps" placeholder="Contoh: https://www.google.com/maps?q=-7.7,113.8" required>
                             <div class="location-button-group">
                                 <button type="button" class="btn btn-location" id="getLocationBtn">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-geo-alt-fill" viewBox="0 0 16 16"><path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"/></svg>
@@ -1072,10 +1072,8 @@
             // --- KONFIGURASI PENTING ---
             // ==========================================================
             
-            // Ganti nilai di bawah dengan API Key dari akun ImgBB Anda.
-            // Anda bisa mendapatkannya secara gratis di imgbb.com.
-            // PENTING: PROSES UPLOAD GAMBAR GAGAL JIKA INI TIDAK DIGANTI!
-            const apiKeyImgBB = '0e598ab24278f062969e6d0ec810d518'; // Ganti dengan API Key Anda
+            // [AMAN] API Key untuk layanan unggah gambar ImgBB.
+            const apiKeyImgBB = '0e598ab24278f062969e6d0ec810d518';
 
             // Ganti dengan nomor WhatsApp tujuan Anda (Format internasional, contoh: 6281234567890)
             const nomorWhatsAppTujuan = '6285647709114';
@@ -1183,6 +1181,7 @@
                     function(position) {
                         const lat = position.coords.latitude;
                         const lon = position.coords.longitude;
+                        // [PERBAIKAN] Menggunakan format URL Google Maps yang valid.
                         const mapsUrl = `https://www.google.com/maps?q=${lat},${lon}`;
                         
                         mapsInput.value = mapsUrl;
@@ -1237,7 +1236,7 @@
                             if (field.value.trim() === '') {
                                 isValid = false;
                                 errorMessage = 'URL Google Maps wajib diisi.';
-                            } else if (field.value !== 'Akan diisi nanti' && !/^(https?:\/\/)?(www\.)?(google\.[a-z.]+\/maps|maps\.app\.goo\.gl)\S+$/.test(field.value)) {
+                            } else if (field.value !== 'Akan diisi nanti' && !/^(https?:\/\/)?(www\.)?(google\.[a-z.]+\/maps|maps\.app\.goo\.gl|www\.google\.com\/maps)\S+$/.test(field.value)) {
                                 isValid = false;
                                 errorMessage = 'Format URL Google Maps tidak valid.';
                             }
@@ -1357,7 +1356,7 @@
                         <div class="party">
                             <div class="party-title">PIHAK KEDUA (Mitra UMKM):</div>
                             <p>Nama Usaha: <span class="form-input">${data.namaUmkm}</span></p>
-                            <p>Pemilik: <span class="form-input">${data.namaPemohon}</span></p>
+                            <p>Pemilik: <span class="class="form-input">${data.namaPemohon}</span></p>
                             <p>No. ID: <span class="form-input">${data.idPendaftaran}</span></p>
                         </div>
                     </div>
@@ -1390,7 +1389,7 @@
                             <div class="signature-name">${data.namaPemohon}</div>
                         </div>
                         <div class="signature-box">
-                            <p>Disetujui di Situbondo, 07 Juli 2025</p>
+                            <p>Disetujui di Situbondo, ${data.fullDate}</p>
                             <p><b>PIHAK PERTAMA</b><br>Founder LKS</p>
                             <div id="qrcode_pihak_pertama" class="qrcode-container"></div>
                             <div class="signature-name">MUHAMMAD SALAM</div>
@@ -1423,7 +1422,7 @@
                         generateQRCode('qrcode_pihak_kedua', 
                             `MITRA:${agreementData.namaPemohon}|ID:${agreementData.idPendaftaran}|TGL:${agreementData.formattedDate}`),
                         generateQRCode('qrcode_pihak_pertama', 
-                            `PENYEDIA:ANEKAMARKET|PENANDATANGAN:M. SALAM|TGL:07/07/2025`)
+                            `PENYEDIA:ANEKAMARKET|PENANDATANGAN:M. SALAM|TGL:${agreementData.formattedDate}`)
                     ]);
                 } catch (error) {
                     console.error("Gagal membuat QR Code:", error);
@@ -1536,11 +1535,14 @@
                     const ktpFile = document.getElementById('foto_ktp').files[0];
                     const ktpUrl = await uploadFileToImgBB(ktpFile); 
                     
-                    finalSubmitBtn.innerHTML = 'Mengunggah Perjanjian...';
+                    finalSubmitBtn.innerHTML = 'Membuat & Mengunggah Perjanjian...';
 
                     const agreementElement = document.getElementById('agreement-document');
+                    // [PERBAIKAN] Menggunakan html2pdf untuk mengonversi elemen ke gambar (canvas)
                     const canvas = await html2pdf().from(agreementElement).output('canvas');
-                    if (!canvas) throw new Error("Gagal membuat gambar dari dokumen perjanjian.");
+                    if (!canvas) {
+                        throw new Error("Gagal membuat file gambar dari dokumen perjanjian.");
+                    }
                     
                     const base64data = canvas.toDataURL('image/png', 0.9);
                     const base64string = base64data.replace(/^data:image\/png;base64,/, '');
@@ -1554,7 +1556,6 @@
                             kategoriUsahaText = `Lainnya (${document.getElementById('keterangan_lainnya').value})`;
                         }
 
-                        // [PERBAIKAN] Menyusun pesan WhatsApp secara langsung
                         const message = `*PENDAFTARAN MITRA BARU ANEKAMARKET*
 
 *Data Pribadi:*
@@ -1601,7 +1602,7 @@ _Pesan ini dibuat otomatis oleh sistem pendaftaran._`;
             // ==========================================================
 
             async function uploadToImgBB(formData) {
-                 if (apiKeyImgBB === '0e598ab24278f062969e6d0ec810d518' || !apiKeyImgBB) {
+                 if (!apiKeyImgBB) {
                     throw new Error('API Key ImgBB belum diatur. Upload tidak dapat dilanjutkan.');
                 }
                 try {
@@ -1612,7 +1613,7 @@ _Pesan ini dibuat otomatis oleh sistem pendaftaran._`;
                     if (result.success) {
                         return result.data.url;
                     } else {
-                        throw new Error(result.error.message || 'Gagal mengunggah gambar ke server.');
+                        throw new Error(result.error.message || 'Gagal mengunggah gambar ke server ImgBB.');
                     }
                 } catch (error) {
                     console.error('Error uploading to ImgBB:', error);
