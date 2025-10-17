@@ -630,6 +630,12 @@
         .button-group button.whatsapp { background-color: #25D366; }
         .button-group button.whatsapp:hover { background-color: #1da851; }
         
+        /* --- PERBAIKAN: Menyembunyikan grup tombol --- */
+        #agreement-form-container .no-print .button-group {
+            display: none;
+        }
+        /* --- Akhir Perbaikan --- */
+
         .error-message.agreement-error {
             color: #d9534f;
             font-size: 12px;
@@ -1024,7 +1030,7 @@
                         
                         <div class="form-group">
                             <label for="tanggal_pendaftaran_perjanjian">Tanggal Pendaftaran:</label>
-                            <input type="date" id="tanggal_pendaftaran_perjanjian" name="tanggal_pendaftaran_perjanjian" required>
+                            <input type="date" id="tanggal_pendaftaran_perjanjian" name="tanggal_pendaftaran_perjanjian" required readonly style="background-color: #f0f0f0;">
                             <div id="tanggal_pendaftaran_perjanjian_error" class="error-message agreement-error">Tanggal harus diisi</div>
                         </div>
                         
@@ -1043,11 +1049,19 @@
                             <label for="kategori_layanan" class="required">Kategori Layanan:</label>
                             <select id="kategori_layanan" name="kategori_layanan" required>
                                 <option value="">-- Pilih Kategori --</option>
-                                <option value="Layanan UMKM">Layanan UMKM</option>
-                                <option value="Layanan Ojek Online">Layanan Ojek Online</option>
-                                <option value="Layanan Jasa">Layanan Jasa</option>
-                                <option value="Layanan Sewa Hotel">Layanan Sewa Hotel</option>
-                                <option value="Layanan Wisata">Layanan Wisata</option>
+                                <option value="UMKM">UMKM</option>
+                                <option value="Jasa Service">Jasa Service</option>
+                                <option value="Kuliner">Kuliner</option>
+                                <option value="Warung atau Resto">Warung atau Resto</option>
+                                <option value="Cafe">Cafe</option>
+                                <option value="Retail">Retail</option>
+                                <option value="Pertanian">Pertanian</option>
+                                <option value="Perikanan">Perikanan</option>
+                                <option value="Kerajinan">Kerajinan</option>
+                                <option value="Jasa Transportasi">Jasa Transportasi</option>
+                                <option value="Wisata">Wisata</option>
+                                <option value="Hotel">Hotel</option>
+                                <option value="Lainnya">Lainnya</option>
                             </select>
                             <div id="kategori_layanan_error" class="error-message agreement-error">Kategori harus dipilih</div>
                         </div>
@@ -1577,11 +1591,12 @@
             }
 
             // --- Fungsi Generate Perjanjian (Tombol 'Generate') ---
-            // (Window.) agar bisa dipanggil dari onclick=""
+            // (Window.) agar bisa dipanggil dari onclick="" (meskipun tombolnya kini disembunyikan, fungsinya tetap ada)
             window.validateAndGenerate = function() {
                 if (validateFormPerjanjian()) {
                     generateAgreement();
-                    alert('Surat perjanjian telah dibuat/diperbarui. Silahkan cetak, download, atau kirim via WhatsApp. Jika sudah final, klik "Kirim Pendaftaran".');
+                    // Alert ini tidak lagi diperlukan karena tombol disembunyikan
+                    // alert('Surat perjanjian telah dibuat/diperbarui. Silahkan cetak, download, atau kirim via WhatsApp. Jika sudah final, klik "Kirim Pendaftaran".');
                 } else {
                     alert('Silakan periksa kembali form Anda. Ada data yang belum valid.');
                 }
@@ -1690,6 +1705,7 @@
             namaUmkmPerjanjian.addEventListener('input', function() { this.value = this.value.toUpperCase(); });
 
             // --- Fitur Tombol Perjanjian (Print, Download, WA) ---
+            // Fungsinya tetap ada sesuai permintaan, meskipun tombolnya disembunyikan
             window.printDocument = function() {
                 if (!document.getElementById('display_nama_pemohon').textContent) {
                     validateAndGenerate();
@@ -1755,9 +1771,12 @@
                     nomorTeleponPerjanjian.value = document.getElementById('whatsapp').value;
                     namaUmkmPerjanjian.value = document.getElementById('nama_usaha').value.toUpperCase();
                     
+                    // --- PERBAIKAN: Auto-select kategori layanan ---
+                    kategoriLayananPerjanjian.value = document.getElementById('kategori_usaha').value;
+                    
                     // Generate ID & Perjanjian otomatis
                     autoGenerateID();
-                    validateAndGenerate();
+                    validateAndGenerate(); // Fungsi ini dipanggil untuk mengisi preview
                 } else {
                     alert('Data di Langkah 1 belum lengkap atau tidak valid. Silakan periksa kembali.');
                 }
