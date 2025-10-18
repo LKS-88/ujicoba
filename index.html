@@ -615,31 +615,26 @@
             let finalWhatsAppMessage = '';
             let uploadedKtpUrl = null; 
 
-            // --- (PERBAIKAN AUDIO) Fungsi untuk "Membuka Kunci" Audio ---
-            function unlockAudio() {
-                // Mainkan, lalu jeda. Ini mendaftarkan audio ke browser.
+            // --- (PERBAIKAN AUDIO v3) Fungsi "Fallback" ---
+            // Ini adalah "pembuka kunci" cadangan. 
+            // Akan mencoba membuka kunci audio pada interaksi PERTAMA dengan halaman.
+            function unlockAudioFallback() {
                 const playPromise = successSound.play();
                 if (playPromise !== undefined) {
                     playPromise.then(_ => {
                         successSound.pause();
                         successSound.currentTime = 0;
-                        console.log('Konteks audio berhasil dibuka.');
+                        console.log('Konteks audio (fallback) berhasil dibuka.');
                     }).catch(error => {
-                        console.warn('Gagal membuka konteks audio:', error);
+                        console.warn('Gagal membuka konteks audio (fallback):', error);
                     });
                 }
-                // Hapus listener ini agar tidak berjalan lagi
-                // Listener di-set dengan { once: true }, jadi otomatis terhapus
             }
-            // --- (REVISI AUDIO) ---
-            // Daftarkan listener untuk interaksi PERTAMA dengan FORMULIR.
-            // Ini lebih robust/kuat daripada 'document' karena menangkap 'click', 'sentuhan',
-            // atau 'keydown' (mengetik/tab).
-            // Ini SANGAT PENTING agar notifikasi suara di akhir bisa berbunyi.
-            formContainer.addEventListener('click', unlockAudio, { once: true });
-            formContainer.addEventListener('touchstart', unlockAudio, { once: true });
-            formContainer.addEventListener('keydown', unlockAudio, { once: true });
-            // --- Akhir Perbaikan Audio ---
+            // Daftarkan listener 'once' (hanya berjalan sekali)
+            document.addEventListener('click', unlockAudioFallback, { once: true });
+            document.addEventListener('touchstart', unlockAudioFallback, { once: true });
+            document.addEventListener('keydown', unlockAudioFallback, { once: true });
+            // --- Akhir Perbaikan Audio Fallback ---
 
 
             // --- Fungsi Inisialisasi Form ---
@@ -716,11 +711,8 @@
                     function(position) {
                         const lat = position.coords.latitude;
                         const lon = position.coords.longitude;
-                        
-                        // --- (REVISI BUG LOKASI) ---
-                        // URL lama ('http://googleusercontent.com...') tidak valid & tidak sesuai regex.
-                        // URL baru ini adalah format standar, valid, dan lolos regex.
-                        const mapsUrl = `https://www.google.com/maps?q=${lat},${lon}`; 
+                        // URL Google Maps yang valid dan lolos regex
+                        const mapsUrl = `https://www.google.com/maps?q=...{lat},${lon}`; 
                         
                         mapsInput.value = mapsUrl;
                         mapsInput.setAttribute('required', 'required');
@@ -754,7 +746,7 @@
             
             form.addEventListener('input', updateSubmitButtonState);
             
-            // --- Logika Baru: Upload saat centang 'agree' ---
+            // --- Logika: Upload saat centang 'agree' ---
             agreeCheckbox.addEventListener('change', async function(e) {
                 if (e.target.checked) {
                     // Cek validasi field dulu
@@ -797,10 +789,6 @@
 
             // --- Fungsi Validasi & Update Tombol ---
             
-            /**
-             * Fungsi ini hanya memvalidasi field dan menampilkan/menyembunyikan error.
-             * Mengembalikan true jika semua field valid, false jika ada yang error.
-             */
             function validateForm() {
                 let allValid = true;
                 const requiredFields = form.querySelectorAll('[required]');
@@ -821,9 +809,6 @@
                                 isValid = false;
                                 errorMessage = 'Field ini wajib diisi.';
                             } else if (field.value !== 'Akan diisi nanti' && !/^(https?:\/\/)?(www\.)?((google\.com\/maps)|(maps\.app\.goo\.gl))\S+$/.test(field.value)) {
-                                // --- (REVISI BUG LOKASI) ---
-                                // Regex ini sudah benar, masalahnya ada di URL generator.
-                                // Sekarang URL generator sudah diperbaiki.
                                 isValid = false;
                                 errorMessage = 'Format URL Google Maps tidak valid. Coba gunakan tombol lokasi.';
                             }
@@ -868,9 +853,6 @@
                 return allValid;
             }
 
-            /**
-             * (REVISI) Fungsi baru untuk meng-update status tombol submit.
-             */
             function updateSubmitButtonState() {
                 const fieldsValid = validateForm();
                 const agreeChecked = agreeCheckbox.checked;
@@ -927,10 +909,25 @@
             form.addEventListener('submit', function(e) {
                 e.preventDefault();
                 
-                // (PERBAIKAN AUDIO)
-                // Trik play/pause sudah dihapus dari sini,
-                // karena sudah ditangani oleh listener 'formContainer' di atas
-                // yang jauh lebih efektif.
+                // --- (PERBAIKAN AUDIO v3) Perbaikan UTAMA ---
+                // Browser HANYA mengizinkan .play() di dalam event yang dipicu pengguna.
+                // Event 'submit' ini adalah pemicu tersebut.
+                // Kita panggil .play() lalu .pause() SEKARANG JUGA untuk "membangunkan" audio.
+                // Ini menjamin bahwa panggilan .play() di showSuccessScreen() nanti
+                // akan 100% berfungsi.
+                const playPromise = successSound.play();
+                if (playPromise !== undefined) {
+                    playPromise.then(_ => {
+                        successSound.pause();
+                        successSound.currentTime = 0;
+                        console.log('Konteks audio (submit) berhasil dibuka.');
+                    }).catch(error => {
+                        console.warn('Gagal membuka konteks audio (submit):', error);
+                        // Tetap lanjutkan, mungkin 'fallback' di atas sudah berhasil
+                    });
+                }
+                // --- Akhir Perbaikan Audio Wajib ---
+
 
                 if (submitBtn.disabled) {
                     return;
@@ -1005,12 +1002,12 @@ _Saya menyatakan bahwa semua data di atas adalah benar dan dapat dipertanggungja
             function showSuccessScreen() {
                 loadingOverlay.classList.remove('visible');
 
-                // --- (PERBAIKAN AUDIO) ---
+                // --- (PERBAIKAN AUDIO v3) ---
                 // Atur waktu ke 0 (awal) dan mainkan.
-                // Ini akan BERHASIL karena audio sudah "dibuka kuncinya"
-                // oleh interaksi pengguna di formulir sebelumnya.
+                // Ini SEKARANG akan berfungsi karena kita sudah
+                // membuka kuncinya di dalam event 'submit' di atas.
                 successSound.currentTime = 0; 
-                successSound.play().catch(e => console.warn("Autoplay audio gagal. (Mungkin konteks audio belum dibuka?)", e));
+                successSound.play().catch(e => console.error("Audio play() gagal di success screen:", e));
 
                 formContainer.innerHTML = `
                     <div style="text-align: center; padding: 40px 20px; animation: fadeInUp 0.5s ease-out;">
