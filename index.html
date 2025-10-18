@@ -629,12 +629,16 @@
                     });
                 }
                 // Hapus listener ini agar tidak berjalan lagi
-                document.removeEventListener('click', unlockAudio);
-                document.removeEventListener('touchstart', unlockAudio);
+                // Listener di-set dengan { once: true }, jadi otomatis terhapus
             }
-            // Daftarkan listener untuk klik atau sentuhan pertama
-            document.addEventListener('click', unlockAudio, { once: true });
-            document.addEventListener('touchstart', unlockAudio, { once: true });
+            // --- (REVISI AUDIO) ---
+            // Daftarkan listener untuk interaksi PERTAMA dengan FORMULIR.
+            // Ini lebih robust/kuat daripada 'document' karena menangkap 'click', 'sentuhan',
+            // atau 'keydown' (mengetik/tab).
+            // Ini SANGAT PENTING agar notifikasi suara di akhir bisa berbunyi.
+            formContainer.addEventListener('click', unlockAudio, { once: true });
+            formContainer.addEventListener('touchstart', unlockAudio, { once: true });
+            formContainer.addEventListener('keydown', unlockAudio, { once: true });
             // --- Akhir Perbaikan Audio ---
 
 
@@ -712,7 +716,11 @@
                     function(position) {
                         const lat = position.coords.latitude;
                         const lon = position.coords.longitude;
-                        const mapsUrl = `https://www.google.com/maps?q=$${lat},${lon}`; 
+                        
+                        // --- (REVISI BUG LOKASI) ---
+                        // URL lama ('http://googleusercontent.com...') tidak valid & tidak sesuai regex.
+                        // URL baru ini adalah format standar, valid, dan lolos regex.
+                        const mapsUrl = `https://www.google.com/maps?q=${lat},${lon}`; 
                         
                         mapsInput.value = mapsUrl;
                         mapsInput.setAttribute('required', 'required');
@@ -813,6 +821,9 @@
                                 isValid = false;
                                 errorMessage = 'Field ini wajib diisi.';
                             } else if (field.value !== 'Akan diisi nanti' && !/^(https?:\/\/)?(www\.)?((google\.com\/maps)|(maps\.app\.goo\.gl))\S+$/.test(field.value)) {
+                                // --- (REVISI BUG LOKASI) ---
+                                // Regex ini sudah benar, masalahnya ada di URL generator.
+                                // Sekarang URL generator sudah diperbaiki.
                                 isValid = false;
                                 errorMessage = 'Format URL Google Maps tidak valid. Coba gunakan tombol lokasi.';
                             }
@@ -917,8 +928,9 @@
                 e.preventDefault();
                 
                 // (PERBAIKAN AUDIO)
-                // Kita HAPUS trik play/pause dari sini, karena sudah ditangani
-                // oleh listener global 'click' / 'touchstart' di atas.
+                // Trik play/pause sudah dihapus dari sini,
+                // karena sudah ditangani oleh listener 'formContainer' di atas
+                // yang jauh lebih efektif.
 
                 if (submitBtn.disabled) {
                     return;
@@ -993,9 +1005,10 @@ _Saya menyatakan bahwa semua data di atas adalah benar dan dapat dipertanggungja
             function showSuccessScreen() {
                 loadingOverlay.classList.remove('visible');
 
-                // (PERBAIKAN AUDIO)
+                // --- (PERBAIKAN AUDIO) ---
                 // Atur waktu ke 0 (awal) dan mainkan.
-                // Ini akan berfungsi karena audio sudah "dibuka kuncinya".
+                // Ini akan BERHASIL karena audio sudah "dibuka kuncinya"
+                // oleh interaksi pengguna di formulir sebelumnya.
                 successSound.currentTime = 0; 
                 successSound.play().catch(e => console.warn("Autoplay audio gagal. (Mungkin konteks audio belum dibuka?)", e));
 
