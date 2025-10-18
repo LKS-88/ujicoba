@@ -639,8 +639,8 @@
     </div>
     
     <audio id="success-sound" preload="auto">
-        <source src="https://voca.ro/1BjrRUnRSEqJ"
-  </audio>
+        <source src="https://voca.ro/1BjrRUnRSEqJ" type="audio/mpeg">
+    </audio>
     
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -677,27 +677,29 @@
             let finalWhatsAppMessage = '';
             let uploadedKtpUrl = null; // Di-set setelah upload sukses
 
-            // --- (PERBAIKAN AUDIO v3) Fungsi "Fallback" ---
-            // Ini adalah "pembuka kunci" cadangan. 
-            // Akan mencoba membuka kunci audio pada interaksi PERTAMA dengan halaman.
-            function unlockAudioFallback() {
+            
+            // --- Fungsi untuk membuka konteks audio sebagai fallback ---
+            function unlockAudio() {
                 const playPromise = successSound.play();
                 if (playPromise !== undefined) {
                     playPromise.then(_ => {
                         successSound.pause();
                         successSound.currentTime = 0;
-                        console.log('Konteks audio (fallback) berhasil dibuka.');
+                        console.log('Konteks audio berhasil dibuka oleh interaksi pengguna.');
+                        // Hapus listener setelah berhasil agar tidak berjalan lagi
+                        document.removeEventListener('click', unlockAudio);
+                        document.removeEventListener('touchstart', unlockAudio);
+                        document.removeEventListener('keydown', unlockAudio);
                     }).catch(error => {
-                        console.warn('Gagal membuka konteks audio (fallback):', error);
+                        console.warn('Gagal membuka konteks audio:', error);
                     });
                 }
             }
-            // Daftarkan listener 'once' (hanya berjalan sekali)
-            document.addEventListener('click', unlockAudioFallback, { once: true });
-            document.addEventListener('touchstart', unlockAudioFallback, { once: true });
-            document.addEventListener('keydown', unlockAudioFallback, { once: true });
-            // --- Akhir Perbaikan Audio Fallback ---
-
+            // Daftarkan listener 'once' (hanya berjalan sekali) untuk interaksi pertama
+            document.addEventListener('click', unlockAudio, { once: true });
+            document.addEventListener('touchstart', unlockAudio, { once: true });
+            document.addEventListener('keydown', unlockAudio, { once: true });
+            
 
             // --- Fungsi Inisialisasi Form ---
             function generateIdPermohonan() {
@@ -738,24 +740,21 @@
                 if (this.files.length > 0) {
                     fileNameLabel.textContent = this.files[0].name;
                     fileNameDisplay.textContent = ''; 
-                    // (REVISI) Tampilkan tombol upload & reset status
-                    uploadKtpBtn.style.display = 'inline-flex'; // (PERBAIKAN) diubah dari inline-block
+                    uploadKtpBtn.style.display = 'inline-flex';
                     ktpStatus.style.display = 'none';
                     ktpStatus.textContent = '';
                 } else {
                     fileNameLabel.textContent = 'Belum ada file dipilih';
                     fileNameDisplay.textContent = '';
-                    // (REVISI) Sembunyikan tombol upload & status
                     uploadKtpBtn.style.display = 'none';
                     ktpStatus.style.display = 'none';
                 }
-                uploadedKtpUrl = null; // Reset URL jika file diganti
-                agreeCheckbox.checked = false; // Batalkan centang
-                hideError(ktpInput); // Sembunyikan error
+                uploadedKtpUrl = null; 
+                agreeCheckbox.checked = false; 
+                hideError(ktpInput);
                 updateSubmitButtonState();
             });
 
-            // --- (BARU) Event Listener untuk Tombol Upload KTP ---
             uploadKtpBtn.addEventListener('click', async function() {
                 const ktpFile = ktpInput.files[0];
                 if (!ktpFile) {
@@ -763,38 +762,33 @@
                     return;
                 }
                 
-                // Nonaktifkan tombol & tampilkan loading
                 uploadKtpBtn.disabled = true;
-                uploadKtpBtn.style.animation = 'none'; // (PERBAIKAN) Hentikan animasi pulse saat loading
+                uploadKtpBtn.style.animation = 'none';
                 loadingText.textContent = 'Mengunggah KTP... Mohon tunggu...';
                 loadingOverlay.classList.add('visible');
-                uploadedKtpUrl = null; // Reset
+                uploadedKtpUrl = null;
                 ktpStatus.style.display = 'none';
                 hideError(ktpInput);
 
                 try {
-                    // Mulai proses upload
-                    uploadedKtpUrl = await uploadFileToImgBB(ktpFile); // Tunggu hasil upload
+                    uploadedKtpUrl = await uploadFileToImgBB(ktpFile);
                     
-                    // Sukses
                     loadingOverlay.classList.remove('visible');
                     ktpStatus.textContent = 'KTP berhasil diunggah!';
                     ktpStatus.style.color = 'var(--success-color)';
                     ktpStatus.style.display = 'block';
-                    uploadKtpBtn.style.display = 'none'; // Sembunyikan tombol setelah sukses
-                    uploadKtpBtn.disabled = false; // Aktifkan lagi (meski tersembunyi)
+                    uploadKtpBtn.style.display = 'none';
+                    uploadKtpBtn.disabled = false;
                     
                 } catch (error) {
-                    // Gagal
                     console.error('Proses upload KTP gagal:', error);
                     loadingOverlay.classList.remove('visible');
                     showError(ktpInput, 'Gagal mengunggah KTP: ' + error.message);
                     uploadedKtpUrl = null;
-                    uploadKtpBtn.disabled = false; // Aktifkan lagi untuk coba lagi
-                    uploadKtpBtn.style.animation = 'fadeInDown 0.5s ease-out, pulse 2s infinite 0.5s'; // (PERBAIKAN) Nyalakan lagi animasi jika gagal
+                    uploadKtpBtn.disabled = false;
+                    uploadKtpBtn.style.animation = 'fadeInDown 0.5s ease-out, pulse 2s infinite 0.5s';
                 }
                 
-                // Update status tombol submit utama
                 updateSubmitButtonState();
             });
 
@@ -825,8 +819,7 @@
                     function(position) {
                         const lat = position.coords.latitude;
                         const lon = position.coords.longitude;
-                        // URL Google Maps yang valid dan lolos regex
-                        const mapsUrl = `https://www.google.com/maps?q=${lat},${lon}`; // (PERBAIKAN) Menggunakan format URL maps standar
+                        const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${lat},${lon}`;
                         
                         mapsInput.value = mapsUrl;
                         mapsInput.setAttribute('required', 'required');
@@ -860,28 +853,24 @@
             
             form.addEventListener('input', updateSubmitButtonState);
             
-            // --- (REVISI) Logika: Validasi saat centang 'agree' ---
             agreeCheckbox.addEventListener('change', function(e) {
                 if (e.target.checked) {
-                    // Cek validasi field dulu
                     const fieldsValid = validateForm();
                     if (!fieldsValid) {
                         alert('Mohon lengkapi semua data yang wajib diisi (termasuk KTP) sebelum menyetujui.');
                         e.target.checked = false;
-                        updateSubmitButtonState(); // Pastikan tombol submit nonaktif
+                        updateSubmitButtonState();
                         return;
                     }
                     
-                    // Cek apakah KTP sudah di-upload
                     if (uploadedKtpUrl === null) {
                         alert('Mohon unggah file KTP Anda terlebih dahulu menggunakan tombol "Unggah KTP Sekarang (Wajib)".');
-                        showError(ktpInput, 'Anda belum mengunggah KTP.'); // Tampilkan error di field KTP
+                        showError(ktpInput, 'Anda belum mengunggah KTP.');
                         e.target.checked = false;
-                        updateSubmitButtonState(); // Pastikan tombol submit nonaktif
+                        updateSubmitButtonState();
                         return;
                     }
                 }
-                // Update status tombol setiap kali checkbox di-klik (on/off)
                 updateSubmitButtonState();
             });
 
@@ -898,12 +887,10 @@
 
                     switch(field.type) {
                         case 'file':
-                            // (REVISI) Validasi file diubah ke validasi status upload
                             if (uploadedKtpUrl === null && ktpInput.files.length === 0) {
                                 isValid = false;
                                 errorMessage = 'Anda harus memilih file KTP.';
                             }
-                            // Jika file sudah dipilih tapi belum diupload, error akan ditangani oleh checkbox
                             break;
                         case 'url':
                             if (field.value.trim() === '') {
@@ -938,7 +925,6 @@
 
                     if(isValid) hideError(field);
                     else {
-                        // Jangan tampilkan error untuk KTP jika file sudah dipilih tapi belum diupload
                         if(field.type !== 'file' || ktpInput.files.length === 0) {
                             showError(field, errorMessage);
                         }
@@ -960,9 +946,8 @@
             function updateSubmitButtonState() {
                 const fieldsValid = validateForm();
                 const agreeChecked = agreeCheckbox.checked;
-                const uploadDone = (uploadedKtpUrl !== null); // Logika ini tetap sama
+                const uploadDone = (uploadedKtpUrl !== null);
                 
-                // Tombol submit hanya aktif jika semua valid, KTP sudah diupload, dan setuju
                 submitBtn.disabled = !(fieldsValid && agreeChecked && uploadDone);
             }
             
@@ -989,7 +974,6 @@
                 }
             }
 
-            // --- Fungsi Upload Gambar (Tidak berubah) ---
             async function uploadFileToImgBB(file) {
                 const formData = new FormData();
                 formData.append('image', file);
@@ -1010,26 +994,9 @@
                 }
             }
             
-            // --- (REVISI BESAR) Submit Handler ---
             form.addEventListener('submit', function(e) {
                 e.preventDefault();
                 
-                // --- (PERBAIKAN AUDIO v3) Perbaikan UTAMA ---
-                // "Membangunkan" audio di dalam event 'submit'.
-                // Ini penting, tapi tidak menjamin 100% jika ada proses 'async'
-                const playPromise = successSound.play();
-                if (playPromise !== undefined) {
-                    playPromise.then(_ => {
-                        successSound.pause();
-                        successSound.currentTime = 0;
-                        console.log('Konteks audio (submit) berhasil dibuka.');
-                    }).catch(error => {
-                        console.warn('Gagal membuka konteks audio (submit):', error);
-                    });
-                }
-                // --- Akhir Perbaikan Audio Wajib ---
-
-
                 if (submitBtn.disabled) {
                     return;
                 }
@@ -1039,7 +1006,6 @@
                 loadingOverlay.classList.add('visible');
 
                 try {
-                    // Gunakan URL KTP yang sudah disimpan
                     const params = getTemplateParams(uploadedKtpUrl);
                     
                     const message = `*PENDAFTARAN MITRA ANEKAMARKET*
@@ -1066,20 +1032,17 @@ _Saya menyatakan bahwa semua data di atas adalah benar dan dapat dipertanggungja
                     
                     finalWhatsAppMessage = encodeURIComponent(message);
                     
-                    // --- (PERUBAHAN LOGIKA) ---
-                    // Jangan langsung tampilkan sukses. Tampilkan langkah konfirmasi.
-                    loadingOverlay.classList.remove('visible'); // Sembunyikan loading
-                    showConfirmationStep(); // Tampilkan layar konfirmasi baru
+                    loadingOverlay.classList.remove('visible');
+                    showConfirmationStep();
 
                 } catch (error) {
                     console.error('Proses submit gagal:', error);
                     loadingOverlay.classList.remove('visible');
                     alert('Gagal menyiapkan data. Mohon coba lagi. Pesan Error: ' + error.message);
-                    submitBtn.disabled = false; // Aktifkan lagi jika gagal
+                    submitBtn.disabled = false;
                 }
             });
 
-            // --- Fungsi Pengumpulan Data (Tidak berubah) ---
             function getTemplateParams(ktpUrl) {
                 let kategoriUsaha = document.getElementById('kategori_usaha').value;
                 if (kategoriUsaha === 'Lainnya') {
@@ -1099,20 +1062,18 @@ _Saya menyatakan bahwa semua data di atas adalah benar dan dapat dipertanggungja
                     kategori_usaha: kategoriUsaha,
                     id_permohonan: document.getElementById('id_permohonan').value,
                     tanggal_pendaftaran: document.getElementById('tanggal_pendaftaran').value,
-                    foto_ktp_url: ktpUrl // URL KTP sudah didapat dari variabel
+                    foto_ktp_url: ktpUrl
                 };
             }
             
-            // --- (FUNGSI BARU) Layar Konfirmasi Perantara ---
             function showConfirmationStep() {
                 loadingOverlay.classList.remove('visible');
 
-                // Ganti isi form container
                 formContainer.innerHTML = `
                     <div style="text-align: center; padding: 40px 20px; animation: fadeInUp 0.5s ease-out;">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" fill="var(--primary-color)" class="bi bi-shield-check" viewBox="0 0 16 16">
-                            <path d="M5.338 1.59a61.44 61.44 0 0 0-2.837.856.481.481 0 0 0-.328.39c-.554 4.157.726 7.19 2.253 9.188a10.725 10.725 0 0 0 2.287 2.233c.346.244.64.44.896.616.257-.176.55-.372.896-.616a10.725 10.725 0 0 0 2.287-2.233c1.527-1.997 2.807-5.031 2.253-9.188a.481.481 0 0 0-.328-.39c-.95-.3-1.837-.608-2.837-.856A1.115 1.115 0 0 0 8 1.284a1.115 1.115 0 0 0-1.162.306zM8 2.074c.22.06.452.124.69.19.982.26 1.9.58 2.7.99C12.09 3.6 12.7 4.1 13.1 4.7c.4.6.7 1.2.9 2 .2.8.3 1.7.2 2.7-.1 1.1-.4 2.1-.8 3-.4.9-1 1.7-1.7 2.4-.7.7-1.5 1.3-2.4 1.7-.9.4-1.9.7-3 .8-1.1.1-2.1-.1-3.1-.3-.9-.2-1.8-.5-2.6-1-.8-.5-1.5-1.1-2.1-1.8C1.9 11.2 1.4 10.4 1.1 9.5c-.4-.9-.6-1.9-.7-3-.1-1-.1-2 .1-3 .2-.8.4-1.5.8-2.2.4-.7 1-1.3 1.7-1.9.7-.6 1.5-1.1 2.4-1.5.9-.4 1.8-.7 2.8-.9.24-.07.47-.13.69-.19z"/>
-                            <path d="M10.854 5.146a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 1 1 .708-.708L7.5 7.793l2.646-2.647a.5.5 0 0 1 .708 0z"/>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" fill="var(--primary-color)" class="bi bi-envelope-check-fill" viewBox="0 0 16 16">
+                           <path d="M.05 3.555A2 2 0 0 1 2 2h12a2 2 0 0 1 1.95 1.555L8 8.414.05 3.555zM0 4.697v7.104l5.803-3.558L0 4.697zM6.761 8.83l-6.57 4.027A2 2 0 0 0 2 14h12a2 2 0 0 0 1.808-1.144l-6.57-4.027L8 9.586l-1.239-.757zm3.436-.586L16 11.801V4.697l-5.803 3.546z"/>
+                           <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
                         </svg>
                         <h2 style="color: var(--dark-color); font-size: 1.8rem; font-family: 'Poppins', sans-serif; margin-top: 20px;">Data Siap Dikirim!</h2>
                         <p style="font-size: 1rem; color: var(--gray-color); margin-top: 15px; margin-bottom: 30px; line-height: 1.7;">
@@ -1129,26 +1090,21 @@ _Saya menyatakan bahwa semua data di atas adalah benar dan dapat dipertanggungja
                     </div>
                 `;
                 
-                // (SANGAT PENTING) Tambahkan event listener ke tombol baru
                 document.getElementById('finalizeButton').addEventListener('click', function() {
-                    // Di sinilah keajaibannya terjadi.
-                    // play() dipanggil TEPAT di dalam event 'click'.
-                    // INI DIJAMIN BERHASIL.
+                    // Pemutaran suara dipindahkan ke sini, di dalam event click langsung,
+                    // untuk memastikan browser mengizinkannya.
                     showSuccessScreen();
                 });
             }
 
-            // --- (REVISI) Fungsi Layar Sukses ---
             function showSuccessScreen() {
-                
-                // --- (PERBAIKAN AUDIO v4) ---
-                // Panggil play() TEPAT saat fungsi ini dieksekusi oleh event click
-                // dari tombol 'finalizeButton'. INI JAMINANNYA.
+                // --- PERBAIKAN AUDIO: Panggil play() TEPAT saat fungsi ini dieksekusi oleh event click ---
+                // dari tombol 'finalizeButton'. INI JAMINANNYA akan berfungsi.
                 successSound.currentTime = 0; 
-                successSound.play().catch(e => console.error("Audio play() GAGAL di success screen:", e));
-                // --- Akhir Perbaikan Audio v4 ---
+                successSound.play().catch(e => console.error("Pemutaran audio GAGAL di layar sukses:", e));
+                // --- Akhir Perbaikan Audio ---
 
-                loadingOverlay.classList.remove('visible'); // Jaga-jaga
+                loadingOverlay.classList.remove('visible');
 
                 formContainer.innerHTML = `
                     <div style="text-align: center; padding: 40px 20px; animation: fadeInUp 0.5s ease-out;">
@@ -1176,7 +1132,6 @@ _Saya menyatakan bahwa semua data di atas adalah benar dan dapat dipertanggungja
                 document.getElementById('sendWaButton').addEventListener('click', sendWhatsApp);
             }
             
-            // --- Fungsi Kirim WA (Tidak berubah) ---
             function sendWhatsApp() {
                 if (finalWhatsAppMessage) {
                     const whatsappURL = `https://wa.me/${nomorWhatsAppTujuan}?text=${finalWhatsAppMessage}`;
