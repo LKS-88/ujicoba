@@ -615,6 +615,29 @@
             let finalWhatsAppMessage = '';
             let uploadedKtpUrl = null; 
 
+            // --- (PERBAIKAN AUDIO) Fungsi untuk "Membuka Kunci" Audio ---
+            function unlockAudio() {
+                // Mainkan, lalu jeda. Ini mendaftarkan audio ke browser.
+                const playPromise = successSound.play();
+                if (playPromise !== undefined) {
+                    playPromise.then(_ => {
+                        successSound.pause();
+                        successSound.currentTime = 0;
+                        console.log('Konteks audio berhasil dibuka.');
+                    }).catch(error => {
+                        console.warn('Gagal membuka konteks audio:', error);
+                    });
+                }
+                // Hapus listener ini agar tidak berjalan lagi
+                document.removeEventListener('click', unlockAudio);
+                document.removeEventListener('touchstart', unlockAudio);
+            }
+            // Daftarkan listener untuk klik atau sentuhan pertama
+            document.addEventListener('click', unlockAudio, { once: true });
+            document.addEventListener('touchstart', unlockAudio, { once: true });
+            // --- Akhir Perbaikan Audio ---
+
+
             // --- Fungsi Inisialisasi Form ---
             function generateIdPermohonan() {
                 const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
@@ -893,21 +916,9 @@
             form.addEventListener('submit', function(e) {
                 e.preventDefault();
                 
-                // --- (PERBAIKAN AUDIO) ---
-                // "Buka kunci" konteks audio SEGERA di dalam event 'submit'.
-                // Ini adalah event yang dipicu pengguna, jadi .play() diizinkan.
-                // Kita mainkan, jeda, dan putar ulang.
-                const playPromise = successSound.play();
-                if (playPromise !== undefined) {
-                    playPromise.then(_ => {
-                        successSound.pause();
-                        successSound.currentTime = 0;
-                    }).catch(error => {
-                        // Gagal tidak masalah, lanjut saja
-                        console.warn("Audio pre-load/unlock failed:", error);
-                    });
-                }
-                // --- Akhir Perbaikan Audio ---
+                // (PERBAIKAN AUDIO)
+                // Kita HAPUS trik play/pause dari sini, karena sudah ditangani
+                // oleh listener global 'click' / 'touchstart' di atas.
 
                 if (submitBtn.disabled) {
                     return;
@@ -984,9 +995,9 @@ _Saya menyatakan bahwa semua data di atas adalah benar dan dapat dipertanggungja
 
                 // (PERBAIKAN AUDIO)
                 // Atur waktu ke 0 (awal) dan mainkan.
-                // Ini akan berfungsi karena audio sudah "dibuka kuncinya" di event submit.
+                // Ini akan berfungsi karena audio sudah "dibuka kuncinya".
                 successSound.currentTime = 0; 
-                successSound.play().catch(e => console.warn("Autoplay audio gagal:", e));
+                successSound.play().catch(e => console.warn("Autoplay audio gagal. (Mungkin konteks audio belum dibuka?)", e));
 
                 formContainer.innerHTML = `
                     <div style="text-align: center; padding: 40px 20px; animation: fadeInUp 0.5s ease-out;">
