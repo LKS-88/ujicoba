@@ -529,7 +529,7 @@
                         </div>
                         <div class="input-group">
                             <span class="input-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-geo-alt" viewBox="0 0 16 16"><path d="M12.166 8.94c-.524 1.062-1.234 2.12-1.96 3.07A31.493 31.493 0 0 1 8 14.58a31.481 31.481 0 0 1-2.206-2.57c-.726-.95-1.436-2.008-1.96-3.07C3.304 7.867 3 6.862 3 6a5 5 0 0 1 10 0c0 .862-.305 1.867-.834 2.94zM8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10z"/><path d="M8 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm0 1a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/></svg></span>
-                            <input type="url" id="lokasi_maps" name="lokasi_maps" placeholder="Contoh: https://maps.app.goo.gl/..." required>
+                            <input type="url" id="lokasi_maps" name="lokasi_maps" placeholder="Contoh: https://www.google.com/maps?q=..." required>
                         </div>
                         <div class="location-button-group">
                             <button type="button" class="btn btn-location" id="getLocationBtn">
@@ -588,7 +588,6 @@
             // --- KONFIGURASI PENTING ---
             const apiKeyImgBB = '0e598ab24278f062969e6d0ec810d518'; // API Key ImgBB Anda
             const nomorWhatsAppTujuan = '6285647709114'; // Nomor WA Tujuan
-            // (DIHAPUS) Variabel EmailJS telah dihapus
             
             // --- Elemen Form ---
             const formContainer = document.getElementById('form-container');
@@ -686,7 +685,7 @@
                         const lon = position.coords.longitude;
                         
                         // [PERBAIKAN BUG]: Menggunakan format URL Google Maps yang standar dan valid
-                        const mapsUrl = `https://maps.google.com/?q=${lat},${lon}`; 
+                        const mapsUrl = `https://www.google.com/maps?q=${lat},${lon}`; 
                         
                         mapsInput.value = mapsUrl;
                         mapsInput.setAttribute('required', 'required');
@@ -743,8 +742,8 @@
                             if (field.value.trim() === '') {
                                 isValid = false;
                                 errorMessage = 'Field ini wajib diisi.';
-                            // (BARU) Validasi URL diperketat agar lebih sesuai
-                            } else if (field.value !== 'Akan diisi nanti' && !/^(https?:\/\/)?(www\.)?(google\.com(\/maps)?|maps\.app\.goo\.gl)\S+$/.test(field.value)) {
+                            // [PERBAIKAN VALIDASI]: Regex disempurnakan untuk mencocokkan format URL Maps yang valid
+                            } else if (field.value !== 'Akan diisi nanti' && !/^(https?:\/\/)?(www\.)?((google\.com\/maps)|(maps\.app\.goo\.gl))\S+$/.test(field.value)) {
                                 isValid = false;
                                 errorMessage = 'Format URL Google Maps tidak valid. Coba gunakan tombol lokasi.';
                             }
@@ -851,7 +850,6 @@
                             loadingText.textContent = 'Menyiapkan Data...';
                             
                             const params = getTemplateParams(ktpUrl);
-                            // (DIHAPUS) Panggilan sendEmail(params); telah dihapus.
                             
                             const message = `*PENDAFTARAN MITRA ANEKAMARKET*
 
@@ -911,9 +909,6 @@ _Saya menyatakan bahwa semua data di atas adalah benar dan dapat dipertanggungja
                     foto_ktp_url: ktpUrl
                 };
             }
-
-            // --- (DIHAPUS) Fungsi Kirim Email ---
-            // Seluruh fungsi sendEmail() telah dihapus.
             
             // --- Fungsi Layar Sukses ---
             function showSuccessScreen() {
