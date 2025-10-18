@@ -604,16 +604,16 @@
             const registerLaterBtn = document.getElementById('registerLaterBtn');
             const getLocationBtn = document.getElementById('getLocationBtn');
             const locationStatus = document.getElementById('location-status');
-            const agreeCheckbox = document.getElementById('agree'); // (BARU)
+            const agreeCheckbox = document.getElementById('agree'); 
             
             // --- Elemen Baru untuk Loading & Suara ---
             const loadingOverlay = document.getElementById('loading-overlay');
             const loadingText = document.getElementById('loading-text');
             const successSound = document.getElementById('success-sound');
 
-            // --- (REVISI) Variabel untuk menyimpan status ---
+            // --- Variabel untuk menyimpan status ---
             let finalWhatsAppMessage = '';
-            let uploadedKtpUrl = null; // (BARU) Menyimpan URL KTP setelah diupload
+            let uploadedKtpUrl = null; 
 
             // --- Fungsi Inisialisasi Form ---
             function generateIdPermohonan() {
@@ -647,7 +647,7 @@
                     keteranganLainnya.value = '';
                     hideError(keteranganLainnya);
                 }
-                updateSubmitButtonState(); // (REVISI)
+                updateSubmitButtonState(); 
             });
             
             ktpInput.addEventListener('change', function() {
@@ -658,7 +658,6 @@
                     fileNameLabel.textContent = 'Belum ada file dipilih';
                     fileNameDisplay.textContent = '';
                 }
-                // (REVISI) Jika file diganti, reset status upload & persetujuan
                 uploadedKtpUrl = null; 
                 agreeCheckbox.checked = false;
                 updateSubmitButtonState();
@@ -669,7 +668,7 @@
                 mapsInput.value = 'Akan diisi nanti';
                 document.getElementById('location-warning').style.display = 'none';
                 hideError(mapsInput);
-                updateSubmitButtonState(); // (REVISI)
+                updateSubmitButtonState(); 
             });
 
             getLocationBtn.addEventListener('click', function() {
@@ -684,7 +683,7 @@
                 locationStatus.style.display = 'block';
                 locationStatus.style.color = 'var(--dark-color)';
                 hideError(mapsInput);
-                mapsInput.value = ''; // (REVISI) Kosongkan dulu
+                mapsInput.value = ''; 
 
                 navigator.geolocation.getCurrentPosition(
                     function(position) {
@@ -696,7 +695,7 @@
                         mapsInput.setAttribute('required', 'required');
                         locationStatus.textContent = 'Lokasi berhasil dideteksi!';
                         locationStatus.style.color = 'var(--success-color)';
-                        updateSubmitButtonState(); // (REVISI)
+                        updateSubmitButtonState(); 
                     },
                     function(error) {
                         let errorMessage;
@@ -717,15 +716,14 @@
                         locationStatus.textContent = errorMessage;
                         locationStatus.style.display = 'block';
                         locationStatus.style.color = 'var(--error-color)';
-                        updateSubmitButtonState(); // (REVISI)
+                        updateSubmitButtonState(); 
                     }
                 );
             });
             
-            // (REVISI) Panggil updateSubmitButtonState pada setiap input
             form.addEventListener('input', updateSubmitButtonState);
             
-            // --- (REVISI) Logika Baru: Upload saat centang 'agree' ---
+            // --- Logika Baru: Upload saat centang 'agree' ---
             agreeCheckbox.addEventListener('change', async function(e) {
                 if (e.target.checked) {
                     // Cek validasi field dulu
@@ -766,7 +764,7 @@
             });
 
 
-            // --- (REVISI) Fungsi Validasi & Update Tombol ---
+            // --- Fungsi Validasi & Update Tombol ---
             
             /**
              * Fungsi ini hanya memvalidasi field dan menampilkan/menyembunyikan error.
@@ -781,9 +779,6 @@
                     let errorMessage = '';
 
                     switch(field.type) {
-                        // case 'checkbox': // (REVISI) Checkbox 'agree' tidak divalidasi di sini lagi
-                        //     if (!field.checked) isValid = false;
-                        //     break;
                         case 'file':
                             if (field.files.length === 0) {
                                 isValid = false;
@@ -841,10 +836,6 @@
 
             /**
              * (REVISI) Fungsi baru untuk meng-update status tombol submit.
-             * Tombol hanya aktif jika:
-             * 1. Semua field valid (validateForm() === true)
-             * 2. Checkbox 'agree' dicentang
-             * 3. URL KTP sudah berhasil di-upload (uploadedKtpUrl !== null)
              */
             function updateSubmitButtonState() {
                 const fieldsValid = validateForm();
@@ -898,12 +889,26 @@
                 }
             }
             
-            // --- (REVISI) Submit Handler (Async) ---
-            // Dibuat lebih sederhana, karena validasi & upload sudah selesai.
+            // --- (REVISI) Submit Handler ---
             form.addEventListener('submit', function(e) {
                 e.preventDefault();
                 
-                // Dobel cek jika-jika tombol aktif secara tidak sengaja
+                // --- (PERBAIKAN AUDIO) ---
+                // "Buka kunci" konteks audio SEGERA di dalam event 'submit'.
+                // Ini adalah event yang dipicu pengguna, jadi .play() diizinkan.
+                // Kita mainkan, jeda, dan putar ulang.
+                const playPromise = successSound.play();
+                if (playPromise !== undefined) {
+                    playPromise.then(_ => {
+                        successSound.pause();
+                        successSound.currentTime = 0;
+                    }).catch(error => {
+                        // Gagal tidak masalah, lanjut saja
+                        console.warn("Audio pre-load/unlock failed:", error);
+                    });
+                }
+                // --- Akhir Perbaikan Audio ---
+
                 if (submitBtn.disabled) {
                     return;
                 }
@@ -913,7 +918,6 @@
                 loadingOverlay.classList.add('visible');
 
                 try {
-                    // Upload sudah selesai, 'uploadedKtpUrl' sudah berisi URL
                     const params = getTemplateParams(uploadedKtpUrl);
                     
                     const message = `*PENDAFTARAN MITRA ANEKAMARKET*
@@ -940,15 +944,13 @@ _Saya menyatakan bahwa semua data di atas adalah benar dan dapat dipertanggungja
                     
                     finalWhatsAppMessage = encodeURIComponent(message);
                     
-                    // Langsung tampilkan layar sukses
-                    // Audio akan diputar di dalam fungsi showSuccessScreen()
                     showSuccessScreen(); 
 
                 } catch (error) {
                     console.error('Proses submit gagal:', error);
                     loadingOverlay.classList.remove('visible');
                     alert('Gagal menyiapkan data. Mohon coba lagi. Pesan Error: ' + error.message);
-                    submitBtn.disabled = false; // Aktifkan lagi jika gagal
+                    submitBtn.disabled = false; 
                 }
             });
 
@@ -976,12 +978,15 @@ _Saya menyatakan bahwa semua data di atas adalah benar dan dapat dipertanggungja
                 };
             }
             
-            // --- Fungsi Layar Sukses ---
+            // --- (REVISI) Fungsi Layar Sukses ---
             function showSuccessScreen() {
-                // (REVISI) Panggil audio di awal fungsi, sebelum DOM berubah
-                successSound.play().catch(e => console.warn("Autoplay audio gagal. Interaksi pengguna mungkin diperlukan:", e));
-                
                 loadingOverlay.classList.remove('visible');
+
+                // (PERBAIKAN AUDIO)
+                // Atur waktu ke 0 (awal) dan mainkan.
+                // Ini akan berfungsi karena audio sudah "dibuka kuncinya" di event submit.
+                successSound.currentTime = 0; 
+                successSound.play().catch(e => console.warn("Autoplay audio gagal:", e));
 
                 formContainer.innerHTML = `
                     <div style="text-align: center; padding: 40px 20px; animation: fadeInUp 0.5s ease-out;">
