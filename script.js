@@ -43,9 +43,9 @@ function initializeData() {
     if (!localStorage.getItem(STORAGE_KEYS.SETTINGS)) {
         const initialSettings = {
             storeName: 'MITRA ANEKAMARKET', // [DIKUNCI]
-            partnerName: 'Gerai Cabang Demo', // [BARU]
+            partnerName: 'Chacha Swalayan', // [BARU]
             storeAddress: 'Jl. Harjakasi Gang Naik Kelas No. 1, Kota Situbondo',
-            storePhone: '08786561422', storeEmail: 'admin@anekamarket.my.id',
+            storePhone: '087865614222', storeEmail: 'admin@anekamarket.my.id',
             itemSecurityCode: CryptoJS.SHA256('17081945').toString(), panelSecurityCode: CryptoJS.SHA256('LKS.1945').toString(),
             // [PERBAIKAN] Penambahan Seting Diskon Member
             memberDiscountPercent: 2, 
@@ -1318,7 +1318,7 @@ function generateReceiptHTML(order) {
         <div class="receipt-footer">
             <p>Terima kasih telah berbelanja</p>
             <p style="margin-top: 10px; border-top: 1px dashed #000; padding-top: 5px;">
-                AppWeb Lentera Karya Situbondo &copy; 2025
+                www.aplikasiusaha.com &copy; 2025
             </p>
         </div>
     </div>`;
