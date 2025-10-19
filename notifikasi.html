@@ -1,0 +1,205 @@
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+<style>
+    /* Style khusus untuk notifikasi */
+    :root {
+        --notif-primary: #007bff;
+        --notif-premium: #ffc107;
+        --notif-premium-dark: #dba400;
+        --notif-dark: #343a40;
+        --notif-light: #f8f9fa;
+        --notif-gray: #6c757d;
+        --notif-white: #ffffff;
+    }
+
+    * {
+        font-family: 'Poppins', sans-serif;
+        box-sizing: border-box;
+    }
+
+    .premium-notif-card {
+        width: 100%;
+        max-height: 70vh; /* Batas tinggi */
+        overflow-y: auto;
+        background: var(--notif-white);
+        border-radius: 12px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        border: 1px solid #ddd;
+        color: var(--notif-dark);
+        line-height: 1.6;
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* Scrollbar minimalis */
+    .premium-notif-card::-webkit-scrollbar {
+        width: 5px;
+    }
+    .premium-notif-card::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 10px;
+    }
+    .premium-notif-card::-webkit-scrollbar-thumb {
+        background: #ccc;
+        border-radius: 10px;
+    }
+    .premium-notif-card::-webkit-scrollbar-thumb:hover {
+        background: #aaa;
+    }
+
+    .premium-notif-header {
+        background: linear-gradient(135deg, var(--notif-primary), #0056b3);
+        color: var(--notif-white);
+        padding: 16px 20px;
+        border-radius: 12px 12px 0 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .premium-notif-header h3 {
+        margin: 0;
+        font-size: 1.1rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    .premium-notif-header h3 i {
+        font-size: 1.3rem;
+    }
+
+    .premium-notif-close {
+        background: none;
+        border: none;
+        color: var(--notif-white);
+        font-size: 1.4rem;
+        cursor: pointer;
+        opacity: 0.8;
+        transition: opacity 0.2s;
+    }
+    .premium-notif-close:hover {
+        opacity: 1;
+    }
+
+    .premium-notif-body {
+        padding: 20px;
+        font-size: 0.9rem;
+    }
+
+    .premium-notif-body p {
+        margin-top: 0;
+        margin-bottom: 12px;
+    }
+    
+    .premium-notif-body strong {
+        color: var(--notif-primary);
+    }
+    
+    .premium-notif-badge {
+        background-color: #cce5ff;
+        color: #004085;
+        padding: 2px 8px;
+        border-radius: 10px;
+        font-weight: 500;
+        font-size: 0.8rem;
+    }
+
+    .premium-feature-list {
+        list-style: none;
+        padding-left: 0;
+        margin: 16px 0;
+        font-size: 0.85rem;
+    }
+
+    .premium-feature-list li {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 8px;
+        color: var(--notif-gray);
+    }
+    
+    .premium-feature-list li.premium-feature {
+        color: var(--notif-dark);
+        font-weight: 500;
+    }
+
+    .premium-feature-list li i {
+        color: var(--notif-premium);
+        font-size: 1.1rem;
+    }
+
+    .premium-notif-footer {
+        padding: 16px;
+        background: var(--notif-light);
+        border-top: 1px solid #eee;
+        border-radius: 0 0 12px 12px;
+    }
+    
+    .premium-notif-footer p {
+        font-size: 0.85rem;
+        font-weight: 500;
+        text-align: center;
+        margin: 0 0 12px 0;
+    }
+
+    .premium-notif-btn {
+        display: block;
+        width: 100%;
+        padding: 12px 20px;
+        border: none;
+        border-radius: 8px;
+        font-size: 1rem;
+        font-weight: 600;
+        text-align: center;
+        text-decoration: none;
+        cursor: pointer;
+        transition: all 0.2s;
+        background-color: var(--notif-premium);
+        color: var(--notif-dark);
+        box-shadow: 0 4px 10px rgba(255, 193, 7, 0.4);
+    }
+
+    .premium-notif-btn:hover {
+        background-color: var(--notif-premium-dark);
+        color: #000;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 15px rgba(255, 193, 7, 0.5);
+    }
+    
+    .premium-notif-btn i {
+        margin-right: 8px;
+    }
+</style>
+
+<div class="premium-notif-card">
+    <div class="premium-notif-header">
+        <h3><i class="fas fa-star"></i>Aplikasi ANEKAMARKET</h3>
+        <button class="premium-notif-close" title="Tutup">&times;</button>
+    </div>
+    <div class="premium-notif-body">
+        <p>Terima kasih telah menggunakan aplikasi kami! <span class="premium-notif-badge">Versi Gratis</span></p>
+        <p>Aplikasi ini 100% gratis. Untuk mendukung developer dan membuka semua fitur, upgrade ke <strong>Versi Premium</strong>.</p>
+        
+        <p>Keuntungan Versi Premium:</p>
+        <ul class="premium-feature-list">
+            <li class="premium-feature"><i class="fas fa-check-circle"></i>Bebas dari notifikasi pop-up ini</li>
+            <li class="premium-feature"><i class="fas fa-check-circle"></i>Mendapat Password Kontrol Panel</li>
+            <li><i class="fas fa-caret-right"></i>Kelola Hak Akses (Supervisor, Kasir, dll)</li>
+            <li><i class="fas fa-caret-right"></i>Tambah/Edit Pengguna Baru</li>
+            <li><i class="fas fa-caret-right"></i>Ubah Password Keamanan Item</li>
+            <li><i class="fas fa-caret-right"></i>Ubah Password Login Karyawan</li>
+            <li><i class="fas fa-caret-right"></i>Mengatur Diskon & Pajak</li>
+        </ul>
+    </div>
+    <div class="premium-notif-footer">
+        <p>Miliki aplikasi versi premium dengan harga sangat murah!</p>
+        <a href="https://wa.me/6285647709114?text=Halo%2C%20saya%20tertarik%20untuk%20upgrade%20Aplikasi%20ANEKAMARKET%20ke%20Versi%20Premium.%20Saya%20ingin%20mendapatkan%20fitur%20Kontrol%20Panel%20Unlock%20dan%20menghilangkan%20notifikasi.%20Mohon%20informasinya." 
+           target="_blank" 
+           class="premium-notif-btn">
+           <i class="fab fa-whatsapp"></i>Order Sekarang
+        </a>
+    </div>
+</div>
