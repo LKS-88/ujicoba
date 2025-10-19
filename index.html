@@ -2011,10 +2011,33 @@
         // let captchaText = ''; // [DIHAPUS]
         let premiumNotifInterval; // [BARU] Timer untuk notifikasi
         
+        // === [INI ADALAH FUNGSI YANG DIPERBAIKI] ===
         function initializeData() {
             let users_init = JSON.parse(localStorage.getItem(STORAGE_KEYS.USERS)) || [];
-            if (!users_init.find(u => u.username === 'Admin')) users_init.push(DEFAULT_ADMIN);
-            if (!users_init.find(u => u.username === 'kasir')) users_init.push(DEFAULT_CASHIER);
+            
+            // [PERBAIKAN LOGIN]
+            // Cek dan perbaiki/tambahkan user 'Admin'
+            let adminUser = users_init.find(u => u.username === 'Admin');
+            if (adminUser) {
+                // Jika user 'Admin' ada, pastikan password-nya benar.
+                // Ini akan memperbaiki password yang salah/corrupt di localStorage.
+                adminUser.password = CryptoJS.SHA256('Gratis12345').toString();
+            } else {
+                // Jika user 'Admin' tidak ada, tambahkan.
+                users_init.push(DEFAULT_ADMIN);
+            }
+
+            // Cek dan perbaiki/tambahkan user 'kasir'
+            let cashierUser = users_init.find(u => u.username === 'kasir');
+            if (cashierUser) {
+                // Pastikan password kasir juga benar
+                cashierUser.password = CryptoJS.SHA256('kasir123').toString();
+            } else {
+                // Jika user 'kasir' tidak ada, tambahkan.
+                users_init.push(DEFAULT_CASHIER);
+            }
+            // [AKHIR PERBAIKAN LOGIN]
+
             localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(users_init));
             
             if (!localStorage.getItem(STORAGE_KEYS.PRODUCTS)) localStorage.setItem(STORAGE_KEYS.PRODUCTS, JSON.stringify([]));
@@ -2050,6 +2073,7 @@
                 localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(initialSettings));
             }
         }
+        // === [AKHIR DARI FUNGSI YANG DIPERBAIKI] ===
         
         $(document).ready(function() {
             initializeData();
