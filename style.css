@@ -1271,11 +1271,9 @@ textarea.form-control {
 .premium-notif-body {
     padding: 20px;
     font-size: 0.9rem;
-    /* === [PERBAIKAN 2] === */
-    overflow-y: auto; /* [DIUBAH] Tetap auto jika kontennya panjang */
+    overflow-y: auto; /* Biarkan auto jika kontennya panjang */
     flex-grow: 1;       /* Body akan mengisi ruang yang tersedia */
-    max-height: 60vh; /* [DIUBAH] Batasi ketinggian body jika terlalu panjang */
-    /* === AKHIR PERBAIKAN 2 === */
+    max-height: 60vh; /* Batasi ketinggian body */
 }
 
 /* Scrollbar minimalis (diterapkan pada .premium-notif-body) */
