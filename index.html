@@ -1222,6 +1222,14 @@
                     <input type="password" id="password" class="form-control" placeholder="Password: Gratis12345" required>
                 </div>
                 
+                <div class="form-group mt-3">
+                    <label for="captcha" class="form-label">Verifikasi Keamanan</label>
+                    <div class="d-flex align-center gap-2">
+                        <canvas id="captchaCanvas" width="150" height="40" style="border: 1px solid #ddd; border-radius: var(--rounded-sm);"></canvas>
+                        <button type="button" id="reloadCaptchaBtn" class="btn btn-sm" style="width: auto; background-color: var(--gray);"><i class="fas fa-sync-alt"></i></button>
+                    </div>
+                    <input type="text" id="captchaInput" class="form-control mt-2" placeholder="Masukkan kode di atas" required autocomplete="off">
+                </div>
                 <button type="submit" class="btn mt-3">Login</button>
             </form>
         </div>
@@ -2008,6 +2016,7 @@
         
         let products, categories, orders, settings, users, members, suppliers, stockHistory, returns, shifts, currentUser, currentOrder, activeShift;
         let passwordPromptCallback = null;
+        let captchaText = '';
         let premiumNotifInterval; // [BARU] Timer untuk notifikasi
         
         function initializeData() {
@@ -2076,13 +2085,13 @@
                 $('#mainApp').show();
                 initializeApp();
             } else {
-                // generateCaptcha() Dihapus dari sini
+                generateCaptcha();
             }
             
             setInterval(updateCurrentDate, 60000);
             
             $('#loginForm').submit(handleLogin);
-            // $('#reloadCaptchaBtn').click(generateCaptcha); // Dihapus
+            $('#reloadCaptchaBtn').click(generateCaptcha);
             $('#logoutBtn').click(handleLogout);
             $('#productSearch').on('input', function() { loadProducts($(this).val(), $('.filter-chip.active').data('category')); });
             $(document).on('click', '.product-card', handleProductClick);
@@ -2241,6 +2250,7 @@
             $('#adminPanel [class*="backup-actions"], #adminPanel #resetDataBtn').parent().toggle(checkPermission('canBackupRestore') || checkPermission('canResetData'));
         }
 
+        // === [FUNGSI DIPERBAIKI] ===
         function handleLogin(e) {
             e.preventDefault();
             const $loginBtn = $(this).find('button[type="submit"]');
@@ -2249,12 +2259,23 @@
 
             setTimeout(() => {
                 try {
-                    // Blok validasi CAPTCHA Dihapus dari sini
+                    // 1. Validasi CAPTCHA
+                    if ($('#captchaInput').val().trim().toLowerCase() !== captchaText.toLowerCase()) {
+                        showToast('Kode verifikasi (CAPTCHA) salah.', 'error');
+                        generateCaptcha(); 
+                        $('#captchaInput').val('');
+                        setButtonLoading($loginBtn, false, originalText); // Reset button on failure
+                        return; // Exit
+                    }
+                    
+                    // 2. Validasi User
                     const username = $('#username').val().trim();
                     const password = $('#password').val().trim();
                     const user = users.find(u => u.username.toLowerCase() === username.toLowerCase());
                     
+                    // === [PERBAIKAN] Mengganti SHA26 menjadi SHA256 ===
                     if (user && CryptoJS.SHA256(password).toString() === user.password) {
+                        // 3. Login Berhasil
                         currentUser = user;
                         localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(currentUser));
                         $('#loggedInUser').text(currentUser.name);
@@ -2262,17 +2283,25 @@
                         $('#mainApp').fadeIn();
                         initializeApp();
                         showToast(`Selamat datang, ${currentUser.name}!`, 'success');
+                        // Tidak perlu reset button, karena halaman akan berganti
                     } else {
+                        // 4. Login Gagal (Username/Password salah)
                         showToast('Username atau password salah', 'error');
-                        // generateCaptcha(); $('#captchaInput').val(''); // Dihapus
+                        generateCaptcha(); 
+                        $('#captchaInput').val('');
+                        setButtonLoading($loginBtn, false, originalText); // Reset button on failure
                     }
                 } catch (err) {
-                    showToast('Error: Gagal memuat library penting. Cek koneksi internet.', 'error');
-                } finally {
-                    if ($loginBtn.prop('disabled')) setButtonLoading($loginBtn, false, originalText);
+                    // 5. Error Tak Terduga
+                    console.error("Login error:", err); // Log error asli ke console untuk debugging
+                    showToast('Terjadi error saat login. Silakan coba lagi.', 'error'); // Pesan error lebih generik
+                    generateCaptcha(); 
+                    $('#captchaInput').val('');
+                    setButtonLoading($loginBtn, false, originalText); // Reset button on error
                 }
             }, 500);
         }
+        // === [AKHIR DARI PERBAIKAN] ===
 
         function handleLogout(e) {
             e.preventDefault();
@@ -2287,8 +2316,8 @@
             localStorage.removeItem(STORAGE_KEYS.USER);
             $('#mainApp').fadeOut(() => {
                 $('#loginModal').css('display', 'flex');
-                $('#username, #password').val(''); // Dihapus #captchaInput
-                // generateCaptcha(); // Dihapus
+                $('#username, #password, #captchaInput').val('');
+                generateCaptcha();
             });
             showToast('Anda telah logout', 'info');
         }
@@ -4029,7 +4058,55 @@
             }).catch(err => { showToast('Gagal mengunduh PDF', 'error'); });
         }
 
-        // Fungsi generateCaptcha() Dihapus Seluruhnya dari sini
+        function generateCaptcha() {
+            const canvas = document.getElementById('captchaCanvas');
+            const ctx = canvas.getContext('2d');
+            // Karakter yang mudah dibaca (menghilangkan O, 0, 1, l, I)
+            const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789';
+            captchaText = '';
+            for (let i = 0; i < 6; i++) {
+                captchaText += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            
+            // Bersihkan canvas dengan warna latar
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#f0f2f5';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // [PERBAIKAN] Gambar karakter satu per satu dengan distorsi
+            const charWidth = canvas.width / (captchaText.length + 1);
+            for (let i = 0; i < captchaText.length; i++) {
+                ctx.save();
+                // Gunakan font sistem yang aman (bukan 'Poppins')
+                const fontSize = 24 + Math.random() * 6; // Ukuran font acak (24-30px)
+                ctx.font = `bold ${fontSize}px Arial, sans-serif`; 
+                // Warna teks acak (gelap)
+                ctx.fillStyle = `rgb(${Math.random()*100}, ${Math.random()*100}, ${Math.random()*100})`; 
+                
+                // Atur posisi dan rotasi acak untuk setiap karakter
+                const x = charWidth * (i + 0.7);
+                const y = (canvas.height / 2) + (Math.random() * 10 - 5); // Variasi posisi Y
+                const rotation = Math.random() * 0.4 - 0.2; // Rotasi sedikit
+                
+                ctx.translate(x, y);
+                ctx.rotate(rotation);
+                
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(captchaText[i], 0, 0);
+                
+                ctx.restore();
+            }
+            
+            // Tambahkan garis noise
+            for (let i = 0; i < 5; i++) {
+                ctx.beginPath();
+                ctx.moveTo(Math.random() * canvas.width, Math.random() * canvas.height);
+                ctx.lineTo(Math.random() * canvas.width, Math.random() * canvas.height);
+                ctx.strokeStyle = '#aaa'; // Garis noise sedikit lebih gelap
+                ctx.stroke();
+            }
+        }
         
         function loadProductsForStockIn() {
             const $select = $('#stockInProduct').empty();
