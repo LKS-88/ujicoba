@@ -37,11 +37,14 @@
             --notif-white: var(--white);
         }
 
+        /* * === [PERBAIKAN FINAL] ===
+         * font-family dipindahkan dari selector * (universal) ke selector body.
+         * Ini mencegah * menimpa font-family khusus milik Font Awesome (ikon).
+         */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
             -webkit-tap-highlight-color: transparent;
         }
 
@@ -50,6 +53,7 @@
             color: #212529;
             line-height: 1.5;
             touch-action: manipulation;
+            font-family: 'Poppins', sans-serif; /* <-- Font default diletakkan di sini */
         }
 
         .container {
@@ -1216,11 +1220,11 @@
 
         /* Style khusus untuk notifikasi */
         /* Variabel notifikasi sudah didefinisikan di :root di atas */
-
-        /* PENTING: Pastikan font 'Poppins' sudah dimuat di file HTML utama */
+        
+        /* Font 'Poppins' sudah dimuat di <head> dan di-set di <body> */
         .premium-notif-card * {
-            font-family: 'Poppins', sans-serif;
             box-sizing: border-box;
+            /* font-family: 'Poppins', sans-serif; <-- Dihapus dari sini, diwariskan dari body */
         }
 
         .premium-notif-card {
