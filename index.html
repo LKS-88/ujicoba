@@ -1198,7 +1198,7 @@
             animation: slideOutToRight 0.5s ease-in;
         }
 
-        /* KODE DI BAWAH INI DISALIN DARI notifikasi (6).html */
+        /* === AWAL PERBAIKAN DESAIN NOTIFIKASI PREMIUM === */
         
         /* Style khusus untuk notifikasi */
         :root {
@@ -1225,9 +1225,9 @@
             max-height: 90vh; 
             background: var(--notif-white);
             border-radius: 12px;
-            /* [PERBAIKAN] Shadow lebih halus */
-            box-shadow: 0 0.5rem 1.5rem rgba(0,0,0,0.15);
-            border: 1px solid #eee; /* [PERBAIKAN] Border lebih halus */
+            /* [PENYEMPURNAAN] Shadow lebih premium, hapus border */
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            border: none;
             color: var(--notif-dark);
             line-height: 1.6;
             display: flex;
@@ -1236,7 +1236,8 @@
         }
 
         .premium-notif-header {
-            background: linear-gradient(135deg, var(--notif-primary), #0056b3);
+            /* [PENYEMPURNAAN] Latar belakang header lebih gelap dan premium */
+            background: linear-gradient(135deg, #495057, #212529);
             color: var(--notif-white);
             padding: 16px 20px;
             border-radius: 12px 12px 0 0;
@@ -1259,6 +1260,8 @@
         }
         .premium-notif-header h3 i {
             font-size: 1.3rem;
+            /* [PENYEMPURNAAN] Ikon bintang menjadi gold */
+            color: var(--notif-premium);
         }
 
         .premium-notif-close {
@@ -1280,11 +1283,12 @@
         .premium-notif-body {
             padding: 20px;
             font-size: 0.9rem;
-            /* === [PERBAIKAN 2] === */
-            overflow-y: auto;  /* [BARU] Scroll hanya di bagian body */
-            flex-grow: 1;       /* [BARU] Body akan mengisi ruang yang tersedia */
-            max-height: 60vh;   /* [BARU] Batas tinggi untuk body sebelum scroll */
-            /* === AKHIR PERBAIKAN 2 === */
+            /* === [REVISI PERMINTAAN PENGGUNA] === */
+            overflow-y: auto;  /* Scroll hanya di bagian body */
+            flex-grow: 1;       /* Body akan mengisi ruang yang tersedia */
+            /* max-height: 60vh; DIHAPUS untuk menghilangkan scroll internal. */
+            /* Batas tinggi diatur oleh .premium-notif-card (90vh) */
+            /* === AKHIR REVISI === */
         }
 
         /* Scrollbar minimalis (diterapkan pada .premium-notif-body) */
@@ -1309,12 +1313,15 @@
         }
         
         .premium-notif-body strong {
-            color: var(--notif-primary);
+            /* [PENYEMPURNAAN] Teks strong menjadi gold */
+            color: var(--notif-premium-dark);
         }
         
         .premium-notif-badge {
-            background-color: #cce5ff;
-            color: #004085;
+            /* [PENYEMPURNAAN] Badge menjadi kuning/gold */
+            background-color: #fff8e1;
+            color: #b78103;
+            border: 1px solid #ffecb3;
             padding: 2px 8px;
             border-radius: 10px;
             font-weight: 500;
@@ -1351,7 +1358,8 @@
 
         .premium-notif-footer {
             padding: 16px;
-            background: var(--notif-light);
+            /* [PENYEMPURNAAN] Samakan background dengan card */
+            background: var(--notif-white);
             border-top: 1px solid #eee;
             border-radius: 0 0 12px 12px;
              /* [BARU] Footer tidak boleh menyusut */
@@ -1378,17 +1386,17 @@
             cursor: pointer;
             background-color: var(--notif-premium);
             color: var(--notif-dark);
-            /* [PERBAIKAN] Shadow tombol lebih halus */
-            box-shadow: 0 4px 8px rgba(226, 172, 9, 0.3);
+            /* [PENYEMPURNAAN] Shadow tombol lebih */
+            box-shadow: 0 4px 15px rgba(255, 193, 7, 0.4);
             transition: all 0.2s ease-out;
         }
 
         .premium-notif-btn:hover {
             background-color: var(--notif-premium-dark);
             color: #000;
-            /* [PERBAIKAN] Efek hover lebih "pop" */
-            transform: translateY(-2px) scale(1.02);
-            box-shadow: 0 6px 12px rgba(219, 164, 0, 0.4);
+            /* [PENYEMPURNAAN] Efek hover lebih "pop" */
+            transform: translateY(-3px);
+            box-shadow: 0 7px 20px rgba(255, 193, 7, 0.5);
         }
         
         /* [BARU] Efek klik pada tombol */
@@ -1400,6 +1408,7 @@
         .premium-notif-btn i {
             margin-right: 8px;
         }
+        /* === AKHIR PERBAIKAN DESAIN NOTIFIKASI PREMIUM === */
     </style>
 </head>
 <body>
