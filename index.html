@@ -2461,7 +2461,7 @@
             $('#orderNote, #memberSearchInput').val('');
         }
 
-        // --- [BARU] FUNGSI MANAJEMEN SHIFT ---
+        // --- [BARU] FUNGSI MANAJEMN SHIFT ---
         function checkActiveShift() {
             activeShift = shifts.find(s => s.userId === currentUser.id && s.status === 'active') || null;
             const $badge = $('#shiftStatusBadge');
@@ -4079,7 +4079,7 @@
         
         function loadSuppliersForSelect() {
             const $select = $('#stockInSupplier').html('<option value="pembelian_mandiri">Pembelian Mandiri (Kulak)</option>');
-            suppliers.forEach(s => $select.append(`<option value="${s.id}">${s.name}</option>`));
+            suppliers.forEach(s => $select.append(`<option value="${s.id}">${s.name}</option>`);
         }
 
         // --- [BARU] FUNGSI NOTIFIKASI PREMIUM ---
@@ -4088,8 +4088,9 @@
             // Hapus interval lama jika ada (misal. saat re-login tanpa refresh)
             if (premiumNotifInterval) clearInterval(premiumNotifInterval);
 
-            // Tampilkan notifikasi 10 detik setelah login/memuat ulang
-            setTimeout(showPremiumNotification, 10000); 
+            // Tampilkan notifikasi 12 detik setelah login/memuat ulang
+            // === [PERMINTAAN REVISI 1] Mengubah 10000 menjadi 12000 ===
+            setTimeout(showPremiumNotification, 12000); 
 
             // Set interval untuk 1 jam
             const ONE_HOUR = 3600 * 1000;
