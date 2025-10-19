@@ -15,6 +15,15 @@
     --rounded-sm: 0.35rem;
     --rounded: 0.75rem;
     --rounded-lg: 1rem;
+
+    /* [PERBAIKAN] Menambahkan variabel notifikasi yang hilang agar desain tidak rusak */
+    --notif-primary: var(--primary);
+    --notif-premium: var(--warning); /* Menggunakan --warning sebagai basis premium */
+    --notif-premium-dark: #dba400; /* Warna gold yang lebih gelap */
+    --notif-dark: var(--dark);
+    --notif-light: var(--light);
+    --notif-gray: var(--gray);
+    --notif-white: var(--white);
 }
 
 * {
@@ -33,9 +42,11 @@ body {
 }
 
 .container {
-    max-width: 100%;
+    /* [PERBAIKAN] Batasi lebar maksimum pada desktop agar tidak terlalu lebar/terpotong */
+    max-width: 1600px; 
     margin: 0 auto;
     padding: 12px;
+    width: 100%; /* [PERBAIKAN] Pastikan tetap 100% di perangkat seluler */
 }
 
 /* Header Styles */
@@ -826,7 +837,8 @@ textarea.form-control {
 }
 
 /* Responsive Adjustments */
-@media (min-width: 768px) {
+/* [PERBAIKAN] Mengubah breakpoint agar tata letak 2 kolom aktif di layar yang lebih besar (1024px) */
+@media (min-width: 1024px) {
     .app-content {
         flex-direction: row;
     }
@@ -1192,15 +1204,7 @@ textarea.form-control {
 /* === AWAL PERBAIKAN CSS NOTIFIKASI === */
 
 /* Style khusus untuk notifikasi */
-:root {
-    --notif-primary: #007bff;
-    --notif-premium: #ffc107;
-    --notif-premium-dark: #dba400;
-    --notif-dark: #343a40;
-    --notif-light: #f8f9fa;
-    --notif-gray: #6c757d;
-    --notif-white: #ffffff;
-}
+/* Variabel notifikasi sudah didefinisikan di :root di atas */
 
 /* PENTING: Pastikan font 'Poppins' sudah dimuat di file HTML utama */
 .premium-notif-card * {
