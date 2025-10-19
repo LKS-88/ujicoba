@@ -1168,33 +1168,6 @@
             color: var(--gray);
             margin-top: 5px;
         }
-        
-        /* === [BARU] CSS UNTUK NOTIFIKASI PREMIUM === */
-        #premium-notification-container {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            z-index: 2000; /* Paling atas */
-            width: 380px;
-            max-width: 90vw;
-            display: none;
-            animation: premiumNotifSlideIn 0.5s ease-out;
-        }
-
-        @keyframes premiumNotifSlideIn {
-            from { transform: translateX(110%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
-        }
-
-        #premium-notification-container.premium-notif-hide {
-            animation: premiumNotifSlideOut 0.5s ease-in forwards;
-        }
-
-        @keyframes premiumNotifSlideOut {
-            from { transform: translateX(0); opacity: 1; }
-            to { transform: translateX(110%); opacity: 0; }
-        }
-        /* === AKHIR DARI CSS NOTIFIKASI PREMIUM === */
     </style>
 </head>
 <body>
@@ -1222,6 +1195,14 @@
                     <input type="password" id="password" class="form-control" placeholder="Password: Gratis12345" required>
                 </div>
                 
+                <div class="form-group mt-3">
+                    <label for="captcha" class="form-label">Verifikasi Keamanan</label>
+                    <div class="d-flex align-center gap-2">
+                        <canvas id="captchaCanvas" width="150" height="40" style="border: 1px solid #ddd; border-radius: var(--rounded-sm);"></canvas>
+                        <button type="button" id="reloadCaptchaBtn" class="btn btn-sm" style="width: auto; background-color: var(--gray);"><i class="fas fa-sync-alt"></i></button>
+                    </div>
+                    <input type="text" id="captchaInput" class="form-control mt-2" placeholder="Masukkan kode di atas" required autocomplete="off">
+                </div>
                 <button type="submit" class="btn mt-3">Login</button>
             </form>
         </div>
@@ -1972,8 +1953,6 @@
     
     <div id="print-container" style="display:none;"></div>
     
-    <div id="premium-notification-container" style="display: none;"></div>
-    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/locale/id.min.js"></script>
@@ -2008,36 +1987,12 @@
         
         let products, categories, orders, settings, users, members, suppliers, stockHistory, returns, shifts, currentUser, currentOrder, activeShift;
         let passwordPromptCallback = null;
-        // let captchaText = ''; // [DIHAPUS]
-        let premiumNotifInterval; // [BARU] Timer untuk notifikasi
+        let captchaText = '';
         
-        // === [INI ADALAH FUNGSI YANG DIPERBAIKI] ===
         function initializeData() {
             let users_init = JSON.parse(localStorage.getItem(STORAGE_KEYS.USERS)) || [];
-            
-            // [PERBAIKAN LOGIN]
-            // Cek dan perbaiki/tambahkan user 'Admin'
-            let adminUser = users_init.find(u => u.username === 'Admin');
-            if (adminUser) {
-                // Jika user 'Admin' ada, pastikan password-nya benar.
-                // Ini akan memperbaiki password yang salah/corrupt di localStorage.
-                adminUser.password = CryptoJS.SHA256('Gratis12345').toString();
-            } else {
-                // Jika user 'Admin' tidak ada, tambahkan.
-                users_init.push(DEFAULT_ADMIN);
-            }
-
-            // Cek dan perbaiki/tambahkan user 'kasir'
-            let cashierUser = users_init.find(u => u.username === 'kasir');
-            if (cashierUser) {
-                // Pastikan password kasir juga benar
-                cashierUser.password = CryptoJS.SHA256('kasir123').toString();
-            } else {
-                // Jika user 'kasir' tidak ada, tambahkan.
-                users_init.push(DEFAULT_CASHIER);
-            }
-            // [AKHIR PERBAIKAN LOGIN]
-
+            if (!users_init.find(u => u.username === 'Admin')) users_init.push(DEFAULT_ADMIN);
+            if (!users_init.find(u => u.username === 'kasir')) users_init.push(DEFAULT_CASHIER);
             localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(users_init));
             
             if (!localStorage.getItem(STORAGE_KEYS.PRODUCTS)) localStorage.setItem(STORAGE_KEYS.PRODUCTS, JSON.stringify([]));
@@ -2052,12 +2007,12 @@
             if (!localStorage.getItem(STORAGE_KEYS.SETTINGS)) {
                 const initialSettings = {
                     storeName: 'MITRA ANEKAMARKET', // [DIKUNCI]
-                    partnerName: 'Chacha Swalayan', // [BARU]
+                    partnerName: 'Gerai Cabang Demo', // [BARU]
                     storeAddress: 'Jl. Harjakasi Gang Naik Kelas No. 1, Kota Situbondo',
-                    storePhone: '087865614222', storeEmail: 'admin@anekamarket.my.id',
+                    storePhone: '08786561422', storeEmail: 'admin@anekamarket.my.id',
                     itemSecurityCode: CryptoJS.SHA256('17081945').toString(), panelSecurityCode: CryptoJS.SHA256('LKS.1945').toString(),
                     // [PERBAIKAN] Penambahan Seting Diskon Member
-                    memberDiscountPercent: 1, 
+                    memberDiscountPercent: 2, 
                     isMemberDiscountEnabled: true, 
                     memberDiscountMinPurchase: 0, 
                     nonMemberDiscountPercent: 0, 
@@ -2073,7 +2028,6 @@
                 localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(initialSettings));
             }
         }
-        // === [AKHIR DARI FUNGSI YANG DIPERBAIKI] ===
         
         $(document).ready(function() {
             initializeData();
@@ -2101,13 +2055,13 @@
                 $('#mainApp').show();
                 initializeApp();
             } else {
-                // generateCaptcha(); // [DIHAPUS]
+                generateCaptcha();
             }
             
             setInterval(updateCurrentDate, 60000);
             
             $('#loginForm').submit(handleLogin);
-            // $('#reloadCaptchaBtn').click(generateCaptcha); // [DIHAPUS]
+            $('#reloadCaptchaBtn').click(generateCaptcha);
             $('#logoutBtn').click(handleLogout);
             $('#productSearch').on('input', function() { loadProducts($(this).val(), $('.filter-chip.active').data('category')); });
             $(document).on('click', '.product-card', handleProductClick);
@@ -2246,7 +2200,6 @@
             updateStoreInfo();
             configureUIAccess();
             checkActiveShift(); // [BARU]
-            setupPremiumNotification(); // [BARU] Panggil fungsi notifikasi
         }
         
         function configureUIAccess() {
@@ -2266,7 +2219,6 @@
             $('#adminPanel [class*="backup-actions"], #adminPanel #resetDataBtn').parent().toggle(checkPermission('canBackupRestore') || checkPermission('canResetData'));
         }
 
-        // === [FUNGSI DIPERBAIKI] ===
         function handleLogin(e) {
             e.preventDefault();
             const $loginBtn = $(this).find('button[type="submit"]');
@@ -2275,23 +2227,16 @@
 
             setTimeout(() => {
                 try {
-                    // 1. Validasi CAPTCHA [DIHAPUS]
-                    // if ($('#captchaInput').val().trim().toLowerCase() !== captchaText.toLowerCase()) {
-                    //     showToast('Kode verifikasi (CAPTCHA) salah.', 'error');
-                    //     generateCaptcha(); 
-                    //     $('#captchaInput').val('');
-                    //     setButtonLoading($loginBtn, false, originalText); // Reset button on failure
-                    //     return; // Exit
-                    // }
-                    
-                    // 2. Validasi User
+                    if ($('#captchaInput').val().trim().toLowerCase() !== captchaText.toLowerCase()) {
+                        showToast('Kode verifikasi (CAPTCHA) salah.', 'error');
+                        generateCaptcha(); $('#captchaInput').val('');
+                        return setButtonLoading($loginBtn, false, originalText);
+                    }
                     const username = $('#username').val().trim();
                     const password = $('#password').val().trim();
                     const user = users.find(u => u.username.toLowerCase() === username.toLowerCase());
                     
-                    // === [PERBAIKAN] Mengganti SHA26 menjadi SHA256 ===
                     if (user && CryptoJS.SHA256(password).toString() === user.password) {
-                        // 3. Login Berhasil
                         currentUser = user;
                         localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(currentUser));
                         $('#loggedInUser').text(currentUser.name);
@@ -2299,25 +2244,17 @@
                         $('#mainApp').fadeIn();
                         initializeApp();
                         showToast(`Selamat datang, ${currentUser.name}!`, 'success');
-                        // Tidak perlu reset button, karena halaman akan berganti
                     } else {
-                        // 4. Login Gagal (Username/Password salah)
                         showToast('Username atau password salah', 'error');
-                        // generateCaptcha(); // [DIHAPUS]
-                        // $('#captchaInput').val(''); // [DIHAPUS]
-                        setButtonLoading($loginBtn, false, originalText); // Reset button on failure
+                        generateCaptcha(); $('#captchaInput').val('');
                     }
                 } catch (err) {
-                    // 5. Error Tak Terduga
-                    console.error("Login error:", err); // Log error asli ke console untuk debugging
-                    showToast('Terjadi error saat login. Silakan coba lagi.', 'error'); // Pesan error lebih generik
-                    // generateCaptcha(); // [DIHAPUS]
-                    // $('#captchaInput').val(''); // [DIHAPUS]
-                    setButtonLoading($loginBtn, false, originalText); // Reset button on error
+                    showToast('Error: Gagal memuat library penting. Cek koneksi internet.', 'error');
+                } finally {
+                    if ($loginBtn.prop('disabled')) setButtonLoading($loginBtn, false, originalText);
                 }
             }, 500);
         }
-        // === [AKHIR DARI PERBAIKAN] ===
 
         function handleLogout(e) {
             e.preventDefault();
@@ -2325,16 +2262,12 @@
                 showToast('Anda harus menutup shift kerja terlebih dahulu sebelum logout.', 'warning');
                 return;
             }
-            
-            if (premiumNotifInterval) clearInterval(premiumNotifInterval); // [BARU] Hapus timer notifikasi
-            
             currentUser = null;
             localStorage.removeItem(STORAGE_KEYS.USER);
             $('#mainApp').fadeOut(() => {
                 $('#loginModal').css('display', 'flex');
-                $('#username, #password').val('');
-                // $('#captchaInput').val(''); // [DIHAPUS]
-                // generateCaptcha(); // [DIHAPUS]
+                $('#username, #password, #captchaInput').val('');
+                generateCaptcha();
             });
             showToast('Anda telah logout', 'info');
         }
@@ -2494,7 +2427,7 @@
             $('#orderNote, #memberSearchInput').val('');
         }
 
-        // --- [BARU] FUNGSI MANAJEMN SHIFT ---
+        // --- [BARU] FUNGSI MANAJEMEN SHIFT ---
         function checkActiveShift() {
             activeShift = shifts.find(s => s.userId === currentUser.id && s.status === 'active') || null;
             const $badge = $('#shiftStatusBadge');
@@ -3619,7 +3552,7 @@
             let startDate, endDate;
             const period = $('#reportPeriod').val();
             if (period === 'today') { startDate = moment().startOf('day'); endDate = moment().endOf('day'); }
-            else if (period === 'week') { startDate = moment().startOf('week'); endDate = moment().endOf('auto'); }
+            else if (period === 'week') { startDate = moment().startOf('week'); endDate = moment().endOf('week'); }
             else if (period === 'month') { startDate = moment().startOf('month'); endDate = moment().endOf('month'); }
             else if (period === 'custom') {
                 startDate = moment($('#reportStartDate').val());
@@ -4075,10 +4008,33 @@
             }).catch(err => { showToast('Gagal mengunduh PDF', 'error'); });
         }
 
-        // ==================================================================
-        // === [PERBAIKAN CAPTCHA] ===
-        // Fungsi generateCaptcha() telah dihapus seluruhnya.
-        // ==================================================================
+        function generateCaptcha() {
+            const canvas = document.getElementById('captchaCanvas');
+            const ctx = canvas.getContext('2d');
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            captchaText = '';
+            for (let i = 0; i < 6; i++) {
+                captchaText += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#f0f2f5';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            ctx.font = '24px Poppins';
+            ctx.fillStyle = '#333';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(captchaText, canvas.width / 2, canvas.height / 2);
+            
+            for (let i = 0; i < 5; i++) {
+                ctx.beginPath();
+                ctx.moveTo(Math.random() * canvas.width, Math.random() * canvas.height);
+                ctx.lineTo(Math.random() * canvas.width, Math.random() * canvas.height);
+                ctx.strokeStyle = '#ccc';
+                ctx.stroke();
+            }
+        }
         
         function loadProductsForStockIn() {
             const $select = $('#stockInProduct').empty();
@@ -4089,63 +4045,8 @@
         
         function loadSuppliersForSelect() {
             const $select = $('#stockInSupplier').html('<option value="pembelian_mandiri">Pembelian Mandiri (Kulak)</option>');
-            suppliers.forEach(s => $select.append(`<option value="${s.id}">${s.name}</option>`);
+            suppliers.forEach(s => $select.append(`<option value="${s.id}">${s.name}</option>`));
         }
-
-        // --- [BARU] FUNGSI NOTIFIKASI PREMIUM ---
-        
-        function setupPremiumNotification() {
-            // Hapus interval lama jika ada (misal. saat re-login tanpa refresh)
-            if (premiumNotifInterval) clearInterval(premiumNotifInterval);
-
-            // Tampilkan notifikasi 12 detik setelah login/memuat ulang
-            // === [PERMINTAAN REVISI 1] Mengubah 10000 menjadi 12000 ===
-            setTimeout(showPremiumNotification, 12000); 
-
-            // Set interval untuk 1 jam
-            const ONE_HOUR = 3600 * 1000;
-            premiumNotifInterval = setInterval(showPremiumNotification, ONE_HOUR);
-        }
-        
-        function showPremiumNotification() {
-            const container = $('#premium-notification-container');
-            if (container.is(':visible')) return; // Jangan tampilkan jika sudah ada
-
-            fetch('notifikasi.html') // Memuat konten dari file eksternal
-                .then(response => {
-                    if (!response.ok) throw new Error('notifikasi.html tidak ditemukan');
-                    return response.text();
-                })
-                .then(html => {
-                    container.html(html).show();
-                    
-                    // Pasang listener untuk tombol close di dalam HTML yang di-load
-                    container.off('click', '.premium-notif-close').on('click', '.premium-notif-close', function() {
-                        closePremiumNotification();
-                    });
-                    
-                    // Set timer untuk auto-close (10 detik)
-                    const TEN_SECONDS = 10000;
-                    setTimeout(closePremiumNotification, TEN_SECONDS);
-                })
-                .catch(err => {
-                    console.error('Gagal memuat notifikasi premium:', err);
-                });
-        }
-
-        function closePremiumNotification() {
-            const container = $('#premium-notification-container');
-            if (!container.is(':visible')) return;
-            
-            container.addClass('premium-notif-hide');
-            
-            // Tunggu animasi selesai sebelum clear content dan hide
-            setTimeout(() => {
-                container.removeClass('premium-notif-hide').hide().empty();
-            }, 500); // 500ms (sesuai durasi animasi)
-        }
-
-        // --- AKHIR DARI FUNGSI NOTIFIKASI PREMIUM ---
 
         function saveProducts() { localStorage.setItem(STORAGE_KEYS.PRODUCTS, JSON.stringify(products)); }
         function saveCategories() { localStorage.setItem(STORAGE_KEYS.CATEGORIES, JSON.stringify(categories)); }
