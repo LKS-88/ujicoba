@@ -1222,14 +1222,6 @@
                     <input type="password" id="password" class="form-control" placeholder="Password: Gratis12345" required>
                 </div>
                 
-                <div class="form-group mt-3">
-                    <label for="captcha" class="form-label">Verifikasi Keamanan</label>
-                    <div class="d-flex align-center gap-2">
-                        <canvas id="captchaCanvas" width="150" height="40" style="border: 1px solid #ddd; border-radius: var(--rounded-sm);"></canvas>
-                        <button type="button" id="reloadCaptchaBtn" class="btn btn-sm" style="width: auto; background-color: var(--gray);"><i class="fas fa-sync-alt"></i></button>
-                    </div>
-                    <input type="text" id="captchaInput" class="form-control mt-2" placeholder="Masukkan kode di atas" required autocomplete="off">
-                </div>
                 <button type="submit" class="btn mt-3">Login</button>
             </form>
         </div>
@@ -2016,7 +2008,7 @@
         
         let products, categories, orders, settings, users, members, suppliers, stockHistory, returns, shifts, currentUser, currentOrder, activeShift;
         let passwordPromptCallback = null;
-        let captchaText = '';
+        // let captchaText = ''; // [DIHAPUS]
         let premiumNotifInterval; // [BARU] Timer untuk notifikasi
         
         function initializeData() {
@@ -2085,13 +2077,13 @@
                 $('#mainApp').show();
                 initializeApp();
             } else {
-                generateCaptcha();
+                // generateCaptcha(); // [DIHAPUS]
             }
             
             setInterval(updateCurrentDate, 60000);
             
             $('#loginForm').submit(handleLogin);
-            $('#reloadCaptchaBtn').click(generateCaptcha);
+            // $('#reloadCaptchaBtn').click(generateCaptcha); // [DIHAPUS]
             $('#logoutBtn').click(handleLogout);
             $('#productSearch').on('input', function() { loadProducts($(this).val(), $('.filter-chip.active').data('category')); });
             $(document).on('click', '.product-card', handleProductClick);
@@ -2259,14 +2251,14 @@
 
             setTimeout(() => {
                 try {
-                    // 1. Validasi CAPTCHA
-                    if ($('#captchaInput').val().trim().toLowerCase() !== captchaText.toLowerCase()) {
-                        showToast('Kode verifikasi (CAPTCHA) salah.', 'error');
-                        generateCaptcha(); 
-                        $('#captchaInput').val('');
-                        setButtonLoading($loginBtn, false, originalText); // Reset button on failure
-                        return; // Exit
-                    }
+                    // 1. Validasi CAPTCHA [DIHAPUS]
+                    // if ($('#captchaInput').val().trim().toLowerCase() !== captchaText.toLowerCase()) {
+                    //     showToast('Kode verifikasi (CAPTCHA) salah.', 'error');
+                    //     generateCaptcha(); 
+                    //     $('#captchaInput').val('');
+                    //     setButtonLoading($loginBtn, false, originalText); // Reset button on failure
+                    //     return; // Exit
+                    // }
                     
                     // 2. Validasi User
                     const username = $('#username').val().trim();
@@ -2287,16 +2279,16 @@
                     } else {
                         // 4. Login Gagal (Username/Password salah)
                         showToast('Username atau password salah', 'error');
-                        generateCaptcha(); 
-                        $('#captchaInput').val('');
+                        // generateCaptcha(); // [DIHAPUS]
+                        // $('#captchaInput').val(''); // [DIHAPUS]
                         setButtonLoading($loginBtn, false, originalText); // Reset button on failure
                     }
                 } catch (err) {
                     // 5. Error Tak Terduga
                     console.error("Login error:", err); // Log error asli ke console untuk debugging
                     showToast('Terjadi error saat login. Silakan coba lagi.', 'error'); // Pesan error lebih generik
-                    generateCaptcha(); 
-                    $('#captchaInput').val('');
+                    // generateCaptcha(); // [DIHAPUS]
+                    // $('#captchaInput').val(''); // [DIHAPUS]
                     setButtonLoading($loginBtn, false, originalText); // Reset button on error
                 }
             }, 500);
@@ -2316,8 +2308,9 @@
             localStorage.removeItem(STORAGE_KEYS.USER);
             $('#mainApp').fadeOut(() => {
                 $('#loginModal').css('display', 'flex');
-                $('#username, #password, #captchaInput').val('');
-                generateCaptcha();
+                $('#username, #password').val('');
+                // $('#captchaInput').val(''); // [DIHAPUS]
+                // generateCaptcha(); // [DIHAPUS]
             });
             showToast('Anda telah logout', 'info');
         }
@@ -4060,57 +4053,8 @@
 
         // ==================================================================
         // === [PERBAIKAN CAPTCHA] ===
-        // Fungsi generateCaptcha telah disempurnakan agar lebih mudah dibaca.
-        // Rotasi dan warna acak dihilangkan, font diperbesar.
+        // Fungsi generateCaptcha() telah dihapus seluruhnya.
         // ==================================================================
-        function generateCaptcha() {
-            const canvas = document.getElementById('captchaCanvas');
-            const ctx = canvas.getContext('2d');
-            // Karakter yang mudah dibaca (menghilangkan O, 0, 1, l, I)
-            const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789';
-            captchaText = '';
-            for (let i = 0; i < 6; i++) {
-                captchaText += chars.charAt(Math.floor(Math.random() * chars.length));
-            }
-            
-            // Bersihkan canvas dengan warna latar
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = '#f0f2f5'; // Latar belakang abu-abu muda
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            // [PENYEMPURNAAN] Gambar karakter lebih jelas
-            ctx.font = 'bold 28px Arial, sans-serif'; // Font lebih besar dan konsisten
-            ctx.fillStyle = '#343a40'; // Warna gelap konsisten (var(--dark))
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            
-            const charWidth = canvas.width / (captchaText.length + 1);
-            for (let i = 0; i < captchaText.length; i++) {
-                ctx.save();
-                
-                // Atur posisi X (sedikit acak) dan Y (tengah)
-                const x = charWidth * (i + 0.8) + (Math.random() * 4 - 2); // Posisi X + sedikit jitter
-                const y = (canvas.height / 2) + (Math.random() * 6 - 3); // Posisi Y + sedikit jitter
-                
-                // [DIHAPUS] Rotasi dihapus agar lebih mudah dibaca
-                // const rotation = Math.random() * 0.4 - 0.2; 
-                // ctx.rotate(rotation);
-
-                ctx.translate(x, y);
-                ctx.fillText(captchaText[i], 0, 0);
-                
-                ctx.restore();
-            }
-            
-            // [PENYEMPURNAAN] Garis noise dikurangi dan dibuat lebih terang
-            for (let i = 0; i < 2; i++) { // Hanya 2 garis
-                ctx.beginPath();
-                ctx.moveTo(Math.random() * canvas.width, Math.random() * canvas.height);
-                ctx.lineTo(Math.random() * canvas.width, Math.random() * canvas.height);
-                ctx.strokeStyle = '#bbb'; // Garis noise lebih terang
-                ctx.stroke();
-            }
-        }
         
         function loadProductsForStockIn() {
             const $select = $('#stockInProduct').empty();
