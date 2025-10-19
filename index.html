@@ -4058,6 +4058,11 @@
             }).catch(err => { showToast('Gagal mengunduh PDF', 'error'); });
         }
 
+        // ==================================================================
+        // === [PERBAIKAN CAPTCHA] ===
+        // Fungsi generateCaptcha telah disempurnakan agar lebih mudah dibaca.
+        // Rotasi dan warna acak dihilangkan, font diperbesar.
+        // ==================================================================
         function generateCaptcha() {
             const canvas = document.getElementById('captchaCanvas');
             const ctx = canvas.getContext('2d');
@@ -4070,40 +4075,39 @@
             
             // Bersihkan canvas dengan warna latar
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = '#f0f2f5';
+            ctx.fillStyle = '#f0f2f5'; // Latar belakang abu-abu muda
             ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // [PENYEMPURNAAN] Gambar karakter lebih jelas
+            ctx.font = 'bold 28px Arial, sans-serif'; // Font lebih besar dan konsisten
+            ctx.fillStyle = '#343a40'; // Warna gelap konsisten (var(--dark))
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
             
-            // [PERBAIKAN] Gambar karakter satu per satu dengan distorsi
             const charWidth = canvas.width / (captchaText.length + 1);
             for (let i = 0; i < captchaText.length; i++) {
                 ctx.save();
-                // Gunakan font sistem yang aman (bukan 'Poppins')
-                const fontSize = 24 + Math.random() * 6; // Ukuran font acak (24-30px)
-                ctx.font = `bold ${fontSize}px Arial, sans-serif`; 
-                // Warna teks acak (gelap)
-                ctx.fillStyle = `rgb(${Math.random()*100}, ${Math.random()*100}, ${Math.random()*100})`; 
                 
-                // Atur posisi dan rotasi acak untuk setiap karakter
-                const x = charWidth * (i + 0.7);
-                const y = (canvas.height / 2) + (Math.random() * 10 - 5); // Variasi posisi Y
-                const rotation = Math.random() * 0.4 - 0.2; // Rotasi sedikit
+                // Atur posisi X (sedikit acak) dan Y (tengah)
+                const x = charWidth * (i + 0.8) + (Math.random() * 4 - 2); // Posisi X + sedikit jitter
+                const y = (canvas.height / 2) + (Math.random() * 6 - 3); // Posisi Y + sedikit jitter
                 
+                // [DIHAPUS] Rotasi dihapus agar lebih mudah dibaca
+                // const rotation = Math.random() * 0.4 - 0.2; 
+                // ctx.rotate(rotation);
+
                 ctx.translate(x, y);
-                ctx.rotate(rotation);
-                
-                ctx.textAlign = 'center';
-                ctx.textBaseline = 'middle';
                 ctx.fillText(captchaText[i], 0, 0);
                 
                 ctx.restore();
             }
             
-            // Tambahkan garis noise
-            for (let i = 0; i < 5; i++) {
+            // [PENYEMPURNAAN] Garis noise dikurangi dan dibuat lebih terang
+            for (let i = 0; i < 2; i++) { // Hanya 2 garis
                 ctx.beginPath();
                 ctx.moveTo(Math.random() * canvas.width, Math.random() * canvas.height);
                 ctx.lineTo(Math.random() * canvas.width, Math.random() * canvas.height);
-                ctx.strokeStyle = '#aaa'; // Garis noise sedikit lebih gelap
+                ctx.strokeStyle = '#bbb'; // Garis noise lebih terang
                 ctx.stroke();
             }
         }
