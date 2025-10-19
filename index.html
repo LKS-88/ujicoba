@@ -1163,10 +1163,242 @@
             color: var(--gray);
             font-weight: 500;
         }
-        .report-header p {
+       .report-header p {
             font-size: 0.8rem;
             color: var(--gray);
             margin-top: 5px;
+        }
+
+        /* [BARU] Gaya untuk Modal Notifikasi Premium */
+        #premiumNotificationModal {
+            display: none; /* Sembunyi secara default */
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 100%;
+            max-width: 380px; /* Lebar notifikasi */
+            z-index: 2000; /* Di atas segalanya */
+            justify-content: flex-end;
+            align-items: flex-start;
+            background: none; /* Tidak perlu background gelap */
+            animation: slideInFromRight 0.5s ease-out;
+        }
+        
+        @keyframes slideInFromRight {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        @keyframes slideOutToRight {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(100%); opacity: 0; }
+        }
+        
+        #premiumNotificationModal.hiding {
+            animation: slideOutToRight 0.5s ease-in;
+        }
+
+        /* KODE DI BAWAH INI DISALIN DARI notifikasi (6).html */
+        
+        /* Style khusus untuk notifikasi */
+        :root {
+            --notif-primary: #007bff;
+            --notif-premium: #ffc107;
+            --notif-premium-dark: #dba400;
+            --notif-dark: #343a40;
+            --notif-light: #f8f9fa;
+            --notif-gray: #6c757d;
+            --notif-white: #ffffff;
+        }
+
+        /* PENTING: Pastikan font 'Poppins' sudah dimuat di file HTML utama 
+          karena <link> font telah dihapus dari file ini.
+        */
+        .premium-notif-card * {
+            font-family: 'Poppins', sans-serif;
+            box-sizing: border-box;
+        }
+
+        .premium-notif-card {
+            width: 100%;
+            /* [PERBAIKAN] Batas tinggi maksimum untuk keseluruhan kartu */
+            max-height: 90vh; 
+            background: var(--notif-white);
+            border-radius: 12px;
+            /* [PERBAIKAN] Shadow lebih halus */
+            box-shadow: 0 0.5rem 1.5rem rgba(0,0,0,0.15);
+            border: 1px solid #eee; /* [PERBAIKAN] Border lebih halus */
+            color: var(--notif-dark);
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            /* [DIHAPUS] overflow-y dipindahkan ke .premium-notif-body */
+        }
+
+        .premium-notif-header {
+            background: linear-gradient(135deg, var(--notif-primary), #0056b3);
+            color: var(--notif-white);
+            padding: 16px 20px;
+            border-radius: 12px 12px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            /* [BARU] Header tidak boleh menyusut */
+            flex-shrink: 0; 
+        }
+
+        .premium-notif-header h3 {
+            margin: 0;
+            font-size: 1.1rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            /* [PERBAIKAN] Shadow teks halus */
+            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+        }
+        .premium-notif-header h3 i {
+            font-size: 1.3rem;
+        }
+
+        .premium-notif-close {
+            background: none;
+            border: none;
+            color: var(--notif-white);
+            font-size: 1.4rem;
+            cursor: pointer;
+            opacity: 0.8;
+            /* [PERBAIKAN] Transisi lebih halus */
+            transition: opacity 0.2s, transform 0.2s ease-out;
+        }
+        .premium-notif-close:hover {
+            opacity: 1;
+            /* [PERBAIKAN] Efek hover */
+            transform: scale(1.1);
+        }
+
+        .premium-notif-body {
+            padding: 20px;
+            font-size: 0.9rem;
+            /* === [PERBAIKAN 2] === */
+            overflow-y: auto;  /* [BARU] Scroll hanya di bagian body */
+            flex-grow: 1;       /* [BARU] Body akan mengisi ruang yang tersedia */
+            max-height: 60vh;   /* [BARU] Batas tinggi untuk body sebelum scroll */
+            /* === AKHIR PERBAIKAN 2 === */
+        }
+
+        /* Scrollbar minimalis (diterapkan pada .premium-notif-body) */
+        .premium-notif-body::-webkit-scrollbar {
+            width: 5px;
+        }
+        .premium-notif-body::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        .premium-notif-body::-webkit-scrollbar-thumb {
+            background: #ccc;
+            border-radius: 10px;
+        }
+        .premium-notif-body::-webkit-scrollbar-thumb:hover {
+            background: #aaa;
+        }
+
+        .premium-notif-body p {
+            margin-top: 0;
+            margin-bottom: 12px;
+        }
+        
+        .premium-notif-body strong {
+            color: var(--notif-primary);
+        }
+        
+        .premium-notif-badge {
+            background-color: #cce5ff;
+            color: #004085;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-weight: 500;
+            font-size: 0.8rem;
+        }
+
+        .premium-feature-list {
+            list-style: none;
+            padding-left: 0;
+            margin: 16px 0;
+            font-size: 0.85rem;
+        }
+
+        .premium-feature-list li {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+            color: var(--notif-gray);
+        }
+        
+        .premium-feature-list li.premium-feature {
+            color: var(--notif-dark);
+            font-weight: 500;
+        }
+
+        .premium-feature-list li i {
+            color: var(--notif-premium);
+            font-size: 1.1rem;
+            /* [BARU] Pastikan lebar ikon konsisten */
+            width: 1.2em; 
+            text-align: center;
+        }
+
+        .premium-notif-footer {
+            padding: 16px;
+            background: var(--notif-light);
+            border-top: 1px solid #eee;
+            border-radius: 0 0 12px 12px;
+             /* [BARU] Footer tidak boleh menyusut */
+            flex-shrink: 0;
+        }
+        
+        .premium-notif-footer p {
+            font-size: 0.85rem;
+            font-weight: 500;
+            text-align: center;
+            margin: 0 0 12px 0;
+        }
+
+        .premium-notif-btn {
+            display: block;
+            width: 100%;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            text-align: center;
+            text-decoration: none;
+            cursor: pointer;
+            background-color: var(--notif-premium);
+            color: var(--notif-dark);
+            /* [PERBAIKAN] Shadow tombol lebih halus */
+            box-shadow: 0 4px 8px rgba(226, 172, 9, 0.3);
+            transition: all 0.2s ease-out;
+        }
+
+        .premium-notif-btn:hover {
+            background-color: var(--notif-premium-dark);
+            color: #000;
+            /* [PERBAIKAN] Efek hover lebih "pop" */
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 6px 12px rgba(219, 164, 0, 0.4);
+        }
+        
+        /* [BARU] Efek klik pada tombol */
+        .premium-notif-btn:active {
+            transform: translateY(0) scale(1);
+            box-shadow: 0 2px 4px rgba(226, 172, 9, 0.3);
+        }
+        
+        .premium-notif-btn i {
+            margin-right: 8px;
         }
     </style>
 </head>
@@ -1947,11 +2179,43 @@
                 <button class="btn btn-info" id="downloadRecapPdfBtn" style="display: none;"><i class="fas fa-file-pdf"></i> Unduh PDF</button>
                 <button class="btn btn-success" id="exportRecapExcelBtn" style="display: none;"><i class="fas fa-file-excel"></i> Unduh Excel</button>
                 <button class="btn btn-primary" id="printRecapBtn" style="display: none;"><i class="fas fa-print"></i> Cetak</button>
+           </div>
             </div>
         </div>
-    </div>
-    
-    <div id="print-container" style="display:none;"></div>
+
+        <div id="premiumNotificationModal" class="modal">
+            <div class="premium-notif-card">
+                <div class="premium-notif-header">
+                    <h3><i class="fas fa-star"></i>Aplikasi ANEKAMARKET</h3>
+                    <button class="premium-notif-close" title="Tutup">&times;</button>
+                </div>
+                <div class="premium-notif-body">
+                    <p>Terima kasih telah menggunakan aplikasi kami! <span class="premium-notif-badge">Versi Gratis</span></p>
+                    <p>Aplikasi ini 100% gratis. Untuk mendukung developer dan membuka semua fitur, upgrade ke <strong>Versi Premium</strong>.</p>
+                    
+                    <p>Keuntungan Versi Premium:</p>
+                    <ul class="premium-feature-list">
+                        <li class="premium-feature"><i class="fa-solid fa-check-circle"></i>Bebas dari notifikasi pop-up ini</li>
+                        <li class="premium-feature"><i class="fa-solid fa-check-circle"></i>Mendapat Password Kontrol Panel</li>
+                        
+                        <li><i class="fa-solid fa-caret-right"></i>Kelola Hak Akses (Supervisor, Kasir, dll)</li>
+                        <li><i class="fa-solid fa-caret-right"></i>Tambah/Edit Pengguna Baru</li>
+                        <li><i class="fa-solid fa-caret-right"></i>Ubah Password Keamanan Item</li>
+                        <li><i class="fa-solid fa-caret-right"></i>Ubah Password Login Karyawan</li>
+                        <li><i class="fa-solid fa-caret-right"></i>Mengatur Diskon & Pajak</li>
+                    </ul>
+                </div>
+                <div class="premium-notif-footer">
+                    <p>Miliki aplikasi versi premium dengan harga sangat murah!</p>
+                    <a href="https://wa.me/6285647709114?text=Halo%2C%20saya%20tertarik%20untuk%20upgrade%20Aplikasi%20ANEKAMARKET%20ke%20Versi%20Premium.%20Saya%20ingin%20mendapatkan%20fitur%20Kontrol%20Panel%20Unlock%20dan%20menghilangkan%20notifikasi.%20Mohon%20informasinya." 
+                       target="_blank" 
+                       class="premium-notif-btn">
+                       <i class="fab fa-whatsapp"></i>Order Sekarang
+                    </a>
+                </div>
+            </div>
+            </div>
+        <div id="print-container" style="display:none;"></div>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
@@ -2187,7 +2451,15 @@
             $('#generateRecapReportBtn').click(generateRecapReport);
             $('#printRecapBtn').click(() => printElement('#recapReportResults'));
             $('#downloadRecapPdfBtn').click(downloadRecapAsPdf);
-            $('#exportRecapExcelBtn').click(exportRecapToExcel);
+           $('#exportRecapExcelBtn').click(exportRecapToExcel);
+
+            // [BARU] Logika Notifikasi Premium
+            
+            // Atur interval untuk menampilkan notifikasi setiap 1 jam
+            setInterval(showPremiumNotification, 3600000); // 3600000 ms = 1 jam
+            
+            // Tambahkan event listener untuk tombol close notifikasi
+            $(document).on('click', '#premiumNotificationModal .premium-notif-close', hidePremiumNotification);
 
         });
 
@@ -2200,6 +2472,9 @@
             updateStoreInfo();
             configureUIAccess();
             checkActiveShift(); // [BARU]
+
+            // [BARU] Tampilkan notifikasi premium saat pertama kali memuat
+            showPremiumNotification();
         }
         
         function configureUIAccess() {
@@ -3518,8 +3793,44 @@
                 num = num.substring(1);
             }
             // Hanya return jika sepertinya valid (mulai dgn 62, panjang > 9)
-            return /^(628)\d{8,12}$/.test(num) ? num : ''; 
+           return /^(628)\d{8,12}$/.test(num) ? num : ''; 
         }
+
+        // [BARU] Fungsi untuk Notifikasi Premium
+        let notificationTimer = null; // Timer untuk auto-hide
+
+        function showPremiumNotification() {
+            const $modal = $('#premiumNotificationModal');
+            
+            // Hapus timer lama jika ada
+            if (notificationTimer) {
+                clearTimeout(notificationTimer);
+            }
+            
+            $modal.removeClass('hiding').css('display', 'flex');
+            
+            // Set timer baru untuk auto-hide setelah 12 detik
+            notificationTimer = setTimeout(() => {
+                hidePremiumNotification();
+            }, 12000); // 12000 ms = 12 detik
+        }
+        
+        function hidePremiumNotification() {
+            const $modal = $('#premiumNotificationModal');
+            
+            // Hapus timer auto-hide jika tombol close diklik manual
+            if (notificationTimer) {
+                clearTimeout(notificationTimer);
+                notificationTimer = null;
+            }
+            
+            // Tambahkan kelas animasi hide, lalu sembunyikan setelah animasi selesai
+            $modal.addClass('hiding');
+            setTimeout(() => {
+                $modal.hide().removeClass('hiding');
+            }, 500); // 500ms = durasi animasi slideOutToRight
+        }
+        // AKHIR DARI [BARU] Fungsi Notifikasi
 
         function showToast(message, type = 'info', duration = 3000) {
             const $toast = $('#toast');
