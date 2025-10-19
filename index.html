@@ -891,6 +891,14 @@
             gap: 8px;
         }
         
+        /* [BARU] Toggle Switch */
+        .switch { position: relative; display: inline-block; width: 50px; height: 24px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 24px; }
+        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: var(--success); }
+        input:checked + .slider:before { transform: translateX(26px); }
+
         /* Footer */
         .app-footer {
             text-align: center;
@@ -1434,6 +1442,13 @@
                         <label class="form-label">Deskripsi (opsional)</label>
                         <textarea id="productDescription" class="form-control"></textarea>
                     </div>
+                    <div class="form-group d-flex justify-between align-center">
+                        <label class="form-label mb-0">Terapkan Diskon (Member/Umum)</label>
+                        <label class="switch">
+                            <input type="checkbox" id="productIsDiscountable">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
                 </form>
             </div>
             <div class="modal-footer">
@@ -1606,7 +1621,30 @@
                     <hr class="mt-3 mb-3">
                     <h4 class="mt-3">Pengaturan Diskon & Pajak</h4>
                     <form id="taxDiscountSettingsForm" class="mt-2">
-                        <div class="form-group"><label class="form-label">Diskon Member (%)</label><input type="number" id="memberDiscount" class="form-control" min="0" max="100" value="0" required></div>
+                        <div class="form-group d-flex justify-between align-center">
+                            <label class="form-label mb-0">Aktifkan Diskon Member</label>
+                            <label class="switch">
+                                <input type="checkbox" id="enableMemberDiscount">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        <div id="memberDiscountSettings" style="display: none; background: #f9f9f9; padding: 12px; border-radius: var(--rounded-sm); margin-bottom: 16px;">
+                            <div class="form-group">
+                                <label class="form-label">Diskon Member (%)</label>
+                                <input type="number" id="memberDiscount" class="form-control" min="0" max="100" value="0" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Minimal Belanja (untuk Diskon Member)</label>
+                                <select id="memberDiscountMinPurchase" class="form-control">
+                                    <option value="0">Tanpa minimal belanja</option>
+                                    <option value="50000">Diatas Rp 50.000</option>
+                                    <option value="100000">Diatas Rp 100.000</option>
+                                    <option value="250000">Diatas Rp 250.000</option>
+                                    <option value="500000">Diatas Rp 500.000</option>
+                                    <option value="1000000">Diatas Rp 1.000.000</option>
+                                </select>
+                            </div>
+                        </div>
                         <div class="form-group"><label class="form-label">Diskon Pelanggan Biasa (%)</label><input type="number" id="nonMemberDiscount" class="form-control" min="0" max="100" value="0" required></div>
                         <div class="form-group"><label class="form-label">Pajak / PPN (%)</label><input type="number" id="taxPercent" class="form-control" min="0" max="100" value="0" required></div>
                         <button type="submit" class="btn btn-sm btn-success">Simpan Pengaturan</button>
@@ -1975,6 +2013,8 @@
                     storePhone: '08786561422', storeEmail: 'admin@anekamarket.my.id',
                     itemSecurityCode: CryptoJS.SHA256('17081945').toString(), panelSecurityCode: CryptoJS.SHA256('LKS.1945').toString(),
                     memberDiscountPercent: 2, nonMemberDiscountPercent: 0, taxPercent: 0,
+                    enableMemberDiscount: true, // [PERBAIKAN BARU]
+                    memberDiscountMinPurchase: 0, // [PERBAIKAN BARU]
                     roles: {
                         admin: { label: "Admin", isEditable: false, permissions: getAllPermissions(true) },
                         store_manager: { label: "Kepala Toko", isEditable: true, permissions: { ...getAllPermissions(true), canAccessControlPanel: false } },
@@ -2146,6 +2186,11 @@
             $('#downloadRecapPdfBtn').click(downloadRecapAsPdf);
             $('#exportRecapExcelBtn').click(exportRecapToExcel);
 
+            // [PERBAIKAN BARU] Event listener untuk toggle diskon
+            $('#enableMemberDiscount').change(function() {
+                $('#memberDiscountSettings').slideToggle($(this).is(':checked'));
+            });
+
         });
 
         // --- CORE APP FLOW ---
@@ -2296,13 +2341,38 @@
             }, 500);
         }
 
+        // [FUNGSI DIPERBAIKI] Logika diskon baru
         function updateOrder() {
+            // [MODIFIKASI] Hitung subtotal untuk diskon (hanya item yg discountable)
+            // (isDiscountable ?? true) -> default ke true jika properti tidak ada (untuk produk lama)
+            // Perbaikan: default ke false sesuai permintaan
+            const discountableSubtotal = currentOrder.items.reduce((total, item) => {
+                return total + ((item.product.isDiscountable ?? false) ? (item.product.price * item.quantity) : 0);
+            }, 0);
+            
+            // [MODIFIKASI] Hitung subtotal keseluruhan
             currentOrder.subtotal = currentOrder.items.reduce((total, item) => total + (item.product.price * item.quantity), 0);
             
-            const discountPercent = currentOrder.memberId ? (settings.memberDiscountPercent ?? 0) : (settings.nonMemberDiscountPercent ?? 0);
-            const discountText = `Diskon (${discountPercent}%)`;
-            currentOrder.discount = (discountPercent > 0) ? currentOrder.subtotal * (discountPercent / 100) : 0;
+            let discountPercent = 0;
+            let discountText = 'Diskon (0%)';
+            
+            // [MODIFIKASI] Logika Diskon
+            if (currentOrder.memberId && settings.enableMemberDiscount) {
+                // Cek minimal belanja
+                if (currentOrder.subtotal >= (settings.memberDiscountMinPurchase || 0)) {
+                    discountPercent = (settings.memberDiscountPercent ?? 0);
+                    discountText = `Diskon Member (${discountPercent}%)`;
+                } else {
+                    discountText = `Diskon Member (Min. ${formatCurrency(settings.memberDiscountMinPurchase || 0)})`;
+                }
+            } else if (!currentOrder.memberId) {
+                discountPercent = (settings.nonMemberDiscountPercent ?? 0);
+                if (discountPercent > 0) discountText = `Diskon (${discountPercent}%)`;
+            }
 
+            // [MODIFIKASI] Diskon HANYA berlaku pada item yang discountable
+            currentOrder.discount = (discountPercent > 0) ? discountableSubtotal * (discountPercent / 100) : 0;
+            
             const subtotalAfterDiscount = currentOrder.subtotal - currentOrder.discount;
             const taxPercent = settings.taxPercent || 0;
             const taxText = `Pajak (${taxPercent}%)`;
@@ -2315,7 +2385,8 @@
             const $orderItems = $('#orderItems').empty();
             $('#orderCount').text(`(${currentOrder.items.length} item)`);
             
-            $('#discountRow').toggle(currentOrder.discount > 0).find('span:first-child').text(discountText);
+            $('#discountRow').toggle(currentOrder.discount > 0 || (currentOrder.memberId && settings.enableMemberDiscount && currentOrder.subtotal < (settings.memberDiscountMinPurchase || 0)) )
+                             .find('span:first-child').text(discountText);
             $('#orderDiscount').text(`-${formatCurrency(currentOrder.discount)}`);
             $('#taxRow').toggle(currentOrder.tax > 0).find('span:first-child').text(taxText);
             $('#orderTax').text(formatCurrency(currentOrder.tax));
@@ -2339,6 +2410,7 @@
             $('#orderSubtotal').text(formatCurrency(currentOrder.subtotal));
             $('#orderTotal').text(formatCurrency(currentOrder.total));
         }
+
 
         function resetOrder() {
             currentOrder = { items: [], subtotal: 0, total: 0, discount: 0, tax: 0, note: '', memberId: null };
@@ -2734,6 +2806,8 @@
                 $('#productStock').val(product.stock); $('#productImage').val(product.image || '');
                 $('#productDescription').val(product.description || ''); $('#productCategory').val(product.category);
             }
+            // [PERBAIKAN BARU] Set toggle diskon
+            $('#productIsDiscountable').prop('checked', product ? (product.isDiscountable ?? false) : false); // Default OFF
             loadCategoriesForSelect();
             $('#productModal').css('display', 'flex');
         }
@@ -2745,15 +2819,18 @@
                   costPrice = parseFloat($('#productCostPrice').val()) || 0, price = parseFloat($('#productPrice').val()) || 0, 
                   stock = parseInt($('#productStock').val()) || 0, image = $('#productImage').val().trim(), 
                   description = $('#productDescription').val().trim();
+            // [PERBAIKAN BARU] Ambil status diskon
+            const isDiscountable = $('#productIsDiscountable').is(':checked');
+
             if (!name || !category || !unit || price <= 0) return showToast('Nama, kategori, satuan, dan harga jual harus valid', 'error');
             if(costPrice > price) return showToast('Harga pokok tidak boleh lebih besar dari harga jual', 'warning');
             
             const action = () => {
                 if (id) {
                     const index = products.findIndex(p => p.id === id);
-                    if (index > -1) products[index] = { ...products[index], name, category, unit, costPrice, price, image, description }; // [PENYEMPURNAAN]
+                    if (index > -1) products[index] = { ...products[index], name, category, unit, costPrice, price, image, description, isDiscountable }; // [PERBAIKAN BARU]
                 } else {
-                    const newProduct = { id: 'P' + moment().format('x'), name, category, unit, costPrice, price, stock, image, description }; // [PENYEMPURNAAN]
+                    const newProduct = { id: 'P' + moment().format('x'), name, category, unit, costPrice, price, stock, image, description, isDiscountable }; // [PERBAIKAN BARU]
                     products.unshift(newProduct);
                     updateStock(newProduct.id, stock, 'initial', 'Stok awal produk baru');
                 }
@@ -2993,11 +3070,17 @@
             const $list = $('#suppliersList').empty();
             if (suppliers.length === 0) return $list.html('<div class="empty-state"><i class="fas fa-truck"></i><p>Belum ada suplier</p></div>');
             suppliers.forEach(s => {
+                // [PERBAIKAN BARU] Tambah link WA
+                const waLink = formatWhatsappLink(s.phone);
+                const phoneDisplay = waLink 
+                    ? `<a href="${waLink}" target="_blank" class="whatsapp-link">${s.phone} <i class="fab fa-whatsapp"></i></a>` 
+                    : s.phone;
+                
                 $list.append(`
                     <div class="order-item">
                         <div class="order-item-info">
                             <div class="order-item-name">${s.name}</div>
-                            <div class="order-item-price">${s.contactPerson || '-'} | ${s.phone}</div>
+                            <div class="order-item-price">${s.contactPerson || '-'} | ${phoneDisplay}</div>
                         </div>
                         <div class="order-item-qty gap-2">
                              <i class="fas fa-edit edit-supplier" style="cursor:pointer; color: var(--info);" data-id="${s.id}"></i>
@@ -3117,6 +3200,21 @@
         
         // --- OTHER UTILITIES & HELPERS ---
         
+        // [PERBAIKAN BARU] Helper format WA
+        function formatWhatsappLink(phone) {
+            if (!phone) return null;
+            let formattedPhone = phone.trim().replace(/[^0-9]/g, ''); // Hapus non-angka
+            if (formattedPhone.startsWith('0')) {
+                formattedPhone = '62' + formattedPhone.substring(1);
+            } else if (formattedPhone.startsWith('62')) {
+                // already good
+            } else if (formattedPhone.length > 9) { // Cek jika sepertinya nomor lokal tanpa 0
+                formattedPhone = '62' + formattedPhone;
+            }
+            if (formattedPhone.length < 10) return null; // Nomor terlalu pendek
+            return `https://wa.me/${formattedPhone}`;
+        }
+
         // [PENYEMPURNAAN] Struk dengan Nama Mitra
         function generateReceiptHTML(order) {
             const member = members.find(m => m.id === order.memberId);
@@ -3487,11 +3585,17 @@
             const filtered = members.filter(m => !searchTerm || m.name.toLowerCase().includes(searchTerm.toLowerCase()) || m.id.toLowerCase().includes(searchTerm.toLowerCase()) || m.phone.includes(searchTerm));
             if (filtered.length === 0) return $list.html('<div class="empty-state"><p>Belum ada member terdaftar.</p></div>');
             filtered.forEach(m => {
+                // [PERBAIKAN BARU] Tambah link WA
+                const waLink = formatWhatsappLink(m.phone);
+                const phoneDisplay = waLink 
+                    ? `<a href="${waLink}" target="_blank" class="whatsapp-link">${m.phone} <i class="fab fa-whatsapp"></i></a>` 
+                    : m.phone;
+
                 $list.append(`
                     <div class="order-item">
                         <div class="order-item-info">
                             <div class="order-item-name">${m.name} <span class="member-badge">${m.id}</span></div>
-                            <div class="order-item-price">${m.phone} | Total Belanja: ${formatCurrency(m.totalSpent || 0)}</div>
+                            <div class="order-item-price">${phoneDisplay} | Total Belanja: ${formatCurrency(m.totalSpent || 0)}</div>
                         </div>
                         <div class="order-item-qty gap-2">
                             <i class="fas fa-id-card kta-member" style="cursor:pointer; color: var(--success);" data-id="${m.id}"></i>
@@ -3620,9 +3724,15 @@
             promptForPassword('panel', () => {
                 switchModalTab($('#controlPanelModal'), 'users');
                 loadUsers();
+                // [PERBAIKAN BARU] Muat pengaturan diskon
                 $('#memberDiscount').val(settings.memberDiscountPercent ?? 0);
                 $('#nonMemberDiscount').val(settings.nonMemberDiscountPercent ?? 0);
                 $('#taxPercent').val(settings.taxPercent ?? 0);
+                
+                $('#enableMemberDiscount').prop('checked', settings.enableMemberDiscount ?? false);
+                $('#memberDiscountMinPurchase').val(settings.memberDiscountMinPurchase ?? 0);
+                $('#memberDiscountSettings').toggle(settings.enableMemberDiscount ?? false);
+                
                 $('#controlPanelModal').css('display', 'flex');
             });
         }
@@ -3736,14 +3846,20 @@
             showToast('Password login Anda berhasil diubah.', 'success');
         }
         
+        // [FUNGSI DIPERBAIKI] Menyimpan pengaturan diskon baru
         function saveTaxDiscountSettings(e) {
             e.preventDefault();
+            // [PERBAIKAN BARU]
+            settings.enableMemberDiscount = $('#enableMemberDiscount').is(':checked');
+            settings.memberDiscountMinPurchase = parseFloat($('#memberDiscountMinPurchase').val()) || 0;
+
             settings.memberDiscountPercent = parseFloat($('#memberDiscount').val()) || 0;
             settings.nonMemberDiscountPercent = parseFloat($('#nonMemberDiscount').val()) || 0;
             settings.taxPercent = parseFloat($('#taxPercent').val()) || 0;
             saveSettings();
             showToast('Pengaturan diskon & pajak berhasil disimpan.', 'success');
         }
+
         
         function openRoleManagementModal() {
             const $tabs = $('#roleTabsContainer').empty();
@@ -3866,35 +3982,60 @@
             
             for (let i = 0; i < 5; i++) {
                 ctx.beginPath();
-                ctx.moveTo(Math.random() * canvas.width, Math.random() * canvas.height);
-                ctx.lineTo(Math.random() * canvas.width, Math.random() * canvas.height);
-                ctx.strokeStyle = '#ccc';
+                ctx.moveTo(Math.random() * 150, Math.random() * 40); // 150x40 adalah ukuran canvas
+                ctx.lineTo(Math.random() * 150, Math.random() * 40);
+                ctx.strokeStyle = '#bbb'; // Warna garis noise
                 ctx.stroke();
+            }
+        } // [AKHIR FUNGSI generateCaptcha]
+
+        // --- [BARU] Helper load produk untuk select (dipakai di 2 tempat)
+        function loadProductsForStockIn() {
+            const $select = $('#stockInProduct').empty();
+            // Urutkan produk berdasarkan nama
+            const sortedProducts = [...products].sort((a,b) => a.name.localeCompare(b.name));
+            
+            if(sortedProducts.length === 0) {
+                $select.append('<option value="" disabled>Belum ada produk</option>');
+            } else {
+                sortedProducts.forEach(p => $select.append(`<option value="${p.id}">${p.name} (${p.unit || 'Pcs'})</option>`));
+            }
+            // Reset search filter
+            $('#stockInProductSearch').val('');
+        }
+
+        // --- [BARU] Helper load suplier untuk select
+        function loadSuppliersForSelect() {
+            const $select = $('#stockInSupplier').html('<option value="pembelian_mandiri">Pembelian Mandiri (Kulak)</option>');
+            // Urutkan suplier berdasarkan nama
+            const sortedSuppliers = [...suppliers].sort((a,b) => a.name.localeCompare(b.name));
+            sortedSuppliers.forEach(s => $select.append(`<option value="${s.id}">${s.name}</option>`));
+        }
+
+        // --- FUNGSI HELPER PENYIMPANAN DATA ---
+        // Fungsi-fungsi ini membungkus localStorage.setItem untuk menyimpan data
+        
+        function saveData(key, data) {
+            try {
+                // Menyimpan data sebagai string JSON ke localStorage
+                localStorage.setItem(key, JSON.stringify(data));
+            } catch (e) {
+                console.error("Gagal menyimpan data ke localStorage:", key, e);
+                showToast('Error: Gagal menyimpan data. Mungkin penyimpanan penuh.', 'error');
             }
         }
         
-        function loadProductsForStockIn() {
-            const $select = $('#stockInProduct').empty();
-            products.sort((a,b) => a.name.localeCompare(b.name)).forEach(p => {
-                $select.append(`<option value="${p.id}">${p.name} (Stok: ${p.stock})</option>`);
-            });
-        }
-        
-        function loadSuppliersForSelect() {
-            const $select = $('#stockInSupplier').html('<option value="pembelian_mandiri">Pembelian Mandiri (Kulak)</option>');
-            suppliers.forEach(s => $select.append(`<option value="${s.id}">${s.name}</option>`));
-        }
-
-        function saveProducts() { localStorage.setItem(STORAGE_KEYS.PRODUCTS, JSON.stringify(products)); }
-        function saveCategories() { localStorage.setItem(STORAGE_KEYS.CATEGORIES, JSON.stringify(categories)); }
-        function saveOrders() { localStorage.setItem(STORAGE_KEYS.ORDERS, JSON.stringify(orders)); }
-        function saveSettings() { localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(settings)); }
-        function saveUsers() { localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(users)); }
-        function saveMembers() { localStorage.setItem(STORAGE_KEYS.MEMBERS, JSON.stringify(members)); }
-        function saveSuppliers() { localStorage.setItem(STORAGE_KEYS.SUPPLIERS, JSON.stringify(suppliers)); }
-        function saveStockHistory() { localStorage.setItem(STORAGE_KEYS.STOCK_HISTORY, JSON.stringify(stockHistory)); }
-        function saveReturns() { localStorage.setItem(STORAGE_KEYS.RETURNS, JSON.stringify(returns)); }
-        function saveShifts() { localStorage.setItem(STORAGE_KEYS.SHIFTS, JSON.stringify(shifts)); }
+        // Kumpulan fungsi save yang dipanggil di berbagai bagian kode
+        function saveProducts() { saveData(STORAGE_KEYS.PRODUCTS, products); }
+        function saveCategories() { saveData(STORAGE_KEYS.CATEGORIES, categories); }
+        function saveOrders() { saveData(STORAGE_KEYS.ORDERS, orders); }
+        function saveSettings() { saveData(STORAGE_KEYS.SETTINGS, settings); }
+        function saveUsers() { saveData(STORAGE_KEYS.USERS, users); }
+        function saveMembers() { saveData(STORAGE_KEYS.MEMBERS, members); }
+        function saveSuppliers() { saveData(STORAGE_KEYS.SUPPLIERS, suppliers); }
+        function saveStockHistory() { saveData(STORAGE_KEYS.STOCK_HISTORY, stockHistory); }
+        function saveReturns() { saveData(STORAGE_KEYS.RETURNS, returns); }
+        function saveShifts() { saveData(STORAGE_KEYS.SHIFTS, shifts); }
 
     </script>
 </body>
