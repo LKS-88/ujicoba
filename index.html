@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Editor Flyer Super Canggih (V2.4 - Penyempurnaan Desain Pro)</title>
+    <title>Editor Flyer Super Canggih (V2.5 - Revisi Desain Profesional)</title>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" integrity="sha512-BNaRQnYJYiPSqHHDb58B0yaPfCu+Wgds8Gp/gU33kqBtgNS4tSPHuGibjNQVbXlHARe0dHYNbaKNPjcrea1lBA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     
@@ -137,6 +137,14 @@
             align-items: center;
             gap: 6px;
         }
+        
+        /* [REVISI V2.5] Ikon di legend diberi warna primer */
+        legend i {
+            color: var(--primary-color);
+            width: 18px;
+            height: 18px;
+        }
+
 
         /* --- Kontainer Gambar (Canvas) --- */
         #canvas-container {
@@ -276,7 +284,7 @@
             box-shadow: 0 0 0 3px var(--focus-ring);
         }
 
-        /* Grup Tombol Formatting (Tidak berubah signifikan) */
+        /* [REVISI V2.5] Grup Tombol Formatting (B, I, U) Dibuat Lebih Jelas */
         .format-group {
             display: flex;
             gap: 5px;
@@ -288,20 +296,32 @@
             align-items: center;
             justify-content: center;
             padding: 8px 12px;
-            border: 1px solid var(--control-border);
-            background-color: var(--panel-color);
-            color: var(--text-muted);
+            
+            /* [DIUBAH] Diberi latar & warna teks agar tidak 'putih' */
+            border: 1px solid var(--border-color);
+            background-color: var(--bg-color); /* Latar abu-abu muda */
+            color: var(--text-color); /* Teks/ikon lebih gelap */
+            
             cursor: pointer;
             border-radius: 4px;
-            transition: background-color 0.1s, border-color 0.1s, color 0.1s;
+            transition: background-color 0.1s, border-color 0.1s, color 0.1s, opacity 0.1s;
+            opacity: 0.85; /* Sedikit pudar saat tidak aktif */
         }
         .format-group button:hover {
-            background-color: #f9fafb;
-            color: var(--text-color);
+            background-color: #eef2ff; /* Latar hover (Indigo-50) */
+            color: var(--primary-hover); /* Ikon/teks jadi biru */
+            border-color: var(--primary-color);
+            opacity: 1;
         }
         .format-group button i {
             width: 16px;
             height: 16px;
+        }
+        .format-group button.active {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+            opacity: 1;
         }
         
         /* Grup Tombol Lapisan */
@@ -330,12 +350,6 @@
             background: var(--warning-hover);
             box-shadow: 0 4px 12px rgba(245, 158, 11, 0.25);
             opacity: 1;
-        }
-        
-        .format-group button.active {
-            background-color: var(--primary-color);
-            color: white;
-            border-color: var(--primary-color);
         }
         
         /* --- Elemen di Canvas (Tidak Berubah) --- */
@@ -394,54 +408,57 @@
             box-shadow: none !important;
         }
 
-        /* --- [DIREVISI] CSS NAVIGATOR (PINDAH KE CONTROL-PANEL) --- */
+        /* --- [REVISI V2.5] CSS NAVIGATOR (LEBIH JELAS & MEWAH) --- */
         #floating-nav {
-            /* [DIUBAH] Menggunakan sticky di dalam control-panel */
+            /* Posisi sticky di dalam panel kontrol (Tetap, sudah bagus) */
             position: sticky; 
-            bottom: 15px; /* Jarak dari bawah control-panel */
-            
-            /* [DIUBAH] Pusatkan di dalam control-panel */
+            bottom: 15px; 
             left: 50%;
             transform: translateX(-50%);
-            width: fit-content; /* Agar tidak 100% width */
-            margin-top: 20px; /* Jarak dari fieldset terakhir jika tidak sticky */
+            width: fit-content; 
+            margin-top: 20px; 
 
-            /* Style lama (dijaga) */
-            background-color: var(--panel-color);
+            /* [DIUBAH] Style baru: Latar belakang semi-transparan untuk efek 'floating' */
+            background-color: rgba(249, 250, 251, 0.8); /* var(--bg-color) + transparansi */
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            
             border: 1px solid var(--border-color);
             border-radius: 50px; 
             box-shadow: var(--shadow-lg); /* Shadow baru */
             display: flex;
             gap: 5px;
             padding: 8px;
-            z-index: 1000; /* Z-index bisa lebih rendah, hanya perlu di atas controls */
+            z-index: 1000;
         }
         #floating-nav button {
-            background-color: transparent;
+            /* [DIUBAH] Tombol diberi warna primer agar JELAS dan KONTRAST */
+            background-color: var(--primary-color);
+            color: white; /* Ikon jadi putih */
+            
             border: none;
             border-radius: 50%;
-            width: 48px;
-            height: 48px;
-            color: var(--text-muted); /* Warna ikon */
+            width: 44px;  /* Sedikit lebih proporsional */
+            height: 44px; /* Sedikit lebih proporsional */
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: background-color 0.2s, transform 0.2s, color 0.2s;
+            transition: background-color 0.2s, transform 0.2s;
         }
         #floating-nav button:hover {
-            background-color: var(--bg-color); /* Latar hover lembut */
-            color: var(--primary-color); /* Ikon berubah warna */
-            transform: scale(1.1);
+            background-color: var(--primary-hover); /* Warna hover lebih gelap */
+            color: white; /* Tetap putih */
+            transform: scale(1.1); /* Efek hover tetap */
         }
         #floating-nav button i {
-            width: 24px;
-            height: 24px;
+            width: 22px; /* Disesuaikan dengan ukuran tombol */
+            height: 22px; /* Disesuaikan dengan ukuran tombol */
         }
         .nav-context-btn {
             display: none; 
         }
-        /* --- [AKHIR DIREVISI] CSS NAVIGATOR --- */
+        /* --- [AKHIR REVISI] CSS NAVIGATOR --- */
 
 
         /* Perbaikan Responsif */
@@ -462,11 +479,6 @@
             h1 {
                 font-size: 1.8em; /* Disesuaikan sedikit */
             }
-            /* [DIHAPUS] Perbaikan #floating-nav lama tidak diperlukan lagi
-            #floating-nav {
-                bottom: 80px; 
-            }
-            */
         }
 
     </style>
@@ -535,10 +547,12 @@
         // ==================================
         //         JAVASCRIPT (OTAKNYA)
         // ==================================
-
-        // Fungsionalitas inti (V2.2) tidak diubah.
-        // Hanya penambahan ikon pada render dinamis.
-
+        
+        // --- [CATATAN] ---
+        // Tidak ada perubahan apapun pada JavaScript.
+        // Fungsionalitas 100% sama dengan V2.4.
+        // Perubahan hanya pada CSS di <head>.
+        
         const canvasContainer = document.getElementById('canvas-container');
         const imageUpload = document.getElementById('image-upload');
         const addTextBtn = document.getElementById('add-text-btn');
@@ -778,8 +792,9 @@
         }
 
 
-        // --- Bagian 5: Render Formulir Kontrol Dinamis (DENGAN FIELDSET) ---
-        // [DIREVISI] Menambahkan ikon Lucide ke <legend>
+        // --- Bagian 5: Render Formulir Kontrol Dinamis (Tidak Berubah) ---
+        // Penambahan ikon pada <legend> sudah di-handle oleh CSS (v2.4)
+        // dan JS ini sudah benar memanggil lucide.createIcons().
 
         function renderControls(element) {
             const isText = element.classList.contains('text-element');
@@ -809,7 +824,7 @@
                     width: parseFloat(element.style.width) || 300,
                 };
 
-                // [DIREVISI] Ikon di <legend>
+                // Ikon di <legend>
                 contentControls = `
                     <fieldset id="fieldset-text-controls"> <legend><i data-lucide="type"></i> Kontrol Teks (#${elementId})</legend>
                         <div class="element-control">
@@ -897,7 +912,7 @@
                 const currentSize = parseFloat(element.dataset.width) || 150;
                 const maxCanvasSize = Math.max(canvasContainer.clientWidth, canvasContainer.clientHeight);
 
-                // [DIREVISI] Ikon di <legend>
+                // Ikon di <legend>
                 contentControls = `
                     <fieldset id="fieldset-image-controls"> <legend><i data-lucide="image"></i> Kontrol Gambar (#${elementId})</legend>
                         <div class="element-control">
@@ -919,7 +934,7 @@
                 `;
             }
 
-            // [DIREVISI] Ikon di <legend>
+            // Ikon di <legend>
             const commonControls = `
                 <fieldset id="fieldset-common-controls"> <legend><i data-lucide="layers"></i> Lapisan, Posisi & Lainnya</legend>
                     <div class="element-control">
