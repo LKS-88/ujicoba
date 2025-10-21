@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Editor Flyer Canggih</title>
+    <title>Editor Flyer Super Canggih</title>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" integrity="sha512-BNaRQnYJYiPSqHHDb58B0yaPfCu+Wgds8Gp/gU33kqBtgNS4tSPHuGibjNQVbXlHARe0dHYNbaKNPjcrea1lBA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
@@ -38,17 +38,17 @@
             border-radius: 12px;
             box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
         }
-
-        /* Panel Kontrol */
+        
         #control-panel {
             flex: 1; 
             min-width: 320px;
             padding: 20px;
             background-color: #fdfdff;
             border-right: 1px solid var(--border-color);
+            max-height: 90vh;
+            overflow-y: auto; /* Agar kontrol bisa di-scroll */
         }
         
-        /* Panel Pratinjau (Area Gambar) */
         #preview-panel {
             flex: 2; 
             min-width: 600px;
@@ -57,21 +57,26 @@
             flex-direction: column;
         }
         
-        /* Area tempat flyer dibuat */
+        /* Kontainer Gambar (Canvas) */
         #canvas-container {
             flex-grow: 1;
             border: 2px dashed var(--border-color);
             border-radius: 8px;
-            min-height: 550px;
-            position: relative; /* PENTING: Untuk posisi absolut elemen di dalamnya */
-            overflow: hidden; /* Pastikan elemen tidak keluar */
+            min-height: 550px; 
+            position: relative;
+            overflow: hidden;
             background-color: #f9f9f9;
-            background-size: cover;
+            background-size: contain; /* PERBAIKAN: Gunakan 'contain' atau 'cover' */
             background-position: center;
             background-repeat: no-repeat;
+            
+            /* Untuk memastikan html2canvas menangkap semua background */
+            width: 100%;
+            height: auto; 
+            aspect-ratio: 16 / 9; /* Rasio default */
         }
 
-        /* Tombol Aksi */
+        /* --- Kontrol Elemen --- */
         .action-button {
             padding: 10px;
             background-color: var(--primary-color);
@@ -82,52 +87,24 @@
             margin-top: 10px;
             font-weight: 600;
             transition: background-color 0.2s;
-        }
-        .action-button:hover {
-            background-color: #0056b3;
-        }
-
-        #generate-btn {
-            background-color: var(--success-color);
             width: 100%;
-            margin-top: 20px;
-        }
-        
-        #generate-btn:hover {
-            background-color: #218838;
         }
 
-        /* Kontrol Elemen */
         .element-control {
             border: 1px solid var(--control-border);
             padding: 15px;
-            margin-bottom: 10px;
+            margin-top: 10px;
             border-radius: 8px;
             background: #fff;
         }
-        .element-control h4 {
-            margin-top: 0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .element-control button.delete-btn {
-            background: #dc3545;
-            color: white;
-            border: none;
-            padding: 5px 10px;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-
-        /* Style untuk Elemen yang Bisa Di-Drag (di Canvas) */
+        
+        /* --- Elemen di Canvas --- */
         .draggable-element {
-            position: absolute; /* PENTING untuk drag */
+            position: absolute;
             cursor: move;
             padding: 5px;
             border: 2px dashed transparent;
-            min-width: 50px;
-            user-select: none; /* Agar teks tidak terpilih saat di-drag */
+            user-select: none;
         }
         
         .draggable-element:hover {
@@ -139,39 +116,28 @@
             box-shadow: 0 0 10px rgba(0, 102, 255, 0.5);
         }
 
-        /* Style Teks */
         .draggable-text {
-            font-family: Arial, sans-serif;
-            font-size: 24px;
+            /* Teks bisa memanjang sesuai isi, tidak perlu width:100% */
+            display: block; 
             white-space: pre-wrap;
             word-wrap: break-word;
+            /* Tambahan: default gradien untuk menghindari bug awal */
+            background: transparent;
+            -webkit-background-clip: unset;
+            -webkit-text-fill-color: unset;
         }
 
-        /* Style Gambar/Logo */
+        /* Teks dengan Gradien */
+        .draggable-text.gradient-active {
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
         .draggable-image {
-            max-width: 100%;
-            height: auto;
-            pointer-events: none; /* Agar klik menangkap div-nya, bukan img-nya */
-        }
-        
-        /* Grup Tombol Formatting */
-        .format-group {
-            display: flex;
-            gap: 5px;
-            margin-bottom: 10px;
-        }
-        .format-group button {
-            flex-grow: 1;
-            padding: 8px 5px;
-            border: 1px solid #ccc;
-            background: #eee;
-            cursor: pointer;
-            border-radius: 4px;
-        }
-        .format-group button.active {
-            background: var(--primary-color);
-            color: white;
-            border-color: var(--primary-color);
+            width: 100%; /* Gambar mengisi kontainer elemennya */
+            height: 100%;
+            object-fit: contain; /* Agar gambar tidak terpotong */
+            pointer-events: none;
         }
         
         /* Sembunyikan border saat generate */
@@ -185,19 +151,27 @@
 <body>
     
     <main>
-        <h1>Editor Flyer/Pamflet Interaktif 🚀</h1>
+        <h1>Editor Flyer Super Canggih 🎨</h1>
         <div id="app-container">
 
             <section id="control-panel">
                 <h2>1. Latar Belakang & Aksi</h2>
                 
                 <div class="form-group">
-                    <label for="image-upload">Upload Latar Belakang (Wajib)</label>
+                    <label for="bg-fit-select">Opsi Tampilan Background:</label>
+                    <select id="bg-fit-select" onchange="updateBackgroundFit(this.value)">
+                        <option value="contain">Contain (Lihat Semua)</option>
+                        <option value="cover">Cover (Penuhi Area)</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="image-upload">Upload Latar Belakang</label>
                     <input type="file" id="image-upload" accept="image/png, image/jpeg">
                 </div>
                 
-                <button class="action-button" id="add-text-btn">➕ Tambah Teks Baru</button>
-                <button class="action-button" id="add-logo-btn">➕ Tambah Logo/Gambar Kecil</button>
+                <button class="action-button" id="add-text-btn">➕ Tambah Teks Baru (Tak Terbatas)</button>
+                <button class="action-button" id="add-image-btn">➕ Tambah Gambar/Logo Baru (Tak Terbatas)</button>
                 
                 <hr style="margin: 20px 0;">
                 
@@ -213,10 +187,10 @@
             <section id="preview-panel">
                 <h2>3. Area Desain & Pratinjau</h2>
                 
-                <div id="canvas-container">
+                <div id="canvas-container" onclick="setActiveElement(null)">
                     </div>
                 
-                <button id="generate-btn">⬇️ Download Flyer (PNG)</button>
+                <button class="action-button" id="generate-btn" style="background-color: var(--success-color);">⬇️ Download Flyer (PNG)</button>
             </section>
 
         </div>
@@ -230,31 +204,30 @@
         const canvasContainer = document.getElementById('canvas-container');
         const imageUpload = document.getElementById('image-upload');
         const addTextBtn = document.getElementById('add-text-btn');
-        const addLogoBtn = document.getElementById('add-logo-btn');
+        const addImageBtn = document.getElementById('add-image-btn');
         const generateBtn = document.getElementById('generate-btn');
         const controlsArea = document.getElementById('element-controls-area');
+        const bgFitSelect = document.getElementById('bg-fit-select');
 
         let activeElement = null;
         let elementCounter = 0;
         
         // --- Bagian 1: Logika Multi-Elemen dan Kontrol ---
 
-        // Fungsi untuk mengatur elemen yang sedang aktif
         function setActiveElement(element) {
-            // Hapus status 'active' dari elemen sebelumnya
             document.querySelectorAll('.draggable-element').forEach(el => el.classList.remove('active'));
             
-            if (element) {
+            if (element && element !== activeElement) {
                 element.classList.add('active');
                 activeElement = element;
-                renderControls(element); // Tampilkan formulir kontrol
-            } else {
+                renderControls(element);
+            } else if (element === null) {
                 activeElement = null;
                 controlsArea.innerHTML = '<p style="color: #6c757d;">Pilih elemen di meja gambar.</p>';
             }
         }
 
-        // Fungsi untuk membuat dan menambahkan elemen baru
+        // Fungsi untuk membuat dan menambahkan elemen baru (Teks atau Gambar/Logo)
         function createElement(type, content = '') {
             elementCounter++;
             const id = `el-${elementCounter}`;
@@ -262,185 +235,285 @@
             const element = document.createElement('div');
             element.id = id;
             element.classList.add('draggable-element', type === 'text' ? 'text-element' : 'image-element');
-            element.style.top = '50px';
-            element.style.left = '50px';
-
+            
+            // Set posisi awal random agar tidak bertumpuk
+            const randomX = Math.floor(Math.random() * 50) + 50;
+            const randomY = Math.floor(Math.random() * 50) + 50;
+            element.style.top = `${randomY}px`;
+            element.style.left = `${randomX}px`;
+            
             if (type === 'text') {
-                element.innerHTML = `<span class="draggable-text">${content || 'Klik untuk mengedit teks ini'}</span>`;
+                element.innerHTML = `<span class="draggable-text">${content || 'Teks Baru! Klik untuk edit'}</span>`;
+                element.style.width = '300px'; // Lebar default agar teks multiline berfungsi
             } else if (type === 'image') {
-                // Gambar placeholder, akan diganti saat upload
-                element.innerHTML = `<img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" class="draggable-image" style="width: 100px; height: auto;">`;
-                element.style.width = '100px';
+                element.innerHTML = `<img src="" class="draggable-image" alt="Logo">`;
+                element.style.width = '150px'; // Ukuran awal default
+                element.style.height = '150px';
+                // Tambahkan listener untuk upload gambar saat pertama dibuat
+                alert("Silakan unggah gambar pada panel kontrol 'Elemen Aktif' di sebelah kiri.");
             }
             
             canvasContainer.appendChild(element);
-            makeDraggable(element); // Aktifkan fungsi drag
+            makeDraggable(element);
             
             element.addEventListener('mousedown', (e) => {
-                e.stopPropagation(); // Penting agar tidak mengganggu drag
+                e.stopPropagation();
                 setActiveElement(element);
             });
             
-            // Atur elemen baru menjadi aktif
             setActiveElement(element);
         }
         
-        addTextBtn.addEventListener('click', () => createElement('text', 'Teks Promosi Baru'));
-        addLogoBtn.addEventListener('click', () => createElement('image'));
+        addTextBtn.addEventListener('click', () => createElement('text', 'Teks Baru!'));
+        addImageBtn.addEventListener('click', () => createElement('image'));
         
         // --- Bagian 2: Render Formulir Kontrol Dinamis ---
 
         function renderControls(element) {
             const isText = element.classList.contains('text-element');
             const elementId = element.id;
+            
+            // Logika untuk Teks
+            let textControls = '';
+            if (isText) {
+                const textSpan = element.querySelector('.draggable-text');
+                // Mengambil style saat ini atau nilai default
+                const currentData = {
+                    text: textSpan.textContent,
+                    fontSize: parseFloat(textSpan.style.fontSize) || 24,
+                    color: textSpan.style.color || '#000000',
+                    family: textSpan.style.fontFamily || 'Arial, sans-serif',
+                    lineHeight: parseFloat(textSpan.style.lineHeight) || 1.4,
+                    letterSpacing: parseFloat(textSpan.style.letterSpacing) || 0,
+                    align: textSpan.style.textAlign || 'center',
+                    fontWeight: textSpan.style.fontWeight || 'normal',
+                    fontStyle: textSpan.style.fontStyle || 'normal',
+                    textDecoration: textSpan.style.textDecoration || 'none',
+                    
+                    // Gradien
+                    isGradient: textSpan.classList.contains('gradient-active'),
+                    gradientType: element.dataset.gradientType || 'linear',
+                    gradientColor1: element.dataset.color1 || '#ff0000',
+                    gradientColor2: element.dataset.color2 || '#0000ff',
+                    gradientDirection: element.dataset.direction || '90deg',
+                };
+
+                textControls = `
+                    <div class="form-group">
+                        <label>Isi Teks</label>
+                        <textarea rows="3" oninput="updateStyle('${elementId}', 'text', this.value)">${currentData.text}</textarea>
+                    </div>
+                    
+                    <label>Formatting Teks</label>
+                    <div class="format-group">
+                        <button onclick="toggleFormat('${elementId}', 'fontWeight', 'bold')" class="${currentData.fontWeight === 'bold' ? 'active' : ''}">B</button>
+                        <button onclick="toggleFormat('${elementId}', 'fontStyle', 'italic')" class="${currentData.fontStyle === 'italic' ? 'active' : ''}">I</button>
+                        <button onclick="toggleFormat('${elementId}', 'textDecoration', 'underline')" class="${currentData.textDecoration.includes('underline') ? 'active' : ''}">U</button>
+                        <button onclick="toggleFormat('${elementId}', 'textDecoration', 'line-through')" class="${currentData.textDecoration.includes('line-through') ? 'active' : ''}">S</button>
+                    </div>
+                    
+                    <label>Rata Teks</label>
+                    <div class="format-group">
+                        <button onclick="updateStyle('${elementId}', 'textAlign', 'left')" class="${currentData.align === 'left' ? 'active' : ''}">Kiri</button>
+                        <button onclick="updateStyle('${elementId}', 'textAlign', 'center')" class="${currentData.align === 'center' ? 'active' : ''}">Tengah</button>
+                        <button onclick="updateStyle('${elementId}', 'textAlign', 'right')" class="${currentData.align === 'right' ? 'active' : ''}">Kanan</button>
+                        <button onclick="updateStyle('${elementId}', 'textAlign', 'justify')" class="${currentData.align === 'justify' ? 'active' : ''}">Rata</button>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Jenis Font</label>
+                        <select onchange="updateStyle('${elementId}', 'fontFamily', this.value)">
+                            <option value="Arial, sans-serif" ${currentData.family.includes('Arial') ? 'selected' : ''}>Arial</option>
+                            <option value="'Impact', sans-serif" ${currentData.family.includes('Impact') ? 'selected' : ''}>Impact (Tebal)</option>
+                            <option value="Verdana, sans-serif" ${currentData.family.includes('Verdana') ? 'selected' : ''}>Verdana</option>
+                            <option value="'Times New Roman', serif" ${currentData.family.includes('Times New Roman') ? 'selected' : ''}>Times New Roman</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Ukuran Font (px) / Lebar Kotak Teks (px)</label>
+                        <div style="display: flex; gap: 10px;">
+                            <input type="number" value="${currentData.fontSize}" min="8" oninput="updateStyle('${elementId}', 'fontSize', this.value + 'px')">
+                            <input type="number" value="${parseFloat(element.style.width) || 300}" min="50" oninput="updateStyle('${elementId}', 'width', this.value + 'px')">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group" style="border: 1px dashed #ccc; padding: 10px;">
+                        <label>Pilihan Warna</label>
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <label style="font-weight: normal;"><input type="radio" name="color_mode" value="solid" ${!currentData.isGradient ? 'checked' : ''} onclick="toggleGradient('${elementId}', false)"> Warna Solid</label>
+                            <label style="font-weight: normal;"><input type="radio" name="color_mode" value="gradient" ${currentData.isGradient ? 'checked' : ''} onclick="toggleGradient('${elementId}', true)"> Warna Gradien</label>
+                        </div>
+                        
+                        <div id="solid-color-${elementId}" style="display: ${!currentData.isGradient ? 'block' : 'none'};">
+                            <label>Warna Solid (Pilih Warna)</label>
+                            <input type="color" value="${currentData.color}" oninput="updateStyle('${elementId}', 'color', this.value)">
+                        </div>
+
+                        <div id="gradient-color-${elementId}" style="display: ${currentData.isGradient ? 'block' : 'none'}; margin-top: 10px;">
+                            <label>Warna 1:</label><input type="color" value="${currentData.gradientColor1}" oninput="updateGradient('${elementId}')">
+                            <label>Warna 2:</label><input type="color" value="${currentData.gradientColor2}" oninput="updateGradient('${elementId}')">
+                            <label>Tipe Gradien:</label>
+                            <select onchange="updateGradient('${elementId}', 'type', this.value)">
+                                <option value="linear" ${currentData.gradientType === 'linear' ? 'selected' : ''}>Linear (Garis Lurus)</option>
+                                <option value="radial" ${currentData.gradientType === 'radial' ? 'selected' : ''}>Radial (Mel dilingkar)</option>
+                            </select>
+                            <label>Arah (untuk Linear):</label>
+                            <input type="text" value="${currentData.gradientDirection}" placeholder="90deg, to right, etc." oninput="updateGradient('${elementId}', 'direction', this.value)">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Jarak Baris / Huruf (px)</label>
+                        <div style="display: flex; gap: 10px;">
+                            <input type="number" value="${currentData.lineHeight}" step="0.1" min="0.5" oninput="updateStyle('${elementId}', 'lineHeight', this.value)" placeholder="Jarak Baris">
+                            <input type="number" value="${currentData.letterSpacing}" step="0.1" oninput="updateStyle('${elementId}', 'letterSpacing', this.value + 'px')" placeholder="Jarak Huruf">
+                        </div>
+                    </div>
+                `;
+            } 
+            
+            // Logika untuk Gambar/Logo
+            let imageControls = '';
+            if (!isText) {
+                const img = element.querySelector('.draggable-image');
+                const currentWidth = parseFloat(element.style.width) || 150;
+                const currentHeight = parseFloat(element.style.height) || 150;
+
+                imageControls = `
+                    <div class="form-group">
+                        <label>Upload Gambar/Logo (Wajib)</label>
+                        <input type="file" accept="image/png, image/jpeg" onchange="uploadElementImage('${elementId}', this)">
+                    </div>
+                    <div class="form-group">
+                        <label>Ukuran Gambar (Lebar x Tinggi, dalam px)</label>
+                        <div style="display: flex; gap: 10px;">
+                            <input type="number" value="${currentWidth}" min="10" oninput="updateStyle('${elementId}', 'width', this.value + 'px')">
+                            <input type="number" value="${currentHeight}" min="10" oninput="updateStyle('${elementId}', 'height', this.value + 'px')">
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Gabungkan Kontrol
             let html = `
                 <div class="element-control">
                     <h4>
                         ${isText ? 'Teks' : 'Gambar'} #${elementId.split('-')[1]}
                         <button class="delete-btn" data-id="${elementId}">Hapus</button>
                     </h4>
+                    ${isText ? textControls : imageControls}
                 </div>
             `;
             
-            if (isText) {
-                const textSpan = element.querySelector('.draggable-text');
-                
-                // Ambil nilai style saat ini
-                const currentFontSize = parseFloat(textSpan.style.fontSize) || 24;
-                const currentColor = textSpan.style.color || '#000000';
-                const currentFamily = textSpan.style.fontFamily || 'Arial, sans-serif';
-                const currentLineHeight = parseFloat(textSpan.style.lineHeight) || 1.4;
-                const currentLetterSpacing = parseFloat(textSpan.style.letterSpacing) || 0;
-                const currentAlign = textSpan.style.textAlign || 'center';
-
-                html += `
-                    <div class="form-group">
-                        <label for="input-${elementId}-text">Isi Teks</label>
-                        <textarea id="input-${elementId}-text" rows="3" oninput="updateStyle('${elementId}', 'text', this.value)">${textSpan.textContent}</textarea>
-                    </div>
-                    
-                    <label>Formatting</label>
-                    <div class="format-group">
-                        <button onclick="toggleFormat('${elementId}', 'fontWeight', 'bold')" class="${textSpan.style.fontWeight === 'bold' ? 'active' : ''}">B</button>
-                        <button onclick="toggleFormat('${elementId}', 'fontStyle', 'italic')" class="${textSpan.style.fontStyle === 'italic' ? 'active' : ''}">I</button>
-                        <button onclick="toggleFormat('${elementId}', 'textDecoration', 'underline')" class="${textSpan.style.textDecoration.includes('underline') ? 'active' : ''}">U</button>
-                        <button onclick="toggleFormat('${elementId}', 'textDecoration', 'line-through')" class="${textSpan.style.textDecoration.includes('line-through') ? 'active' : ''}">S</button>
-                    </div>
-                    
-                    <label>Rata Teks</label>
-                    <div class="format-group">
-                        <button onclick="updateStyle('${elementId}', 'textAlign', 'left')" class="${currentAlign === 'left' ? 'active' : ''}">Rata Kiri</button>
-                        <button onclick="updateStyle('${elementId}', 'textAlign', 'center')" class="${currentAlign === 'center' ? 'active' : ''}">Tengah</button>
-                        <button onclick="updateStyle('${elementId}', 'textAlign', 'right')" class="${currentAlign === 'right' ? 'active' : ''}">Rata Kanan</button>
-                        <button onclick="updateStyle('${elementId}', 'textAlign', 'justify')" class="${currentAlign === 'justify' ? 'active' : ''}">Rata Kiri-Kanan</button>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Jenis Font</label>
-                        <select onchange="updateStyle('${elementId}', 'fontFamily', this.value)">
-                            <option value="Arial, sans-serif" ${currentFamily.includes('Arial') ? 'selected' : ''}>Arial</option>
-                            <option value="'Times New Roman', serif" ${currentFamily.includes('Times New Roman') ? 'selected' : ''}>Times New Roman</option>
-                            <option value="'Impact', sans-serif" ${currentFamily.includes('Impact') ? 'selected' : ''}>Impact</option>
-                            <option value="'Courier New', monospace" ${currentFamily.includes('Courier New') ? 'selected' : ''}>Courier New</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Ukuran Font (px)</label>
-                        <input type="number" value="${currentFontSize}" min="8" oninput="updateStyle('${elementId}', 'fontSize', this.value + 'px')">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>Warna Font</label>
-                        <input type="color" value="${currentColor}" oninput="updateStyle('${elementId}', 'color', this.value)">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>Jarak Baris</label>
-                        <input type="number" value="${currentLineHeight}" step="0.1" min="0.5" oninput="updateStyle('${elementId}', 'lineHeight', this.value)">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>Jarak Huruf (px)</label>
-                        <input type="number" value="${currentLetterSpacing}" step="0.1" oninput="updateStyle('${elementId}', 'letterSpacing', this.value + 'px')">
-                    </div>
-                `;
-            } else if (!isText) {
-                // Kontrol Gambar (Logo)
-                const img = element.querySelector('.draggable-image');
-                const currentWidth = parseFloat(element.style.width) || 100;
-
-                html += `
-                    <div class="form-group">
-                        <label>Upload Logo</label>
-                        <input type="file" accept="image/png, image/jpeg" onchange="uploadLogo('${elementId}', this)">
-                    </div>
-                    <div class="form-group">
-                        <label>Lebar Gambar (px)</label>
-                        <input type="number" value="${currentWidth}" min="10" oninput="updateStyle('${elementId}', 'width', this.value + 'px')">
-                    </div>
-                `;
-            }
-
             controlsArea.innerHTML = html;
             
-            // Tambahkan listener untuk tombol hapus yang baru dibuat
             document.querySelector(`.delete-btn[data-id="${elementId}"]`).addEventListener('click', deleteElement);
+            // Panggil updateGradient jika elemen aktif adalah teks dan gradiennya aktif (untuk memastikan background CSS diterapkan saat load kontrol)
+            if(isText && currentData.isGradient) {
+                 updateGradient(elementId);
+            }
         }
+        
+        // --- Fungsi Global untuk Style & Formatting ---
 
-        // Fungsi Global untuk Update Style (dipanggil dari 'oninput'/'onclick')
         window.updateStyle = function(id, prop, value) {
             const element = document.getElementById(id);
             if (!element) return;
             
-            // Teks atau Gambar?
-            const target = element.classList.contains('text-element') 
-                ? element.querySelector('.draggable-text') 
-                : element; 
+            const isText = element.classList.contains('text-element');
+            const target = isText ? element.querySelector('.draggable-text') : element;
                 
             if (prop === 'text') {
                 target.textContent = value;
-            } else if (prop === 'width') {
-                // Untuk gambar, kita atur lebar kontainernya
-                element.style.width = value;
+            } else if (prop === 'width' || prop === 'height') {
+                // Untuk gambar atau lebar kotak teks
+                element.style[prop] = value;
             } else {
-                // Untuk semua properti style CSS lainnya
+                // Untuk semua properti style CSS teks lainnya
                 target.style[prop] = value;
             }
             
-            // Re-render controls untuk memperbarui status tombol (misal: Rata Teks)
-            renderControls(element);
+            renderControls(element); // Re-render untuk memperbarui status tombol (misal: Rata Teks)
         }
         
-        // Fungsi Global untuk Toggle Format Teks
         window.toggleFormat = function(id, prop, value) {
             const element = document.getElementById(id);
             const textSpan = element.querySelector('.draggable-text');
             
             if (prop === 'textDecoration') {
-                // Khusus untuk garis bawah/coret, kita bisa memiliki keduanya
                 let current = textSpan.style.textDecoration || 'none';
                 if (current.includes(value)) {
-                    // Hapus jika sudah ada
                     current = current.replace(value, '').trim();
                 } else {
-                    // Tambahkan jika belum ada
                     current += ` ${value}`;
                 }
                 textSpan.style.textDecoration = current.trim() || 'none';
             } else {
-                // Untuk Bold dan Italic
                 if (textSpan.style[prop] === value) {
                     textSpan.style[prop] = 'normal';
                 } else {
                     textSpan.style[prop] = value;
                 }
             }
-            renderControls(element); // Update tampilan tombol
+            renderControls(element);
         }
         
-        // Fungsi Global untuk Upload Logo (hanya mengganti src gambar)
-        window.uploadLogo = function(id, inputElement) {
+        // --- Gradien Teks ---
+
+        window.toggleGradient = function(id, activate) {
+            const element = document.getElementById(id);
+            const textSpan = element.querySelector('.draggable-text');
+            const solidControl = document.getElementById(`solid-color-${id}`);
+            const gradientControl = document.getElementById(`gradient-color-${id}`);
+
+            if (activate) {
+                textSpan.classList.add('gradient-active');
+                solidControl.style.display = 'none';
+                gradientControl.style.display = 'block';
+                element.dataset.isGradient = 'true';
+                updateGradient(id); // Terapkan gradien default
+            } else {
+                textSpan.classList.remove('gradient-active');
+                textSpan.style.backgroundImage = 'none'; // Hapus background gradien
+                textSpan.style.color = element.dataset.color || '#000000'; // Kembalikan warna solid
+                solidControl.style.display = 'block';
+                gradientControl.style.display = 'none';
+                element.dataset.isGradient = 'false';
+            }
+            renderControls(element); // Re-render untuk memastikan radio button terupdate
+        }
+
+        window.updateGradient = function(id, prop, value) {
+            const element = document.getElementById(id);
+            const textSpan = element.querySelector('.draggable-text');
+
+            // Ambil data dari dataset/default
+            const type = prop === 'type' ? value : (element.dataset.gradientType || 'linear');
+            const color1 = prop === 'color1' ? value : (document.querySelector(`#gradient-color-${id} input[type="color"]:nth-child(2)`).value);
+            const color2 = prop === 'color2' ? value : (document.querySelector(`#gradient-color-${id} input[type="color"]:nth-child(3)`).value);
+            const direction = prop === 'direction' ? value : (document.querySelector(`#gradient-color-${id} input[type="text"]`).value || '90deg');
+
+            // Simpan data di elemen agar tetap ada setelah renderControls
+            element.dataset.gradientType = type;
+            element.dataset.color1 = color1;
+            element.dataset.color2 = color2;
+            element.dataset.direction = direction;
+
+            let gradientCSS = '';
+            if (type === 'linear') {
+                gradientCSS = `linear-gradient(${direction}, ${color1}, ${color2})`;
+            } else if (type === 'radial') {
+                gradientCSS = `radial-gradient(${color1}, ${color2})`;
+            }
+
+            // Terapkan gradien
+            textSpan.style.backgroundImage = gradientCSS;
+        }
+
+        // --- Upload Gambar & Logo ---
+
+        window.uploadElementImage = function(id, inputElement) {
             const file = inputElement.files[0];
             const element = document.getElementById(id);
             const img = element.querySelector('.draggable-image');
@@ -454,29 +527,34 @@
             }
         }
         
-        // Fungsi Hapus Elemen
-        function deleteElement(e) {
-            const id = e.target.getAttribute('data-id');
-            const elementToDelete = document.getElementById(id);
-            if (elementToDelete && confirm("Yakin ingin menghapus elemen ini?")) {
-                elementToDelete.remove();
-                setActiveElement(null);
+        imageUpload.addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    canvasContainer.style.backgroundImage = `url(${e.target.result})`;
+                };
+                reader.readAsDataURL(file);
             }
-        }
+        });
         
-        // --- Bagian 3: Logika Drag-and-Drop ---
+        window.updateBackgroundFit = function(fit) {
+             canvasContainer.style.backgroundSize = fit;
+        };
 
+        // --- Drag & Drop ---
         let isDragging = false;
         let currentDrag = null;
         let offset = { x: 0, y: 0 };
         
         function makeDraggable(element) {
             element.addEventListener('mousedown', dragStart);
-            element.addEventListener('touchstart', dragStart); // Dukungan sentuhan
+            element.addEventListener('touchstart', dragStart);
         }
 
         function dragStart(e) {
-            e.preventDefault(); // Mencegah drag browser default
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return; // Jangan drag jika klik di input/textarea
+            e.preventDefault();
             
             const element = this;
             setActiveElement(element);
@@ -484,11 +562,9 @@
             isDragging = true;
             currentDrag = element;
             
-            // Dapatkan posisi mouse/sentuhan
             const clientX = e.clientX || e.touches[0].clientX;
             const clientY = e.clientY || e.touches[0].clientY;
             
-            // Hitung offset (jarak klik dari tepi elemen)
             offset = {
                 x: clientX - element.offsetLeft,
                 y: clientY - element.offsetTop
@@ -503,7 +579,6 @@
         function dragMove(e) {
             if (!isDragging) return;
             
-            // Gunakan posisi mouse/sentuhan saat ini
             const clientX = e.clientX || e.touches[0].clientX;
             const clientY = e.clientY || e.touches[0].clientY;
 
@@ -531,62 +606,57 @@
             document.removeEventListener('touchend', dragEnd);
         }
         
-        // --- Bagian 4: Latar Belakang dan Generate ---
+        // --- Hapus Elemen ---
 
-        // Upload Latar Belakang
-        imageUpload.addEventListener('change', function(event) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    canvasContainer.style.backgroundImage = `url(${e.target.result})`;
-                };
-                reader.readAsDataURL(file);
+        function deleteElement(e) {
+            const id = e.target.getAttribute('data-id');
+            const elementToDelete = document.getElementById(id);
+            if (elementToDelete && confirm("Yakin ingin menghapus elemen ini?")) {
+                elementToDelete.remove();
+                setActiveElement(null);
             }
-        });
+        }
 
-        // Tombol Download
+        // --- Generate/Download Gambar ---
+
         generateBtn.addEventListener('click', function() {
-            // Nonaktifkan tombol
             generateBtn.textContent = 'Memproses...';
             generateBtn.disabled = true;
             
-            // Hapus semua border/shadow elemen yang aktif untuk 'screenshot' bersih
             canvasContainer.classList.add('generating');
-            setActiveElement(null); // Nonaktifkan seleksi
+            setActiveElement(null);
 
             html2canvas(canvasContainer, {
                 useCORS: true,
-                scale: 2, // Meningkatkan resolusi output
+                scale: 2, 
+                backgroundColor: '#ffffff', // Tambahkan warna background putih jika gambar tidak ada
                 windowWidth: canvasContainer.scrollWidth,
                 windowHeight: canvasContainer.scrollHeight
             }).then(canvas => {
                 const imageDataURL = canvas.toDataURL('image/png');
                 const downloadLink = document.createElement('a');
                 downloadLink.href = imageDataURL;
-                downloadLink.download = 'flyer_promosi_final.png';
+                downloadLink.download = 'flyer_promosi_gradien.png';
                 
                 document.body.appendChild(downloadLink);
                 downloadLink.click();
                 document.body.removeChild(downloadLink);
                 
-                // Kembalikan ke keadaan normal
                 canvasContainer.classList.remove('generating');
                 generateBtn.textContent = '⬇️ Download Flyer (PNG)';
                 generateBtn.disabled = false;
             }).catch(err => {
                 console.error('Gagal membuat gambar:', err);
-                alert('Maaf, gagal meng-generate gambar. Pastikan Anda sudah mengunggah latar belakang.');
+                alert('Maaf, gagal meng-generate gambar.');
                 canvasContainer.classList.remove('generating');
                 generateBtn.textContent = '⬇️ Download Flyer (PNG)';
                 generateBtn.disabled = false;
             });
         });
 
-        // Inisialisasi: Tambahkan teks default saat pertama kali dibuka
+        // Inisialisasi: Tambahkan teks default
         document.addEventListener('DOMContentLoaded', () => {
-            // Tambahkan elemen teks pertama sebagai contoh
-            createElement('text', 'DISC. 50% - KLIK SAYA UNTUK EDIT');
+             createElement('text', 'PROMOSI GRADIENT! Klik untuk Edit');
         });
     </script>
 
