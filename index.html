@@ -3,20 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Editor Flyer Super Canggih</title>
+    <title>Editor Flyer Super Canggih (V2)</title>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" integrity="sha512-BNaRQnYJYiPSqHHDb58B0yaPfCu+Wgds8Gp/gU33kqBtgNS4tSPHuGibjNQVbXlHARe0dHYNbaKNPjcrea1lBA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
     <style>
-        /* CSS Dasar */
+        /* CSS yang Disempurnakan */
         :root {
             --bg-color: #f4f7f6;
             --panel-color: #ffffff;
-            --border-color: #d1d9e6;
-            --primary-color: #0066ff;
+            --border-color: #e0e6ed;
+            --primary-color: #4A90E2; /* Biru yang lebih modern */
+            --primary-hover: #357ABD;
             --text-color: #333;
+            --text-muted: #6c757d;
             --success-color: #28a745;
-            --control-border: #f0f0f0;
+            --danger-color: #E02424;
+            --control-border: #d1d9e6;
         }
 
         body {
@@ -25,10 +28,12 @@
             color: var(--text-color);
             margin: 0;
             padding: 20px;
+            line-height: 1.5;
         }
 
         h1 {
             color: var(--primary-color);
+            text-align: center;
         }
 
         #app-container {
@@ -36,18 +41,19 @@
             flex-wrap: wrap;
             gap: 20px;
             width: 100%;
-            max-width: 1400px;
+            max-width: 1600px; /* Sedikit lebih lebar untuk layar besar */
             margin: 0 auto;
             background-color: var(--panel-color);
             border-radius: 12px;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            overflow: hidden; /* Menjaga border-radius */
         }
         
         #control-panel {
             flex: 1; 
-            min-width: 320px;
-            padding: 20px;
-            background-color: #fdfdff;
+            min-width: 340px;
+            padding: 25px;
+            background-color: #fcfdff;
             border-right: 1px solid var(--border-color);
             max-height: 90vh;
             overflow-y: auto; 
@@ -55,14 +61,31 @@
         }
         
         #preview-panel {
-            flex: 2; 
-            min-width: 600px;
-            padding: 20px;
+            flex: 2.5; /* Memberi lebih banyak ruang untuk preview */
+            min-width: 500px;
+            padding: 25px;
             display: flex;
             flex-direction: column;
         }
+
+        /* Grup Kontrol yang disempurnakan */
+        fieldset {
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin-bottom: 20px;
+            background-color: #fff;
+        }
         
-        /* Kontainer Gambar (Canvas) */
+        legend {
+            font-weight: 700;
+            font-size: 1.1em;
+            color: var(--primary-color);
+            padding: 0 8px;
+            margin-left: -8px;
+        }
+
+        /* --- Kontainer Gambar (Canvas) --- */
         #canvas-container {
             flex-grow: 1;
             border: 2px dashed var(--border-color);
@@ -78,11 +101,19 @@
             height: auto; 
             aspect-ratio: 16 / 9;
             cursor: pointer;
+            transition: border-color 0.2s;
+        }
+        #canvas-container:hover {
+            border-color: var(--primary-color);
         }
 
         /* --- Kontrol Elemen --- */
         .action-button {
-            padding: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 15px;
             background-color: var(--primary-color);
             color: white;
             border: none;
@@ -90,34 +121,58 @@
             cursor: pointer;
             margin-top: 10px;
             font-weight: 600;
-            transition: background-color 0.2s;
+            font-size: 1em;
+            transition: background-color 0.2s, box-shadow 0.2s;
             width: 100%;
         }
 
         .action-button:hover {
-            background-color: #0056e6;
+            background-color: var(--primary-hover);
+            box-shadow: 0 4px 12px rgba(74, 144, 226, 0.3);
         }
 
         .action-button:disabled {
             background-color: #ccc;
             cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .action-button.download-btn {
+            background-color: var(--success-color);
+        }
+        .action-button.download-btn:hover {
+            background-color: #218838;
+            box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+        }
+
+        .action-button.delete-btn {
+            background-color: var(--danger-color);
+        }
+        .action-button.delete-btn:hover {
+            background-color: #c81e1e;
+            box-shadow: 0 4px 12px rgba(224, 36, 36, 0.3);
         }
 
         .element-control {
-            border: 1px solid var(--control-border);
-            padding: 15px;
-            margin-top: 10px;
-            border-radius: 8px;
-            background: #fff;
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 12px;
+        }
+        
+        /* Placeholder yang disempurnakan */
+        .placeholder {
+            text-align: center;
+            padding: 20px;
+            color: var(--text-muted);
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            border: 1px dashed var(--border-color);
         }
 
         .form-group {
             display: flex;
             flex-direction: column;
-            gap: 5px;
+            gap: 6px;
         }
 
         .form-group label {
@@ -126,29 +181,55 @@
             color: #555;
         }
 
-        .form-group input, .form-group select, .form-group textarea {
-            padding: 8px;
+        /* Input yang disempurnakan dengan :focus */
+        .form-group input[type="text"],
+        .form-group input[type="number"],
+        .form-group input[type="file"],
+        .form-group input[type="color"],
+        .form-group select, 
+        .form-group textarea {
+            padding: 10px;
             border: 1px solid var(--control-border);
-            border-radius: 4px;
+            border-radius: 6px;
             box-sizing: border-box;
             width: 100%;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .form-group input[type="file"] {
+            padding: 8px; /* File input beda padding */
+        }
+        .form-group input[type="color"] {
+            padding: 4px; /* Color input beda padding */
+            min-height: 40px;
         }
         
+        .form-group input:focus, 
+        .form-group select:focus, 
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.2);
+        }
+
         /* Grup Tombol Formatting */
         .format-group {
             display: flex;
             gap: 5px;
-            margin-bottom: 10px;
+            margin-bottom: 5px;
         }
 
         .format-group button {
+            flex: 1;
             padding: 8px 12px;
             border: 1px solid var(--control-border);
             background-color: #f9f9f9;
             cursor: pointer;
             border-radius: 4px;
             font-weight: normal;
-            transition: background-color 0.1s;
+            transition: background-color 0.1s, border-color 0.1s;
+        }
+        .format-group button:hover {
+            background-color: #f0f0f0;
         }
         
         /* Grup Tombol Lapisan */
@@ -161,11 +242,20 @@
             flex: 1;
             background-color: #4CAF50; /* Hijau */
             color: white;
+            padding: 10px; /* Samakan padding */
         }
         
         .layer-group button:first-child {
             background-color: #ffc107; /* Kuning (Bawah) */
             color: #333;
+        }
+        .layer-group button:first-child:hover {
+            background-color: #e0a800;
+            box-shadow: 0 4px 12px rgba(255, 193, 7, 0.3);
+        }
+        .layer-group button:last-child:hover {
+            background-color: #45a049;
+            box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
         }
 
         .format-group button.active {
@@ -177,12 +267,13 @@
         /* --- Elemen di Canvas --- */
         .draggable-element {
             position: absolute;
-            cursor: grab; /* Ubah kursor untuk menunjukkan draggable */
+            cursor: grab;
             padding: 5px;
             border: 2px dashed transparent;
             user-select: none;
             box-sizing: content-box; 
-            touch-action: none; /* Penting untuk mencegah zoom/scroll pada sentuhan */
+            touch-action: none;
+            transition: border-color 0.1s, box-shadow 0.1s;
         }
         
         .draggable-element:active {
@@ -190,12 +281,13 @@
         }
         
         .draggable-element:hover {
-            border-color: rgba(0, 102, 255, 0.5);
+            border-color: rgba(74, 144, 226, 0.5);
         }
         
         .draggable-element.active {
-            border-color: var(--primary-color);
-            box-shadow: 0 0 10px rgba(0, 102, 255, 0.5);
+            border: 2px solid var(--primary-color); /* Ubah ke solid */
+            box-shadow: 0 0 10px rgba(74, 144, 226, 0.5);
+            z-index: 9998 !important; /* Selalu di atas saat aktif diedit (kecuali saat drag) */
         }
 
         .draggable-text {
@@ -206,11 +298,9 @@
             -webkit-background-clip: unset;
             -webkit-text-fill-color: unset;
             transition: all 0.1s ease-out; 
-            /* FIXED: Pastikan klik drag diarahkan ke parent DIV */
             pointer-events: none; 
         }
 
-        /* Teks dengan Gradien */
         .draggable-text.gradient-active {
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -233,14 +323,34 @@
             color: #888;
             font-size: 0.9em;
             text-align: center;
-            /* FIXED: Pastikan klik drag diarahkan ke parent DIV */
             pointer-events: none; 
+            border-radius: 4px;
         }
         
         /* Sembunyikan border saat generate */
         .generating .draggable-element {
             border: none !important;
             box-shadow: none !important;
+        }
+
+        /* Perbaikan Responsif */
+        @media (max-width: 900px) {
+            body {
+                padding: 10px;
+            }
+            #app-container {
+                flex-direction: column;
+            }
+            #control-panel, #preview-panel {
+                flex-basis: 100%;
+                min-width: 100%;
+                max-height: none; /* Izinkan scroll penuh */
+                padding: 15px;
+                border-right: none;
+            }
+            h1 {
+                font-size: 1.5em;
+            }
         }
 
     </style>
@@ -252,42 +362,46 @@
         <div id="app-container">
 
             <section id="control-panel">
-                <h2>1. Latar Belakang & Aksi</h2>
                 
-                <div class="form-group">
-                    <label for="bg-fit-select">Opsi Tampilan Background:</label>
-                    <select id="bg-fit-select" onchange="updateBackgroundFit(this.value)">
-                        <option value="contain">Contain (Lihat Semua)</option>
-                        <option value="cover">Cover (Penuhi Area)</option>
-                    </select>
-                </div>
+                <fieldset>
+                    <legend>1. Latar Belakang & Aksi</legend>
+                    
+                    <div class="form-group">
+                        <label for="bg-fit-select">Opsi Tampilan Background:</label>
+                        <select id="bg-fit-select" onchange="updateBackgroundFit(this.value)">
+                            <option value="contain">Contain (Lihat Semua)</option>
+                            <option value="cover">Cover (Penuhi Area)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="image-upload">Upload Latar Belakang</label>
+                        <input type="file" id="image-upload" accept="image/png, image/jpeg">
+                    </div>
+                    
+                    <button class="action-button" id="add-text-btn">➕ Tambah Teks Baru</button>
+                    <button class="action-button" id="add-image-btn">🖼️ Tambah Gambar/Logo Baru</button>
                 
-                <div class="form-group">
-                    <label for="image-upload">Upload Latar Belakang</label>
-                    <input type="file" id="image-upload" accept="image/png, image/jpeg">
-                </div>
+                </fieldset>
                 
-                <button class="action-button" id="add-text-btn">➕ Tambah Teks Baru (Tak Terbatas)</button>
-                <button class="action-button" id="add-image-btn">➕ Tambah Gambar/Logo Baru (Tak Terbatas)</button>
-                
-                <hr style="margin: 20px 0;">
-                
-                <h2>2. Kontrol Elemen Aktif</h2>
-                <p>Klik pada elemen (Teks/Gambar) di Pratinjau untuk mengedit.</p>
-                
-                <div id="element-controls-area">
-                    <p style="color: #6c757d;">Pilih elemen di meja gambar.</p>
-                </div>
+                <fieldset>
+                    <legend>2. Kontrol Elemen Aktif</legend>
+                    <p style="font-size: 0.9em; color: var(--text-muted); margin-top: 0;">Klik pada elemen (Teks/Gambar) di Pratinjau untuk mengedit.</p>
+                    
+                    <div id="element-controls-area">
+                        <div class="placeholder">Pilih elemen di meja gambar.</div>
+                    </div>
+                </fieldset>
                 
             </section>
 
             <section id="preview-panel">
-                <h2>3. Area Desain & Pratinjau</h2>
+                <h2 style="margin-top: 0; text-align: center;">3. Area Desain & Pratinjau</h2>
                 
                 <div id="canvas-container" onclick="setActiveElement(null)">
                     </div>
                 
-                <button class="action-button" id="generate-btn" style="background-color: var(--success-color);">⬇️ Download Flyer (PNG)</button>
+                <button class="action-button download-btn" id="generate-btn">⬇️ Download Flyer (PNG)</button>
             </section>
 
         </div>
@@ -321,7 +435,8 @@
                 renderControls(element);
             } else if (element === null) {
                 activeElement = null;
-                controlsArea.innerHTML = '<p style="color: #6c757d;">Pilih elemen di meja gambar.</p>';
+                // Gunakan placeholder yang sudah distyle
+                controlsArea.innerHTML = '<div class="placeholder">Pilih elemen di meja gambar.</div>';
             }
         }
 
@@ -335,10 +450,10 @@
             element.classList.add('draggable-element', type === 'text' ? 'text-element' : 'image-element');
             
             // Set posisi awal
-            const randomX = Math.floor(Math.random() * (canvasContainer.clientWidth - 300));
-            const randomY = Math.floor(Math.random() * (canvasContainer.clientHeight - 300));
-            element.style.top = `${randomY < 0 ? 50 : randomY}px`;
-            element.style.left = `${randomX < 0 ? 50 : randomX}px`;
+            const randomX = Math.floor(Math.random() * (canvasContainer.clientWidth - 250));
+            const randomY = Math.floor(Math.random() * (canvasContainer.clientHeight - 100));
+            element.style.top = `${randomY < 20 ? 50 : randomY}px`;
+            element.style.left = `${randomX < 20 ? 50 : randomX}px`;
             
             // Atur style default dan data
             element.style.transform = `rotate(0deg)`;
@@ -538,7 +653,7 @@
         }
 
 
-        // --- Bagian 5: Render Formulir Kontrol Dinamis ---
+        // --- Bagian 5: Render Formulir Kontrol Dinamis (DENGAN FIELDSET) ---
 
         function renderControls(element) {
             const isText = element.classList.contains('text-element');
@@ -570,85 +685,87 @@
                 };
 
                 contentControls = `
-                    <div class="element-control">
-                        <h3>Kontrol Teks (#${elementId})</h3>
-                        <div class="form-group">
-                            <label>Isi Teks</label>
-                            <textarea rows="3" oninput="updateStyle('${elementId}', 'text', this.value)">${currentData.text}</textarea>
-                        </div>
-                        
-                        <label>Formatting Teks</label>
-                        <div class="format-group">
-                            <button onclick="toggleFormat('${elementId}', 'fontWeight', 'bold')" class="${currentData.fontWeight === 'bold' ? 'active' : ''}">**B**</button>
-                            <button onclick="toggleFormat('${elementId}', 'fontStyle', 'italic')" class="${currentData.fontStyle === 'italic' ? 'active' : ''}">*I*</button>
-                            <button onclick="toggleFormat('${elementId}', 'textDecoration', 'underline')" class="${currentData.textDecoration.includes('underline') ? 'active' : ''}"><u>U</u></button>
-                            <button onclick="toggleFormat('${elementId}', 'textDecoration', 'line-through')" class="${currentData.textDecoration.includes('line-through') ? 'active' : ''}"><s>S</s></button>
-                        </div>
-
-                        <label>Rata Teks</label>
-                        <div class="format-group">
-                            <button onclick="updateStyle('${elementId}', 'textAlign', 'left')" class="${currentData.align === 'left' ? 'active' : ''}">Kiri</button>
-                            <button onclick="updateStyle('${elementId}', 'textAlign', 'center')" class="${currentData.align === 'center' ? 'active' : ''}">Tengah</button>
-                            <button onclick="updateStyle('${elementId}', 'textAlign', 'right')" class="${currentData.align === 'right' ? 'active' : ''}">Kanan</button>
-                            <button onclick="updateStyle('${elementId}', 'textAlign', 'justify')" class="${currentData.align === 'justify' ? 'active' : ''}">Rata</button>
-                        </div>
-
-                        <div class="form-group">
-                            <label>Jenis Font</label>
-                            <select onchange="updateStyle('${elementId}', 'fontFamily', this.value)">
-                                <option value="Arial, sans-serif" ${currentData.family.includes('Arial') ? 'selected' : ''}>Arial</option>
-                                <option value="'Impact', sans-serif" ${currentData.family.includes('Impact') ? 'selected' : ''}>Impact (Tebal)</option>
-                                <option value="Verdana, sans-serif" ${currentData.family.includes('Verdana') ? 'selected' : ''}>Verdana</option>
-                                <option value="'Times New Roman', serif" ${currentData.family.includes('Times New Roman') ? 'selected' : ''}>Times New Roman</option>
-                                <option value="'Courier New', monospace" ${currentData.family.includes('Courier New') ? 'selected' : ''}>Courier New</option>
-                            </select>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label>Ukuran Font (px) / Lebar Kotak Teks (px)</label>
-                            <div style="display: flex; gap: 10px;">
-                                <input type="number" value="${currentData.fontSize}" min="8" oninput="updateStyle('${elementId}', 'fontSize', this.value + 'px')">
-                                <input type="number" value="${currentData.width}" min="50" oninput="updateStyle('${elementId}', 'width', this.value)">
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label>Line Height / Letter Spacing (px)</label>
-                            <div style="display: flex; gap: 10px;">
-                                <input type="number" step="0.1" value="${currentData.lineHeight}" min="0.8" oninput="updateStyle('${elementId}', 'lineHeight', this.value)">
-                                <input type="number" value="${currentData.letterSpacing}" min="-5" max="10" oninput="updateStyle('${elementId}', 'letterSpacing', this.value + 'px')">
-                            </div>
-                        </div>
-
-                        <hr>
-                        <h4>Opsi Warna & Gradien</h4>
-
-                        <div class="form-group">
-                            <label for="color-${elementId}">Warna Solid</label>
-                            <input type="color" id="color-${elementId}" value="${currentData.color}" oninput="updateStyle('${elementId}', 'color', this.value)">
-                        </div>
-
-                        <div class="form-group" style="margin-top: 15px;">
-                            <label>
-                                <input type="checkbox" onchange="updateStyle('${elementId}', 'isGradient', this.checked)" ${currentData.isGradient ? 'checked' : ''}> 
-                                **Aktifkan Gradien Teks**
-                            </label>
-                        </div>
-                        
-                        ${currentData.isGradient ? `
+                    <fieldset>
+                        <legend>Kontrol Teks (#${elementId})</legend>
+                        <div class="element-control">
                             <div class="form-group">
-                                <label>Warna Awal / Akhir Gradien</label>
+                                <label>Isi Teks</label>
+                                <textarea rows="3" oninput="updateStyle('${elementId}', 'text', this.value)">${currentData.text}</textarea>
+                            </div>
+                            
+                            <label>Formatting Teks</label>
+                            <div class="format-group">
+                                <button onclick="toggleFormat('${elementId}', 'fontWeight', 'bold')" class="${currentData.fontWeight === 'bold' ? 'active' : ''}">**B**</button>
+                                <button onclick="toggleFormat('${elementId}', 'fontStyle', 'italic')" class="${currentData.fontStyle === 'italic' ? 'active' : ''}">*I*</button>
+                                <button onclick="toggleFormat('${elementId}', 'textDecoration', 'underline')" class="${currentData.textDecoration.includes('underline') ? 'active' : ''}"><u>U</u></button>
+                                <button onclick="toggleFormat('${elementId}', 'textDecoration', 'line-through')" class="${currentData.textDecoration.includes('line-through') ? 'active' : ''}"><s>S</s></button>
+                            </div>
+
+                            <label>Rata Teks</label>
+                            <div class="format-group">
+                                <button onclick="updateStyle('${elementId}', 'textAlign', 'left')" class="${currentData.align === 'left' ? 'active' : ''}">Kiri</button>
+                                <button onclick="updateStyle('${elementId}', 'textAlign', 'center')" class="${currentData.align === 'center' ? 'active' : ''}">Tengah</button>
+                                <button onclick="updateStyle('${elementId}', 'textAlign', 'right')" class="${currentData.align === 'right' ? 'active' : ''}">Kanan</button>
+                                <button onclick="updateStyle('${elementId}', 'textAlign', 'justify')" class="${currentData.align === 'justify' ? 'active' : ''}">Rata</button>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Jenis Font</label>
+                                <select onchange="updateStyle('${elementId}', 'fontFamily', this.value)">
+                                    <option value="Arial, sans-serif" ${currentData.family.includes('Arial') ? 'selected' : ''}>Arial</option>
+                                    <option value="'Impact', sans-serif" ${currentData.family.includes('Impact') ? 'selected' : ''}>Impact (Tebal)</option>
+                                    <option value="Verdana, sans-serif" ${currentData.family.includes('Verdana') ? 'selected' : ''}>Verdana</option>
+                                    <option value="'Times New Roman', serif" ${currentData.family.includes('Times New Roman') ? 'selected' : ''}>Times New Roman</option>
+                                    <option value="'Courier New', monospace" ${currentData.family.includes('Courier New') ? 'selected' : ''}>Courier New</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Ukuran Font (px) / Lebar Kotak Teks (px)</label>
                                 <div style="display: flex; gap: 10px;">
-                                    <input type="color" value="${currentData.gradientColor1}" oninput="updateStyle('${elementId}', 'gradientColor1', this.value)">
-                                    <input type="color" value="${currentData.gradientColor2}" oninput="updateStyle('${elementId}', 'gradientColor2', this.value)">
+                                    <input type="number" value="${currentData.fontSize}" min="8" oninput="updateStyle('${elementId}', 'fontSize', this.value + 'px')">
+                                    <input type="number" value="${currentData.width}" min="50" oninput="updateStyle('${elementId}', 'width', this.value)">
                                 </div>
                             </div>
+
                             <div class="form-group">
-                                <label>Arah Gradien (Derajat/Kata Kunci)</label>
-                                <input type="text" placeholder="misal: 90deg, to right, to top left" value="${currentData.gradientDirection}" oninput="updateStyle('${elementId}', 'gradientDirection', this.value)">
+                                <label>Line Height (mis: 1.4) / Letter Spacing (px)</label>
+                                <div style="display: flex; gap: 10px;">
+                                    <input type="number" step="0.1" value="${currentData.lineHeight}" min="0.8" oninput="updateStyle('${elementId}', 'lineHeight', this.value)">
+                                    <input type="number" value="${currentData.letterSpacing}" min="-5" max="10" oninput="updateStyle('${elementId}', 'letterSpacing', this.value + 'px')">
+                                </div>
                             </div>
-                        ` : ''}
-                    </div>
+                        </div>
+                    </fieldset>
+
+                    <fieldset>
+                        <legend>Opsi Warna & Gradien</legend>
+                        <div class="element-control">
+                            <div class="form-group">
+                                <label for="color-${elementId}">Warna Solid</label>
+                                <input type="color" id="color-${elementId}" value="${currentData.color}" oninput="updateStyle('${elementId}', 'color', this.value)">
+                            </div>
+
+                            <div class="form-group" style="margin-top: 10px; flex-direction: row; align-items: center; gap: 10px;">
+                                <input type="checkbox" id="grad-check-${elementId}" onchange="updateStyle('${elementId}', 'isGradient', this.checked)" ${currentData.isGradient ? 'checked' : ''}> 
+                                <label for="grad-check-${elementId}" style="margin: 0; font-weight: 700;">Aktifkan Gradien Teks</label>
+                            </div>
+                            
+                            ${currentData.isGradient ? `
+                                <div class="form-group">
+                                    <label>Warna Awal / Akhir Gradien</label>
+                                    <div style="display: flex; gap: 10px;">
+                                        <input type="color" value="${currentData.gradientColor1}" oninput="updateStyle('${elementId}', 'gradientColor1', this.value)">
+                                        <input type="color" value="${currentData.gradientColor2}" oninput="updateStyle('${elementId}', 'gradientColor2', this.value)">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>Arah Gradien (Derajat/Kata Kunci)</label>
+                                    <input type="text" placeholder="misal: 90deg, to right, to top left" value="${currentData.gradientDirection}" oninput="updateStyle('${elementId}', 'gradientDirection', this.value)">
+                                </div>
+                            ` : ''}
+                        </div>
+                    </fieldset>
                 `;
             } 
             // Logika untuk Gambar
@@ -658,51 +775,54 @@
                 const maxCanvasSize = Math.max(canvasContainer.clientWidth, canvasContainer.clientHeight);
 
                 contentControls = `
-                    <div class="element-control">
-                        <h3>Kontrol Gambar (#${elementId})</h3>
-                        <div class="form-group">
-                            <label for="image-upload-${elementId}">Upload Gambar/Logo Baru</label>
-                            <input type="file" id="image-upload-${elementId}" accept="image/png, image/jpeg" onchange="updateImageSource('${elementId}', this.files[0])">
-                        </div>
+                    <fieldset>
+                        <legend>Kontrol Gambar (#${elementId})</legend>
+                        <div class="element-control">
+                            <div class="form-group">
+                                <label for="image-upload-${elementId}">Upload Gambar/Logo Baru</label>
+                                <input type="file" id="image-upload-${elementId}" accept="image/png, image/jpeg" onchange="updateImageSource('${elementId}', this.files[0])">
+                            </div>
 
-                        <div class="form-group">
-                            <label>Ukuran Gambar/Logo (Slider)</label>
-                            <input type="range" min="30" max="${Math.floor(maxCanvasSize * 0.8)}" step="5" value="${currentSize}" oninput="updateStyle('${elementId}', 'size', this.value)">
-                            <input type="number" value="${currentSize}" min="30" max="${Math.floor(maxCanvasSize * 0.8)}" oninput="updateStyle('${elementId}', 'size', this.value)">
-                            <small style="color: #6c757d;">Ukuran dalam piksel (width=height)</small>
+                            <div class="form-group">
+                                <label>Ukuran Gambar/Logo (px)</label>
+                                <input type="range" min="30" max="${Math.floor(maxCanvasSize * 0.8)}" step="5" value="${currentSize}" oninput="updateStyle('${elementId}', 'size', this.value)">
+                                <input type="number" value="${currentSize}" min="30" max="${Math.floor(maxCanvasSize * 0.8)}" oninput="updateStyle('${elementId}', 'size', this.value)">
+                                <small style="color: var(--text-muted);">Ukuran dalam piksel (width=height)</small>
+                            </div>
                         </div>
-                    </div>
+                    </fieldset>
                 `;
             }
 
             // Kontrol Umum (Berlaku untuk Teks dan Gambar)
             const commonControls = `
-                <div class="element-control">
-                    <h3>Kontrol Lapisan (Z-Index Saat Ini: ${element.style.zIndex})</h3>
-                    
-                    <div class="form-group">
-                        <label>Atur Lapisan (Kedalaman)</label>
-                        <div class="layer-group">
-                            <button onclick="moveLayer('${elementId}', 'down')" class="action-button" style="background-color: #ffc107; color: #333;">⬇️ Lapisan Bawah</button>
-                            <button onclick="moveLayer('${elementId}', 'up')" class="action-button" style="background-color: #4CAF50;">⬆️ Lapisan Atas</button>
+                <fieldset>
+                    <legend>Lapisan, Posisi & Lainnya</legend>
+                    <div class="element-control">
+                        
+                        <div class="form-group">
+                            <label style="font-weight: 700; color: var(--primary-color);">Kontrol Lapisan (Z-Index: ${element.style.zIndex})</label>
+                            <div class="layer-group">
+                                <button onclick="moveLayer('${elementId}', 'down')" class="action-button">⬇️ Bawah</button>
+                                <button onclick="moveLayer('${elementId}', 'up')" class="action-button">⬆️ Atas</button>
+                            </div>
+                        </div>
+
+                        <label style="font-weight: 700; color: var(--primary-color); margin-top: 10px;">Rotasi & Transparansi</label>
+                        <div class="form-group">
+                            <label>Rotasi (Derajat)</label>
+                            <input type="range" min="0" max="360" value="${element.dataset.rotation || 0}" oninput="updateStyle('${elementId}', 'rotation', this.value)" style="width: 100%;">
+                            <input type="number" value="${element.dataset.rotation || 0}" oninput="updateStyle('${elementId}', 'rotation', this.value)">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Opacity / Transparansi (0 - 1)</label>
+                            <input type="range" min="0" max="1" step="0.05" value="${element.dataset.opacity || 1}" oninput="updateStyle('${elementId}', 'opacity', this.value)" style="width: 100%;">
+                            <input type="number" min="0" max="1" step="0.01" value="${element.dataset.opacity || 1}" oninput="updateStyle('${elementId}', 'opacity', this.value)">
                         </div>
                     </div>
-
-                    <h3>Kontrol Rotasi & Transparansi</h3>
-                    <div class="form-group">
-                        <label>Rotasi (Derajat)</label>
-                        <input type="range" min="0" max="360" value="${element.dataset.rotation || 0}" oninput="updateStyle('${elementId}', 'rotation', this.value)" style="width: 100%;">
-                        <input type="number" value="${element.dataset.rotation || 0}" oninput="updateStyle('${elementId}', 'rotation', this.value)">
-                    </div>
-
-                    <div class="form-group">
-                        <label>Opacity / Transparansi (0 - 1)</label>
-                        <input type="range" min="0" max="1" step="0.05" value="${element.dataset.opacity || 1}" oninput="updateStyle('${elementId}', 'opacity', this.value)" style="width: 100%;">
-                        <input type="number" min="0" max="1" step="0.01" value="${element.dataset.opacity || 1}" oninput="updateStyle('${elementId}', 'opacity', this.value)">
-                    </div>
-
-                    <button class="action-button" onclick="deleteElement('${elementId}')" style="background-color: #dc3545;">🗑️ Hapus Elemen Ini</button>
-                </div>
+                </fieldset>
+                <button class="action-button delete-btn" onclick="deleteElement('${elementId}')">🗑️ Hapus Elemen Ini</button>
             `;
 
 
@@ -796,10 +916,18 @@
                 initialY = coords.y - yOffset;
                 
                 isDragging = true; 
+                // Saat mulai drag, naikkan z-index sementara
+                element.style.zIndex = 9999;
             }
 
             function dragEnd(e) {
-                isDragging = false;
+                if(isDragging) {
+                    isDragging = false;
+                    // Kembalikan z-index ke nilai data setelah selesai drag
+                    element.style.zIndex = element.dataset.zIndex || (elementCounter + 10);
+                    // Panggil render controls untuk update Z-index di UI jika berubah
+                    renderControls(element);
+                }
             }
 
             function drag(e) {
@@ -843,11 +971,12 @@
             document.addEventListener("touchmove", drag, { passive: false });
         }
 
-        // --- Bagian 8: Logika Download Gambar ---
+        // --- Bagian 8: Logika Download Gambar (Disempurnakan) ---
 
         generateBtn.addEventListener('click', () => {
             // Menonaktifkan elemen aktif (menghilangkan border)
-            document.querySelectorAll('.draggable-element').forEach(el => el.classList.remove('active'));
+            setActiveElement(null);
+            
             canvasContainer.classList.add('generating');
             generateBtn.textContent = 'Membuat Gambar...';
             generateBtn.disabled = true;
@@ -856,7 +985,7 @@
                 useCORS: true,
                 allowTaint: true, 
                 scale: 2, // Meningkatkan resolusi
-                backgroundColor: '#ffffff', 
+                backgroundColor: null, // PERBAIKAN: null untuk background transparan
                 windowWidth: canvasContainer.scrollWidth,
                 windowHeight: canvasContainer.scrollHeight
             }).then(canvas => {
@@ -883,7 +1012,7 @@
 
         // Inisialisasi: Tambahkan teks default saat DOM siap
         document.addEventListener('DOMContentLoaded', () => {
-             createElement('text', 'PROMOSI GRADIENT! Klik untuk Edit');
+             createElement('text', 'PROMOSI ANDA! Klik untuk Edit');
         });
     </script>
 
