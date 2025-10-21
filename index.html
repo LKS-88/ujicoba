@@ -201,7 +201,7 @@
             -webkit-background-clip: unset;
             -webkit-text-fill-color: unset;
             transition: all 0.1s ease-out; 
-            /* PERBAIKAN DRAG Teks: Pastikan klik drag diarahkan ke parent DIV */
+            /* FIXED: Pastikan klik drag diarahkan ke parent DIV */
             pointer-events: none; 
         }
 
@@ -228,7 +228,7 @@
             color: #888;
             font-size: 0.9em;
             text-align: center;
-            /* PERBAIKAN DRAG Gambar: Pastikan klik drag diarahkan ke parent DIV */
+            /* FIXED: Pastikan klik drag diarahkan ke parent DIV */
             pointer-events: none; 
         }
         
@@ -370,11 +370,11 @@
             canvasContainer.appendChild(element);
             makeDraggable(element);
             
-            element.addEventListener('mousedown', (e) => {
-                // Saat mengklik, pastikan elemen menjadi aktif untuk diedit
-                e.stopPropagation();
-                setActiveElement(element);
-            });
+            // TIDAK PERLU: mousedown event activation sekarang ditangani di makeDraggable
+            // element.addEventListener('mousedown', (e) => {
+            //     e.stopPropagation();
+            //     setActiveElement(element);
+            // });
             
             setActiveElement(element);
         }
@@ -452,7 +452,7 @@
                     }
                 }
             } else {
-                // Logika Gambar/Logo (FIXED: Menggunakan rasio aspect-ratio 1:1)
+                // Logika Gambar/Logo
                 if (prop === 'size') {
                     const newSize = value + 'px';
                     element.style.width = newSize;
@@ -502,7 +502,7 @@
             renderControls(element);
         }
         
-        // --- Bagian 4: Logika Lapisan (Z-Index) BARU ---
+        // --- Bagian 4: Logika Lapisan (Z-Index) ---
 
         function moveLayer(elementId, direction) {
             const element = document.getElementById(elementId);
@@ -673,16 +673,17 @@
             // Kontrol Umum (Berlaku untuk Teks dan Gambar)
             const commonControls = `
                 <div class="element-control">
-                    <h3>Kontrol Lapisan (Z-Index) dan Posisi</h3>
+                    <h3>Kontrol Lapisan (Z-Index Saat Ini: ${element.style.zIndex})</h3>
                     
                     <div class="form-group">
-                        <label>Atur Lapisan (Z-Index Saat Ini: ${element.style.zIndex})</label>
+                        <label>Atur Lapisan (Kedalaman)</label>
                         <div class="layer-group">
-                            <button onclick="moveLayer('${elementId}', 'down')" class="action-button">⬇️ Lapisan Bawah</button>
-                            <button onclick="moveLayer('${elementId}', 'up')" class="action-button">⬆️ Lapisan Atas</button>
+                            <button onclick="moveLayer('${elementId}', 'down')" class="action-button" style="background-color: #ffc107; color: #333;">⬇️ Lapisan Bawah</button>
+                            <button onclick="moveLayer('${elementId}', 'up')" class="action-button" style="background-color: #4CAF50;">⬆️ Lapisan Atas</button>
                         </div>
                     </div>
 
+                    <h3>Kontrol Rotasi & Transparansi</h3>
                     <div class="form-group">
                         <label>Rotasi (Derajat)</label>
                         <input type="range" min="0" max="360" value="${element.dataset.rotation || 0}" oninput="updateStyle('${elementId}', 'rotation', this.value)" style="width: 100%;">
@@ -751,30 +752,41 @@
             }
         });
 
-        // --- Bagian 7: Logika Drag dan Drop ---
+        // --- Bagian 7: Logika Drag dan Drop (REVISI STABIL) ---
 
         function makeDraggable(element) {
             let isDragging = false;
             let initialX;
             let initialY;
-            let xOffset;
-            let yOffset;
+            
+            // Menggunakan properti style untuk mendapatkan posisi
+            let xOffset; 
+            let yOffset; 
 
-            element.addEventListener("mousedown", dragStart);
+            // UBAH: Hanya satu mousedown listener untuk aktivasi dan dragStart
+            element.addEventListener("mousedown", dragStartAndActivate);
+            
+            // Event listener global untuk mengakhiri dan menggerakkan
             document.addEventListener("mouseup", dragEnd);
             document.addEventListener("mousemove", drag);
 
-            function dragStart(e) {
-                if (activeElement && activeElement.id === element.id) {
-                    xOffset = parseFloat(element.style.left) || 0;
-                    yOffset = parseFloat(element.style.top) || 0;
-                    
-                    initialX = e.clientX - xOffset;
-                    initialY = e.clientY - yOffset;
-                    
-                    isDragging = true;
-                    e.stopPropagation(); 
-                }
+            function dragStartAndActivate(e) {
+                // FIXED: Mencegah perilaku default browser (seperti seleksi teks/drag gambar)
+                e.preventDefault(); 
+                
+                // 1. Aktivasi/Set Focus
+                e.stopPropagation();
+                setActiveElement(element); // Pastikan elemen yang diklik yang aktif
+                
+                // 2. Persiapan Drag: Baca posisi saat ini dari style
+                xOffset = parseFloat(element.style.left) || 0;
+                yOffset = parseFloat(element.style.top) || 0;
+                
+                // Hitung titik awal klik relatif terhadap elemen
+                initialX = e.clientX - xOffset;
+                initialY = e.clientY - yOffset;
+                
+                isDragging = true; 
             }
 
             function dragEnd(e) {
@@ -788,6 +800,7 @@
                     let currentX = e.clientX - initialX;
                     let currentY = e.clientY - initialY;
 
+                    // Batasi agar elemen tidak keluar dari canvas
                     const minX = 0;
                     const minY = 0;
                     const maxX = canvasContainer.clientWidth - element.offsetWidth;
