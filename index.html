@@ -5,8 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Editor Flyer Super Canggih</title>
     
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" integrity="sha512-BNaRQnYJYiPSqHHDb58B0yaPfCu+Wgds8Gp/gU33kqBtgNS4tSPHuGibjNQVbXlHARe0dHYNbaKNPjcrea1lBA==
-" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" integrity="sha512-BNaRQnYJYiPSqHHDb58B0yaPfCu+Wgds8Gp/gU33kqBtgNS4tSPHuGibjNQVbXlHARe0dHYNbaKNPjcrea1lBA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
     <style>
         /* CSS Dasar */
@@ -150,6 +149,23 @@
             border-radius: 4px;
             font-weight: normal;
             transition: background-color 0.1s;
+        }
+        
+        /* Grup Tombol Lapisan */
+        .layer-group {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .layer-group button {
+            flex: 1;
+            background-color: #4CAF50; /* Hijau */
+            color: white;
+        }
+        
+        .layer-group button:first-child {
+            background-color: #ffc107; /* Kuning (Bawah) */
+            color: #333;
         }
 
         .format-group button.active {
@@ -323,6 +339,7 @@
             element.style.transform = `rotate(0deg)`;
             element.dataset.rotation = 0;
             element.dataset.opacity = 1;
+            // Z-Index default
             element.style.zIndex = elementCounter + 10;
             element.dataset.zIndex = element.style.zIndex;
 
@@ -334,7 +351,7 @@
                 element.dataset.gradientColor1 = '#ff0000'; 
                 element.dataset.gradientColor2 = '#0000ff';
                 element.dataset.gradientDirection = '90deg';
-                element.dataset.isGradient = 'false'; // Set default gradien
+                element.dataset.isGradient = 'false'; 
 
                 // Terapkan style default ke span
                 const textSpan = element.querySelector('.draggable-text');
@@ -416,7 +433,6 @@
                 if (prop === 'text') {
                     target.textContent = value;
                 } else if (prop === 'color') {
-                    // Jika memilih warna solid, pastikan gradien dinonaktifkan
                     toggleGradient(elementId, false);
                     element.dataset.color = value;
                     target.style.color = value;
@@ -436,10 +452,13 @@
                     }
                 }
             } else {
-                // Logika Gambar/Logo
-                if (prop === 'width' || prop === 'height') {
-                    element.style[prop] = value + 'px';
-                    element.dataset[prop] = value;
+                // Logika Gambar/Logo (FIXED: Menggunakan rasio aspect-ratio 1:1)
+                if (prop === 'size') {
+                    const newSize = value + 'px';
+                    element.style.width = newSize;
+                    element.style.height = newSize;
+                    element.dataset.width = value;
+                    element.dataset.height = value;
                 }
             }
 
@@ -482,8 +501,40 @@
             
             renderControls(element);
         }
+        
+        // --- Bagian 4: Logika Lapisan (Z-Index) BARU ---
 
-        // --- Bagian 4: Render Formulir Kontrol Dinamis ---
+        function moveLayer(elementId, direction) {
+            const element = document.getElementById(elementId);
+            if (!element) return;
+
+            let currentZ = parseInt(element.style.zIndex);
+            
+            if (direction === 'up') {
+                currentZ += 1;
+            } else if (direction === 'down' && currentZ > 1) {
+                currentZ -= 1;
+            }
+            
+            // Cari elemen lain yang memiliki Z-Index yang sama, lalu tukar
+            const allElements = document.querySelectorAll('.draggable-element');
+            allElements.forEach(el => {
+                if (el.id !== elementId && parseInt(el.style.zIndex) === currentZ) {
+                    // Elemen lain yang ditumpuk di lapisan baru, didorong ke lapisan lama
+                    el.style.zIndex = parseInt(element.style.zIndex);
+                    el.dataset.zIndex = el.style.zIndex;
+                }
+            });
+
+            // Terapkan Z-Index baru
+            element.style.zIndex = currentZ;
+            element.dataset.zIndex = currentZ;
+            
+            renderControls(element);
+        }
+
+
+        // --- Bagian 5: Render Formulir Kontrol Dinamis ---
 
         function renderControls(element) {
             const isText = element.classList.contains('text-element');
@@ -494,7 +545,6 @@
             if (isText) {
                 const textSpan = element.querySelector('.draggable-text');
                 
-                // Mengambil style saat ini atau nilai default
                 const currentData = {
                     text: textSpan.textContent,
                     fontSize: parseFloat(textSpan.style.fontSize) || 24,
@@ -507,14 +557,11 @@
                     fontStyle: textSpan.style.fontStyle || 'normal',
                     textDecoration: textSpan.style.textDecoration || 'none',
                     
-                    // Gradien
                     isGradient: element.dataset.isGradient === 'true',
-                    gradientType: element.dataset.gradientType || 'linear',
                     gradientColor1: element.dataset.gradientColor1 || '#ff0000',
                     gradientColor2: element.dataset.gradientColor2 || '#0000ff',
                     gradientDirection: element.dataset.gradientDirection || '90deg',
                     
-                    // Umum
                     width: parseFloat(element.style.width) || 300,
                 };
 
@@ -570,7 +617,7 @@
                         </div>
 
                         <hr>
-                        <h4>Opsi Warna & Gradien (FIXED)</h4>
+                        <h4>Opsi Warna & Gradien</h4>
 
                         <div class="form-group">
                             <label for="color-${elementId}">Warna Solid</label>
@@ -602,13 +649,8 @@
             } 
             // Logika untuk Gambar
             else {
-                const imageElement = element.querySelector('.draggable-image');
-
-                const currentData = {
-                    src: imageElement.src,
-                    width: parseFloat(element.style.width) || 150,
-                    height: parseFloat(element.style.height) || 150,
-                };
+                const currentSize = parseFloat(element.dataset.width) || 150;
+                const maxCanvasSize = Math.max(canvasContainer.clientWidth, canvasContainer.clientHeight);
 
                 contentControls = `
                     <div class="element-control">
@@ -619,11 +661,10 @@
                         </div>
 
                         <div class="form-group">
-                            <label>Ukuran (px)</label>
-                            <div style="display: flex; gap: 10px;">
-                                <input type="number" value="${currentData.width}" min="10" oninput="updateStyle('${elementId}', 'width', this.value)">
-                                <input type="number" value="${currentData.height}" min="10" oninput="updateStyle('${elementId}', 'height', this.value)">
-                            </div>
+                            <label>Ukuran Gambar/Logo (Slider)</label>
+                            <input type="range" min="30" max="${maxCanvasSize * 0.8}" step="5" value="${currentSize}" oninput="updateStyle('${elementId}', 'size', this.value)">
+                            <input type="number" value="${currentSize}" min="30" max="${maxCanvasSize * 0.8}" oninput="updateStyle('${elementId}', 'size', this.value)">
+                            <small style="color: #6c757d;">Ukuran dalam piksel (width=height)</small>
                         </div>
                     </div>
                 `;
@@ -632,7 +673,16 @@
             // Kontrol Umum (Berlaku untuk Teks dan Gambar)
             const commonControls = `
                 <div class="element-control">
-                    <h3>Kontrol Posisi & Visual</h3>
+                    <h3>Kontrol Lapisan (Z-Index) dan Posisi</h3>
+                    
+                    <div class="form-group">
+                        <label>Atur Lapisan (Z-Index Saat Ini: ${element.style.zIndex})</label>
+                        <div class="layer-group">
+                            <button onclick="moveLayer('${elementId}', 'down')" class="action-button">⬇️ Lapisan Bawah</button>
+                            <button onclick="moveLayer('${elementId}', 'up')" class="action-button">⬆️ Lapisan Atas</button>
+                        </div>
+                    </div>
+
                     <div class="form-group">
                         <label>Rotasi (Derajat)</label>
                         <input type="range" min="0" max="360" value="${element.dataset.rotation || 0}" oninput="updateStyle('${elementId}', 'rotation', this.value)" style="width: 100%;">
@@ -645,11 +695,6 @@
                         <input type="number" min="0" max="1" step="0.01" value="${element.dataset.opacity || 1}" oninput="updateStyle('${elementId}', 'opacity', this.value)">
                     </div>
 
-                    <div class="form-group">
-                        <label>Z-Index (Kedalaman)</label>
-                        <input type="number" value="${element.dataset.zIndex || element.style.zIndex}" oninput="updateStyle('${elementId}', 'zIndex', this.value)">
-                    </div>
-
                     <button class="action-button" onclick="deleteElement('${elementId}')" style="background-color: #dc3545;">🗑️ Hapus Elemen Ini</button>
                 </div>
             `;
@@ -658,7 +703,7 @@
             controlsArea.innerHTML = contentControls + commonControls;
         }
 
-        // --- Bagian 5: Fungsi Pembantu ---
+        // --- Bagian 6: Fungsi Pembantu ---
 
         function updateImageSource(elementId, file) {
             const element = document.getElementById(elementId);
@@ -674,13 +719,9 @@
                 if (placeholder) {
                     placeholder.style.display = 'none';
                 }
-                // Jika gambar berhasil diupload, atur ukurannya agar terlihat
-                element.style.width = '150px';
-                element.style.height = '150px';
-                element.dataset.width = 150;
-                element.dataset.height = 150;
-                // Pastikan kontrol diperbarui
-                renderControls(element);
+                
+                // Atur ukuran default setelah upload
+                updateStyle(elementId, 'size', 150);
             };
             reader.readAsDataURL(file);
         }
@@ -710,7 +751,7 @@
             }
         });
 
-        // --- Bagian 6: Logika Drag dan Drop (FIXED) ---
+        // --- Bagian 7: Logika Drag dan Drop ---
 
         function makeDraggable(element) {
             let isDragging = false;
@@ -719,25 +760,19 @@
             let xOffset;
             let yOffset;
 
-            // Tambahkan event listener pada elemen untuk memulai drag
             element.addEventListener("mousedown", dragStart);
-            
-            // Event listener global untuk mengakhiri dan menggerakkan
             document.addEventListener("mouseup", dragEnd);
             document.addEventListener("mousemove", drag);
 
             function dragStart(e) {
                 if (activeElement && activeElement.id === element.id) {
-                    // PERBAIKAN: Baca posisi saat ini (offset) dari style elemen sebelum drag
                     xOffset = parseFloat(element.style.left) || 0;
                     yOffset = parseFloat(element.style.top) || 0;
                     
-                    // Hitung titik awal klik relatif terhadap elemen
                     initialX = e.clientX - xOffset;
                     initialY = e.clientY - yOffset;
                     
                     isDragging = true;
-                    // Mencegah canvasContainer dari menonaktifkan elemen saat drag dimulai
                     e.stopPropagation(); 
                 }
             }
@@ -753,19 +788,13 @@
                     let currentX = e.clientX - initialX;
                     let currentY = e.clientY - initialY;
 
-                    // Batasi agar elemen tidak keluar dari canvas
                     const minX = 0;
                     const minY = 0;
-                    // Gunakan offsetWidth/Height untuk mendapatkan dimensi elemen
                     const maxX = canvasContainer.clientWidth - element.offsetWidth;
                     const maxY = canvasContainer.clientHeight - element.offsetHeight;
                     
                     currentX = Math.min(Math.max(currentX, minX), maxX);
                     currentY = Math.min(Math.max(currentY, minY), maxY);
-
-                    // Update offset untuk drag berikutnya (tidak diperlukan jika membaca style di dragStart)
-                    // xOffset = currentX;
-                    // yOffset = currentY;
 
                     setTranslate(currentX, currentY, element);
                 }
@@ -777,7 +806,7 @@
             }
         }
 
-        // --- Bagian 7: Logika Download Gambar ---
+        // --- Bagian 8: Logika Download Gambar ---
 
         generateBtn.addEventListener('click', () => {
             // Menonaktifkan elemen aktif (menghilangkan border)
