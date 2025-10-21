@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Editor Flyer Super Canggih (V2.5 - Revisi Desain Profesional)</title>
+    <title>Editor Flyer Super Canggih (V2.6 - Perbaikan Navigasi)</title>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" integrity="sha512-BNaRQnYJYiPSqHHDb58B0yaPfCu+Wgds8Gp/gU33kqBtgNS4tSPHuGibjNQVbXlHARe0dHYNbaKNPjcrea1lBA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     
@@ -20,23 +20,18 @@
             animation: spin 1s linear infinite;
         }
 
-        /* --- [DIREVISI] CSS (Palet Warna & UI Profesional) --- */
+        /* --- CSS Palet Warna (v2.5) --- */
         :root {
-            /* [BARU] Palet Warna "Profesional" (Biru/Ungu Gelap) */
-            --primary-color: #4F46E5; /* Indigo-600 (Profesional & Modern) */
-            --primary-hover: #4338CA; /* Indigo-700 */
+            --primary-color: #4F46E5; 
+            --primary-hover: #4338CA;
             --primary-gradient: linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%);
             --focus-ring: rgba(79, 70, 229, 0.25);
-
-            --bg-color: #f7f8fc; /* [BARU] Latar abu-abu sangat muda */
+            --bg-color: #f7f8fc; 
             --panel-color: #ffffff;
             --border-color: #e5e7eb;
             --control-border: #d1d5db;
-            
-            --text-color: #111827; /* Gray-900 (Lebih pekat) */
-            --text-muted: #6b7280; /* Gray-500 (Tetap) */
-            
-            /* Aksi (Tetap, sudah modern) */
+            --text-color: #111827; 
+            --text-muted: #6b7280; 
             --success-color: #10B981; 
             --success-hover: #059669;
             --danger-color: #EF4444; 
@@ -45,8 +40,6 @@
             --warning-hover: #D97706;
             --info-color: #3B82F6; 
             --info-hover: #2563EB;
-
-            /* [BARU] Shadow modern */
             --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
             --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
             --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
@@ -62,13 +55,12 @@
         }
 
         h1 {
-            /* [DIREVISI] Terapkan gradien mewah */
             background: var(--primary-gradient);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             text-align: center;
-            font-weight: 800; /* Extra bold */
-            font-size: 2.25em; /* Sedikit lebih besar */
+            font-weight: 800;
+            font-size: 2.25em; 
         }
         
         h1 i {
@@ -85,26 +77,36 @@
             margin: 0 auto;
             background-color: var(--panel-color);
             border-radius: 12px;
-            /* [DIREVISI] Shadow lebih modern */
             box-shadow: var(--shadow-lg);
-            border: 1px solid var(--border-color); /* Border halus */
+            border: 1px solid var(--border-color); 
             overflow: hidden; 
         }
         
+        /* --- [REVISI V2.6] Panel Kontrol di-split (Wrapper + ScrollArea) --- */
         #control-panel {
             flex: 1; 
             min-width: 340px;
-            padding: 25px;
-            background-color: var(--panel-color); /* Latar panel utama */
+            background-color: var(--panel-color); 
             border-right: 1px solid var(--border-color);
-            max-height: 90vh;
-            overflow-y: auto; 
+            max-height: 90vh; /* Max-height di wrapper */
             box-sizing: border-box;
-            scroll-behavior: smooth;
-            /* [BARU] Diperlukan untuk penempatan nav sticky */
-            position: relative;
+            
+            /* [BARU] Flex untuk memisahkan area scroll dan navigasi */
+            display: flex;
+            flex-direction: column;
+            position: relative; /* Tetap dibutuhkan */
+            padding: 0; /* Padding dipindah ke scroll area */
         }
         
+        /* [BARU V2.6] Area scroll untuk fieldset */
+        #control-panel-scroll-area {
+            flex-grow: 1; /* Otomatis mengisi ruang */
+            overflow-y: auto; /* HANYA area ini yang scroll */
+            scroll-behavior: smooth;
+            padding: 25px; /* Padding lama dipindah ke sini */
+            box-sizing: border-box;
+        }
+
         #preview-panel {
             flex: 2.5; 
             min-width: 500px;
@@ -113,40 +115,33 @@
             flex-direction: column;
         }
 
-        /* Grup Kontrol yang disempurnakan */
         fieldset {
             border: 1px solid var(--border-color);
             border-radius: 8px;
             padding: 15px 20px;
             margin-bottom: 20px;
-            background-color: #fdfdff; /* Sedikit off-white di dalam fieldset */
-            /* [DIREVISI] Shadow halus */
+            background-color: #fdfdff; 
             box-shadow: var(--shadow-sm);
             transition: box-shadow 0.3s ease-out;
         }
         
         legend {
-            font-weight: 700; /* Lebih tebal */
+            font-weight: 700; 
             font-size: 1.1em;
-            color: var(--text-color); /* [DIUBAH] Bukan warna primer, agar lebih bersih */
+            color: var(--text-color); 
             padding: 0 8px;
             margin-left: -8px;
-            
-            /* [BARU] Ikon di legend */
             display: flex;
             align-items: center;
             gap: 6px;
         }
         
-        /* [REVISI V2.5] Ikon di legend diberi warna primer */
         legend i {
             color: var(--primary-color);
             width: 18px;
             height: 18px;
         }
 
-
-        /* --- Kontainer Gambar (Canvas) --- */
         #canvas-container {
             flex-grow: 1;
             border: 2px dashed var(--border-color);
@@ -168,31 +163,30 @@
             border-color: var(--primary-color);
         }
 
-        /* --- [DIREVISI] Kontrol Elemen --- */
         .action-button {
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
-            padding: 12px 18px; /* Sedikit lebih lega */
-            background: var(--primary-gradient); /* [BARU] Terapkan gradien */
+            padding: 12px 18px; 
+            background: var(--primary-gradient); 
             color: white;
             border: none;
             border-radius: 6px;
             cursor: pointer;
             margin-top: 10px;
-            font-weight: 600; /* Sedikit lebih tebal */
+            font-weight: 600; 
             font-size: 1em;
             transition: all 0.25s ease-out;
             width: 100%;
-            box-shadow: var(--shadow-md); /* Shadow baru */
+            box-shadow: var(--shadow-md); 
         }
 
         .action-button:hover {
-            background: var(--primary-gradient); /* Gradien tetap */
+            background: var(--primary-gradient); 
             opacity: 0.9;
-            box-shadow: var(--shadow-lg); /* Shadow lebih besar */
-            transform: translateY(-2px); /* [BARU] Efek hover */
+            box-shadow: var(--shadow-lg); 
+            transform: translateY(-2px); 
         }
 
         .action-button:disabled {
@@ -203,9 +197,7 @@
             opacity: 0.7;
         }
 
-        .action-button.download-btn {
-            background: var(--success-color); /* Override gradien */
-        }
+        .action-button.download-btn { background: var(--success-color); }
         .action-button.download-btn:hover {
             background: var(--success-hover);
             box-shadow: 0 4px 14px rgba(16, 185, 129, 0.25);
@@ -213,9 +205,7 @@
             opacity: 1;
         }
 
-        .action-button.delete-btn {
-            background: var(--danger-color); /* Override gradien */
-        }
+        .action-button.delete-btn { background: var(--danger-color); }
         .action-button.delete-btn:hover {
             background: var(--danger-hover);
             box-shadow: 0 4px 14px rgba(239, 68, 68, 0.25);
@@ -223,10 +213,7 @@
             opacity: 1;
         }
         
-        .action-button i {
-            width: 18px;
-            height: 18px;
-        }
+        .action-button i,
         .action-button .spin {
             width: 18px;
             height: 18px;
@@ -259,7 +246,6 @@
             color: #555;
         }
 
-        /* Input yang disempurnakan (Tidak berubah signifikan) */
         .form-group input[type="text"],
         .form-group input[type="number"],
         .form-group input[type="file"],
@@ -284,7 +270,7 @@
             box-shadow: 0 0 0 3px var(--focus-ring);
         }
 
-        /* [REVISI V2.5] Grup Tombol Formatting (B, I, U) Dibuat Lebih Jelas */
+        /* [REVISI V2.5] Tombol Format (B, I, U) Dibuat Jelas */
         .format-group {
             display: flex;
             gap: 5px;
@@ -296,20 +282,17 @@
             align-items: center;
             justify-content: center;
             padding: 8px 12px;
-            
-            /* [DIUBAH] Diberi latar & warna teks agar tidak 'putih' */
             border: 1px solid var(--border-color);
-            background-color: var(--bg-color); /* Latar abu-abu muda */
-            color: var(--text-color); /* Teks/ikon lebih gelap */
-            
+            background-color: var(--bg-color); 
+            color: var(--text-color); 
             cursor: pointer;
             border-radius: 4px;
             transition: background-color 0.1s, border-color 0.1s, color 0.1s, opacity 0.1s;
-            opacity: 0.85; /* Sedikit pudar saat tidak aktif */
+            opacity: 0.85; 
         }
         .format-group button:hover {
-            background-color: #eef2ff; /* Latar hover (Indigo-50) */
-            color: var(--primary-hover); /* Ikon/teks jadi biru */
+            background-color: #eef2ff; 
+            color: var(--primary-hover); 
             border-color: var(--primary-color);
             opacity: 1;
         }
@@ -325,14 +308,10 @@
         }
         
         /* Grup Tombol Lapisan */
-        .layer-group {
-            display: flex;
-            gap: 10px;
-        }
-        
+        .layer-group { display: flex; gap: 10px; }
         .layer-group button {
             flex: 1;
-            background: var(--info-color); /* Override gradien */
+            background: var(--info-color); 
             color: white;
             padding: 10px;
         }
@@ -341,9 +320,8 @@
             box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
             opacity: 1;
         }
-        
         .layer-group button:first-child {
-            background: var(--warning-color); /* Override gradien */
+            background: var(--warning-color); 
             color: var(--text-color);
         }
         .layer-group button:first-child:hover {
@@ -408,38 +386,39 @@
             box-shadow: none !important;
         }
 
-        /* --- [REVISI V2.5] CSS NAVIGATOR (LEBIH JELAS & MEWAH) --- */
+        /* --- [REVISI V2.6] CSS NAVIGATOR (TIDAK LAGI STICKY, TAPI FOOTER) --- */
         #floating-nav {
-            /* Posisi sticky di dalam panel kontrol (Tetap, sudah bagus) */
-            position: sticky; 
-            bottom: 15px; 
+            /* [DIUBAH] Tidak lagi sticky, menjadi flex item biasa di bawah */
+            position: relative; 
+            bottom: auto; 
             left: 50%;
             transform: translateX(-50%);
             width: fit-content; 
-            margin-top: 20px; 
+            margin: 8px auto; /* Margin atas/bawah agar rapi */
+            flex-shrink: 0; /* Mencegah nav menyusut */
 
-            /* [DIUBAH] Style baru: Latar belakang semi-transparan untuk efek 'floating' */
+            /* [DIRETAIN V2.5] Style mewah (blur + shadow) */
             background-color: rgba(249, 250, 251, 0.8); /* var(--bg-color) + transparansi */
             backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
             
             border: 1px solid var(--border-color);
             border-radius: 50px; 
-            box-shadow: var(--shadow-lg); /* Shadow baru */
+            box-shadow: var(--shadow-lg); 
             display: flex;
             gap: 5px;
             padding: 8px;
             z-index: 1000;
         }
+        
+        /* [DIRETAIN V2.5] Tombol biru dengan ikon putih (SANGAT JELAS) */
         #floating-nav button {
-            /* [DIUBAH] Tombol diberi warna primer agar JELAS dan KONTRAST */
             background-color: var(--primary-color);
             color: white; /* Ikon jadi putih */
-            
             border: none;
             border-radius: 50%;
-            width: 44px;  /* Sedikit lebih proporsional */
-            height: 44px; /* Sedikit lebih proporsional */
+            width: 44px;
+            height: 44px;
             cursor: pointer;
             display: flex;
             align-items: center;
@@ -447,13 +426,13 @@
             transition: background-color 0.2s, transform 0.2s;
         }
         #floating-nav button:hover {
-            background-color: var(--primary-hover); /* Warna hover lebih gelap */
-            color: white; /* Tetap putih */
-            transform: scale(1.1); /* Efek hover tetap */
+            background-color: var(--primary-hover); 
+            color: white;
+            transform: scale(1.1);
         }
         #floating-nav button i {
-            width: 22px; /* Disesuaikan dengan ukuran tombol */
-            height: 22px; /* Disesuaikan dengan ukuran tombol */
+            width: 22px; 
+            height: 22px; 
         }
         .nav-context-btn {
             display: none; 
@@ -461,7 +440,7 @@
         /* --- [AKHIR REVISI] CSS NAVIGATOR --- */
 
 
-        /* Perbaikan Responsif */
+        /* [REVISI V2.6] Perbaikan Responsif */
         @media (max-width: 900px) {
             body {
                 padding: 10px;
@@ -469,15 +448,28 @@
             #app-container {
                 flex-direction: column;
             }
+
+            /* [DIUBAH V2.6] Target wrapper, hapus padding */
             #control-panel, #preview-panel {
                 flex-basis: 100%;
                 min-width: 100%;
                 max-height: none; 
-                padding: 15px;
+                padding: 0; /* Wrapper tidak perlu padding */
                 border-right: none;
             }
+            
+            /* [BARU V2.6] Padding diterapkan di scroll area */
+            #control-panel-scroll-area {
+                padding: 15px;
+            }
+            
+            /* [DIUBAH V2.6] Kembalikan padding ke preview panel */
+            #preview-panel {
+                padding: 15px;
+            }
+            
             h1 {
-                font-size: 1.8em; /* Disesuaikan sedikit */
+                font-size: 1.8em; 
             }
         }
 
@@ -490,38 +482,38 @@
         
         <div id="app-container">
 
-            <section id="control-panel">
+            <section id="control-panel"> <div id="control-panel-scroll-area">
                 
-                <fieldset id="fieldset-add-controls"> <legend><i data-lucide="image-down"></i> 1. Latar Belakang & Aksi</legend>
+                    <fieldset id="fieldset-add-controls"> <legend><i data-lucide="image-down"></i> 1. Latar Belakang & Aksi</legend>
+                        
+                        <div class="form-group">
+                            <label for="bg-fit-select">Opsi Tampilan Background:</label>
+                            <select id="bg-fit-select" onchange="updateBackgroundFit(this.value)">
+                                <option value="contain">Contain (Lihat Semua)</option>
+                                <option value="cover">Cover (Penuhi Area)</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="image-upload">Upload Latar Belakang</label>
+                            <input type="file" id="image-upload" accept="image/png, image/jpeg">
+                        </div>
+                        
+                        <button class="action-button" id="add-text-btn"><i data-lucide="type"></i> Tambah Teks Baru</button>
+                        <button class="action-button" id="add-image-btn"><i data-lucide="image-plus"></i> Tambah Gambar/Logo Baru</button>
                     
-                    <div class="form-group">
-                        <label for="bg-fit-select">Opsi Tampilan Background:</label>
-                        <select id="bg-fit-select" onchange="updateBackgroundFit(this.value)">
-                            <option value="contain">Contain (Lihat Semua)</option>
-                            <option value="cover">Cover (Penuhi Area)</option>
-                        </select>
-                    </div>
+                    </fieldset>
                     
-                    <div class="form-group">
-                        <label for="image-upload">Upload Latar Belakang</label>
-                        <input type="file" id="image-upload" accept="image/png, image/jpeg">
-                    </div>
-                    
-                    <button class="action-button" id="add-text-btn"><i data-lucide="type"></i> Tambah Teks Baru</button>
-                    <button class="action-button" id="add-image-btn"><i data-lucide="image-plus"></i> Tambah Gambar/Logo Baru</button>
-                
-                </fieldset>
-                
-                <fieldset>
-                    <legend><i data-lucide="mouse-pointer-click"></i> 2. Kontrol Elemen Aktif</legend>
-                    <p style="font-size: 0.9em; color: var(--text-muted); margin-top: 0;">Klik pada elemen (Teks/Gambar) di Pratinjau untuk mengedit.</p>
-                    
-                    <div id="element-controls-area">
-                        <div class="placeholder">Pilih elemen di meja gambar.</div>
-                    </div>
-                </fieldset>
-                
-                <div id="floating-nav">
+                    <fieldset>
+                        <legend><i data-lucide="mouse-pointer-click"></i> 2. Kontrol Elemen Aktif</legend>
+                        <p style="font-size: 0.9em; color: var(--text-muted); margin-top: 0;">Klik pada elemen (Teks/Gambar) di Pratinjau untuk mengedit.</p>
+                        
+                        <div id="element-controls-area">
+                            <div class="placeholder">Pilih elemen di meja gambar.</div>
+                        </div>
+                    </fieldset>
+
+                </div> <div id="floating-nav">
                     <button onclick="scrollToControl('fieldset-add-controls')" title="Tambah Elemen"><i data-lucide="plus"></i></button>
                     <button id="nav-text" class="nav-context-btn" onclick="scrollToControl('fieldset-text-controls')" title="Kontrol Teks"><i data-lucide="type"></i></button>
                     <button id="nav-image" class="nav-context-btn" onclick="scrollToControl('fieldset-image-controls')" title="Kontrol Gambar"><i data-lucide="image"></i></button>
@@ -529,9 +521,7 @@
                     <button id="nav-common" class="nav-context-btn" onclick="scrollToControl('fieldset-common-controls')" title="Lapisan & Transformasi"><i data-lucide="layers"></i></button>
                 </div>
                 
-            </section>
-
-            <section id="preview-panel">
+            </section> <section id="preview-panel">
                 <h2 style="margin-top: 0; text-align: center;">3. Area Desain & Pratinjau</h2>
                 
                 <div id="canvas-container" onclick="setActiveElement(null)">
@@ -548,10 +538,9 @@
         //         JAVASCRIPT (OTAKNYA)
         // ==================================
         
-        // --- [CATATAN] ---
-        // Tidak ada perubahan apapun pada JavaScript.
-        // Fungsionalitas 100% sama dengan V2.4.
-        // Perubahan hanya pada CSS di <head>.
+        // --- [CATATAN V2.6] ---
+        // Satu-satunya perubahan JS adalah pada fungsi `scrollToControl`
+        // untuk menyesuaikan dengan ID elemen scroll yang baru.
         
         const canvasContainer = document.getElementById('canvas-container');
         const imageUpload = document.getElementById('image-upload');
@@ -569,7 +558,7 @@
         let activeElement = null;
         let elementCounter = 0;
         
-        // --- Bagian 1: Logika Multi-Elemen dan Kontrol ---
+        // --- Bagian 1: Logika Multi-Elemen dan Kontrol (Tidak Berubah) ---
 
         function setActiveElement(element) {
             document.querySelectorAll('.draggable-element').forEach(el => el.classList.remove('active'));
@@ -577,7 +566,7 @@
             if (element && element !== activeElement) {
                 element.classList.add('active');
                 activeElement = element;
-                renderControls(element); // Ini HANYA dipanggil saat ganti elemen, jadi aman.
+                renderControls(element); 
 
                 const isText = element.classList.contains('text-element');
                 navText.style.display = isText ? 'flex' : 'none';
@@ -793,8 +782,6 @@
 
 
         // --- Bagian 5: Render Formulir Kontrol Dinamis (Tidak Berubah) ---
-        // Penambahan ikon pada <legend> sudah di-handle oleh CSS (v2.4)
-        // dan JS ini sudah benar memanggil lucide.createIcons().
 
         function renderControls(element) {
             const isText = element.classList.contains('text-element');
@@ -824,7 +811,6 @@
                     width: parseFloat(element.style.width) || 300,
                 };
 
-                // Ikon di <legend>
                 contentControls = `
                     <fieldset id="fieldset-text-controls"> <legend><i data-lucide="type"></i> Kontrol Teks (#${elementId})</legend>
                         <div class="element-control">
@@ -907,12 +893,10 @@
                     </fieldset>
                 `;
             } 
-            // Logika untuk Gambar
             else {
                 const currentSize = parseFloat(element.dataset.width) || 150;
                 const maxCanvasSize = Math.max(canvasContainer.clientWidth, canvasContainer.clientHeight);
 
-                // Ikon di <legend>
                 contentControls = `
                     <fieldset id="fieldset-image-controls"> <legend><i data-lucide="image"></i> Kontrol Gambar (#${elementId})</legend>
                         <div class="element-control">
@@ -934,7 +918,6 @@
                 `;
             }
 
-            // Ikon di <legend>
             const commonControls = `
                 <fieldset id="fieldset-common-controls"> <legend><i data-lucide="layers"></i> Lapisan, Posisi & Lainnya</legend>
                     <div class="element-control">
@@ -971,11 +954,10 @@
 
             controlsArea.innerHTML = contentControls + commonControls;
             
-            // Panggil Lucide untuk merender ikon yang baru ditambahkan
             lucide.createIcons();
         }
 
-        // --- Bagian 6: Fungsi Pembantu (Tidak Berubah) ---
+        // --- Bagian 6: Fungsi Pembantu ---
 
         function updateAlignmentActive(clickedButton) {
             const group = clickedButton.closest('.format-group');
@@ -992,17 +974,21 @@
             }
         }
 
+        // --- [REVISI V2.6] Fungsi ScrollToControl diperbarui ---
         function scrollToControl(fieldsetId) {
             const fieldset = document.getElementById(fieldsetId);
-            const controlPanel = document.getElementById('control-panel');
+            // [DIUBAH] Targetkan ID area scroll yang baru
+            const controlPanel = document.getElementById('control-panel-scroll-area'); 
 
-            if (fieldset) {
-                controlPanel.scrollTop = fieldset.offsetTop - controlPanel.offsetTop - 10; 
+            if (fieldset && controlPanel) {
+                // [DIUBAH] Logika kalkulasi offset disederhanakan
+                controlPanel.scrollTop = fieldset.offsetTop - 10; 
+                
                 fieldset.style.boxShadow = '0 0 0 3px var(--primary-color)';
                 setTimeout(() => {
-                    fieldset.style.boxShadow = 'var(--shadow-sm)'; // Kembalikan ke shadow normal
+                    fieldset.style.boxShadow = 'var(--shadow-sm)'; 
                 }, 1200);
-            } else {
+            } else if (controlPanel) {
                 controlPanel.scrollTop = 0;
             }
         }
