@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Editor Flyer Super Canggih</title>
     
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" integrity="sha512-BNaRQnYJYiPSqHHDb58B0yaPfCu+Wgds8Gp/gU33kqBtgNS4tSPHuGibjNQVbXlHARe0dHYNbaKNPjcrea1lBA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" integrity="sha512-BNaRQnYJYiPSqHHDb58B0yaPfCu+Wgds8Gp/gU33kqBtgNS4tSPHuGibjNQVbXlHARe0dHYNbaKNPjcrea1lBA==
+" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
     <style>
         /* CSS Dasar */
@@ -164,7 +165,7 @@
             padding: 5px;
             border: 2px dashed transparent;
             user-select: none;
-            box-sizing: content-box; /* Penting untuk perhitungan size */
+            box-sizing: content-box; 
         }
         
         .draggable-element:hover {
@@ -180,11 +181,12 @@
             display: block; 
             white-space: pre-wrap;
             word-wrap: break-word;
-            /* Tambahan: default gradien untuk menghindari bug awal */
             background: transparent;
             -webkit-background-clip: unset;
             -webkit-text-fill-color: unset;
-            transition: all 0.1s ease-out; /* Animasi lembut */
+            transition: all 0.1s ease-out; 
+            /* PERBAIKAN DRAG Teks: Pastikan klik drag diarahkan ke parent DIV */
+            pointer-events: none; 
         }
 
         /* Teks dengan Gradien */
@@ -198,7 +200,7 @@
             height: 100%;
             object-fit: contain; 
             pointer-events: none;
-            transition: all 0.1s ease-out; /* Animasi lembut */
+            transition: all 0.1s ease-out; 
         }
 
         .image-placeholder {
@@ -210,6 +212,8 @@
             color: #888;
             font-size: 0.9em;
             text-align: center;
+            /* PERBAIKAN DRAG Gambar: Pastikan klik drag diarahkan ke parent DIV */
+            pointer-events: none; 
         }
         
         /* Sembunyikan border saat generate */
@@ -330,6 +334,7 @@
                 element.dataset.gradientColor1 = '#ff0000'; 
                 element.dataset.gradientColor2 = '#0000ff';
                 element.dataset.gradientDirection = '90deg';
+                element.dataset.isGradient = 'false'; // Set default gradien
 
                 // Terapkan style default ke span
                 const textSpan = element.querySelector('.draggable-text');
@@ -349,6 +354,7 @@
             makeDraggable(element);
             
             element.addEventListener('mousedown', (e) => {
+                // Saat mengklik, pastikan elemen menjadi aktif untuk diedit
                 e.stopPropagation();
                 setActiveElement(element);
             });
@@ -356,16 +362,11 @@
             setActiveElement(element);
         }
         
-        addTextBtn.addEventListener('click', () => createElement('text', 'Teks Baru!'));
+        addTextBtn.addEventListener('click', () => createElement('text', 'PROMOSI GRADIENT! Klik untuk Edit'));
         addImageBtn.addEventListener('click', () => createElement('image'));
 
-        // --- Bagian 2: Logika Warna dan Gradien (Fix Bug Utama) ---
+        // --- Bagian 2: Logika Warna dan Gradien ---
         
-        /**
-         * @perbaikan 
-         * Fungsi untuk mengaktifkan/menonaktifkan gradien pada teks.
-         * Ini memastikan properti CSS diatur dengan benar, mengatasi bug malfungsi.
-         */
         function toggleGradient(elementId, activate) {
             const element = document.getElementById(elementId);
             if (!element) return;
@@ -374,6 +375,7 @@
             if (activate === true || activate === 'true') {
                 textSpan.classList.add('gradient-active');
                 
+                // Ambil nilai dari dataset
                 const type = element.dataset.gradientType || 'linear';
                 const color1 = element.dataset.gradientColor1 || '#ff0000';
                 const color2 = element.dataset.gradientColor2 || '#0000ff';
@@ -386,7 +388,7 @@
                     textSpan.style.backgroundImage = `radial-gradient(${color1}, ${color2})`;
                 }
 
-                // Hapus style warna solid
+                // Hapus style warna solid agar gradien terlihat
                 textSpan.style.color = '';
                 element.dataset.isGradient = 'true';
             } else {
@@ -402,11 +404,6 @@
         
         // --- Bagian 3: Fungsi Update Style (Pusat Kontrol) ---
         
-        /**
-         * @perbaikan 
-         * Fungsi universal untuk memperbarui style elemen. 
-         * Logic dipecah dan disempurnakan untuk menangani kasus multi-elemen.
-         */
         function updateStyle(elementId, prop, value) {
             const element = document.getElementById(elementId);
             if (!element) return;
@@ -423,11 +420,9 @@
                     toggleGradient(elementId, false);
                     element.dataset.color = value;
                     target.style.color = value;
-                } else if (prop === 'fontSize' || prop === 'lineHeight' || prop === 'letterSpacing') {
+                } else if (['fontSize', 'lineHeight', 'letterSpacing'].includes(prop)) {
                     target.style[prop] = value;
-                } else if (prop === 'fontFamily') {
-                    target.style[prop] = value;
-                } else if (prop === 'textAlign') {
+                } else if (prop === 'fontFamily' || prop === 'textAlign') {
                     target.style[prop] = value;
                 }
                 
@@ -441,7 +436,7 @@
                     }
                 }
             } else {
-                // Logika Gambar (tidak ada text-span, target = image)
+                // Logika Gambar/Logo
                 if (prop === 'width' || prop === 'height') {
                     element.style[prop] = value + 'px';
                     element.dataset[prop] = value;
@@ -460,16 +455,12 @@
                 element.style.zIndex = value;
             }
             
-            // Perbarui kontrol setelah update style (opsional, tapi bagus untuk sinkronisasi)
+            // Perbarui kontrol setelah update style (untuk sinkronisasi checkbox/input)
             if (activeElement && activeElement.id === elementId) {
-                 // Hanya render ulang untuk memastikan input field terupdate
                  renderControls(activeElement);
             }
         }
         
-        /**
-         * Fungsi untuk mengganti properti boolean/toggle seperti Bold, Italic, dll.
-         */
         function toggleFormat(elementId, prop, value) {
             const element = document.getElementById(elementId);
             if (!element) return;
@@ -492,13 +483,8 @@
             renderControls(element);
         }
 
-        // --- Bagian 4: Render Formulir Kontrol Dinamis (Fix Multi-Element Edit) ---
+        // --- Bagian 4: Render Formulir Kontrol Dinamis ---
 
-        /**
-         * @perbaikan 
-         * Menyelesaikan renderControls untuk memuat semua opsi edit Teks dan Gambar.
-         * Ini memastikan saat berpindah elemen, kontrol yang muncul sudah benar.
-         */
         function renderControls(element) {
             const isText = element.classList.contains('text-element');
             const elementId = element.id;
@@ -530,7 +516,6 @@
                     
                     // Umum
                     width: parseFloat(element.style.width) || 300,
-                    height: 'Auto', // Teks tidak perlu height
                 };
 
                 contentControls = `
@@ -594,7 +579,7 @@
 
                         <div class="form-group" style="margin-top: 15px;">
                             <label>
-                                <input type="checkbox" onchange="updateStyle('${elementId}', 'isGradient', this.checked)"> 
+                                <input type="checkbox" onchange="updateStyle('${elementId}', 'isGradient', this.checked)" ${currentData.isGradient ? 'checked' : ''}> 
                                 **Aktifkan Gradien Teks**
                             </label>
                         </div>
@@ -671,12 +656,6 @@
 
 
             controlsArea.innerHTML = contentControls + commonControls;
-
-            // Pastikan checkbox gradien disinkronkan
-            const gradientCheckbox = document.querySelector(`#control-panel input[type="checkbox"]`);
-            if (gradientCheckbox) {
-                gradientCheckbox.checked = element.dataset.isGradient === 'true';
-            }
         }
 
         // --- Bagian 5: Fungsi Pembantu ---
@@ -695,6 +674,13 @@
                 if (placeholder) {
                     placeholder.style.display = 'none';
                 }
+                // Jika gambar berhasil diupload, atur ukurannya agar terlihat
+                element.style.width = '150px';
+                element.style.height = '150px';
+                element.dataset.width = 150;
+                element.dataset.height = 150;
+                // Pastikan kontrol diperbarui
+                renderControls(element);
             };
             reader.readAsDataURL(file);
         }
@@ -724,29 +710,32 @@
             }
         });
 
-        // --- Bagian 6: Logika Drag dan Drop (Disempurnakan) ---
+        // --- Bagian 6: Logika Drag dan Drop (FIXED) ---
 
         function makeDraggable(element) {
             let isDragging = false;
-            let currentX;
-            let currentY;
             let initialX;
             let initialY;
-            let xOffset = 0;
-            let yOffset = 0;
+            let xOffset;
+            let yOffset;
 
-            // Ambil posisi awal dari style
-            if (element.style.left) xOffset = parseFloat(element.style.left);
-            if (element.style.top) yOffset = parseFloat(element.style.top);
-
+            // Tambahkan event listener pada elemen untuk memulai drag
             element.addEventListener("mousedown", dragStart);
+            
+            // Event listener global untuk mengakhiri dan menggerakkan
             document.addEventListener("mouseup", dragEnd);
             document.addEventListener("mousemove", drag);
 
             function dragStart(e) {
                 if (activeElement && activeElement.id === element.id) {
+                    // PERBAIKAN: Baca posisi saat ini (offset) dari style elemen sebelum drag
+                    xOffset = parseFloat(element.style.left) || 0;
+                    yOffset = parseFloat(element.style.top) || 0;
+                    
+                    // Hitung titik awal klik relatif terhadap elemen
                     initialX = e.clientX - xOffset;
                     initialY = e.clientY - yOffset;
+                    
                     isDragging = true;
                     // Mencegah canvasContainer dari menonaktifkan elemen saat drag dimulai
                     e.stopPropagation(); 
@@ -754,30 +743,29 @@
             }
 
             function dragEnd(e) {
-                if (isDragging) {
-                    initialX = currentX;
-                    initialY = currentY;
-                }
                 isDragging = false;
             }
 
             function drag(e) {
                 if (isDragging) {
                     e.preventDefault();
-                    currentX = e.clientX - initialX;
-                    currentY = e.clientY - initialY;
-
-                    xOffset = currentX;
-                    yOffset = currentY;
+                    
+                    let currentX = e.clientX - initialX;
+                    let currentY = e.clientY - initialY;
 
                     // Batasi agar elemen tidak keluar dari canvas
                     const minX = 0;
                     const minY = 0;
+                    // Gunakan offsetWidth/Height untuk mendapatkan dimensi elemen
                     const maxX = canvasContainer.clientWidth - element.offsetWidth;
                     const maxY = canvasContainer.clientHeight - element.offsetHeight;
                     
                     currentX = Math.min(Math.max(currentX, minX), maxX);
                     currentY = Math.min(Math.max(currentY, minY), maxY);
+
+                    // Update offset untuk drag berikutnya (tidak diperlukan jika membaca style di dragStart)
+                    // xOffset = currentX;
+                    // yOffset = currentY;
 
                     setTranslate(currentX, currentY, element);
                 }
@@ -792,15 +780,16 @@
         // --- Bagian 7: Logika Download Gambar ---
 
         generateBtn.addEventListener('click', () => {
+            // Menonaktifkan elemen aktif (menghilangkan border)
+            document.querySelectorAll('.draggable-element').forEach(el => el.classList.remove('active'));
             canvasContainer.classList.add('generating');
             generateBtn.textContent = 'Membuat Gambar...';
             generateBtn.disabled = true;
 
             html2canvas(canvasContainer, {
-                // Settings untuk membantu mengatasi masalah gambar cross-origin dan transparansi
                 useCORS: true,
                 allowTaint: true, 
-                scale: 2, 
+                scale: 2, // Meningkatkan resolusi
                 backgroundColor: '#ffffff', 
                 windowWidth: canvasContainer.scrollWidth,
                 windowHeight: canvasContainer.scrollHeight
@@ -826,7 +815,7 @@
             });
         });
 
-        // Inisialisasi: Tambahkan teks default
+        // Inisialisasi: Tambahkan teks default saat DOM siap
         document.addEventListener('DOMContentLoaded', () => {
              createElement('text', 'PROMOSI GRADIENT! Klik untuk Edit');
         });
