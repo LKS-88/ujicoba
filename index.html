@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Editor Flyer Super Canggih (V2)</title>
+    <title>Editor Flyer Super Canggih (V2.1)</title>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" integrity="sha512-BNaRQnYJYiPSqHHDb58B0yaPfCu+Wgds8Gp/gU33kqBtgNS4tSPHuGibjNQVbXlHARe0dHYNbaKNPjcrea1lBA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
@@ -58,6 +58,8 @@
             max-height: 90vh;
             overflow-y: auto; 
             box-sizing: border-box;
+            /* Tambahkan ini untuk scroll yang mulus */
+            scroll-behavior: smooth;
         }
         
         #preview-panel {
@@ -75,6 +77,8 @@
             padding: 15px 20px;
             margin-bottom: 20px;
             background-color: #fff;
+            /* Transisi untuk highlight */
+            transition: box-shadow 0.3s ease-out;
         }
         
         legend {
@@ -333,6 +337,44 @@
             box-shadow: none !important;
         }
 
+        /* --- [BARU] CSS NAVIGATOR MELAYANG --- */
+        #floating-nav {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--panel-color);
+            border: 1px solid var(--border-color);
+            border-radius: 50px; /* Pill shape */
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            display: flex;
+            gap: 5px;
+            padding: 8px;
+            z-index: 10000;
+        }
+        #floating-nav button {
+            font-size: 1.2em;
+            background-color: #f0f0f0;
+            border: 1px solid var(--control-border);
+            border-radius: 50%;
+            width: 44px;
+            height: 44px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.2s, transform 0.2s;
+        }
+        #floating-nav button:hover {
+            background-color: #e0e0e0;
+            transform: scale(1.1);
+        }
+        .nav-context-btn {
+            display: none; /* Sembunyikan by default */
+        }
+        /* --- [AKHIR BARU] CSS NAVIGATOR MELAYANG --- */
+
+
         /* Perbaikan Responsif */
         @media (max-width: 900px) {
             body {
@@ -351,6 +393,10 @@
             h1 {
                 font-size: 1.5em;
             }
+            /* Pindahkan nav melayang agar tidak menutupi tombol download di mobile */
+            #floating-nav {
+                bottom: 80px; 
+            }
         }
 
     </style>
@@ -363,8 +409,7 @@
 
             <section id="control-panel">
                 
-                <fieldset>
-                    <legend>1. Latar Belakang & Aksi</legend>
+                <fieldset id="fieldset-add-controls"> <legend>1. Latar Belakang & Aksi</legend>
                     
                     <div class="form-group">
                         <label for="bg-fit-select">Opsi Tampilan Background:</label>
@@ -407,6 +452,13 @@
         </div>
     </main>
 
+    <div id="floating-nav">
+        <button onclick="scrollToControl('fieldset-add-controls')" title="Tambah Elemen">➕</button>
+        <button id="nav-text" class="nav-context-btn" onclick="scrollToControl('fieldset-text-controls')" title="Kontrol Teks">🅰️</button>
+        <button id="nav-image" class="nav-context-btn" onclick="scrollToControl('fieldset-image-controls')" title="Kontrol Gambar">🖼️</button>
+        <button id="nav-color" class="nav-context-btn" onclick="scrollToControl('fieldset-color-controls')" title="Kontrol Warna/Gradien">🎨</button>
+        <button id="nav-common" class="nav-context-btn" onclick="scrollToControl('fieldset-common-controls')" title="Lapisan & Transformasi">🔄</button>
+    </div>
     <script>
         // ==================================
         //         JAVASCRIPT (OTAKNYA)
@@ -419,6 +471,12 @@
         const generateBtn = document.getElementById('generate-btn');
         const controlsArea = document.getElementById('element-controls-area');
         const bgFitSelect = document.getElementById('bg-fit-select');
+
+        // [BARU] Referensi Tombol Navigasi Melayang
+        const navText = document.getElementById('nav-text');
+        const navImage = document.getElementById('nav-image');
+        const navColor = document.getElementById('nav-color');
+        const navCommon = document.getElementById('nav-common');
 
         let activeElement = null;
         let elementCounter = 0;
@@ -433,10 +491,24 @@
                 element.classList.add('active');
                 activeElement = element;
                 renderControls(element);
+
+                // [BARU] Tampilkan/Sembunyikan Tombol Nav Melayang
+                const isText = element.classList.contains('text-element');
+                navText.style.display = isText ? 'flex' : 'none';
+                navImage.style.display = isText ? 'none' : 'flex';
+                navColor.style.display = isText ? 'flex' : 'none';
+                navCommon.style.display = 'flex';
+
             } else if (element === null) {
                 activeElement = null;
                 // Gunakan placeholder yang sudah distyle
                 controlsArea.innerHTML = '<div class="placeholder">Pilih elemen di meja gambar.</div>';
+
+                // [BARU] Sembunyikan semua tombol nav kontekstual
+                navText.style.display = 'none';
+                navImage.style.display = 'none';
+                navColor.style.display = 'none';
+                navCommon.style.display = 'none';
             }
         }
 
@@ -535,6 +607,8 @@
         
         // --- Bagian 3: Fungsi Update Style (Pusat Kontrol) ---
         
+        // [DIPERBAIKI] Fungsi updateStyle TIDAK LAGI memanggil renderControls().
+        // Ini memperbaiki bug input kehilangan fokus.
         function updateStyle(elementId, prop, value) {
             const element = document.getElementById(elementId);
             if (!element) return;
@@ -593,10 +667,7 @@
                 element.style.zIndex = value;
             }
             
-            // Perbarui kontrol setelah update style (untuk sinkronisasi checkbox/input)
-            if (activeElement && activeElement.id === elementId) {
-                 renderControls(activeElement);
-            }
+            // (DIHAPUS) Panggilan renderControls() dihapus dari sini untuk memperbaiki bug fokus.
         }
         
         function toggleFormat(elementId, prop, value) {
@@ -618,6 +689,7 @@
                 textSpan.style[prop] = currentValue === value ? 'normal' : value;
             }
             
+            // Panggilan renderControls tetap di sini untuk memperbarui status 'active' tombol
             renderControls(element);
         }
         
@@ -649,6 +721,7 @@
             element.style.zIndex = currentZ;
             element.dataset.zIndex = currentZ;
             
+            // Panggilan renderControls tetap di sini untuk memperbarui label Z-Index
             renderControls(element);
         }
 
@@ -685,8 +758,7 @@
                 };
 
                 contentControls = `
-                    <fieldset>
-                        <legend>Kontrol Teks (#${elementId})</legend>
+                    <fieldset id="fieldset-text-controls"> <legend>Kontrol Teks (#${elementId})</legend>
                         <div class="element-control">
                             <div class="form-group">
                                 <label>Isi Teks</label>
@@ -703,10 +775,10 @@
 
                             <label>Rata Teks</label>
                             <div class="format-group">
-                                <button onclick="updateStyle('${elementId}', 'textAlign', 'left')" class="${currentData.align === 'left' ? 'active' : ''}">Kiri</button>
-                                <button onclick="updateStyle('${elementId}', 'textAlign', 'center')" class="${currentData.align === 'center' ? 'active' : ''}">Tengah</button>
-                                <button onclick="updateStyle('${elementId}', 'textAlign', 'right')" class="${currentData.align === 'right' ? 'active' : ''}">Kanan</button>
-                                <button onclick="updateStyle('${elementId}', 'textAlign', 'justify')" class="${currentData.align === 'justify' ? 'active' : ''}">Rata</button>
+                                <button onclick="updateStyle('${elementId}', 'textAlign', 'left'); renderControls(document.getElementById('${elementId}'))" class="${currentData.align === 'left' ? 'active' : ''}">Kiri</button>
+                                <button onclick="updateStyle('${elementId}', 'textAlign', 'center'); renderControls(document.getElementById('${elementId}'))" class="${currentData.align === 'center' ? 'active' : ''}">Tengah</button>
+                                <button onclick="updateStyle('${elementId}', 'textAlign', 'right'); renderControls(document.getElementById('${elementId}'))" class="${currentData.align === 'right' ? 'active' : ''}">Kanan</button>
+                                <button onclick="updateStyle('${elementId}', 'textAlign', 'justify'); renderControls(document.getElementById('${elementId}'))" class="${currentData.align === 'justify' ? 'active' : ''}">Rata</button>
                             </div>
 
                             <div class="form-group">
@@ -738,8 +810,7 @@
                         </div>
                     </fieldset>
 
-                    <fieldset>
-                        <legend>Opsi Warna & Gradien</legend>
+                    <fieldset id="fieldset-color-controls"> <legend>Opsi Warna & Gradien</legend>
                         <div class="element-control">
                             <div class="form-group">
                                 <label for="color-${elementId}">Warna Solid</label>
@@ -747,7 +818,7 @@
                             </div>
 
                             <div class="form-group" style="margin-top: 10px; flex-direction: row; align-items: center; gap: 10px;">
-                                <input type="checkbox" id="grad-check-${elementId}" onchange="updateStyle('${elementId}', 'isGradient', this.checked)" ${currentData.isGradient ? 'checked' : ''}> 
+                                <input type="checkbox" id="grad-check-${elementId}" onchange="updateStyle('${elementId}', 'isGradient', this.checked); renderControls(document.getElementById('${elementId}'))" ${currentData.isGradient ? 'checked' : ''}> 
                                 <label for="grad-check-${elementId}" style="margin: 0; font-weight: 700;">Aktifkan Gradien Teks</label>
                             </div>
                             
@@ -775,8 +846,7 @@
                 const maxCanvasSize = Math.max(canvasContainer.clientWidth, canvasContainer.clientHeight);
 
                 contentControls = `
-                    <fieldset>
-                        <legend>Kontrol Gambar (#${elementId})</legend>
+                    <fieldset id="fieldset-image-controls"> <legend>Kontrol Gambar (#${elementId})</legend>
                         <div class="element-control">
                             <div class="form-group">
                                 <label for="image-upload-${elementId}">Upload Gambar/Logo Baru</label>
@@ -785,8 +855,10 @@
 
                             <div class="form-group">
                                 <label>Ukuran Gambar/Logo (px)</label>
-                                <input type="range" min="30" max="${Math.floor(maxCanvasSize * 0.8)}" step="5" value="${currentSize}" oninput="updateStyle('${elementId}', 'size', this.value)">
-                                <input type="number" value="${currentSize}" min="30" max="${Math.floor(maxCanvasSize * 0.8)}" oninput="updateStyle('${elementId}', 'size', this.value)">
+                                <input type="range" min="30" max="${Math.floor(maxCanvasSize * 0.8)}" step="5" value="${currentSize}" id="range-size-${elementId}"
+                                    oninput="updateStyle('${elementId}', 'size', this.value); document.getElementById('num-size-${elementId}').value = this.value">
+                                <input type="number" value="${currentSize}" min="30" max="${Math.floor(maxCanvasSize * 0.8)}" id="num-size-${elementId}"
+                                    oninput="updateStyle('${elementId}', 'size', this.value); document.getElementById('range-size-${elementId}').value = this.value">
                                 <small style="color: var(--text-muted);">Ukuran dalam piksel (width=height)</small>
                             </div>
                         </div>
@@ -796,8 +868,7 @@
 
             // Kontrol Umum (Berlaku untuk Teks dan Gambar)
             const commonControls = `
-                <fieldset>
-                    <legend>Lapisan, Posisi & Lainnya</legend>
+                <fieldset id="fieldset-common-controls"> <legend>Lapisan, Posisi & Lainnya</legend>
                     <div class="element-control">
                         
                         <div class="form-group">
@@ -811,14 +882,18 @@
                         <label style="font-weight: 700; color: var(--primary-color); margin-top: 10px;">Rotasi & Transparansi</label>
                         <div class="form-group">
                             <label>Rotasi (Derajat)</label>
-                            <input type="range" min="0" max="360" value="${element.dataset.rotation || 0}" oninput="updateStyle('${elementId}', 'rotation', this.value)" style="width: 100%;">
-                            <input type="number" value="${element.dataset.rotation || 0}" oninput="updateStyle('${elementId}', 'rotation', this.value)">
+                            <input type="range" min="0" max="360" value="${element.dataset.rotation || 0}" id="range-rot-${elementId}"
+                                oninput="updateStyle('${elementId}', 'rotation', this.value); document.getElementById('num-rot-${elementId}').value = this.value" style="width: 100%;">
+                            <input type="number" value="${element.dataset.rotation || 0}" id="num-rot-${elementId}"
+                                oninput="updateStyle('${elementId}', 'rotation', this.value); document.getElementById('range-rot-${elementId}').value = this.value">
                         </div>
 
                         <div class="form-group">
                             <label>Opacity / Transparansi (0 - 1)</label>
-                            <input type="range" min="0" max="1" step="0.05" value="${element.dataset.opacity || 1}" oninput="updateStyle('${elementId}', 'opacity', this.value)" style="width: 100%;">
-                            <input type="number" min="0" max="1" step="0.01" value="${element.dataset.opacity || 1}" oninput="updateStyle('${elementId}', 'opacity', this.value)">
+                            <input type="range" min="0" max="1" step="0.05" value="${element.dataset.opacity || 1}" id="range-op-${elementId}"
+                                oninput="updateStyle('${elementId}', 'opacity', this.value); document.getElementById('num-op-${elementId}').value = this.value" style="width: 100%;">
+                            <input type="number" min="0" max="1" step="0.01" value="${element.dataset.opacity || 1}" id="num-op-${elementId}"
+                                oninput="updateStyle('${elementId}', 'opacity', this.value); document.getElementById('range-op-${elementId}').value = this.value">
                         </div>
                     </div>
                 </fieldset>
@@ -830,6 +905,27 @@
         }
 
         // --- Bagian 6: Fungsi Pembantu ---
+
+        // [BARU] Fungsi untuk scroll ke panel kontrol
+        function scrollToControl(fieldsetId) {
+            const fieldset = document.getElementById(fieldsetId);
+            const controlPanel = document.getElementById('control-panel');
+
+            if (fieldset) {
+                // Scroll ke fieldset di dalam control-panel
+                controlPanel.scrollTop = fieldset.offsetTop - controlPanel.offsetTop - 10; // -10px untuk padding
+                
+                // Beri 'highlight' sementara
+                fieldset.style.boxShadow = '0 0 0 3px var(--primary-color)';
+                setTimeout(() => {
+                    fieldset.style.boxShadow = 'none';
+                }, 1200);
+            } else {
+                // Fallback: scroll panel ke atas
+                controlPanel.scrollTop = 0;
+            }
+        }
+
 
         function updateImageSource(elementId, file) {
             const element = document.getElementById(elementId);
@@ -848,6 +944,8 @@
                 
                 // Atur ukuran default setelah upload
                 updateStyle(elementId, 'size', 150);
+                // Render ulang kontrol untuk memperbarui nilai slider/angka
+                renderControls(element);
             };
             reader.readAsDataURL(file);
         }
@@ -926,7 +1024,10 @@
                     // Kembalikan z-index ke nilai data setelah selesai drag
                     element.style.zIndex = element.dataset.zIndex || (elementCounter + 10);
                     // Panggil render controls untuk update Z-index di UI jika berubah
-                    renderControls(element);
+                    // Pastikan activeElement masih elemen yang sama
+                    if (activeElement && activeElement.id === element.id) {
+                        renderControls(element);
+                    }
                 }
             }
 
