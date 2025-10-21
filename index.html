@@ -3,23 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Editor Flyer Super Canggih (V2.4 - Perbaikan Tombol Melayang & Ikon)</title>
+    <title>Editor Flyer Super Canggih (V2.3 - Penyempurnaan UI/UX)</title>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" integrity="sha512-BNaRQnYJYiPSqHHDb58B0yaPfCu+Wgds8Gp/gU33kqBtgNS4tSPHuGibjNQVbXlHARe0dHYNbaKNPjcrea1lBA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     
+    <script src="https://unpkg.com/lucide-icons"></script>
+
     <style>
-        /* CSS yang Disempurnakan (V2.2 Base) */
+        /* --- [BARU] Animasi --- */
+        @keyframes spin {
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+        .spin {
+            animation: spin 1s linear infinite;
+        }
+
+        /* --- [DISEMPURNAKAN] CSS (Palet Warna & UI Modern) --- */
         :root {
-            --bg-color: #f4f7f6;
+            --bg-color: #f8f9fa; /* Lebih cerah */
             --panel-color: #ffffff;
-            --border-color: #e0e6ed;
-            --primary-color: #4A90E2; /* Biru V2.2 */
-            --primary-hover: #357ABD;
-            --text-color: #333;
-            --text-muted: #6c757d;
-            --success-color: #28a745;
-            --danger-color: #E02424;
-            --control-border: #d1d9e6;
+            --border-color: #e5e7eb; /* Abu-abu lebih lembut */
+            --control-border: #d1d5db;
+            
+            /* Palet Warna Primer Baru (Ungu) */
+            --primary-color: #6D28D9; /* Ungu (Lebih Canggih) */
+            --primary-hover: #5B21B6;
+            --focus-ring: rgba(109, 40, 217, 0.25);
+            
+            --text-color: #1f2937; /* Abu-abu gelap */
+            --text-muted: #6b7280;
+            
+            /* Palet Warna Aksi yang Disesuaikan */
+            --success-color: #10B981; /* Hijau modern */
+            --success-hover: #059669;
+            --danger-color: #EF4444; /* Merah modern */
+            --danger-hover: #DC2626;
+            --warning-color: #F59E0B; /* Kuning/Amber modern */
+            --warning-hover: #D97706;
+            --info-color: #3B82F6; /* Biru info */
+            --info-hover: #2563EB;
         }
 
         body {
@@ -34,6 +58,13 @@
         h1 {
             color: var(--primary-color);
             text-align: center;
+            font-weight: 700;
+        }
+        
+        /* [BARU] Atur ukuran ikon di h1 */
+        h1 i {
+            font-size: 0.85em;
+            vertical-align: -2px;
         }
 
         #app-container {
@@ -45,7 +76,8 @@
             margin: 0 auto;
             background-color: var(--panel-color);
             border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            /* Shadow lebih lembut */
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
             overflow: hidden; 
         }
         
@@ -53,7 +85,7 @@
             flex: 1; 
             min-width: 340px;
             padding: 25px;
-            background-color: #fcfdff;
+            background-color: #fcfdff; /* Sedikit off-white */
             border-right: 1px solid var(--border-color);
             max-height: 90vh;
             overflow-y: auto; 
@@ -69,25 +101,27 @@
             flex-direction: column;
         }
 
-        /* Grup Kontrol (V2.2) */
+        /* Grup Kontrol yang disempurnakan */
         fieldset {
             border: 1px solid var(--border-color);
             border-radius: 8px;
             padding: 15px 20px;
             margin-bottom: 20px;
-            background-color: #fff;
+            background-color: var(--panel-color);
+            /* Shadow halus untuk kedalaman */
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
             transition: box-shadow 0.3s ease-out;
         }
         
         legend {
-            font-weight: 700;
+            font-weight: 600; /* Sedikit lebih tebal */
             font-size: 1.1em;
             color: var(--primary-color);
             padding: 0 8px;
             margin-left: -8px;
         }
 
-        /* --- Kontainer Gambar (Canvas) (V2.2) --- */
+        /* --- Kontainer Gambar (Canvas) --- */
         #canvas-container {
             flex-grow: 1;
             border: 2px dashed var(--border-color);
@@ -95,7 +129,7 @@
             min-height: 550px; 
             position: relative;
             overflow: hidden;
-            background-color: #f9f9f9;
+            background-color: #fdfdfd;
             background-size: contain; 
             background-position: center;
             background-repeat: no-repeat;
@@ -109,7 +143,7 @@
             border-color: var(--primary-color);
         }
 
-        /* --- Kontrol Elemen (V2.2) --- */
+        /* --- [DISEMPURNAKAN] Kontrol Elemen --- */
         .action-button {
             display: flex;
             align-items: center;
@@ -122,7 +156,7 @@
             border-radius: 6px;
             cursor: pointer;
             margin-top: 10px;
-            font-weight: 600;
+            font-weight: 500; /* Medium weight */
             font-size: 1em;
             transition: background-color 0.2s, box-shadow 0.2s;
             width: 100%;
@@ -130,7 +164,7 @@
 
         .action-button:hover {
             background-color: var(--primary-hover);
-            box-shadow: 0 4px 12px rgba(74, 144, 226, 0.3);
+            box-shadow: 0 4px 14px rgba(109, 40, 217, 0.25);
         }
 
         .action-button:disabled {
@@ -143,16 +177,27 @@
             background-color: var(--success-color);
         }
         .action-button.download-btn:hover {
-            background-color: #218838;
-            box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+            background-color: var(--success-hover);
+            box-shadow: 0 4px 14px rgba(16, 185, 129, 0.25);
         }
 
         .action-button.delete-btn {
             background-color: var(--danger-color);
         }
         .action-button.delete-btn:hover {
-            background-color: #c81e1e;
-            box-shadow: 0 4px 12px rgba(224, 36, 36, 0.3);
+            background-color: var(--danger-hover);
+            box-shadow: 0 4px 14px rgba(239, 68, 68, 0.25);
+        }
+        
+        /* [BARU] Ukuran ikon di dalam tombol aksi */
+        .action-button i {
+            width: 18px;
+            height: 18px;
+        }
+        /* Ikon loader yang berputar */
+        .action-button .spin {
+            width: 18px;
+            height: 18px;
         }
 
         .element-control {
@@ -182,7 +227,7 @@
             color: #555;
         }
 
-        /* Input (V2.2) */
+        /* Input yang disempurnakan dengan :focus */
         .form-group input[type="text"],
         .form-group input[type="number"],
         .form-group input[type="file"],
@@ -196,18 +241,24 @@
             width: 100%;
             transition: border-color 0.2s, box-shadow 0.2s;
         }
-        .form-group input[type="file"] { padding: 8px; }
-        .form-group input[type="color"] { padding: 4px; min-height: 40px; }
+        .form-group input[type="file"] {
+            padding: 8px; 
+        }
+        .form-group input[type="color"] {
+            padding: 4px; 
+            min-height: 40px;
+        }
         
         .form-group input:focus, 
         .form-group select:focus, 
         .form-group textarea:focus {
             outline: none;
             border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.2);
+            /* Fokus ring baru */
+            box-shadow: 0 0 0 3px var(--focus-ring);
         }
 
-        /* Grup Tombol Formatting (V2.2) */
+        /* [DISEMPURNAKAN] Grup Tombol Formatting */
         .format-group {
             display: flex;
             gap: 5px;
@@ -216,45 +267,65 @@
 
         .format-group button {
             flex: 1;
+            /* [BARU] Flex untuk ikon */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            
             padding: 8px 12px;
             border: 1px solid var(--control-border);
-            background-color: #f9f9f9;
+            background-color: var(--panel-color);
+            color: var(--text-muted);
             cursor: pointer;
             border-radius: 4px;
-            font-weight: normal;
-            transition: background-color 0.1s, border-color 0.1s;
+            transition: background-color 0.1s, border-color 0.1s, color 0.1s;
         }
-        .format-group button:hover { background-color: #f0f0f0; }
+        .format-group button:hover {
+            background-color: #f9fafb;
+            color: var(--text-color);
+        }
+        /* [BARU] Ukuran ikon format */
+        .format-group button i {
+            width: 16px;
+            height: 16px;
+        }
         
-        /* Grup Tombol Lapisan (V2.2) */
-        .layer-group { display: flex; gap: 10px; }
+        /* [DISEMPURNAKAN] Grup Tombol Lapisan */
+        .layer-group {
+            display: flex;
+            gap: 10px;
+        }
         
         .layer-group button {
             flex: 1;
-            background-color: #4CAF50; /* Hijau */
+            /* Warna Info (Biru) untuk "Atas" */
+            background-color: var(--info-color); 
             color: white;
             padding: 10px;
         }
+        .layer-group button:hover {
+            background-color: var(--info-hover);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
+        }
+        
         .layer-group button:first-child {
-            background-color: #ffc107; /* Kuning (Bawah) */
-            color: #333;
+            /* Warna Warning (Kuning) untuk "Bawah" */
+            background-color: var(--warning-color); 
+            color: var(--text-color);
         }
         .layer-group button:first-child:hover {
-            background-color: #e0a800;
-            box-shadow: 0 4px 12px rgba(255, 193, 7, 0.3);
+            background-color: var(--warning-hover);
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.25);
         }
-        .layer-group button:last-child:hover {
-            background-color: #45a049;
-            box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
-        }
-
+        
+        /* Tombol format aktif (tidak berubah, mewarisi warna primer) */
         .format-group button.active {
             background-color: var(--primary-color);
             color: white;
             border-color: var(--primary-color);
         }
         
-        /* Elemen di Canvas (V2.2) */
+        /* --- Elemen di Canvas (Tidak Berubah) --- */
         .draggable-element {
             position: absolute;
             cursor: grab;
@@ -265,13 +336,21 @@
             touch-action: none;
             transition: border-color 0.1s, box-shadow 0.1s;
         }
-        .draggable-element:active { cursor: grabbing; }
-        .draggable-element:hover { border-color: rgba(74, 144, 226, 0.5); }
+        
+        .draggable-element:active {
+            cursor: grabbing;
+        }
+        
+        .draggable-element:hover {
+            border-color: rgba(109, 40, 217, 0.4);
+        }
+        
         .draggable-element.active {
             border: 2px solid var(--primary-color); 
-            box-shadow: 0 0 10px rgba(74, 144, 226, 0.5);
+            box-shadow: 0 0 10px rgba(109, 40, 217, 0.4);
             z-index: 9998 !important; 
         }
+
         .draggable-text {
             display: block; 
             white-space: pre-wrap;
@@ -282,10 +361,12 @@
             transition: all 0.1s ease-out; 
             pointer-events: none; 
         }
+
         .draggable-text.gradient-active {
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
+
         .draggable-image {
             width: 100%; 
             height: 100%;
@@ -293,6 +374,7 @@
             pointer-events: none;
             transition: all 0.1s ease-out; 
         }
+
         .image-placeholder {
             display: flex;
             justify-content: center;
@@ -305,12 +387,13 @@
             pointer-events: none; 
             border-radius: 4px;
         }
+        
         .generating .draggable-element {
             border: none !important;
             box-shadow: none !important;
         }
 
-        /* --- [PERBAIKAN] CSS NAVIGATOR MELAYANG (Kembali ke V2.2) --- */
+        /* --- [DISEMPURNAKAN] CSS NAVIGATOR MELAYANG --- */
         #floating-nav {
             position: fixed;
             bottom: 20px;
@@ -319,42 +402,47 @@
             background-color: var(--panel-color);
             border: 1px solid var(--border-color);
             border-radius: 50px; /* Pill shape */
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            /* Shadow lebih modern */
+            box-shadow: 0 6px 20px rgba(0,0,0,0.12);
             display: flex;
             gap: 5px;
             padding: 8px;
             z-index: 10000;
         }
-        /* [PERBAIKAN] Style tombol dikembalikan ke V2.2 agar tidak "putih polos" */
         #floating-nav button {
-            font-size: 1.2em;
-            background-color: #f0f0f0; /* Latar belakang abu-abu */
-            border: 1px solid var(--control-border); /* Border */
+            /* [DISEMPURNAKAN] Tombol ikon transparan */
+            background-color: transparent;
+            border: none;
             border-radius: 50%;
-            width: 44px;
-            height: 44px;
+            width: 48px;
+            height: 48px;
+            color: var(--text-muted); /* Warna ikon */
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: background-color 0.2s, transform 0.2s;
+            transition: background-color 0.2s, transform 0.2s, color 0.2s;
         }
         #floating-nav button:hover {
-            background-color: #e0e0e0;
+            background-color: var(--bg-color); /* Latar hover lembut */
+            color: var(--primary-color); /* Ikon berubah warna */
             transform: scale(1.1);
+        }
+        /* [DISEMPURNAKAN] Ukuran ikon nav */
+        #floating-nav button i {
+            width: 24px;
+            height: 24px;
         }
         .nav-context-btn {
             display: none; 
         }
-        /* --- [AKHIR PERBAIKAN] CSS NAVIGATOR MELAYANG --- */
+        /* --- [AKHIR DISEMPURNAKAN] CSS NAVIGATOR MELAYANG --- */
 
 
-        /* Perbaikan Responsif */
+        /* Perbaikan Responsif (Tidak Berubah) */
         @media (max-width: 900px) {
-            /* [PERBAIKAN] Tambahkan padding bawah agar tombol download tidak tertindih */
             body {
                 padding: 10px;
-                padding-bottom: 150px; /* Memberi ruang scroll di bawah */
             }
             #app-container {
                 flex-direction: column;
@@ -369,7 +457,6 @@
             h1 {
                 font-size: 1.5em;
             }
-            /* Posisi nav V2.2 (80px dari bawah) dipertahankan */
             #floating-nav {
                 bottom: 80px; 
             }
@@ -380,7 +467,8 @@
 <body>
     
     <main>
-        <h1>Editor Flyer Super Canggih 🎨</h1>
+        <h1>Editor Flyer Super Canggih <i data-lucide="wand-2"></i></h1>
+        
         <div id="app-container">
 
             <section id="control-panel">
@@ -400,8 +488,8 @@
                         <input type="file" id="image-upload" accept="image/png, image/jpeg">
                     </div>
                     
-                    <button class="action-button" id="add-text-btn">➕ Tambah Teks Baru</button>
-                    <button class="action-button" id="add-image-btn">🖼️ Tambah Gambar/Logo Baru</button>
+                    <button class="action-button" id="add-text-btn"><i data-lucide="type"></i> Tambah Teks Baru</button>
+                    <button class="action-button" id="add-image-btn"><i data-lucide="image-plus"></i> Tambah Gambar/Logo Baru</button>
                 
                 </fieldset>
                 
@@ -422,26 +510,27 @@
                 <div id="canvas-container" onclick="setActiveElement(null)">
                     </div>
                 
-                <button class="action-button download-btn" id="generate-btn">⬇️ Download Flyer (PNG)</button>
+                <button class="action-button download-btn" id="generate-btn"><i data-lucide="download"></i> Download Flyer (PNG)</button>
             </section>
 
         </div>
     </main>
 
     <div id="floating-nav">
-        <button onclick="scrollToControl('fieldset-add-controls')" title="Tambah Elemen">➕</button>
-        <button id="nav-text" class="nav-context-btn" onclick="scrollToControl('fieldset-text-controls')" title="Kontrol Teks">🅰️</button>
-        <button id="nav-image" class="nav-context-btn" onclick="scrollToControl('fieldset-image-controls')" title="Kontrol Gambar">🖼️</button>
-        <button id="nav-color" class="nav-context-btn" onclick="scrollToControl('fieldset-color-controls')" title="Kontrol Warna/Gradien">🎨</button>
-        <button id="nav-common" class="nav-context-btn" onclick="scrollToControl('fieldset-common-controls')" title="Lapisan & Transformasi">🔄</button>
+        <button onclick="scrollToControl('fieldset-add-controls')" title="Tambah Elemen"><i data-lucide="plus"></i></button>
+        <button id="nav-text" class="nav-context-btn" onclick="scrollToControl('fieldset-text-controls')" title="Kontrol Teks"><i data-lucide="type"></i></button>
+        <button id="nav-image" class="nav-context-btn" onclick="scrollToControl('fieldset-image-controls')" title="Kontrol Gambar"><i data-lucide="image"></i></button>
+        <button id="nav-color" class="nav-context-btn" onclick="scrollToControl('fieldset-color-controls')" title="Kontrol Warna/Gradien"><i data-lucide="palette"></i></button>
+        <button id="nav-common" class="nav-context-btn" onclick="scrollToControl('fieldset-common-controls')" title="Lapisan & Transformasi"><i data-lucide="layers"></i></button>
     </div>
     
     <script>
         // ==================================
         //         JAVASCRIPT (OTAKNYA)
         // ==================================
-        // Fungsionalitas inti V2.2 tidak diubah.
-        // Hanya renderControls dan generateBtn dikembalikan ke V2.2
+
+        // Fungsionalitas inti (V2.2) tidak diubah.
+        // Hanya penambahan ikon pada render dinamis.
 
         const canvasContainer = document.getElementById('canvas-container');
         const imageUpload = document.getElementById('image-upload');
@@ -459,7 +548,7 @@
         let activeElement = null;
         let elementCounter = 0;
         
-        // --- Bagian 1: Logika Multi-Elemen dan Kontrol (V2.2) ---
+        // --- Bagian 1: Logika Multi-Elemen dan Kontrol ---
 
         function setActiveElement(element) {
             document.querySelectorAll('.draggable-element').forEach(el => el.classList.remove('active'));
@@ -467,7 +556,7 @@
             if (element && element !== activeElement) {
                 element.classList.add('active');
                 activeElement = element;
-                renderControls(element); 
+                renderControls(element); // Ini HANYA dipanggil saat ganti elemen, jadi aman.
 
                 const isText = element.classList.contains('text-element');
                 navText.style.display = isText ? 'flex' : 'none';
@@ -537,7 +626,7 @@
         addTextBtn.addEventListener('click', () => createElement('text', 'PROMOSI GRADIENT! Klik untuk Edit'));
         addImageBtn.addEventListener('click', () => createElement('image'));
 
-        // --- Bagian 2: Logika Warna dan Gradien (V2.2) ---
+        // --- Bagian 2: Logika Warna dan Gradien (Tidak Berubah) ---
         
         function toggleGradient(elementId, activate) {
             const element = document.getElementById(elementId);
@@ -568,7 +657,8 @@
             }
         }
         
-        // --- Bagian 3: Fungsi Update Style (Perbaikan Fokus V2.2) ---
+        // --- Bagian 3: Fungsi Update Style (Tidak Berubah) ---
+        // FUNGSI INTI (PERBAIKAN FOKUS)
         
         function updateStyle(elementId, prop, value) {
             const element = document.getElementById(elementId);
@@ -578,6 +668,7 @@
             const target = isText ? element.querySelector('.draggable-text') : element; 
 
             if (isText) {
+                // Logika Teks
                 if (prop === 'text') {
                     element.querySelector('.draggable-text').textContent = value;
                 } else if (prop === 'color') {
@@ -592,6 +683,7 @@
                     element.style.width = value + 'px';
                     element.dataset.width = value;
                 }
+                // Logika Gradien
                 else if (prop === 'isGradient') {
                     toggleGradient(elementId, value);
                 } else if (prop.startsWith('gradient')) {
@@ -601,6 +693,7 @@
                     }
                 }
             } else {
+                // Logika Gambar/Logo
                 if (prop === 'size') {
                     const newSize = value + 'px';
                     element.style.width = newSize;
@@ -610,6 +703,7 @@
                 }
             }
 
+            // Logika Umum
             if (prop === 'rotation') {
                 element.dataset.rotation = value;
                 element.style.transform = `rotate(${value}deg)`;
@@ -622,6 +716,7 @@
             }
         }
         
+        // FUNGSI INTI (PERBAIKAN FOKUS)
         function toggleFormat(button, elementId, prop, value) {
             const element = document.getElementById(elementId);
             if (!element) return;
@@ -646,7 +741,8 @@
             }
         }
         
-        // --- Bagian 4: Logika Lapisan (Perbaikan Fokus V2.2) ---
+        // --- Bagian 4: Logika Lapisan (Z-Index) (Tidak Berubah) ---
+        // FUNGSI INTI (PERBAIKAN FOKUS)
 
         function moveLayer(elementId, direction) {
             const element = document.getElementById(elementId);
@@ -678,8 +774,8 @@
         }
 
 
-        // --- Bagian 5: Render Formulir Kontrol Dinamis (V2.2) ---
-        // [PERBAIKAN] Ikon/Tombol kembali ke V2.2 (Teks dan Emoji)
+        // --- Bagian 5: Render Formulir Kontrol Dinamis (DENGAN FIELDSET) ---
+        // [IKON BARU] Mengganti emoji/teks tombol dengan ikon Lucide
 
         function renderControls(element) {
             const isText = element.classList.contains('text-element');
@@ -708,8 +804,8 @@
                     
                     width: parseFloat(element.style.width) || 300,
                 };
-                
-                // [PERBAIKAN] Tombol B/I/U/S dan Align kembali ke Teks (V2.2)
+
+                // [IKON BARU] Menggunakan ikon untuk B, I, U, S dan Align
                 contentControls = `
                     <fieldset id="fieldset-text-controls"> <legend>Kontrol Teks (#${elementId})</legend>
                         <div class="element-control">
@@ -720,18 +816,18 @@
                             
                             <label>Formatting Teks</label>
                             <div class="format-group">
-                                <button onclick="toggleFormat(this, '${elementId}', 'fontWeight', 'bold')" class="${currentData.fontWeight === 'bold' ? 'active' : ''}">**B**</button>
-                                <button onclick="toggleFormat(this, '${elementId}', 'fontStyle', 'italic')" class="${currentData.fontStyle === 'italic' ? 'active' : ''}">*I*</button>
-                                <button onclick="toggleFormat(this, '${elementId}', 'textDecoration', 'underline')" class="${currentData.textDecoration.includes('underline') ? 'active' : ''}"><u>U</u></button>
-                                <button onclick="toggleFormat(this, '${elementId}', 'textDecoration', 'line-through')" class="${currentData.textDecoration.includes('line-through') ? 'active' : ''}"><s>S</s></button>
+                                <button onclick="toggleFormat(this, '${elementId}', 'fontWeight', 'bold')" class="${currentData.fontWeight === 'bold' ? 'active' : ''}" title="Bold"><i data-lucide="bold"></i></button>
+                                <button onclick="toggleFormat(this, '${elementId}', 'fontStyle', 'italic')" class="${currentData.fontStyle === 'italic' ? 'active' : ''}" title="Italic"><i data-lucide="italic"></i></button>
+                                <button onclick="toggleFormat(this, '${elementId}', 'textDecoration', 'underline')" class="${currentData.textDecoration.includes('underline') ? 'active' : ''}" title="Underline"><i data-lucide="underline"></i></button>
+                                <button onclick="toggleFormat(this, '${elementId}', 'textDecoration', 'line-through')" class="${currentData.textDecoration.includes('line-through') ? 'active' : ''}" title="Strikethrough"><i data-lucide="strikethrough"></i></button>
                             </div>
 
                             <label>Rata Teks</label>
                             <div class="format-group">
-                                <button onclick="updateStyle('${elementId}', 'textAlign', 'left'); updateAlignmentActive(this)" class="${currentData.align === 'left' ? 'active' : ''}">Kiri</button>
-                                <button onclick="updateStyle('${elementId}', 'textAlign', 'center'); updateAlignmentActive(this)" class="${currentData.align === 'center' ? 'active' : ''}">Tengah</button>
-                                <button onclick="updateStyle('${elementId}', 'textAlign', 'right'); updateAlignmentActive(this)" class="${currentData.align === 'right' ? 'active' : ''}">Kanan</button>
-                                <button onclick="updateStyle('${elementId}', 'textAlign', 'justify'); updateAlignmentActive(this)" class="${currentData.align === 'justify' ? 'active' : ''}">Rata</button>
+                                <button onclick="updateStyle('${elementId}', 'textAlign', 'left'); updateAlignmentActive(this)" class="${currentData.align === 'left' ? 'active' : ''}" title="Rata Kiri"><i data-lucide="align-left"></i></button>
+                                <button onclick="updateStyle('${elementId}', 'textAlign', 'center'); updateAlignmentActive(this)" class="${currentData.align === 'center' ? 'active' : ''}" title="Rata Tengah"><i data-lucide="align-center"></i></button>
+                                <button onclick="updateStyle('${elementId}', 'textAlign', 'right'); updateAlignmentActive(this)" class="${currentData.align === 'right' ? 'active' : ''}" title="Rata Kanan"><i data-lucide="align-right"></i></button>
+                                <button onclick="updateStyle('${elementId}', 'textAlign', 'justify'); updateAlignmentActive(this)" class="${currentData.align === 'justify' ? 'active' : ''}" title="Rata Kanan-Kiri"><i data-lucide="align-justify"></i></button>
                             </div>
 
                             <div class="form-group">
@@ -818,7 +914,7 @@
                 `;
             }
 
-            // [PERBAIKAN] Tombol Layer dan Hapus kembali ke Emoji (V2.2)
+            // [IKON BARU] Menggunakan ikon untuk Layer dan Hapus
             const commonControls = `
                 <fieldset id="fieldset-common-controls"> <legend>Lapisan, Posisi & Lainnya</legend>
                     <div class="element-control">
@@ -826,8 +922,8 @@
                         <div class="form-group">
                             <label id="z-index-label" style="font-weight: 700; color: var(--primary-color);">Kontrol Lapisan (Z-Index: ${element.style.zIndex})</label>
                             <div class="layer-group">
-                                <button onclick="moveLayer('${elementId}', 'down')" class="action-button">⬇️ Bawah</button>
-                                <button onclick="moveLayer('${elementId}', 'up')" class="action-button">⬆️ Atas</button>
+                                <button onclick="moveLayer('${elementId}', 'down')" class="action-button"><i data-lucide="arrow-down-to-line"></i> Bawah</button>
+                                <button onclick="moveLayer('${elementId}', 'up')" class="action-button"><i data-lucide="arrow-up-from-line"></i> Atas</button>
                             </div>
                         </div>
 
@@ -849,16 +945,18 @@
                         </div>
                     </div>
                 </fieldset>
-                <button class="action-button delete-btn" onclick="deleteElement('${elementId}')">🗑️ Hapus Elemen Ini</button>
+                <button class="action-button delete-btn" onclick="deleteElement('${elementId}')"><i data-lucide="trash-2"></i> Hapus Elemen Ini</button>
             `;
 
 
             controlsArea.innerHTML = contentControls + commonControls;
             
-            // [DIHAPUS] Panggilan lucide.createIcons() dihapus
+            // [BARU] Panggil Lucide untuk merender ikon yang baru ditambahkan
+            lucide.createIcons();
         }
 
-        // --- Bagian 6: Fungsi Pembantu (V2.2) ---
+        // --- Bagian 6: Fungsi Pembantu (Tidak Berubah) ---
+        // FUNGSI INTI (PERBAIKAN FOKUS)
 
         function updateAlignmentActive(clickedButton) {
             const group = clickedButton.closest('.format-group');
@@ -881,10 +979,9 @@
 
             if (fieldset) {
                 controlPanel.scrollTop = fieldset.offsetTop - controlPanel.offsetTop - 10; 
-                
                 fieldset.style.boxShadow = '0 0 0 3px var(--primary-color)';
                 setTimeout(() => {
-                    fieldset.style.boxShadow = 'none';
+                    fieldset.style.boxShadow = '0 2px 4px rgba(0,0,0,0.02)'; // Kembalikan ke shadow normal
                 }, 1200);
             } else {
                 controlPanel.scrollTop = 0;
@@ -944,7 +1041,7 @@
             }
         });
 
-        // --- Bagian 7: Logika Drag dan Drop (V2.2) ---
+        // --- Bagian 7: Logika Drag dan Drop (Tidak Berubah) ---
 
         function makeDraggable(element) {
             let isDragging = false;
@@ -968,7 +1065,7 @@
                 yOffset = parseFloat(computedStyle.top) || 0;
                 
                 initialX = coords.x - xOffset;
-                initialY = coords.y - initialY;
+                initialY = coords.y - yOffset;
                 
                 isDragging = true; 
                 element.style.zIndex = 9999;
@@ -1012,7 +1109,7 @@
                 el.style.left = `${xPos}px`;
                 el.style.top = `${yPos}px`;
             }
-
+            
             element.addEventListener("mousedown", dragStart);
             document.addEventListener("mouseup", dragEnd);
             document.addEventListener("mousemove", drag);
@@ -1022,16 +1119,17 @@
             document.addEventListener("touchmove", drag, { passive: false });
         }
 
-        // --- Bagian 8: Logika Download Gambar (V2.2) ---
-        // [PERBAIKAN] Kembali menggunakan textContent, bukan innerHTML
+        // --- Bagian 8: Logika Download Gambar ---
+        // [IKON BARU] Menggunakan innerHTML dan ikon loader
         
         generateBtn.addEventListener('click', () => {
             setActiveElement(null);
             
             canvasContainer.classList.add('generating');
-            // [PERBAIKAN] Kembali ke textContent
-            generateBtn.textContent = 'Membuat Gambar...';
+            // [IKON BARU] Tampilkan loader
+            generateBtn.innerHTML = '<i data-lucide="loader-2" class="spin"></i> Membuat Gambar...';
             generateBtn.disabled = true;
+            lucide.createIcons(); // Render ikon loader
 
             html2canvas(canvasContainer, {
                 useCORS: true,
@@ -1051,23 +1149,28 @@
                 document.body.removeChild(downloadLink);
                 
                 canvasContainer.classList.remove('generating');
-                // [PERBAIKAN] Kembali ke textContent
-                generateBtn.textContent = '⬇️ Download Flyer (PNG)';
+                // [IKON BARU] Kembalikan ke ikon download
+                generateBtn.innerHTML = '<i data-lucide="download"></i> Download Flyer (PNG)';
                 generateBtn.disabled = false;
+                lucide.createIcons(); // Render ikon download
+
             }).catch(err => {
                 console.error('Gagal membuat gambar:', err);
                 alert('Maaf, gagal meng-generate gambar. Pastikan gambar background dan logo berasal dari sumber yang sama (local) atau coba ulangi.');
                 canvasContainer.classList.remove('generating');
-                // [PERBAIKAN] Kembali ke textContent
-                generateBtn.textContent = '⬇️ Download Flyer (PNG)';
+                // [IKON BARU] Kembalikan ke ikon download
+                generateBtn.innerHTML = '<i data-lucide="download"></i> Download Flyer (PNG)';
                 generateBtn.disabled = false;
+                lucide.createIcons();
             });
         });
 
-        // Inisialisasi: Tambahkan teks default saat DOM siap (V2.2)
+        // Inisialisasi: Tambahkan teks default saat DOM siap
         document.addEventListener('DOMContentLoaded', () => {
              createElement('text', 'PROMOSI ANDA! Klik untuk Edit');
-             // [DIHAPUS] Panggilan lucide.createIcons() dihapus
+             
+             // [BARU] Render semua ikon statis (di body/nav) saat halaman dimuat
+             lucide.createIcons();
         });
     </script>
 
