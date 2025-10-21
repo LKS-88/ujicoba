@@ -177,11 +177,16 @@
         /* --- Elemen di Canvas --- */
         .draggable-element {
             position: absolute;
-            cursor: move;
+            cursor: grab; /* Ubah kursor untuk menunjukkan draggable */
             padding: 5px;
             border: 2px dashed transparent;
             user-select: none;
             box-sizing: content-box; 
+            touch-action: none; /* Penting untuk mencegah zoom/scroll pada sentuhan */
+        }
+        
+        .draggable-element:active {
+            cursor: grabbing;
         }
         
         .draggable-element:hover {
@@ -370,12 +375,6 @@
             canvasContainer.appendChild(element);
             makeDraggable(element);
             
-            // TIDAK PERLU: mousedown event activation sekarang ditangani di makeDraggable
-            // element.addEventListener('mousedown', (e) => {
-            //     e.stopPropagation();
-            //     setActiveElement(element);
-            // });
-            
             setActiveElement(element);
         }
         
@@ -426,20 +425,25 @@
             if (!element) return;
             
             const isText = element.classList.contains('text-element');
-            const target = isText ? element.querySelector('.draggable-text') : element.querySelector('.draggable-image');
+            
+            // Tentukan target, target untuk gambar adalah container, untuk teks adalah span
+            const target = isText ? element.querySelector('.draggable-text') : element; 
 
             if (isText) {
                 // Logika Teks
                 if (prop === 'text') {
-                    target.textContent = value;
+                    element.querySelector('.draggable-text').textContent = value;
                 } else if (prop === 'color') {
                     toggleGradient(elementId, false);
                     element.dataset.color = value;
-                    target.style.color = value;
+                    element.querySelector('.draggable-text').style.color = value;
                 } else if (['fontSize', 'lineHeight', 'letterSpacing'].includes(prop)) {
-                    target.style[prop] = value;
+                    element.querySelector('.draggable-text').style[prop] = value;
                 } else if (prop === 'fontFamily' || prop === 'textAlign') {
-                    target.style[prop] = value;
+                    element.querySelector('.draggable-text').style[prop] = value;
+                } else if (prop === 'width') {
+                    element.style.width = value + 'px';
+                    element.dataset.width = value;
                 }
                 
                 // Logika Gradien
@@ -650,6 +654,7 @@
             // Logika untuk Gambar
             else {
                 const currentSize = parseFloat(element.dataset.width) || 150;
+                // Hitung batas maksimum berdasarkan ukuran canvas
                 const maxCanvasSize = Math.max(canvasContainer.clientWidth, canvasContainer.clientHeight);
 
                 contentControls = `
@@ -662,8 +667,8 @@
 
                         <div class="form-group">
                             <label>Ukuran Gambar/Logo (Slider)</label>
-                            <input type="range" min="30" max="${maxCanvasSize * 0.8}" step="5" value="${currentSize}" oninput="updateStyle('${elementId}', 'size', this.value)">
-                            <input type="number" value="${currentSize}" min="30" max="${maxCanvasSize * 0.8}" oninput="updateStyle('${elementId}', 'size', this.value)">
+                            <input type="range" min="30" max="${Math.floor(maxCanvasSize * 0.8)}" step="5" value="${currentSize}" oninput="updateStyle('${elementId}', 'size', this.value)">
+                            <input type="number" value="${currentSize}" min="30" max="${Math.floor(maxCanvasSize * 0.8)}" oninput="updateStyle('${elementId}', 'size', this.value)">
                             <small style="color: #6c757d;">Ukuran dalam piksel (width=height)</small>
                         </div>
                     </div>
@@ -752,39 +757,43 @@
             }
         });
 
-        // --- Bagian 7: Logika Drag dan Drop (REVISI STABIL) ---
+        // --- Bagian 7: Logika Drag dan Drop (REVISI STABIL + SENTUH) ---
 
         function makeDraggable(element) {
             let isDragging = false;
             let initialX;
             let initialY;
             
-            // Menggunakan properti style untuk mendapatkan posisi
             let xOffset; 
             let yOffset; 
 
-            // UBAH: Hanya satu mousedown listener untuk aktivasi dan dragStart
-            element.addEventListener("mousedown", dragStartAndActivate);
+            // Fungsi utilitas untuk mendapatkan koordinat klien (Mouse atau Sentuhan)
+            function getClientCoords(e) {
+                if (e.touches) {
+                    return { x: e.touches[0].clientX, y: e.touches[0].clientY };
+                }
+                return { x: e.clientX, y: e.clientY };
+            }
             
-            // Event listener global untuk mengakhiri dan menggerakkan
-            document.addEventListener("mouseup", dragEnd);
-            document.addEventListener("mousemove", drag);
-
-            function dragStartAndActivate(e) {
-                // FIXED: Mencegah perilaku default browser (seperti seleksi teks/drag gambar)
-                e.preventDefault(); 
+            // PENTING: Fungsi gabungan untuk MOUSE DOWN / TOUCH START
+            function dragStart(e) {
+                e.preventDefault(); // Menghentikan perilaku default browser (penting untuk sentuhan)
                 
                 // 1. Aktivasi/Set Focus
                 e.stopPropagation();
-                setActiveElement(element); // Pastikan elemen yang diklik yang aktif
+                setActiveElement(element); 
+                
+                const coords = getClientCoords(e);
                 
                 // 2. Persiapan Drag: Baca posisi saat ini dari style
-                xOffset = parseFloat(element.style.left) || 0;
-                yOffset = parseFloat(element.style.top) || 0;
+                // Gunakan getComputedStyle untuk pembacaan yang lebih andal
+                const computedStyle = window.getComputedStyle(element);
+                xOffset = parseFloat(computedStyle.left) || 0;
+                yOffset = parseFloat(computedStyle.top) || 0;
                 
                 // Hitung titik awal klik relatif terhadap elemen
-                initialX = e.clientX - xOffset;
-                initialY = e.clientY - yOffset;
+                initialX = coords.x - xOffset;
+                initialY = coords.y - yOffset;
                 
                 isDragging = true; 
             }
@@ -797,12 +806,15 @@
                 if (isDragging) {
                     e.preventDefault();
                     
-                    let currentX = e.clientX - initialX;
-                    let currentY = e.clientY - initialY;
+                    const coords = getClientCoords(e);
+                    
+                    let currentX = coords.x - initialX;
+                    let currentY = coords.y - initialY;
 
                     // Batasi agar elemen tidak keluar dari canvas
                     const minX = 0;
                     const minY = 0;
+                    // Gunakan offsetWidth/Height untuk mendapatkan dimensi elemen
                     const maxX = canvasContainer.clientWidth - element.offsetWidth;
                     const maxY = canvasContainer.clientHeight - element.offsetHeight;
                     
@@ -817,6 +829,18 @@
                 el.style.left = `${xPos}px`;
                 el.style.top = `${yPos}px`;
             }
+
+            // Attach Event Listeners
+            
+            // 🖱️ Mouse Events
+            element.addEventListener("mousedown", dragStart);
+            document.addEventListener("mouseup", dragEnd);
+            document.addEventListener("mousemove", drag);
+            
+            // 👆 Touch Events (Tambahan Stabilitas)
+            element.addEventListener("touchstart", dragStart, { passive: false });
+            document.addEventListener("touchend", dragEnd);
+            document.addEventListener("touchmove", drag, { passive: false });
         }
 
         // --- Bagian 8: Logika Download Gambar ---
