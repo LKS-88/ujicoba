@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Editor Flyer Super Canggih (V2.1)</title>
+    <title>Editor Flyer Super Canggih (V2.2 - Perbaikan Fokus)</title>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" integrity="sha512-BNaRQnYJYiPSqHHDb58B0yaPfCu+Wgds8Gp/gU33kqBtgNS4tSPHuGibjNQVbXlHARe0dHYNbaKNPjcrea1lBA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
@@ -459,6 +459,7 @@
         <button id="nav-color" class="nav-context-btn" onclick="scrollToControl('fieldset-color-controls')" title="Kontrol Warna/Gradien">🎨</button>
         <button id="nav-common" class="nav-context-btn" onclick="scrollToControl('fieldset-common-controls')" title="Lapisan & Transformasi">🔄</button>
     </div>
+    
     <script>
         // ==================================
         //         JAVASCRIPT (OTAKNYA)
@@ -490,7 +491,7 @@
             if (element && element !== activeElement) {
                 element.classList.add('active');
                 activeElement = element;
-                renderControls(element);
+                renderControls(element); // Ini HANYA dipanggil saat ganti elemen, jadi aman.
 
                 // [BARU] Tampilkan/Sembunyikan Tombol Nav Melayang
                 const isText = element.classList.contains('text-element');
@@ -607,8 +608,8 @@
         
         // --- Bagian 3: Fungsi Update Style (Pusat Kontrol) ---
         
-        // [DIPERBAIKI] Fungsi updateStyle TIDAK LAGI memanggil renderControls().
-        // Ini memperbaiki bug input kehilangan fokus.
+        // [PERBAIKAN] Fungsi ini TIDAK memanggil renderControls(). 
+        // Ini adalah inti perbaikan agar input tidak kehilangan fokus.
         function updateStyle(elementId, prop, value) {
             const element = document.getElementById(elementId);
             if (!element) return;
@@ -666,11 +667,11 @@
                 element.dataset.zIndex = value;
                 element.style.zIndex = value;
             }
-            
-            // (DIHAPUS) Panggilan renderControls() dihapus dari sini untuk memperbaiki bug fokus.
         }
         
-        function toggleFormat(elementId, prop, value) {
+        // [PERBAIKAN] Fungsi ini sekarang menerima 'button' dan
+        // memperbarui class 'active' secara langsung tanpa re-render.
+        function toggleFormat(button, elementId, prop, value) {
             const element = document.getElementById(elementId);
             if (!element) return;
             const textSpan = element.querySelector('.draggable-text');
@@ -685,16 +686,25 @@
                     decorations.push(value);
                 }
                 textSpan.style[prop] = decorations.join(' ') || 'none';
+                
+                // [PERBAIKAN] Update tombol secara langsung
+                button.classList.toggle('active', decorations.includes(value));
+
             } else {
-                textSpan.style[prop] = currentValue === value ? 'normal' : value;
+                let newValue = currentValue === value ? 'normal' : value;
+                textSpan.style[prop] = newValue;
+
+                // [PERBAIKAN] Update tombol secara langsung
+                button.classList.toggle('active', newValue === value);
             }
             
-            // Panggilan renderControls tetap di sini untuk memperbarui status 'active' tombol
-            renderControls(element);
+            // [DIHAPUS] Panggilan renderControls() dihapus dari sini.
         }
         
         // --- Bagian 4: Logika Lapisan (Z-Index) ---
 
+        // [PERBAIKAN] Fungsi ini sekarang memperbarui label Z-Index
+        // secara langsung tanpa re-render.
         function moveLayer(elementId, direction) {
             const element = document.getElementById(elementId);
             if (!element) return;
@@ -721,12 +731,17 @@
             element.style.zIndex = currentZ;
             element.dataset.zIndex = currentZ;
             
-            // Panggilan renderControls tetap di sini untuk memperbarui label Z-Index
-            renderControls(element);
+            // [PERBAIKAN] Perbarui label Z-Index secara langsung
+            const zIndexLabel = document.getElementById('z-index-label');
+            if (zIndexLabel) {
+                zIndexLabel.textContent = `Kontrol Lapisan (Z-Index: ${currentZ})`;
+            }
         }
 
 
         // --- Bagian 5: Render Formulir Kontrol Dinamis (DENGAN FIELDSET) ---
+        // [PERBAIKAN] Fungsi ini sekarang menyertakan ID dan event handler baru
+        // untuk pembaruan 'bedah' (surgical update) tanpa re-render.
 
         function renderControls(element) {
             const isText = element.classList.contains('text-element');
@@ -767,18 +782,18 @@
                             
                             <label>Formatting Teks</label>
                             <div class="format-group">
-                                <button onclick="toggleFormat('${elementId}', 'fontWeight', 'bold')" class="${currentData.fontWeight === 'bold' ? 'active' : ''}">**B**</button>
-                                <button onclick="toggleFormat('${elementId}', 'fontStyle', 'italic')" class="${currentData.fontStyle === 'italic' ? 'active' : ''}">*I*</button>
-                                <button onclick="toggleFormat('${elementId}', 'textDecoration', 'underline')" class="${currentData.textDecoration.includes('underline') ? 'active' : ''}"><u>U</u></button>
-                                <button onclick="toggleFormat('${elementId}', 'textDecoration', 'line-through')" class="${currentData.textDecoration.includes('line-through') ? 'active' : ''}"><s>S</s></button>
+                                <button onclick="toggleFormat(this, '${elementId}', 'fontWeight', 'bold')" class="${currentData.fontWeight === 'bold' ? 'active' : ''}">**B**</button>
+                                <button onclick="toggleFormat(this, '${elementId}', 'fontStyle', 'italic')" class="${currentData.fontStyle === 'italic' ? 'active' : ''}">*I*</button>
+                                <button onclick="toggleFormat(this, '${elementId}', 'textDecoration', 'underline')" class="${currentData.textDecoration.includes('underline') ? 'active' : ''}"><u>U</u></button>
+                                <button onclick="toggleFormat(this, '${elementId}', 'textDecoration', 'line-through')" class="${currentData.textDecoration.includes('line-through') ? 'active' : ''}"><s>S</s></button>
                             </div>
 
                             <label>Rata Teks</label>
                             <div class="format-group">
-                                <button onclick="updateStyle('${elementId}', 'textAlign', 'left'); renderControls(document.getElementById('${elementId}'))" class="${currentData.align === 'left' ? 'active' : ''}">Kiri</button>
-                                <button onclick="updateStyle('${elementId}', 'textAlign', 'center'); renderControls(document.getElementById('${elementId}'))" class="${currentData.align === 'center' ? 'active' : ''}">Tengah</button>
-                                <button onclick="updateStyle('${elementId}', 'textAlign', 'right'); renderControls(document.getElementById('${elementId}'))" class="${currentData.align === 'right' ? 'active' : ''}">Kanan</button>
-                                <button onclick="updateStyle('${elementId}', 'textAlign', 'justify'); renderControls(document.getElementById('${elementId}'))" class="${currentData.align === 'justify' ? 'active' : ''}">Rata</button>
+                                <button onclick="updateStyle('${elementId}', 'textAlign', 'left'); updateAlignmentActive(this)" class="${currentData.align === 'left' ? 'active' : ''}">Kiri</button>
+                                <button onclick="updateStyle('${elementId}', 'textAlign', 'center'); updateAlignmentActive(this)" class="${currentData.align === 'center' ? 'active' : ''}">Tengah</button>
+                                <button onclick="updateStyle('${elementId}', 'textAlign', 'right'); updateAlignmentActive(this)" class="${currentData.align === 'right' ? 'active' : ''}">Kanan</button>
+                                <button onclick="updateStyle('${elementId}', 'textAlign', 'justify'); updateAlignmentActive(this)" class="${currentData.align === 'justify' ? 'active' : ''}">Rata</button>
                             </div>
 
                             <div class="form-group">
@@ -818,11 +833,11 @@
                             </div>
 
                             <div class="form-group" style="margin-top: 10px; flex-direction: row; align-items: center; gap: 10px;">
-                                <input type="checkbox" id="grad-check-${elementId}" onchange="updateStyle('${elementId}', 'isGradient', this.checked); renderControls(document.getElementById('${elementId}'))" ${currentData.isGradient ? 'checked' : ''}> 
+                                <input type="checkbox" id="grad-check-${elementId}" onchange="updateStyle('${elementId}', 'isGradient', this.checked); toggleGradientUI(this.checked)" ${currentData.isGradient ? 'checked' : ''}> 
                                 <label for="grad-check-${elementId}" style="margin: 0; font-weight: 700;">Aktifkan Gradien Teks</label>
                             </div>
                             
-                            ${currentData.isGradient ? `
+                            <div id="gradient-controls-wrapper" style="display: ${currentData.isGradient ? 'block' : 'none'};">
                                 <div class="form-group">
                                     <label>Warna Awal / Akhir Gradien</label>
                                     <div style="display: flex; gap: 10px;">
@@ -834,7 +849,7 @@
                                     <label>Arah Gradien (Derajat/Kata Kunci)</label>
                                     <input type="text" placeholder="misal: 90deg, to right, to top left" value="${currentData.gradientDirection}" oninput="updateStyle('${elementId}', 'gradientDirection', this.value)">
                                 </div>
-                            ` : ''}
+                            </div>
                         </div>
                     </fieldset>
                 `;
@@ -872,7 +887,7 @@
                     <div class="element-control">
                         
                         <div class="form-group">
-                            <label style="font-weight: 700; color: var(--primary-color);">Kontrol Lapisan (Z-Index: ${element.style.zIndex})</label>
+                            <label id="z-index-label" style="font-weight: 700; color: var(--primary-color);">Kontrol Lapisan (Z-Index: ${element.style.zIndex})</label>
                             <div class="layer-group">
                                 <button onclick="moveLayer('${elementId}', 'down')" class="action-button">⬇️ Bawah</button>
                                 <button onclick="moveLayer('${elementId}', 'up')" class="action-button">⬆️ Atas</button>
@@ -906,6 +921,26 @@
 
         // --- Bagian 6: Fungsi Pembantu ---
 
+        // [BARU - PERBAIKAN] Fungsi ini memperbarui tombol alignment tanpa re-render
+        function updateAlignmentActive(clickedButton) {
+            // Cari .format-group terdekat
+            const group = clickedButton.closest('.format-group');
+            if (group) {
+                // Hapus 'active' dari semua tombol di grup itu
+                group.querySelectorAll('button').forEach(btn => btn.classList.remove('active'));
+            }
+            // Tambahkan 'active' ke tombol yang diklik
+            clickedButton.classList.add('active');
+        }
+
+        // [BARU - PERBAIKAN] Fungsi ini menampilkan/menyembunyikan UI gradien tanpa re-render
+        function toggleGradientUI(isChecked) {
+            const wrapper = document.getElementById('gradient-controls-wrapper');
+            if (wrapper) {
+                wrapper.style.display = isChecked ? 'block' : 'none';
+            }
+        }
+
         // [BARU] Fungsi untuk scroll ke panel kontrol
         function scrollToControl(fieldsetId) {
             const fieldset = document.getElementById(fieldsetId);
@@ -926,7 +961,8 @@
             }
         }
 
-
+        // [PERBAIKAN] Fungsi ini sekarang memperbarui nilai input
+        // secara langsung tanpa re-render.
         function updateImageSource(elementId, file) {
             const element = document.getElementById(elementId);
             if (!element || !file) return;
@@ -943,9 +979,16 @@
                 }
                 
                 // Atur ukuran default setelah upload
-                updateStyle(elementId, 'size', 150);
-                // Render ulang kontrol untuk memperbarui nilai slider/angka
-                renderControls(element);
+                const defaultSize = 150;
+                updateStyle(elementId, 'size', defaultSize);
+                
+                // [PERBAIKAN] Perbarui nilai input secara langsung
+                if (activeElement && activeElement.id === elementId) {
+                    const rangeInput = document.getElementById(`range-size-${elementId}`);
+                    const numInput = document.getElementById(`num-size-${elementId}`);
+                    if (rangeInput) rangeInput.value = defaultSize;
+                    if (numInput) numInput.value = defaultSize;
+                }
             };
             reader.readAsDataURL(file);
         }
@@ -1018,15 +1061,20 @@
                 element.style.zIndex = 9999;
             }
 
+            // [PERBAIKAN] Fungsi ini sekarang memperbarui label Z-index
+            // secara langsung tanpa re-render (jika elemen aktif).
             function dragEnd(e) {
                 if(isDragging) {
                     isDragging = false;
                     // Kembalikan z-index ke nilai data setelah selesai drag
                     element.style.zIndex = element.dataset.zIndex || (elementCounter + 10);
-                    // Panggil render controls untuk update Z-index di UI jika berubah
-                    // Pastikan activeElement masih elemen yang sama
+                    
+                    // [PERBAIKAN] Perbarui label z-index jika ini elemen aktif
                     if (activeElement && activeElement.id === element.id) {
-                        renderControls(element);
+                         const zIndexLabel = document.getElementById('z-index-label');
+                         if (zIndexLabel) {
+                             zIndexLabel.textContent = `Kontrol Lapisan (Z-Index: ${element.style.zIndex})`;
+                         }
                     }
                 }
             }
