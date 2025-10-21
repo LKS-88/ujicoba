@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Editor Flyer Pro (V3 - Responsive)</title>
+    <title>Editor Flyer Pro (V4 - Final)</title>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" integrity="sha512-BNaRQnYJYiPSqHHDb58B0yaPfCu+Wgds8Gp/gU33kqBtgNS4tSPHuGibjNQVbXlHARe0dHYNbaKNPjcrea1lBA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
     <style>
-        /* CSS yang Disempurnakan (V3) */
+        /* CSS yang Disempurnakan (V4) */
         :root {
             --bg-color: #f4f7f6;
             --panel-color: #ffffff;
@@ -72,7 +72,7 @@
             flex-direction: column;
         }
 
-        /* --- Perubahan: Menu Accordion (Request 2) --- */
+        /* --- Menu Accordion (Buka-Tutup) --- */
         details {
             border: 1px solid var(--border-color);
             border-radius: 8px;
@@ -87,7 +87,6 @@
             padding: 15px 20px;
             cursor: pointer;
             background-color: var(--panel-header-bg);
-            border-bottom: 1px solid var(--border-color);
             list-style: none; /* Hapus panah default */
         }
         
@@ -117,8 +116,24 @@
             flex-direction: column;
             gap: 15px;
         }
-        /* --- Akhir Perubahan Menu Accordion --- */
         
+        /* --- Kontrol Fieldset (Perbaikan V4) --- */
+        fieldset {
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin-bottom: 15px; /* Jarak antar fieldset */
+            background-color: #fff;
+        }
+        
+        legend {
+            font-weight: 700;
+            font-size: 1.1em;
+            color: var(--primary-color);
+            padding: 0 8px;
+            margin-left: -8px;
+        }
+        /* --- Akhir Perbaikan Fieldset --- */
 
         /* --- Kontainer Gambar (Canvas) --- */
         #canvas-container {
@@ -142,7 +157,7 @@
             border-color: var(--primary-color);
         }
 
-        /* --- Kontrol Elemen --- */
+        /* --- Tombol Aksi --- */
         .action-button {
             display: flex;
             align-items: center;
@@ -241,7 +256,7 @@
             box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.2);
         }
 
-        /* --- Perubahan: Grup Slider (Request 1) --- */
+        /* --- Grup Slider (Tombol Geser) --- */
         .form-group-pair {
             display: flex;
             gap: 10px;
@@ -256,7 +271,6 @@
             text-align: center;
             padding: 10px 5px; /* Padding disesuaikan */
         }
-        /* --- Akhir Perubahan Grup Slider --- */
 
         /* Grup Tombol Formatting */
         .format-group {
@@ -371,7 +385,7 @@
             box-shadow: none !important;
         }
 
-        /* --- Perubahan: Responsif (Request 3 & 4) --- */
+        /* --- Responsif (Smartphone & Rotasi) --- */
         @media (max-width: 900px) {
             body {
                 padding: 10px;
@@ -389,7 +403,6 @@
             h1 {
                 font-size: 1.5em;
             }
-            /* Sesuaikan padding untuk panel di mobile */
             #control-panel {
                 padding: 15px;
             }
@@ -397,7 +410,6 @@
                 padding: 15px;
             }
         }
-        /* --- Akhir Perubahan Responsif --- */
 
     </style>
 </head>
@@ -433,7 +445,7 @@
                 <details open>
                     <summary>2. Kontrol Elemen Aktif</summary>
                     <div class="details-content">
-                        <p style="font-size: 0.9em; color: var(--text-muted); margin: 0;">Klik pada elemen (Teks/Gambar) di Pratinjau untuk mengedit.</p>
+                        <p style="font-size: 0.9em; color: var(--text-muted); margin: 0 0 10px 0;">Klik pada elemen (Teks/Gambar) di Pratinjau untuk mengedit.</p>
                         
                         <div id="element-controls-area">
                             <div class="placeholder">Pilih elemen di meja gambar.</div>
@@ -623,14 +635,9 @@
                 element.dataset.zIndex = value;
                 element.style.zIndex = value;
             }
-            
-            if (activeElement && activeElement.id === elementId) {
-                 // Tidak perlu re-render penuh agar kursor tidak hilang
-                 // renderControls(activeElement);
-            }
         }
         
-        // --- Perubahan: Fungsi Baru untuk Sinkronisasi Slider (Request 1) ---
+        // --- Fungsi Sinkronisasi Slider (dari V3) ---
         function syncRangeAndNumber(sourceElement, syncId) {
             const value = sourceElement.value;
             const allSynced = document.querySelectorAll(`[data-sync-id="${syncId}"]`);
@@ -660,7 +667,7 @@
                 textSpan.style[prop] = currentValue === value ? 'normal' : value;
             }
             
-            renderControls(element);
+            renderControls(element); // Re-render untuk update tombol .active
         }
         
         // --- Bagian 4: Logika Lapisan (Z-Index) ---
@@ -688,21 +695,21 @@
             element.style.zIndex = currentZ;
             element.dataset.zIndex = currentZ;
             
-            renderControls(element);
+            renderControls(element); // Re-render untuk update Z-index
         }
 
 
-        // --- Bagian 5: Render Formulir Kontrol Dinamis (DENGAN SLIDER) ---
+        // --- Bagian 5: Render Formulir Kontrol Dinamis (PERBAIKAN V4) ---
+        // (Menggunakan struktur <fieldset> V2 + fungsionalitas slider V3)
 
         function renderControls(element) {
             const isText = element.classList.contains('text-element');
             const elementId = element.id;
             
-            // Logika untuk Teks
             let contentControls = '';
             if (isText) {
+                // Teks
                 const textSpan = element.querySelector('.draggable-text');
-                
                 const currentData = {
                     text: textSpan.textContent,
                     fontSize: parseFloat(textSpan.style.fontSize) || 24,
@@ -720,178 +727,181 @@
                     gradientDirection: element.dataset.gradientDirection || '90deg',
                     width: parseFloat(element.dataset.width) || 300,
                 };
-                
-                // Perubahan: Mengganti input dengan .form-group-pair (Request 1)
+
                 contentControls = `
-                    <div class="element-control">
-                        <h3>Kontrol Teks (#${elementId})</h3>
-                        <div class="form-group">
-                            <label>Isi Teks</label>
-                            <textarea rows="3" oninput="updateStyle('${elementId}', 'text', this.value)">${currentData.text}</textarea>
-                        </div>
-                        
-                        <label>Formatting Teks</label>
-                        <div class="format-group">
-                            <button onclick="toggleFormat('${elementId}', 'fontWeight', 'bold')" class="${currentData.fontWeight === 'bold' ? 'active' : ''}">**B**</button>
-                            <button onclick="toggleFormat('${elementId}', 'fontStyle', 'italic')" class="${currentData.fontStyle === 'italic' ? 'active' : ''}">*I*</button>
-                            <button onclick="toggleFormat('${elementId}', 'textDecoration', 'underline')" class="${currentData.textDecoration.includes('underline') ? 'active' : ''}"><u>U</u></button>
-                            <button onclick="toggleFormat('${elementId}', 'textDecoration', 'line-through')" class="${currentData.textDecoration.includes('line-through') ? 'active' : ''}"><s>S</s></button>
-                        </div>
-
-                        <label>Rata Teks</label>
-                        <div class="format-group">
-                            <button onclick="updateStyle('${elementId}', 'textAlign', 'left')" class="${currentData.align === 'left' ? 'active' : ''}">Kiri</button>
-                            <button onclick="updateStyle('${elementId}', 'textAlign', 'center')" class="${currentData.align === 'center' ? 'active' : ''}">Tengah</button>
-                            <button onclick="updateStyle('${elementId}', 'textAlign', 'right')" class="${currentData.align === 'right' ? 'active' : ''}">Kanan</button>
-                            <button onclick="updateStyle('${elementId}', 'textAlign', 'justify')" class="${currentData.align === 'justify' ? 'active' : ''}">Rata</button>
-                        </div>
-
-                        <div class="form-group">
-                            <label>Jenis Font</label>
-                            <select onchange="updateStyle('${elementId}', 'fontFamily', this.value)">
-                                <option value="Arial, sans-serif" ${currentData.family.includes('Arial') ? 'selected' : ''}>Arial</option>
-                                <option value="'Impact', sans-serif" ${currentData.family.includes('Impact') ? 'selected' : ''}>Impact (Tebal)</option>
-                                <option value="Verdana, sans-serif" ${currentData.family.includes('Verdana') ? 'selected' : ''}>Verdana</option>
-                                <option value="'Times New Roman', serif" ${currentData.family.includes('Times New Roman') ? 'selected' : ''}>Times New Roman</option>
-                                <option value="'Courier New', monospace" ${currentData.family.includes('Courier New') ? 'selected' : ''}>Courier New</option>
-                            </select>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label>Ukuran Font (px)</label>
-                            <div class="form-group-pair">
-                                <input type="range" min="8" max="150" value="${currentData.fontSize}" data-sync-id="font-size-${elementId}"
-                                       oninput="updateStyle('${elementId}', 'fontSize', this.value + 'px'); syncRangeAndNumber(this, 'font-size-${elementId}');">
-                                <input type="number" min="8" max="150" value="${currentData.fontSize}" data-sync-id="font-size-${elementId}"
-                                       oninput="updateStyle('${elementId}', 'fontSize', this.value + 'px'); syncRangeAndNumber(this, 'font-size-${elementId}');">
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label>Lebar Kotak Teks (px)</label>
-                            <div class="form-group-pair">
-                                <input type="range" min="50" max="1000" value="${currentData.width}" data-sync-id="width-${elementId}"
-                                       oninput="updateStyle('${elementId}', 'width', this.value); syncRangeAndNumber(this, 'width-${elementId}');">
-                                <input type="number" min="50" max="1000" value="${currentData.width}" data-sync-id="width-${elementId}"
-                                       oninput="updateStyle('${elementId}', 'width', this.value); syncRangeAndNumber(this, 'width-${elementId}');">
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label>Line Height (mis: 1.4)</label>
-                            <div class="form-group-pair">
-                                 <input type="range" min="0.8" max="3" step="0.1" value="${currentData.lineHeight}" data-sync-id="line-height-${elementId}"
-                                       oninput="updateStyle('${elementId}', 'lineHeight', this.value); syncRangeAndNumber(this, 'line-height-${elementId}');">
-                                <input type="number" min="0.8" max="3" step="0.1" value="${currentData.lineHeight}" data-sync-id="line-height-${elementId}"
-                                       oninput="updateStyle('${elementId}', 'lineHeight', this.value); syncRangeAndNumber(this, 'line-height-${elementId}');">
-                            </div>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label>Letter Spacing (px)</label>
-                            <div class="form-group-pair">
-                                <input type="range" min="-5" max="20" step="0.5" value="${currentData.letterSpacing}" data-sync-id="letter-spacing-${elementId}"
-                                       oninput="updateStyle('${elementId}', 'letterSpacing', this.value + 'px'); syncRangeAndNumber(this, 'letter-spacing-${elementId}');">
-                                <input type="number" min="-5" max="20" step="0.5" value="${currentData.letterSpacing}" data-sync-id="letter-spacing-${elementId}"
-                                       oninput="updateStyle('${elementId}', 'letterSpacing', this.value + 'px'); syncRangeAndNumber(this, 'letter-spacing-${elementId}');">
-                            </div>
-                        </div>
-
-                        <hr>
-                        <h4>Opsi Warna & Gradien</h4>
-
-                        <div class="form-group">
-                            <label for="color-${elementId}">Warna Solid</label>
-                            <input type="color" id="color-${elementId}" value="${currentData.color}" oninput="updateStyle('${elementId}', 'color', this.value)">
-                        </div>
-
-                        <div class="form-group" style="margin-top: 10px; flex-direction: row; align-items: center; gap: 10px;">
-                            <input type="checkbox" id="grad-check-${elementId}" onchange="updateStyle('${elementId}', 'isGradient', this.checked)" ${currentData.isGradient ? 'checked' : ''}> 
-                            <label for="grad-check-${elementId}" style="margin: 0; font-weight: 700;">Aktifkan Gradien Teks</label>
-                        </div>
-                        
-                        ${currentData.isGradient ? `
+                    <fieldset>
+                        <legend>Kontrol Teks (#${elementId})</legend>
+                        <div class="element-control">
                             <div class="form-group">
-                                <label>Warna Awal / Akhir Gradien</label>
-                                <div style="display: flex; gap: 10px;">
-                                    <input type="color" value="${currentData.gradientColor1}" oninput="updateStyle('${elementId}', 'gradientColor1', this.value)">
-                                    <input type="color" value="${currentData.gradientColor2}" oninput="updateStyle('${elementId}', 'gradientColor2', this.value)">
+                                <label>Isi Teks</label>
+                                <textarea rows="3" oninput="updateStyle('${elementId}', 'text', this.value)">${currentData.text}</textarea>
+                            </div>
+                            
+                            <label>Formatting Teks</label>
+                            <div class="format-group">
+                                <button onclick="toggleFormat('${elementId}', 'fontWeight', 'bold')" class="${currentData.fontWeight === 'bold' ? 'active' : ''}">**B**</button>
+                                <button onclick="toggleFormat('${elementId}', 'fontStyle', 'italic')" class="${currentData.fontStyle === 'italic' ? 'active' : ''}">*I*</button>
+                                <button onclick="toggleFormat('${elementId}', 'textDecoration', 'underline')" class="${currentData.textDecoration.includes('underline') ? 'active' : ''}"><u>U</u></button>
+                                <button onclick="toggleFormat('${elementId}', 'textDecoration', 'line-through')" class="${currentData.textDecoration.includes('line-through') ? 'active' : ''}"><s>S</s></button>
+                            </div>
+
+                            <label>Rata Teks</label>
+                            <div class="format-group">
+                                <button onclick="updateStyle('${elementId}', 'textAlign', 'left')" class="${currentData.align === 'left' ? 'active' : ''}">Kiri</button>
+                                <button onclick="updateStyle('${elementId}', 'textAlign', 'center')" class="${currentData.align === 'center' ? 'active' : ''}">Tengah</button>
+                                <button onclick="updateStyle('${elementId}', 'textAlign', 'right')" class="${currentData.align === 'right' ? 'active' : ''}">Kanan</button>
+                                <button onclick="updateStyle('${elementId}', 'textAlign', 'justify')" class="${currentData.align === 'justify' ? 'active' : ''}">Rata</button>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Jenis Font</label>
+                                <select onchange="updateStyle('${elementId}', 'fontFamily', this.value)">
+                                    <option value="Arial, sans-serif" ${currentData.family.includes('Arial') ? 'selected' : ''}>Arial</option>
+                                    <option value="'Impact', sans-serif" ${currentData.family.includes('Impact') ? 'selected' : ''}>Impact (Tebal)</option>
+                                    <option value="Verdana, sans-serif" ${currentData.family.includes('Verdana') ? 'selected' : ''}>Verdana</option>
+                                    <option value="'Times New Roman', serif" ${currentData.family.includes('Times New Roman') ? 'selected' : ''}>Times New Roman</option>
+                                    <option value="'Courier New', monospace" ${currentData.family.includes('Courier New') ? 'selected' : ''}>Courier New</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Ukuran Font (px)</label>
+                                <div class="form-group-pair">
+                                    <input type="range" min="8" max="150" value="${currentData.fontSize}" data-sync-id="font-size-${elementId}"
+                                           oninput="updateStyle('${elementId}', 'fontSize', this.value + 'px'); syncRangeAndNumber(this, 'font-size-${elementId}');">
+                                    <input type="number" min="8" max="150" value="${currentData.fontSize}" data-sync-id="font-size-${elementId}"
+                                           oninput="updateStyle('${elementId}', 'fontSize', this.value + 'px'); syncRangeAndNumber(this, 'font-size-${elementId}');">
                                 </div>
                             </div>
+
                             <div class="form-group">
-                                <label>Arah Gradien (Derajat/Kata Kunci)</label>
-                                <input type="text" placeholder="misal: 90deg, to right, to top left" value="${currentData.gradientDirection}" oninput="updateStyle('${elementId}', 'gradientDirection', this.value)">
+                                <label>Lebar Kotak Teks (px)</label>
+                                <div class="form-group-pair">
+                                    <input type="range" min="50" max="1000" value="${currentData.width}" data-sync-id="width-${elementId}"
+                                           oninput="updateStyle('${elementId}', 'width', this.value); syncRangeAndNumber(this, 'width-${elementId}');">
+                                    <input type="number" min="50" max="1000" value="${currentData.width}" data-sync-id="width-${elementId}"
+                                           oninput="updateStyle('${elementId}', 'width', this.value); syncRangeAndNumber(this, 'width-${elementId}');">
+                                </div>
                             </div>
-                        ` : ''}
-                    </div>
+
+                            <div class="form-group">
+                                <label>Line Height (mis: 1.4)</label>
+                                <div class="form-group-pair">
+                                     <input type="range" min="0.8" max="3" step="0.1" value="${currentData.lineHeight}" data-sync-id="line-height-${elementId}"
+                                           oninput="updateStyle('${elementId}', 'lineHeight', this.value); syncRangeAndNumber(this, 'line-height-${elementId}');">
+                                    <input type="number" min="0.8" max="3" step="0.1" value="${currentData.lineHeight}" data-sync-id="line-height-${elementId}"
+                                           oninput="updateStyle('${elementId}', 'lineHeight', this.value); syncRangeAndNumber(this, 'line-height-${elementId}');">
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Letter Spacing (px)</label>
+                                <div class="form-group-pair">
+                                    <input type="range" min="-5" max="20" step="0.5" value="${currentData.letterSpacing}" data-sync-id="letter-spacing-${elementId}"
+                                           oninput="updateStyle('${elementId}', 'letterSpacing', this.value + 'px'); syncRangeAndNumber(this, 'letter-spacing-${elementId}');">
+                                    <input type="number" min="-5" max="20" step="0.5" value="${currentData.letterSpacing}" data-sync-id="letter-spacing-${elementId}"
+                                           oninput="updateStyle('${elementId}', 'letterSpacing', this.value + 'px'); syncRangeAndNumber(this, 'letter-spacing-${elementId}');">
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+
+                    <fieldset>
+                        <legend>Opsi Warna & Gradien</legend>
+                        <div class="element-control">
+                            <div class="form-group">
+                                <label for="color-${elementId}">Warna Solid</label>
+                                <input type="color" id="color-${elementId}" value="${currentData.color}" oninput="updateStyle('${elementId}', 'color', this.value)">
+                            </div>
+
+                            <div class="form-group" style="margin-top: 10px; flex-direction: row; align-items: center; gap: 10px;">
+                                <input type="checkbox" id="grad-check-${elementId}" onchange="updateStyle('${elementId}', 'isGradient', this.checked)" ${currentData.isGradient ? 'checked' : ''}> 
+                                <label for="grad-check-${elementId}" style="margin: 0; font-weight: 700;">Aktifkan Gradien Teks</label>
+                            </div>
+                            
+                            ${currentData.isGradient ? `
+                                <div class="form-group">
+                                    <label>Warna Awal / Akhir Gradien</label>
+                                    <div style="display: flex; gap: 10px;">
+                                        <input type="color" value="${currentData.gradientColor1}" oninput="updateStyle('${elementId}', 'gradientColor1', this.value)">
+                                        <input type="color" value="${currentData.gradientColor2}" oninput="updateStyle('${elementId}', 'gradientColor2', this.value)">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>Arah Gradien (Derajat/Kata Kunci)</label>
+                                    <input type="text" placeholder="misal: 90deg, to right, to top left" value="${currentData.gradientDirection}" oninput="updateStyle('${elementId}', 'gradientDirection', this.value)">
+                                </div>
+                            ` : ''}
+                        </div>
+                    </fieldset>
                 `;
-            } 
-            // Logika untuk Gambar
-            else {
+            } else {
+                // Gambar
                 const currentSize = parseFloat(element.dataset.width) || 150;
                 const maxCanvasSize = Math.max(canvasContainer.clientWidth, canvasContainer.clientHeight);
                 const maxSize = Math.floor(maxCanvasSize * 0.9) || 1000;
 
-                // Perubahan: Mengganti input dengan .form-group-pair (Request 1)
                 contentControls = `
-                    <div class="element-control">
-                        <h3>Kontrol Gambar (#${elementId})</h3>
-                        <div class="form-group">
-                            <label for="image-upload-${elementId}">Upload Gambar/Logo Baru</label>
-                            <input type="file" id="image-upload-${elementId}" accept="image/png, image/jpeg" onchange="updateImageSource('${elementId}', this.files[0])">
-                        </div>
-
-                        <div class="form-group">
-                            <label>Ukuran Gambar/Logo (px)</label>
-                            <div class="form-group-pair">
-                                <input type="range" min="30" max="${maxSize}" step="5" value="${currentSize}" data-sync-id="size-${elementId}"
-                                       oninput="updateStyle('${elementId}', 'size', this.value); syncRangeAndNumber(this, 'size-${elementId}');">
-                                <input type="number" value="${currentSize}" min="30" max="${maxSize}" data-sync-id="size-${elementId}"
-                                       oninput="updateStyle('${elementId}', 'size', this.value); syncRangeAndNumber(this, 'size-${elementId}');">
+                    <fieldset>
+                        <legend>Kontrol Gambar (#${elementId})</legend>
+                        <div class="element-control">
+                            <div class="form-group">
+                                <label for="image-upload-${elementId}">Upload Gambar/Logo Baru</label>
+                                <input type="file" id="image-upload-${elementId}" accept="image/png, image/jpeg" onchange="updateImageSource('${elementId}', this.files[0])">
                             </div>
-                            <small style="color: var(--text-muted);">Ukuran dalam piksel (width=height)</small>
+
+                            <div class="form-group">
+                                <label>Ukuran Gambar/Logo (px)</label>
+                                <div class="form-group-pair">
+                                    <input type="range" min="30" max="${maxSize}" step="5" value="${currentSize}" data-sync-id="size-${elementId}"
+                                           oninput="updateStyle('${elementId}', 'size', this.value); syncRangeAndNumber(this, 'size-${elementId}');">
+                                    <input type="number" value="${currentSize}" min="30" max="${maxSize}" data-sync-id="size-${elementId}"
+                                           oninput="updateStyle('${elementId}', 'size', this.value); syncRangeAndNumber(this, 'size-${elementId}');">
+                                </div>
+                                <small style="color: var(--text-muted);">Ukuran dalam piksel (width=height)</small>
+                            </div>
                         </div>
-                    </div>
+                    </fieldset>
                 `;
             }
 
-            // Kontrol Umum (Berlaku untuk Teks dan Gambar)
-            // Perubahan: Mengganti input dengan .form-group-pair (Request 1)
+            // Kontrol Umum (Teks & Gambar)
             const commonControls = `
-                <div class="element-control">
-                    <h3>Kontrol Lapisan (Z-Index: ${element.style.zIndex})</h3>
-                    
-                    <div class="form-group">
-                        <label>Atur Lapisan (Kedalaman)</label>
-                        <div class="layer-group">
-                            <button onclick="moveLayer('${elementId}', 'down')" class="action-button">⬇️ Bawah</button>
-                            <button onclick="moveLayer('${elementId}', 'up')" class="action-button">⬆️ Atas</button>
+                <fieldset>
+                    <legend>Lapisan, Posisi & Lainnya</legend>
+                    <div class="element-control">
+                        
+                        <div class="form-group">
+                            <label style="font-weight: 700; color: var(--primary-color);">Kontrol Lapisan (Z-Index: ${element.style.zIndex})</label>
+                            <div class="layer-group">
+                                <button onclick="moveLayer('${elementId}', 'down')" class="action-button">⬇️ Bawah</button>
+                                <button onclick="moveLayer('${elementId}', 'up')" class="action-button">⬆️ Atas</button>
+                            </div>
+                        </div>
+
+                        <label style="font-weight: 700; color: var(--primary-color); margin-top: 10px;">Rotasi & Transparansi</label>
+                        <div class="form-group">
+                            <label>Rotasi (Derajat)</label>
+                            <div class="form-group-pair">
+                                <input type="range" min="0" max="360" value="${element.dataset.rotation || 0}" data-sync-id="rotation-${elementId}"
+                                       oninput="updateStyle('${elementId}', 'rotation', this.value); syncRangeAndNumber(this, 'rotation-${elementId}');">
+                                <input type="number" min="0" max="360" value="${element.dataset.rotation || 0}" data-sync-id="rotation-${elementId}"
+                                       oninput="updateStyle('${elementId}', 'rotation', this.value); syncRangeAndNumber(this, 'rotation-${elementId}');">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Opacity / Transparansi (0 - 1)</label>
+                            <div class="form-group-pair">
+                                <input type="range" min="0" max="1" step="0.05" value="${element.dataset.opacity || 1}" data-sync-id="opacity-${elementId}"
+                                       oninput="updateStyle('${elementId}', 'opacity', this.value); syncRangeAndNumber(this, 'opacity-${elementId}');">
+                                <input type="number" min="0" max="1" step="0.01" value="${element.dataset.opacity || 1}" data-sync-id="opacity-${elementId}"
+                                       oninput="updateStyle('${elementId}', 'opacity', this.value); syncRangeAndNumber(this, 'opacity-${elementId}');">
+                            </div>
                         </div>
                     </div>
-
-                    <h3 style="margin-top: 15px;">Kontrol Rotasi & Transparansi</h3>
-                    <div class="form-group">
-                        <label>Rotasi (Derajat)</label>
-                        <div class="form-group-pair">
-                            <input type="range" min="0" max="360" value="${element.dataset.rotation || 0}" data-sync-id="rotation-${elementId}"
-                                   oninput="updateStyle('${elementId}', 'rotation', this.value); syncRangeAndNumber(this, 'rotation-${elementId}');">
-                            <input type="number" min="0" max="360" value="${element.dataset.rotation || 0}" data-sync-id="rotation-${elementId}"
-                                   oninput="updateStyle('${elementId}', 'rotation', this.value); syncRangeAndNumber(this, 'rotation-${elementId}');">
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Opacity / Transparansi (0 - 1)</label>
-                        <div class="form-group-pair">
-                            <input type="range" min="0" max="1" step="0.05" value="${element.dataset.opacity || 1}" data-sync-id="opacity-${elementId}"
-                                   oninput="updateStyle('${elementId}', 'opacity', this.value); syncRangeAndNumber(this, 'opacity-${elementId}');">
-                            <input type="number" min="0" max="1" step="0.01" value="${element.dataset.opacity || 1}" data-sync-id="opacity-${elementId}"
-                                   oninput="updateStyle('${elementId}', 'opacity', this.value); syncRangeAndNumber(this, 'opacity-${elementId}');">
-                        </div>
-                    </div>
-
-                    <button class="action-button delete-btn" onclick="deleteElement('${elementId}')" style="margin-top: 20px;">🗑️ Hapus Elemen Ini</button>
-                </div>
+                </fieldset>
+                <button class="action-button delete-btn" onclick="deleteElement('${elementId}')">🗑️ Hapus Elemen Ini</button>
             `;
 
             controlsArea.innerHTML = contentControls + commonControls;
@@ -960,7 +970,7 @@
                 
                 const coords = getClientCoords(e);
                 
-                const computedStyle = window.getComputedStyle(element);
+                const computedStyle = window.getBComputedStyle(element);
                 xOffset = parseFloat(computedStyle.left) || 0;
                 yOffset = parseFloat(computedStyle.top) || 0;
                 
@@ -975,9 +985,8 @@
                 if(isDragging) {
                     isDragging = false;
                     element.style.zIndex = element.dataset.zIndex || (elementCounter + 10);
-                    // Update Z-index di UI
                     if(activeElement === element) {
-                        renderControls(element);
+                        renderControls(element); // Update Z-index di UI
                     }
                 }
             }
